@@ -36,7 +36,9 @@ export async function CreatePartGrafik(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	if (partDefinition.cues.filter(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length) {
+	if (
+		partDefinition.cues.filter((c) => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length
+	) {
 		ApplyFullGraphicPropertiesToPart(context.config, part)
 	}
 

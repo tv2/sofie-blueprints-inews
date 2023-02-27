@@ -77,8 +77,8 @@ function getSlotBaselineTimelineObjects(
 	layerMappings: SharedGraphicLLayer[]
 ): TSR.TSRTimelineObj[] {
 	return layerMappings
-		.filter(layer => layerToHTMLGraphicSlot[layer])
-		.map<TSR.TimelineObjCCGTemplate>(layer => ({
+		.filter((layer) => layerToHTMLGraphicSlot[layer])
+		.map<TSR.TimelineObjCCGTemplate>((layer) => ({
 			id: '',
 			enable: {
 				while: '1'

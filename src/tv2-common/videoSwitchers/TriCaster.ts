@@ -18,6 +18,8 @@ import {
 } from './types'
 import { VideoSwitcherImpl } from './VideoSwitcher'
 
+const MAX_REGULAR_INPUT_NUMBER = 1000 // everything >= is assumed a special input
+
 const SPECIAL_INPUT_MAP: Record<SpecialInput, TSR.TriCasterSourceName | TSR.TriCasterMixEffectName> = {
 	[SpecialInput.ME1_PROGRAM]: 'v1',
 	[SpecialInput.ME2_PROGRAM]: 'v2',
@@ -46,8 +48,11 @@ export class TriCaster extends VideoSwitcherImpl {
 	public isMixEffect = TSR.isTimelineObjTriCasterME
 
 	public isDsk = TSR.isTimelineObjTriCasterDSK
-	public isAux = TSR.isTimelineObjTriCasterMixOutput
 	public isVideoSwitcherTimelineObject = TSR.isTimelineObjTriCaster
+	public isAux = (
+		timelineObject: TSR.TSRTimelineObj
+	): timelineObject is TSR.TimelineObjTriCasterMixOutput | TSR.TimelineObjTriCasterMatrixOutput =>
+		TSR.isTimelineObjTriCasterMixOutput(timelineObject) || TSR.isTimelineObjTriCasterMatrixOutput(timelineObject)
 
 	private dveConverter: TriCasterDveConverter
 
@@ -89,7 +94,7 @@ export class TriCaster extends VideoSwitcherImpl {
 		transitionDuration?: number | undefined
 	): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
-			// @todo: log error or throw
+			this.logWrongTimelineObjectType(timelineObject, this.updateTransition.name)
 			return timelineObject
 		}
 		timelineObject.content.me.transitionEffect = this.getTransition(transition)
@@ -105,7 +110,7 @@ export class TriCaster extends VideoSwitcherImpl {
 		previewInput: number | SpecialInput
 	): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
-			// @todo: log error or throw
+			this.logWrongTimelineObjectType(timelineObject, this.updatePreviewInput.name)
 			return timelineObject
 		}
 		;(timelineObject.content.me as TSR.TriCasterMixEffectWithPreview).previewInput = this.getInputName(previewInput)
@@ -114,7 +119,7 @@ export class TriCaster extends VideoSwitcherImpl {
 
 	public updateInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
-			// @todo: log error or throw
+			this.logWrongTimelineObjectType(timelineObject, this.updateInput.name)
 			return timelineObject
 		}
 		;(timelineObject.content.me as TSR.TriCasterMixEffectInMixMode).programInput = this.getInputName(input)
@@ -140,7 +145,25 @@ export class TriCaster extends VideoSwitcherImpl {
 		}
 	}
 
-	public getAuxTimelineObject(props: AuxProps): TSR.TimelineObjTriCasterMixOutput {
+	public getAuxTimelineObject(
+		props: AuxProps
+	): TSR.TimelineObjTriCasterMixOutput | TSR.TimelineObjTriCasterMatrixOutput {
+		const layerName = this.prefixLayer(props.layer)
+		const mapping = this.core.getStudioMappings()[layerName]
+		if (!mapping || mapping.device !== TSR.DeviceType.TRICASTER) {
+			this.core.logWarning(`Unable to find TriCaster mapping for layer ${layerName}`)
+		} else if ((mapping as unknown as TSR.MappingTriCaster).mappingType === TSR.MappingTriCasterType.MATRIX_OUTPUT) {
+			if (props.content.input) {
+				return {
+					...this.getBaseProperties(props, props.layer),
+					content: {
+						deviceType: TSR.DeviceType.TRICASTER,
+						type: TSR.TimelineContentTypeTriCaster.MATRIX_OUTPUT,
+						source: this.getInputNameForMatrix(props.content.input)
+					}
+				}
+			}
+		}
 		return {
 			...this.getBaseProperties(props, props.layer),
 			content: {
@@ -153,7 +176,7 @@ export class TriCaster extends VideoSwitcherImpl {
 
 	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
 		if (!this.isAux(timelineObject)) {
-			// @todo: log error or throw
+			this.logWrongTimelineObjectType(timelineObject, this.updateAuxInput.name)
 			return timelineObject
 		}
 		timelineObject.content.source = this.getInputName(input)
@@ -161,7 +184,7 @@ export class TriCaster extends VideoSwitcherImpl {
 	}
 
 	public isDveBoxes = (timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean => {
-		// @todo: this is ugly
+		// @todo: this is ugly, but works
 		return (
 			TSR.isTimelineObjTriCasterME(timelineObject) &&
 			!!(timelineObject.content.me as TSR.TriCasterMixEffectInEffectMode).layers
@@ -255,8 +278,12 @@ export class TriCaster extends VideoSwitcherImpl {
 		return {
 			...TIMELINE_OBJECT_DEFAULTS,
 			..._.omit(props, 'content'),
-			layer: TRICASTER_LAYER_PREFIX + layer
+			layer: this.prefixLayer(layer)
 		}
+	}
+
+	private prefixLayer(layer: string): string {
+		return TRICASTER_LAYER_PREFIX + layer
 	}
 
 	private getKeyers(keyers: Keyer[]): Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> | undefined {
@@ -282,12 +309,30 @@ export class TriCaster extends VideoSwitcherImpl {
 		if (typeof input === 'undefined') {
 			return undefined
 		}
-		if (input < 1000) {
+		if (input < MAX_REGULAR_INPUT_NUMBER) {
 			return `input${input as number}`
 		}
-		const specialInput = SPECIAL_INPUT_MAP[input]
-		if (specialInput) {
-			return specialInput
+		return SPECIAL_INPUT_MAP[input] ?? 'black'
+	}
+
+	private getInputNameForMatrix(input: number | SpecialInput): TSR.TriCasterSourceName | TSR.TriCasterMixOutputName {
+		if (input < MAX_REGULAR_INPUT_NUMBER) {
+			return `input${input as number}`
+		}
+		const auxLayer = this.uniformConfig.specialInputAuxLLayers[input]
+		if (!auxLayer) {
+			this.core.logWarning(`Unable to find TriCaster AUX layer for input ${input}`)
+			return 'black'
+		}
+		const layerName = this.prefixLayer(auxLayer)
+		const mapping = this.core.getStudioMappings()[layerName]
+
+		if (!mapping || mapping.device !== TSR.DeviceType.TRICASTER) {
+			this.core.logWarning(`Unable to find TriCaster mapping for layer ${layerName}`)
+			return 'black'
+		}
+		if ((mapping as unknown as TSR.MappingTriCaster).mappingType === TSR.MappingTriCasterType.MIX_OUTPUT) {
+			return (mapping as unknown as TSR.MappingTriCasterMixOutput).name
 		}
 		return 'black'
 	}

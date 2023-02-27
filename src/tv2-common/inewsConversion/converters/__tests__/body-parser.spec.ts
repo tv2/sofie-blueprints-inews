@@ -3405,7 +3405,7 @@ describe('Body parser', () => {
 
 			const cues = result[0].cues
 			expect(cues).toHaveLength(3)
-			const regularDesignCue = cues.find(cue => {
+			const regularDesignCue = cues.find((cue) => {
 				const designCue = cue as CueDefinitionGraphicDesign
 				if (!designCue.design) {
 					return false
@@ -3424,7 +3424,7 @@ describe('Body parser', () => {
 
 			const result: PartDefinition[] = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
 
-			const cues: CueDefinition[] = result.flatMap(definition => definition.cues)
+			const cues: CueDefinition[] = result.flatMap((definition) => definition.cues)
 			expect(cues).toHaveLength(1)
 			const graphicCue = cues[0] as CueDefinitionGraphicDesign
 			expect(graphicCue.design).toBe(layoutDesign)
@@ -3538,7 +3538,7 @@ function createUnknownCueDefinition(): CueDefinition {
 }
 
 export function stripExternalId(definitions: PartDefinition[]) {
-	return definitions.map(def => {
+	return definitions.map((def) => {
 		return { ...def, ...{ externalId: '' } }
 	})
 }

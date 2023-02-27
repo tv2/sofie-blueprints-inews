@@ -14,18 +14,18 @@ export function renameTableId(version: string, oldTableId: string, newTableId: s
 		version,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const oldConfigTable = (context.getBaseConfig(oldTableId) as unknown) as TableConfigItemValue
+			const oldConfigTable = context.getBaseConfig(oldTableId) as unknown as TableConfigItemValue
 			if (!oldConfigTable || oldConfigTable.length === 0) {
 				return false
 			}
 
-			const newConfigTable = (context.getBaseConfig(newTableId) as unknown) as TableConfigItemValue
+			const newConfigTable = context.getBaseConfig(newTableId) as unknown as TableConfigItemValue
 			return !newConfigTable
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const oldConfigTable = (context.getBaseConfig(oldTableId) as unknown) as TableConfigItemValue
-			const newConfigTable = ((context.getBaseConfig(newTableId) as unknown) as TableConfigItemValue) ?? []
-			oldConfigTable.map(value => newConfigTable.push(value))
+			const oldConfigTable = context.getBaseConfig(oldTableId) as unknown as TableConfigItemValue
+			const newConfigTable = (context.getBaseConfig(newTableId) as unknown as TableConfigItemValue) ?? []
+			oldConfigTable.map((value) => newConfigTable.push(value))
 
 			context.setBaseConfig(newTableId, newConfigTable)
 			context.removeBaseConfig(oldTableId)
@@ -46,11 +46,11 @@ export function renameBlueprintConfiguration(
 		version,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const oldConfig = (context.getBaseConfig(oldConfigurationName) as unknown) as BasicConfigItemValue
+			const oldConfig = context.getBaseConfig(oldConfigurationName) as unknown as BasicConfigItemValue
 			return oldConfig !== undefined
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const oldConfig = (context.getBaseConfig(oldConfigurationName) as unknown) as BasicConfigItemValue
+			const oldConfig = context.getBaseConfig(oldConfigurationName) as unknown as BasicConfigItemValue
 
 			context.setBaseConfig(newConfigurationName, oldConfig)
 			context.removeBaseConfig(oldConfigurationName)

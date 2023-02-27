@@ -12,17 +12,17 @@ export function GetDefaultStudioSourcesForAFVD(context: MigrationContextShowStyl
 	const dveLayoutConfig = context.getBaseConfig('DVEStyles') as TableConfigItemValue | undefined
 	let dveLayouts: string[] = []
 	if (dveLayoutConfig?.length) {
-		dveLayouts = dveLayoutConfig.map(dve => dve.DVEName).filter(name => name !== undefined) as string[]
+		dveLayouts = dveLayoutConfig.map((dve) => dve.DVEName).filter((name) => name !== undefined) as string[]
 	} else {
 		dveLayouts = (dveStylesManifest as ConfigManifestEntryTable).defaultVal
-			.map(dve => dve.DVEName)
-			.filter(name => name !== undefined) as string[]
+			.map((dve) => dve.DVEName)
+			.filter((name) => name !== undefined) as string[]
 	}
 
-	const camera = manifestAFVDSourcesCam.defaultVal.map(source => source.SourceName) as string[]
-	const remote = manifestAFVDSourcesRM.defaultVal.map(source => source.SourceName) as string[]
-	const feed = manifestAFVDSourcesFeed.defaultVal.map(source => source.SourceName) as string[]
-	const replay = manifestAFVDSourcesReplay.defaultVal.map(source => source.SourceName) as string[]
+	const camera = manifestAFVDSourcesCam.defaultVal.map((source) => source.SourceName) as string[]
+	const remote = manifestAFVDSourcesRM.defaultVal.map((source) => source.SourceName) as string[]
+	const feed = manifestAFVDSourcesFeed.defaultVal.map((source) => source.SourceName) as string[]
+	const replay = manifestAFVDSourcesReplay.defaultVal.map((source) => source.SourceName) as string[]
 
 	return {
 		camera,

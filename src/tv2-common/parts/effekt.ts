@@ -97,10 +97,7 @@ export function CreateEffektForPartInner<
 	}
 
 	const effektConfig = context.config.showStyle.BreakerConfig.find(
-		conf =>
-			conf.BreakerName.toString()
-				.trim()
-				.toUpperCase() === effekt.toUpperCase()
+		(conf) => conf.BreakerName.toString().trim().toUpperCase() === effekt.toUpperCase()
 	)
 	if (!effektConfig) {
 		context.core.notifyUserWarning(`Could not find effekt ${effekt}`)

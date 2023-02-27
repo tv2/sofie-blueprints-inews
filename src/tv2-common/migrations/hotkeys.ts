@@ -43,7 +43,7 @@ export function GetDefaultAdLibTriggers(
 				sourceLayers
 			)
 
-			return shortcutsDefaults.some(defaultShortcut => {
+			return shortcutsDefaults.some((defaultShortcut) => {
 				const existingShortcut = context.getTriggeredAction(defaultShortcut._id)
 
 				if (!existingShortcut) {
@@ -83,12 +83,12 @@ export function RemoveOldShortcuts(
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const sourceLayers = sourceLayerDefaults.map(sourceLayer => context.getSourceLayer(sourceLayer._id)) as Array<
+			const sourceLayers = sourceLayerDefaults.map((sourceLayer) => context.getSourceLayer(sourceLayer._id)) as Array<
 				ISourceLayerWithHotKeys | undefined
 			>
 
 			return sourceLayers.some(
-				sourceLayer =>
+				(sourceLayer) =>
 					!!sourceLayer?.clearKeyboardHotkey ||
 					!!sourceLayer?.activateKeyboardHotkeys ||
 					!!sourceLayer?.activateStickyKeyboardHotkey ||

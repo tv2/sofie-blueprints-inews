@@ -1,10 +1,11 @@
 import { MigrationContextStudio, MigrationStepStudio, TableConfigItemValue, TSR } from 'blueprints-integration'
 import {
 	AddKeepAudio,
+	convertStudioTableColumnToFloat,
 	MoveClipSourcePath,
 	MoveSourcesToTable,
 	RemoveConfig,
-	RenameStudioConfig,
+	renameStudioConfig,
 	renameStudioTableColumn,
 	SetConfigTo,
 	SetLayerNamesToDefaults
@@ -98,7 +99,7 @@ function remapTableColumnValuesInner(
 ): { changed: number; table: TableConfigItemValue } {
 	let changed = 0
 
-	table.forEach(row => {
+	table.forEach((row) => {
 		const val = row[columnId]
 
 		if (val) {
@@ -264,38 +265,38 @@ export const studioMigrations: MigrationStepStudio[] = [
 		'sisyfos_source_live_3',
 		'sisyfos_source_server_a',
 		'sisyfos_source_server_b'
-	].map(layer => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
+	].map((layer) => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosConfig),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosGroupStudioMics),
 	GetMappingDefaultMigrationStepForLayer('1.4.0', OfftubeCasparLLayer.CasparPlayerClipPending, true),
 	GetMappingDefaultMigrationStepForLayer('1.4.5', OfftubeCasparLLayer.CasparPlayerClipPending, true),
 
-	RenameStudioConfig('1.4.6', 'Offtube', 'MediaFlowId', 'ClipMediaFlowId'),
-	RenameStudioConfig('1.4.6', 'Offtube', 'NetworkBasePath', 'NetworkBasePathClip'),
-	RenameStudioConfig('1.4.6', 'Offtube', 'JingleBasePath', 'NetworkBasePathJingle'),
-	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
-	RenameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
+	renameStudioConfig('1.4.6', 'Offtube', 'MediaFlowId', 'ClipMediaFlowId'),
+	renameStudioConfig('1.4.6', 'Offtube', 'NetworkBasePath', 'NetworkBasePathClip'),
+	renameStudioConfig('1.4.6', 'Offtube', 'JingleBasePath', 'NetworkBasePathJingle'),
+	renameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
+	renameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
 
-	// 	GetMappingDefaultMigrationStepForLayer('1.4.8', 'casparcg_player_jingle_looakhead', true),
+	 	GetMappingDefaultMigrationStepForLayer('1.4.8', 'casparcg_player_jingle_looakhead', true),
 
-	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathGraphic', 'GraphicNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'Offtube', 'FullGraphicURL', 'HTMLGraphics.GraphicURL'),
-	RenameStudioConfig('1.5.0', 'Offtube', 'FullKeepAliveDuration', 'HTMLGraphics.KeepAliveDuration'),
-	RenameStudioConfig(
+	renameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathGraphic', 'GraphicNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'Offtube', 'FullGraphicURL', 'HTMLGraphics.GraphicURL'),
+	renameStudioConfig('1.5.0', 'Offtube', 'FullKeepAliveDuration', 'HTMLGraphics.KeepAliveDuration'),
+	renameStudioConfig(
 		'1.5.0',
 		'Offtube',
 		'FullTransitionSettings.borderSoftness',
 		'HTMLGraphics.TransitionSettings.borderSoftness'
 	),
-	RenameStudioConfig(
+	renameStudioConfig(
 		'1.5.0',
 		'Offtube',
 		'FullTransitionSettings.loopOutTransitionDuration',
 		'HTMLGraphics.TransitionSettings.loopOutTransitionDuration'
 	),
-	RenameStudioConfig('1.5.0', 'Offtube', 'FullTransitionSettings.wipeRate', 'HTMLGraphics.TransitionSettings.wipeRate'),
+	renameStudioConfig('1.5.0', 'Offtube', 'FullTransitionSettings.wipeRate', 'HTMLGraphics.TransitionSettings.wipeRate'),
 	removeMapping('1.5.0', 'casparcg_studio_screen_loop'),
 	removeMapping('1.5.0', 'casparcg_graphics_overlay'),
 
@@ -347,7 +348,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	 */
 	GetMappingDefaultMigrationStepForLayer('1.6.10', OfftubeCasparLLayer.CasparCGLYD, true),
 
-	RenameStudioConfig('1.6.11', 'Offtube', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+	renameStudioConfig('1.6.11', 'Offtube', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
 
 	/**
 	 * 1.7.3
@@ -369,12 +370,14 @@ export const studioMigrations: MigrationStepStudio[] = [
 	/**
 	 * 1.8.0
 	 */
-	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map(tableName =>
+	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map((tableName) =>
 		renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')
 	),
-	RenameStudioConfig('1.8.0', 'Offtube', 'AtemSource', 'SwitcherSource'),
-	RenameStudioConfig('1.8.0', 'Offtube', 'SwitcherSource.SplitArtF', 'SwitcherSource.SplitArtFill'),
-	RenameStudioConfig('1.8.0', 'Offtube', 'SwitcherSource.SplitArtK', 'SwitcherSource.SplitArtKey'),
+	renameStudioConfig('1.8.0', 'AFVD', 'AtemSource', 'SwitcherSource'),
+	convertStudioTableColumnToFloat('1.8.0', 'SwitcherSource.DSK', 'Clip'),
+	convertStudioTableColumnToFloat('1.8.0', 'SwitcherSource.DSK', 'Gain'),
+	renameStudioConfig('1.8.0', 'Offtube', 'SwitcherSource.SplitArtF', 'SwitcherSource.SplitArtFill'),
+	renameStudioConfig('1.8.0', 'Offtube', 'SwitcherSource.SplitArtK', 'SwitcherSource.SplitArtKey'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

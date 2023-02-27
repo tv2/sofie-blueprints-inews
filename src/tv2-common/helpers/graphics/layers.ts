@@ -3,7 +3,7 @@ import { SharedGraphicLLayer } from 'tv2-constants'
 
 export function GetTimelineLayerForGraphic(config: TV2ShowStyleConfig, name: string) {
 	const conf = config.showStyle.GfxTemplates
-		? config.showStyle.GfxTemplates.find(gfx => gfx.VizTemplate.toString() === name)
+		? config.showStyle.GfxTemplates.find((gfx) => gfx.VizTemplate.toString() === name)
 		: undefined
 
 	if (!conf) {

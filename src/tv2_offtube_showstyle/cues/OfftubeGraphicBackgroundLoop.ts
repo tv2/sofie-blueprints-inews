@@ -7,7 +7,7 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { CalculateTime, CueDefinitionBackgroundLoop, ExtendedSegmentContext, literal } from 'tv2-common'
+import { calculateTime, CueDefinitionBackgroundLoop, ExtendedSegmentContext, literal } from 'tv2-common'
 import { SharedOutputLayers } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
@@ -26,7 +26,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 ) {
 	const fileName = parsedCue.backgroundLoop
 	const path = `dve/${fileName}`
-	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
+	const start = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 	if (adlib) {
 		adlibPieces.push({
 			_rank: rank || 0,

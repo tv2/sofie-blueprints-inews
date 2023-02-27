@@ -1,8 +1,8 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
 import {
 	Adlib,
 	CreateInternalGraphic,
 	CueDefinitionGraphic,
+	EvaluateCueResult,
 	ExtendedShowStyleContext,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
@@ -15,30 +15,21 @@ import { EvaluateCueRouting } from './routing'
 
 export function EvaluateCueGraphic(
 	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
-	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	partDefinition: PartDefinition,
 	adlib?: Adlib
-) {
+): EvaluateCueResult {
+	const result = new EvaluateCueResult()
 	if (parsedCue.routing) {
-		EvaluateCueRouting(context, pieces, partId, parsedCue.routing)
+		result.push(EvaluateCueRouting(context, partId, parsedCue.routing))
 	}
 
 	if (GraphicIsInternal(parsedCue)) {
-		CreateInternalGraphic(context, pieces, adlibPieces, partId, parsedCue, partDefinition, adlib)
+		result.push(CreateInternalGraphic(context, partId, parsedCue, partDefinition, adlib))
 	} else if (GraphicIsPilot(parsedCue)) {
-		EvaluateCueGraphicPilot(
-			context,
-			pieces,
-			adlibPieces,
-			actions,
-			partId,
-			parsedCue,
-			partDefinition.segmentExternalId,
-			adlib
-		)
+		result.push(EvaluateCueGraphicPilot(context, partId, parsedCue, partDefinition.segmentExternalId, adlib))
 	}
+
+	return result
 }

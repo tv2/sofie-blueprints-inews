@@ -38,6 +38,7 @@ import {
 	MixEffectProps,
 	PieceMetaData,
 	TV2StudioConfigBase,
+	UniformConfig,
 	VideoSwitcher,
 	VideoSwitcherImpl
 } from 'tv2-common'
@@ -308,8 +309,10 @@ export class SegmentUserContext extends RundownContext implements ISegmentUserCo
 	}
 }
 
-export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
-	implements ISyncIngestUpdateToPartInstanceContext {
+export class SyncIngestUpdateToPartInstanceContext
+	extends RundownUserContext
+	implements ISyncIngestUpdateToPartInstanceContext
+{
 	public syncedPieceInstances: string[] = []
 	public removedPieceInstances: string[] = []
 	public updatedPieceInstances: string[] = []
@@ -558,7 +561,7 @@ export class ActionExecutionContext extends ShowStyleUserContext implements ITV2
 		}
 
 		this.nextPart = instance
-		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance<PieceMetaData>>(p => ({
+		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance<PieceMetaData>>((p) => ({
 			_id: (Date.now() * Math.random()).toString(),
 			piece: {
 				_id: '',
@@ -596,9 +599,9 @@ export class ActionExecutionContext extends ShowStyleUserContext implements ITV2
 	/** Remove piecesInstances by id. Returns ids of piecesInstances that were removed */
 	public async removePieceInstances(part: 'current' | 'next', pieceInstanceIds: string[]): Promise<string[]> {
 		if (part === 'current') {
-			this.currentPieceInstances = this.currentPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
+			this.currentPieceInstances = this.currentPieceInstances.filter((p) => !pieceInstanceIds.includes(p._id))
 		} else if (this.nextPieceInstances) {
-			this.nextPieceInstances = this.nextPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
+			this.nextPieceInstances = this.nextPieceInstances.filter((p) => !pieceInstanceIds.includes(p._id))
 		}
 
 		return pieceInstanceIds
@@ -643,22 +646,17 @@ export interface PartNote {
 	message: string
 }
 
-// @ts-ignore
-class MockVideoSwitcher implements VideoSwitcher {
-	public getMixEffectTimelineObject = (properties: MixEffectProps) => (properties as any) as TSR.TSRTimelineObj
-	public getDskTimelineObjects = (properties: DskProps) => ([properties] as any) as TSR.TSRTimelineObj[]
-	public getAuxTimelineObject = (properties: AuxProps) => (properties as any) as TSR.TSRTimelineObj
-}
-
-interface ConfigOverrides {
+export interface MockConfigOverrides {
 	studioConfig?: Partial<TV2StudioConfigBase>
 	showStyleConfig?: Partial<GalleryShowStyleConfig>
+	mappingDefaults?: BlueprintMappings
+	uniformConfig?: Partial<UniformConfig>
 }
 
-export function makeMockCoreGalleryContext(overrides?: ConfigOverrides) {
+export function makeMockCoreGalleryContext(overrides?: MockConfigOverrides) {
 	const mockCoreContext = new SegmentUserContext(
 		'test',
-		mappingsDefaultsAFVD,
+		{ ...mappingsDefaultsAFVD, ...overrides?.mappingDefaults },
 		parseStudioConfigAFVD,
 		parseShowStyleConfigAFVD
 	)
@@ -667,14 +665,14 @@ export function makeMockCoreGalleryContext(overrides?: ConfigOverrides) {
 	return mockCoreContext
 }
 
-export function makeMockGalleryContext(overrides?: ConfigOverrides) {
+export function makeMockGalleryContext(overrides?: MockConfigOverrides) {
 	const mockCoreContext = makeMockCoreGalleryContext(overrides)
+	// @todo: this is not great, but it works
 	const config = { ...(mockCoreContext.getStudioConfig() as any), ...(mockCoreContext.getShowStyleConfig() as any) }
 	const mockContext: ExtendedSegmentContext<GalleryBlueprintConfig> = {
 		core: mockCoreContext,
-		// @todo: this is awful, fix it perhaps by replacing defaultShowStyleConfig and defaultStudioConfig with preparsed config?!
 		config,
-		uniformConfig: GALLERY_UNIFORM_CONFIG,
+		uniformConfig: { ...GALLERY_UNIFORM_CONFIG, ...overrides?.uniformConfig },
 		videoSwitcher: VideoSwitcherImpl.getVideoSwitcher(mockCoreContext, config, GALLERY_UNIFORM_CONFIG) // new MockVideoSwitcher()
 	}
 	return mockContext

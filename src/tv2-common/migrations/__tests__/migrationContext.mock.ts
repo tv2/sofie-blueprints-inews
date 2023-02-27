@@ -20,7 +20,7 @@ export class MockShowstyleMigrationContext implements MigrationContextShowStyle 
 		return variantId
 	}
 	public getVariant(variantId: string): IBlueprintShowStyleVariant | undefined {
-		return this.variants.find(variant => variant._id === variantId)
+		return this.variants.find((variant) => variant._id === variantId)
 	}
 	public insertVariant(variantId: string, variant: OmitId<ShowStyleVariantPart>): string {
 		throw new Error(`Function not implemented in mock: 'insertVariant' args: '${variantId}, ${JSON.stringify(variant)}`)

@@ -145,7 +145,7 @@ function processServerLookaheads(
 	sourceLayers: ABSourceLayers
 ): OnGenerateTimelineObj[] {
 	// Includes any non-active servers present in current part
-	const serversInCurrentPart = timeline.filter(obj => {
+	const serversInCurrentPart = timeline.filter((obj) => {
 		if (_.isArray(obj.enable)) {
 			return false
 		}
@@ -160,7 +160,7 @@ function processServerLookaheads(
 			[sourceLayers.Caspar.ClipPending, CasparPlayerClip(1), CasparPlayerClip(2)].includes(layer) &&
 			!obj.isLookahead &&
 			resolvedPieces.some(
-				p => p._id === obj.pieceInstanceId && p.partInstanceId === context.core.currentPartInstance?._id
+				(p) => p._id === obj.pieceInstanceId && p.partInstanceId === context.core.currentPartInstance?._id
 			)
 		)
 	})
@@ -177,7 +177,7 @@ function processServerLookaheads(
 
 	// Filter out lookaheads for servers that are currently in PGM.
 	// Does not filter out AUX lookaheads. Should it?
-	return timeline.filter(obj => {
+	return timeline.filter((obj) => {
 		if (_.isArray(obj.enable)) {
 			return true
 		}
@@ -196,7 +196,7 @@ function processServerLookaheads(
 
 		return !(
 			[sourceLayers.Caspar.ClipPending, CasparPlayerClip(1), CasparPlayerClip(2)]
-				.map(l => `${l}_lookahead`)
+				.map((l) => `${l}_lookahead`)
 				.includes(layer) &&
 			obj.isLookahead &&
 			sessionsInCurrentPart.includes(mediaPlayerSession)
@@ -209,8 +209,8 @@ function isAnyPieceInjectedIntoPart(
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ) {
 	return resolvedPieces
-		.filter(piece => piece.partInstanceId === context.core.currentPartInstance?._id)
-		.some(piece => {
+		.filter((piece) => piece.partInstanceId === context.core.currentPartInstance?._id)
+		.some((piece) => {
 			return piece.piece.metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
 		})
 }
@@ -233,7 +233,7 @@ export function getEndStateForPart(
 	const previousPartEndState = partInstance?.previousPartEndState as Partial<PartEndStateExt>
 
 	const activePieces = resolvedPieces.filter(
-		p =>
+		(p) =>
 			_.isNumber(p.piece.enable.start) &&
 			p.piece.enable &&
 			p.piece.enable.start <= time &&
@@ -285,7 +285,7 @@ export function createSisyfosPersistedLevelsTimelineObject(
 			deviceType: TSR.DeviceType.SISYFOS,
 			type: TSR.TimelineContentTypeSisyfos.CHANNELS,
 			overridePriority: 1,
-			channels: layersToPersist.map(layer => {
+			channels: layersToPersist.map((layer) => {
 				return {
 					mappedLayer: layer,
 					isPgm: 1
@@ -300,7 +300,7 @@ function findLayersToPersist(
 	sisyfosLayersThatWantsToBePersisted: string[]
 ): string[] {
 	const sortedPieces = pieces
-		.filter(piece => piece.piece.metaData?.sisyfosPersistMetaData)
+		.filter((piece) => piece.piece.metaData?.sisyfosPersistMetaData)
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)
 
 	if (sortedPieces.length === 0) {
@@ -349,7 +349,7 @@ export function disablePilotWipeAfterJingle(
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
-	if (previousPartEndState?.isJingle && resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))) {
+	if (previousPartEndState?.isJingle && resolvedPieces.find((p) => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))) {
 		for (const obj of timeline) {
 			if (obj.content.deviceType === TSR.DeviceType.ATEM && !obj.isLookahead) {
 				const obj2 = obj as TSR.TimelineObjAtemAny

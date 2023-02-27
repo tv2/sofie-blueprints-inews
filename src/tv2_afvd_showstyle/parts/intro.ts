@@ -27,7 +27,7 @@ export async function CreatePartIntro(
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 
-	const jingleCue = partDefinition.cues.find(cue => {
+	const jingleCue = partDefinition.cues.find((cue) => {
 		const parsedCue = cue
 		return parsedCue.type === CueType.Jingle
 	})
@@ -44,7 +44,7 @@ export async function CreatePartIntro(
 		return CreatePartInvalid(partDefinition)
 	}
 
-	const jingle = context.config.showStyle.BreakerConfig.find(jngl =>
+	const jingle = context.config.showStyle.BreakerConfig.find((jngl) =>
 		jngl.BreakerName ? jngl.BreakerName.toString().toUpperCase() === parsedJingle.clip.toString().toUpperCase() : false
 	)
 	if (!jingle) {

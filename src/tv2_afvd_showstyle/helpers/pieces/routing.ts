@@ -1,30 +1,37 @@
-import { CameraContent, IBlueprintPiece, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
-import { CalculateTime, CueDefinitionRouting, ExtendedShowStyleContext, findSourceInfo, literal } from 'tv2-common'
+import { CameraContent, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
+import {
+	calculateTime,
+	CueDefinitionRouting,
+	EvaluateCueResult,
+	ExtendedShowStyleContext,
+	findSourceInfo,
+	literal
+} from 'tv2-common'
 import { SharedOutputLayers, SwitcherAuxLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueRouting(
 	context: ExtendedShowStyleContext,
-	pieces: IBlueprintPiece[],
 	partId: string,
 	parsedCue: CueDefinitionRouting
-) {
-	const time = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
+): EvaluateCueResult {
+	const result = new EvaluateCueResult()
+	const time = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 	const sourceDefinition = parsedCue.INP1 ?? parsedCue.INP
 	if (!sourceDefinition) {
 		context.core.notifyUserWarning(`No input provided for viz engine aux`)
-		return
+		return result
 	}
 
 	const sourceInfo = findSourceInfo(context.config.sources, sourceDefinition)
 	const name = sourceDefinition.name || sourceDefinition.sourceType
 	if (!sourceInfo) {
 		context.core.notifyUserWarning(`Could not find source ${name}`)
-		return
+		return result
 	}
 
-	pieces.push({
+	result.pieces.push({
 		externalId: partId,
 		enable: {
 			start: time
@@ -47,4 +54,5 @@ export function EvaluateCueRouting(
 			])
 		})
 	})
+	return result
 }

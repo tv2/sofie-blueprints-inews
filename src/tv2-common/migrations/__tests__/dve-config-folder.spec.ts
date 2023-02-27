@@ -29,7 +29,7 @@ function testDescriptionToConfig(
 ): ConfigItemValue {
 	const preMigration = step === 'premigration'
 	return literal<TableConfigItemValue>(
-		description.map(item => ({
+		description.map((item) => ({
 			_id: item.DVEName,
 			DVEName: item.DVEName,
 			DVEGraphicsKey: preMigration
@@ -283,7 +283,7 @@ const normalizeSoundbedTests: StripDVEFolderMigrationTestCase[] = [
 ]
 
 describe('Remove dve folder from dve config', () => {
-	normalizeSoundbedTests.forEach(testDescription => {
+	normalizeSoundbedTests.forEach((testDescription) => {
 		test(testDescription.description, () => {
 			const context = new MockShowstyleMigrationContext()
 			context.configs.set(DVE_CONFIG_KEY, testDescriptionToConfig(testDescription.data, 'premigration'))

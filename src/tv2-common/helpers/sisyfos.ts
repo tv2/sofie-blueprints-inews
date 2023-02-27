@@ -98,7 +98,7 @@ function GetSisyfosTimelineObjForSource(
 ): TSR.TimelineObjSisyfosAny[] {
 	const result: TSR.TimelineObjSisyfosAny[] = []
 	const timelineEnable = getFallbackEnable(enable)
-	sourceInfo.sisyfosLayers?.forEach(layer => {
+	sourceInfo.sisyfosLayers?.forEach((layer) => {
 		result.push(
 			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
@@ -124,7 +124,7 @@ function getStudioMicsTimelineObj(
 	timelineEnable: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosChannels {
 	const studioMicsChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
-	config.studio.StudioMics.forEach(layer => {
+	config.studio.StudioMics.forEach((layer) => {
 		studioMicsChannels.push({
 			mappedLayer: layer,
 			isPgm: 1

@@ -7,12 +7,7 @@ import {
 } from 'blueprints-integration'
 import { ExtendedStudioContext, literal, SpecialInput, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
-import {
-	SharedGraphicLLayer,
-	SwitcherAuxLLayer,
-	SwitcherMediaPlayerLLayer,
-	SwitcherMixEffectLLayer
-} from '../tv2-constants'
+import { SharedGraphicLLayer, SwitcherMediaPlayerLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
 import { GalleryStudioConfig } from './helpers/config'
 import { SisyfosLLAyer } from './layers'
@@ -25,7 +20,7 @@ function filterMappings(
 ): BlueprintMappings {
 	const result: BlueprintMappings = {}
 
-	_.each(_.keys(input), k => {
+	_.each(_.keys(input), (k) => {
 		const v = input[k]
 		if (filter(k, v)) {
 			result[k] = v
@@ -65,7 +60,7 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 	}
 
 	return {
-		timelineObjects: [
+		timelineObjects: _.compact([
 			literal<TSR.TimelineObjSisyfosChannels>({
 				id: '',
 				enable: {
@@ -82,23 +77,27 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			}),
 
 			// have ATEM output default still image
-			context.videoSwitcher.getAuxTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxProgram,
-				content: {
-					input: SpecialInput.ME1_PROGRAM
-				}
-			}),
-			context.videoSwitcher.getAuxTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxLookahead,
-				content: {
-					input: SpecialInput.ME1_PROGRAM
-				}
-			}),
+			context.uniformConfig.mixEffects.program.auxLayer
+				? context.videoSwitcher.getAuxTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.mixEffects.program.auxLayer,
+						content: {
+							input: SpecialInput.ME1_PROGRAM
+						}
+				  })
+				: undefined,
+			context.uniformConfig.switcherLLayers.nextAux
+				? context.videoSwitcher.getAuxTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.switcherLLayers.nextAux,
+						content: {
+							input: SpecialInput.ME1_PROGRAM
+						}
+				  })
+				: undefined,
 			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
 				content: {
 					input: AtemSourceIndex.MP1,
 					transition: TransitionStyle.CUT
@@ -133,6 +132,6 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 					concept: ''
 				}
 			})
-		]
+		])
 	}
 }

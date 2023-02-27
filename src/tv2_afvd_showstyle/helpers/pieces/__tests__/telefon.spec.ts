@@ -1,19 +1,11 @@
-import {
-	GraphicsContent,
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	PieceLifespan,
-	TSR,
-	WithTimeline
-} from 'blueprints-integration'
+import { GraphicsContent, IBlueprintPiece, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	CueDefinitionTelefon,
+	getDskLLayerName,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	literal,
-	LLayerDSK,
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
@@ -66,12 +58,9 @@ describe('telefon', () => {
 			},
 			iNewsCommand: 'TELEFON'
 		}
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateTelefon(mockContext, pieces, adLibPieces, actions, partId, dummyPart, cue)
-		expect(pieces).toEqual([
+		const result = EvaluateTelefon(mockContext, partId, dummyPart, cue)
+		expect(result.pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'TLF 1',
@@ -115,7 +104,7 @@ describe('telefon', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: prefixLayer(LLayerDSK(0)),
+							layer: prefixLayer(getDskLLayerName(0)),
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.DSK,

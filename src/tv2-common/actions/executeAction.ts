@@ -1,6 +1,5 @@
 import {
 	ActionUserData,
-	GraphicsContent,
 	HackPartMediaObjectSubscription,
 	IActionExecutionContext,
 	IBlueprintActionManifest,
@@ -25,7 +24,7 @@ import {
 	ActionSelectDVELayout,
 	ActionSelectFullGrafik,
 	ActionSelectServerClip,
-	CalculateTime,
+	calculateTime,
 	CreateDipTransitionBlueprintPieceForPart,
 	CreateInTransitionForTransitionStyle,
 	CreatePartServerBase,
@@ -40,7 +39,6 @@ import {
 	ExtendedActionExecutionContext,
 	ExtendedShowStyleContext,
 	GetDVETemplate,
-	GetEnableForWall,
 	getServerPosition,
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForRemote,
@@ -62,6 +60,7 @@ import {
 } from 'tv2-common'
 import {
 	AdlibActionType,
+	ControlClasses,
 	CueType,
 	PartType,
 	SharedGraphicLLayer,
@@ -180,7 +179,7 @@ export async function executeAction<
 	userData: ActionUserData,
 	triggerMode?: string
 ): Promise<void> {
-	await executeWithContext<ShowStyleConfig>(coreContext, uniformConfig, async context => {
+	await executeWithContext<ShowStyleConfig>(coreContext, uniformConfig, async (context) => {
 		const existingTransition = await getExistingTransition(context, settings, 'next')
 
 		const actionId = actionIdStr as AdlibActionType
@@ -288,7 +287,7 @@ async function getExistingTransition<
 ): Promise<ActionTakeWithTransition | undefined> {
 	const existingTransition = await context.core
 		.getPieceInstances(part)
-		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.Effekt))
+		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === settings.SourceLayers.Effekt))
 
 	if (!existingTransition) {
 		return
@@ -358,8 +357,8 @@ export async function getPiecesToPreserve(
 ): Promise<Array<IBlueprintPiece<PieceMetaData>>> {
 	const currentPartSegmentId = await context.core
 		.getPartInstance('current')
-		.then(partInstance => partInstance?.segmentId)
-	const nextPartSegmentId = await context.core.getPartInstance('next').then(partInstance => partInstance?.segmentId)
+		.then((partInstance) => partInstance?.segmentId)
+	const nextPartSegmentId = await context.core.getPartInstance('next').then((partInstance) => partInstance?.segmentId)
 
 	if (!currentPartSegmentId || !nextPartSegmentId) {
 		return []
@@ -369,13 +368,13 @@ export async function getPiecesToPreserve(
 		return []
 	}
 
-	return context.core.getPieceInstances('next').then(pieceInstances => {
+	return context.core.getPieceInstances('next').then((pieceInstances) => {
 		return pieceInstances
-			.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ignoreLayers.includes(p.piece.sourceLayerId))
-			.filter(p => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
-			.map<IBlueprintPiece<PieceMetaData>>(p => p.piece)
-			.map(p => sanitizePieceStart(p))
-			.map(p => sanitizePieceId(p as IBlueprintPieceDB<PieceMetaData>))
+			.filter((p) => adlibLayers.includes(p.piece.sourceLayerId) && !ignoreLayers.includes(p.piece.sourceLayerId))
+			.filter((p) => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
+			.map<IBlueprintPiece<PieceMetaData>>((p) => p.piece)
+			.map((p) => sanitizePieceStart(p))
+			.map((p) => sanitizePieceId(p as IBlueprintPieceDB<PieceMetaData>))
 	})
 }
 
@@ -402,7 +401,7 @@ async function executeActionSelectServerClip<
 	const currentPiece = settings.SelectedAdlibs
 		? await context.core
 				.getPieceInstances('current')
-				.then(pieceInstances => pieceInstances.find(p => isServerOnPgm(p, settings, userData.voLayer)))
+				.then((pieceInstances) => pieceInstances.find((p) => isServerOnPgm(p, settings, userData.voLayer)))
 		: undefined
 
 	const basePart = await CreatePartServerBase(
@@ -436,11 +435,11 @@ async function executeActionSelectServerClip<
 	)
 
 	const activeServerPiece = basePart.part.pieces.find(
-		p => p.sourceLayerId === settings.SourceLayers.Server || p.sourceLayerId === settings.SourceLayers.VO
+		(p) => p.sourceLayerId === settings.SourceLayers.Server || p.sourceLayerId === settings.SourceLayers.VO
 	)
 
 	const serverDataStore = basePart.part.pieces.find(
-		p =>
+		(p) =>
 			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.Server ||
 			p.sourceLayerId === settings.SelectedAdlibs.SourceLayer.VO
 	)
@@ -546,9 +545,9 @@ async function executeActionSelectDVE<
 		externalId
 	)
 
-	let start = parsedCue.start ? CalculateTime(parsedCue.start) : 0
+	let start = parsedCue.start ? calculateTime(parsedCue.start) : 0
 	start = start ? start : 0
-	const end = parsedCue.end ? CalculateTime(parsedCue.end) : undefined
+	const end = parsedCue.end ? calculateTime(parsedCue.end) : undefined
 
 	const metaData: DVEPieceMetaData = {
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
@@ -629,9 +628,9 @@ async function cutServerToBox<
 	if (newDvePiece.content?.timelineObjects) {
 		const currentServer = await context.core
 			.getPieceInstances('current')
-			.then(currentPieces =>
+			.then((currentPieces) =>
 				currentPieces.find(
-					p =>
+					(p) =>
 						p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.Server ||
 						p.piece.sourceLayerId === settings.SelectedAdlibs?.SourceLayer.VO
 				)
@@ -644,11 +643,11 @@ async function cutServerToBox<
 
 		// Find existing CasparCG object
 		const existingCasparObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj => obj.layer === settings.LLayer.Caspar.ClipPending
+			(obj) => obj.layer === settings.LLayer.Caspar.ClipPending
 		) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
 		// Find existing sisyfos object
 		const existingSisyfosObj = (currentServer.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj => obj.layer === settings.LLayer.Sisyfos.ClipPending
+			(obj) => obj.layer === settings.LLayer.Sisyfos.ClipPending
 		) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
 		// Find DVE Boxes object in DVE piece
 		const dveBoxesObj = currentServer.piece.content.timelineObjects.find(context.videoSwitcher.isDveBoxes) as
@@ -725,9 +724,9 @@ async function executeActionSelectDVELayout<
 
 	const nextDVE = (await context.core
 		.getPieceInstances('next')
-		.then(nextPieceInstances => nextPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE))) as
-		| IBlueprintPieceInstance<DVEPieceMetaData>
-		| undefined
+		.then((nextPieceInstances) =>
+			nextPieceInstances.find((p) => p.piece.sourceLayerId === settings.SourceLayers.DVE)
+		)) as IBlueprintPieceInstance<DVEPieceMetaData> | undefined
 
 	const meta = nextDVE?.piece.metaData
 
@@ -863,13 +862,13 @@ async function startNewDVELayout<
 					// Take this
 					timelineObjects: pieceContent.timelineObjects
 						.filter(
-							tlObj =>
+							(tlObj) =>
 								!(
-									tlObj.content.deviceType === TSR.DeviceType.ATEM &&
+									tlObj.content.deviceType === TSR.DeviceType.ATEM && // @todo: tricaster
 									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
 								) && tlObj.content.deviceType !== TSR.DeviceType.SISYFOS
 						)
-						.map(obj => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
+						.map((obj) => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
 				}
 		  }
 		: undefined
@@ -884,11 +883,11 @@ async function startNewDVELayout<
 
 		const currentPieceInstances = await context.core.getPieceInstances('current')
 		// If a DVE is not on air, but a layout is selected, stop the selected layout and replace with the new one.
-		const onAirPiece = currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.DVE)
+		const onAirPiece = currentPieceInstances.find((p) => p.piece.sourceLayerId === settings.SourceLayers.DVE)
 
 		const dataPiece =
 			settings.SelectedAdlibs &&
-			currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE)
+			currentPieceInstances.find((p) => p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE)
 
 		if (onAirPiece === undefined && dataPiece !== undefined) {
 			await context.core.stopPieceInstances([dataPiece._id])
@@ -941,7 +940,7 @@ async function executeActionSelectJingle<
 
 	const externalId = generateExternalId(context, actionId, [userData.clip])
 
-	const jingle = context.config.showStyle.BreakerConfig.find(brkr =>
+	const jingle = context.config.showStyle.BreakerConfig.find((brkr) =>
 		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === userData.clip.toUpperCase() : false
 	)
 	if (!jingle) {
@@ -1030,10 +1029,10 @@ async function executeActionCutToCamera<
 	const currentPieceInstances = await context.core.getPieceInstances('current')
 
 	const serverInCurrentPart = currentPieceInstances.some(
-		p => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
+		(p) => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
 	)
 
-	const currentKam = currentPieceInstances.find(p => p.piece.sourceLayerId === settings.SourceLayers.Cam)
+	const currentKam = currentPieceInstances.find((p) => p.piece.sourceLayerId === settings.SourceLayers.Cam)
 
 	const camSisyfos = GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, false)
 
@@ -1090,7 +1089,7 @@ async function executeActionCutToCamera<
 	} else {
 		const currentExternalId = await context.core
 			.getPartInstance('current')
-			.then(currentPartInstance => currentPartInstance?.part.externalId)
+			.then((currentPartInstance) => currentPartInstance?.part.externalId)
 
 		if (currentExternalId) {
 			kamPiece.externalId = currentExternalId
@@ -1119,8 +1118,8 @@ async function stopGraphicPiecesThatShouldEndWithPart(
 ) {
 	await context.core.stopPieceInstances(
 		currentPieceInstances
-			.filter(pieceInstance => isGraphicThatShouldEndWithPart(pieceInstance))
-			.map(pieceInstance => pieceInstance._id)
+			.filter((pieceInstance) => isGraphicThatShouldEndWithPart(pieceInstance))
+			.map((pieceInstance) => pieceInstance._id)
 	)
 }
 
@@ -1192,7 +1191,7 @@ async function executeActionCutToRemote<
 						input: sourceInfo.port,
 						transition: TransitionStyle.CUT
 					},
-					mixMinusInput: null
+					classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
 				}),
 				...eksternSisyfos
 			])
@@ -1220,20 +1219,20 @@ async function executeActionCutSourceToBox<
 	const nextPieces: IBlueprintPieceInstance[] = await context.core.getPieceInstances('next')
 
 	const currentDVE = currentPieces.find(
-		p =>
+		(p) =>
 			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
 			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
 	)
 	const currentDataStore = currentPieces.find(
-		p => settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE
+		(p) => settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE
 	)
 	const nextDVE = nextPieces.find(
-		p =>
+		(p) =>
 			p.piece.sourceLayerId === settings.SourceLayers.DVE ||
 			(settings.SourceLayers.DVEAdLib && p.piece.sourceLayerId === settings.SourceLayers.DVEAdLib)
 	)
 	const nextDataStore = nextPieces.find(
-		p => settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE
+		(p) => settings.SelectedAdlibs && p.piece.sourceLayerId === settings.SelectedAdlibs.SourceLayer.DVE
 	)
 
 	let modify: undefined | 'current' | 'next'
@@ -1320,7 +1319,7 @@ interface PiecesBySourceLayer {
 
 function groupPiecesBySourceLayer(pieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>>): PiecesBySourceLayer {
 	const piecesBySourceLayer: PiecesBySourceLayer = {}
-	pieceInstances.forEach(piece => {
+	pieceInstances.forEach((piece) => {
 		if (!piecesBySourceLayer[piece.piece.sourceLayerId]) {
 			piecesBySourceLayer[piece.piece.sourceLayerId] = []
 		}
@@ -1352,38 +1351,6 @@ function findPrimaryPieceUsingPriority<
 	return undefined
 }
 
-async function applyPrerollToWallGraphics<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ExtendedActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	piecesBySourceLayer: PiecesBySourceLayer
-) {
-	const wallPieces = piecesBySourceLayer[settings.SourceLayers.Wall]
-	if (!wallPieces) {
-		return
-	}
-	const enable = GetEnableForWall()
-	for (const pieceInstance of wallPieces) {
-		if (pieceInstance.piece.content?.timelineObjects && !pieceInstance.infinite?.fromPreviousPart) {
-			const newPieceProps = {
-				content: pieceInstance.piece.content as WithTimeline<GraphicsContent>
-			}
-			const timelineObjectsToUpdate = newPieceProps.content.timelineObjects.filter(
-				timelineObject =>
-					timelineObject.layer === SharedGraphicLLayer.GraphicLLayerWall &&
-					(timelineObject.content.deviceType === TSR.DeviceType.VIZMSE ||
-						timelineObject.content.deviceType === TSR.DeviceType.CASPARCG)
-			)
-			timelineObjectsToUpdate.forEach(timelineObject => {
-				timelineObject.enable = enable
-			})
-			await context.core.updatePieceInstance(pieceInstance._id, newPieceProps)
-		}
-	}
-}
-
 async function executeActionTakeWithTransition<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -1410,13 +1377,13 @@ async function executeActionTakeWithTransition<
 		return
 	}
 
-	const mixEffectTimelineObject = primaryPiece.piece.content.timelineObjects.find(context.videoSwitcher.isMixEffect)
+	const mixEffectTimelineObjects = primaryPiece.piece.content.timelineObjects.filter(context.videoSwitcher.isMixEffect)
 
-	if (!mixEffectTimelineObject) {
+	if (!mixEffectTimelineObjects.length) {
 		return
 	}
 
-	const existingEffektPiece = nextPieces.find(p => p.piece.sourceLayerId === settings.SourceLayers.Effekt)
+	const existingEffektPiece = nextPieces.find((p) => p.piece.sourceLayerId === settings.SourceLayers.Effekt)
 
 	if (existingEffektPiece) {
 		await context.core.removePieceInstances('next', [existingEffektPiece._id])
@@ -1427,7 +1394,7 @@ async function executeActionTakeWithTransition<
 	switch (userData.variant.type) {
 		case 'cut':
 			{
-				await updateTransition(context, mixEffectTimelineObject, primaryPiece, TransitionStyle.CUT)
+				await updateTransition(context, mixEffectTimelineObjects, primaryPiece, TransitionStyle.CUT)
 				const cutTransitionPiece: IBlueprintPiece<PieceMetaData> = {
 					enable: {
 						start: 0,
@@ -1454,7 +1421,7 @@ async function executeActionTakeWithTransition<
 			}
 			break
 		case 'breaker': {
-			await updateTransition(context, mixEffectTimelineObject, primaryPiece, TransitionStyle.CUT)
+			await updateTransition(context, mixEffectTimelineObjects, primaryPiece, TransitionStyle.CUT)
 			const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 			partProps = CreateEffektForPartInner(
 				context,
@@ -1471,14 +1438,14 @@ async function executeActionTakeWithTransition<
 
 			if (partProps) {
 				await context.core.updatePartInstance('next', partProps)
-				pieces.forEach(p => context.core.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
+				pieces.forEach((p) => context.core.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
 			}
 			break
 		}
 		case 'mix': {
 			await updateTransition(
 				context,
-				mixEffectTimelineObject,
+				mixEffectTimelineObjects,
 				primaryPiece,
 				TransitionStyle.MIX,
 				userData.variant.frames
@@ -1499,7 +1466,7 @@ async function executeActionTakeWithTransition<
 		case 'dip': {
 			await updateTransition(
 				context,
-				mixEffectTimelineObject,
+				mixEffectTimelineObjects,
 				primaryPiece,
 				TransitionStyle.DIP,
 				userData.variant.frames
@@ -1516,21 +1483,18 @@ async function executeActionTakeWithTransition<
 			break
 		}
 	}
-
-	if (partProps) {
-		await applyPrerollToWallGraphics(context, settings, nextPiecesBySourceLayer)
-	}
 }
 
 async function updateTransition(
 	context: ExtendedActionExecutionContext,
-	timelineObject: TimelineObjectCoreExt,
+	timelineObjects: TimelineObjectCoreExt[],
 	pieceInstance: IBlueprintPieceInstance<PieceMetaData>,
 	transitionStyle: TransitionStyle,
 	transitionDuration?: number
 ): Promise<void> {
-	context.videoSwitcher.updateTransition(timelineObject, transitionStyle, transitionDuration)
-
+	for (const timelineObject of timelineObjects) {
+		context.videoSwitcher.updateTransition(timelineObject, transitionStyle, transitionDuration)
+	}
 	await context.core.updatePieceInstance(pieceInstance._id, pieceInstance.piece)
 }
 
@@ -1542,9 +1506,9 @@ async function findPieceToRecoverDataFrom(
 	const currentPieces = pieces[0]
 	const nextPieces = pieces[1]
 
-	const currentServer = currentPieces.find(p => dataStoreLayers.includes(p.piece.sourceLayerId))
+	const currentServer = currentPieces.find((p) => dataStoreLayers.includes(p.piece.sourceLayerId))
 
-	const nextServer = nextPieces.find(p => dataStoreLayers.includes(p.piece.sourceLayerId))
+	const nextServer = nextPieces.find((p) => dataStoreLayers.includes(p.piece.sourceLayerId))
 
 	let pieceToRecoverDataFrom: IBlueprintPieceInstance<PieceMetaData> | undefined
 
@@ -1840,7 +1804,7 @@ async function createFadeSisyfosLevelsMetaData(context: ExtendedActionExecutionC
 	}
 
 	const latestPiece = resolvedPieceInstances
-		.filter(piece => piece.piece.name !== FADE_SISYFOS_LEVELS_PIECE_NAME)
+		.filter((piece) => piece.piece.name !== FADE_SISYFOS_LEVELS_PIECE_NAME)
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)[0]
 
 	const latestPieceMetaData = latestPiece.piece.metaData

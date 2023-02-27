@@ -190,11 +190,11 @@ export class CoreActionExecutionContext implements ITV2ActionExecutionContext {
 		piece: Partial<IBlueprintPiece<PieceMetaData>>
 	): Promise<IBlueprintPieceInstance<PieceMetaData>> {
 		const currentPieceInstances = await this.core.getPieceInstances('current')
-		if (currentPieceInstances.map(p => p._id).includes(pieceInstanceId)) {
+		if (currentPieceInstances.map((p) => p._id).includes(pieceInstanceId)) {
 			this.modifiedParts.add('current')
 		} else {
 			const nextPieceInstances = await this.core.getPieceInstances('next')
-			if (nextPieceInstances.map(p => p._id).includes(pieceInstanceId)) {
+			if (nextPieceInstances.map((p) => p._id).includes(pieceInstanceId)) {
 				this.modifiedParts.add('next')
 			}
 		}

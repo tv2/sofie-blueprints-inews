@@ -203,9 +203,9 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return undefined
 	}
 
-	cue = cue.filter(c => c !== '')
+	cue = cue.filter((c) => c !== '')
 	// Replace multiple spaces / tabs with a single space
-	cue = cue.map(c => c?.trim().replace(/\s+/g, ' '))
+	cue = cue.map((c) => c?.trim().replace(/\s+/g, ' '))
 
 	if (cue.length === 0) {
 		return undefined
@@ -335,7 +335,7 @@ function parsekg(
 
 	const graphicDesignConfig = code
 		? config.showStyle.GfxDesignTemplates.find(
-				template => template.INewsName.toUpperCase() === graphic.template.toUpperCase()
+				(template) => template.INewsName.toUpperCase() === graphic.template.toUpperCase()
 		  )
 		: undefined
 
@@ -352,7 +352,7 @@ function parsekg(
 
 	const graphicConfig = code
 		? config.showStyle.GfxTemplates.find(
-				template =>
+				(template) =>
 					template.INewsCode.replace(/^KG=?/gi, '#KG').toUpperCase() === code.replace(/^KG=?/gi, '#KG').toUpperCase() &&
 					template.INewsName.toUpperCase() === graphic.template.toUpperCase()
 		  )
@@ -387,7 +387,7 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 		iNewsCommand: 'VCP'
 	}
 	const realCue: string[] = []
-	cue.forEach(line => {
+	cue.forEach((line) => {
 		if (
 			!line.match(/[#|*]?cg\d+[ -]pilotdata/i) &&
 			!line.match(/^]] [a-z]\d\.\d [a-z] \d \[\[$/i) &&
@@ -472,7 +472,7 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 		iNewsCommand: 'DVE'
 	}
 
-	cue.forEach(c => {
+	cue.forEach((c) => {
 		if (c.match(/^DVE=/i)) {
 			const template = c.match(/^DVE=(.+)$/i)
 			if (template) {
@@ -561,7 +561,7 @@ function parseMic(cue: string[]): CueDefinitionMic {
 		mics: {},
 		iNewsCommand: 'STUDIE'
 	}
-	cue.forEach(c => {
+	cue.forEach((c) => {
 		if (!c.match(/^STUDIE=MIC ON OFF$/i)) {
 			if (isTime(c)) {
 				micCue = { ...micCue, ...parseTime(c) }
@@ -720,7 +720,9 @@ function parseTargetEngine(
 	}
 
 	const graphicDesignConfig = code
-		? config.showStyle.GfxDesignTemplates.find(template => template.INewsName.toUpperCase() === iNewsName.toUpperCase())
+		? config.showStyle.GfxDesignTemplates.find(
+				(template) => template.INewsName.toUpperCase() === iNewsName.toUpperCase()
+		  )
 		: undefined
 
 	if (graphicDesignConfig) {
@@ -735,7 +737,7 @@ function parseTargetEngine(
 	}
 
 	const graphicConfig = config.showStyle.GfxTemplates.find(
-		template =>
+		(template) =>
 			template.INewsCode.toUpperCase() === code?.toUpperCase() &&
 			template.INewsName.toUpperCase() === iNewsName.toUpperCase()
 	)
@@ -772,7 +774,7 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 	}
 
 	let time = false
-	cue.forEach(c => {
+	cue.forEach((c) => {
 		const command = c.match(/^([#* ]?kg)/i)
 		if (command) {
 			clearCue.iNewsCommand = command[1]
@@ -920,7 +922,7 @@ function findGraphicDesignConfiguration(
 	layout: string
 ): TableConfigItemGfxDesignTemplate | undefined {
 	return config.showStyle.GfxDesignTemplates.find(
-		template => template.INewsStyleColumn && template.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
+		(template) => template.INewsStyleColumn && template.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
 	)
 }
 

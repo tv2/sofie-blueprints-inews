@@ -5,7 +5,7 @@ import { ParseMappingTable, SourceInfoType, SourceMapping } from 'tv2-common'
 import { OfftubeStudioConfig } from './config'
 
 export function parseMediaPlayers(studioConfig: OfftubeStudioConfig): Array<{ id: string; val: string }> {
-	return studioConfig.ABMediaPlayers.map(player => ({ id: player.SourceName, val: player.SwitcherSource.toString() }))
+	return studioConfig.ABMediaPlayers.map((player) => ({ id: player.SourceName, val: player.SwitcherSource.toString() }))
 }
 
 export function parseSources(studioConfig: OfftubeStudioConfig): SourceMapping {

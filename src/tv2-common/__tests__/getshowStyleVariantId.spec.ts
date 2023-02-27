@@ -38,7 +38,7 @@ describe('getShowStyleVariantId', () => {
 		]
 		if (variantNames) {
 			variants.push(
-				...variantNames.map(variantName => {
+				...variantNames.map((variantName) => {
 					return {
 						_id: variantName,
 						name: variantName,

@@ -40,7 +40,7 @@ export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 }
 
 export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
-	const showstyleConfig = (rawConfig as unknown) as OfftubeShowStyleConfig
+	const showstyleConfig = rawConfig as unknown as OfftubeShowStyleConfig
 	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
 		Name: '',
 		HtmlPackageFolder: ''
@@ -52,10 +52,10 @@ export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintC
 }
 
 export function getConfig(context: IShowStyleContext): OfftubeBlueprintConfig {
-	return ({
+	return {
 		...(context.getStudioConfig() as any),
 		...(context.getShowStyleConfig() as any)
-	} as any) as OfftubeBlueprintConfig
+	} as any as OfftubeBlueprintConfig
 }
 
 export function getStudioConfig(context: IStudioContext): OfftubeBlueprintConfig {

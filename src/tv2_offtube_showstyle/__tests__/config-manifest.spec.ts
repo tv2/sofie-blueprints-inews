@@ -21,7 +21,7 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 
 describe('Config Manifest', () => {
 	test('Exposed ShowStyle Keys', () => {
-		const showStyleManifestKeys = _.map(showStyleConfigManifest, e => e.id)
+		const showStyleManifestKeys = _.map(showStyleConfigManifest, (e) => e.id)
 		const manifestKeys = showStyleManifestKeys.sort()
 
 		const definedKeys = Object.keys(blankShowStyleConfig)

@@ -56,9 +56,6 @@ const blankStudioConfig: StudioConfig = {
 			Playing: true
 		}
 	},
-	TriCasterSettings: {
-		DveMixEffect: 1
-	},
 	AudioBedSettings: {
 		fadeIn: 0,
 		fadeOut: 0,
@@ -91,7 +88,7 @@ const blankStudioConfig: StudioConfig = {
 function getObjectKeys(obj: any): string[] {
 	const definedKeys: string[] = []
 	const processObj = (prefix: string, o: any) => {
-		_.each(_.keys(o), k => {
+		_.each(_.keys(o), (k) => {
 			if (_.isArray(o[k])) {
 				definedKeys.push(prefix + k)
 			} else if (_.isObject(o[k])) {
@@ -107,7 +104,7 @@ function getObjectKeys(obj: any): string[] {
 
 describe('Config Manifest', () => {
 	test('Exposed Studio Keys', () => {
-		const studioManifestKeys = _.map(studioConfigManifest, e => e.id)
+		const studioManifestKeys = _.map(studioConfigManifest, (e) => e.id)
 		const manifestKeys = studioManifestKeys.concat(CORE_INJECTED_KEYS).sort()
 
 		const definedKeys = getObjectKeys(blankStudioConfig)

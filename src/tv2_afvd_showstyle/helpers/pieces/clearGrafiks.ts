@@ -6,10 +6,10 @@ import {
 	TSR
 } from 'blueprints-integration'
 import {
-	CreateTimingEnable,
 	CueDefinitionClearGrafiks,
 	ExtendedShowStyleContext,
-	GetDefaultOut,
+	getDefaultOut,
+	getTimingEnable,
 	literal
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
@@ -36,12 +36,12 @@ export function EvaluateClearGrafiks(
 		SourceLayer.PgmGraphicsHeadline,
 		SourceLayer.PgmGraphicsTema,
 		SourceLayer.PgmGraphicsOverlay
-	].forEach(sourceLayerId => {
+	].forEach((sourceLayerId) => {
 		pieces.push({
 			externalId: partId,
 			name: `CLEAR ${sourceLayerId}`,
 			enable: {
-				start: CreateTimingEnable(parsedCue, GetDefaultOut(context.config)).enable.start,
+				start: getTimingEnable(parsedCue, getDefaultOut(context.config)).enable.start,
 				duration: 1000
 			},
 			outputLayerId: SharedOutputLayers.SEC,
@@ -57,7 +57,7 @@ export function EvaluateClearGrafiks(
 	pieces.push({
 		externalId: partId,
 		name: 'CLEAR',
-		...CreateTimingEnable(parsedCue, GetDefaultOut(context.config)),
+		...getTimingEnable(parsedCue, getDefaultOut(context.config)),
 		outputLayerId: SharedOutputLayers.SEC,
 		sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 		lifespan: PieceLifespan.WithinPart,

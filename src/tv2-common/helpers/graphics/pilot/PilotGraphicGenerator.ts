@@ -148,8 +148,9 @@ export abstract class PilotGraphicGenerator extends Graphic {
 	public createFullDataStore(): IBlueprintPiece<FullPieceMetaData> {
 		const content = this.getContent()
 		content.timelineObjects = content.timelineObjects.filter(
-			o =>
+			(o) =>
 				o.content.deviceType !== TSR.DeviceType.ATEM &&
+				o.content.deviceType !== TSR.DeviceType.TRICASTER &&
 				o.content.deviceType !== TSR.DeviceType.SISYFOS &&
 				o.content.deviceType !== TSR.DeviceType.VIZMSE &&
 				o.content.deviceType !== TSR.DeviceType.CASPARCG
@@ -181,6 +182,10 @@ export abstract class PilotGraphicGenerator extends Graphic {
 
 	public getTemplateName(): string {
 		return this.cue.graphic.name
+	}
+
+	public getTemplateId(): string {
+		return this.cue.graphic.vcpid.toString()
 	}
 
 	protected getPrerollDuration(): number {

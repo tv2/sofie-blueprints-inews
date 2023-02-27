@@ -112,7 +112,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.6.3
 	 * - Hide DSK toggle layers
 	 */
-	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map(layerName =>
+	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map((layerName) =>
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
 

@@ -37,7 +37,7 @@ describe('Sisyfos', () => {
 		}
 		const timelineObjects = GetSisyfosTimelineObjForCamera(config, sourceInfo, false)
 		expect(timelineObjects.length).toBe(3)
-		const studioMicsTimelineObject = timelineObjects.find(t => t.layer === SharedSisyfosLLayer.SisyfosGroupStudioMics)
+		const studioMicsTimelineObject = timelineObjects.find((t) => t.layer === SharedSisyfosLLayer.SisyfosGroupStudioMics)
 		expect(studioMicsTimelineObject).toBeDefined()
 	})
 	it('Does not enable studio mics for "minus mic" cameras', () => {
@@ -51,7 +51,7 @@ describe('Sisyfos', () => {
 		}
 		const timelineObjects = GetSisyfosTimelineObjForCamera(config, sourceInfo, true)
 		expect(timelineObjects.length).toBe(2)
-		const studioMicsTimelineObject = timelineObjects.find(t => t.layer === SharedSisyfosLLayer.SisyfosGroupStudioMics)
+		const studioMicsTimelineObject = timelineObjects.find((t) => t.layer === SharedSisyfosLLayer.SisyfosGroupStudioMics)
 		expect(studioMicsTimelineObject).toBeUndefined()
 	})
 	it('Enables audio layers for remotes', () => {
@@ -81,7 +81,7 @@ describe('Sisyfos', () => {
 		}
 		const timelineObjects = GetSisyfosTimelineObjForRemote(config, sourceInfo)
 		expect(timelineObjects.length).toBe(3)
-		const studioMicsTimelineObject = timelineObjects.find(t => t.layer === SharedSisyfosLLayer.SisyfosGroupStudioMics)
+		const studioMicsTimelineObject = timelineObjects.find((t) => t.layer === SharedSisyfosLLayer.SisyfosGroupStudioMics)
 		expect(studioMicsTimelineObject).toBeDefined()
 	})
 	it('Enables audio layers for replay', () => {
@@ -110,7 +110,7 @@ describe('Sisyfos', () => {
 			useStudioMics: false
 		}
 		const timelineObjects = GetSisyfosTimelineObjForReplay(config, sourceInfo, true)
-		const layersTimelineObjects = timelineObjects.filter(t => t.layer !== SharedSisyfosLLayer.SisyfosGroupStudioMics)
+		const layersTimelineObjects = timelineObjects.filter((t) => t.layer !== SharedSisyfosLLayer.SisyfosGroupStudioMics)
 		expect(layersTimelineObjects.length).toBe(2)
 		expect(layersTimelineObjects[0].layer).toBe('some_layer')
 		expect((layersTimelineObjects[0] as TSR.TimelineObjSisyfosChannel).content.isPgm).toBe(2)
@@ -128,7 +128,7 @@ describe('Sisyfos', () => {
 		}
 		const timelineObjects = GetSisyfosTimelineObjForReplay(config, sourceInfo, true)
 		expect(timelineObjects.length).toBe(3)
-		const studioMicsTimelineObject = timelineObjects.find(t => t.layer === SharedSisyfosLLayer.SisyfosGroupStudioMics)
+		const studioMicsTimelineObject = timelineObjects.find((t) => t.layer === SharedSisyfosLLayer.SisyfosGroupStudioMics)
 		expect(studioMicsTimelineObject).toBeDefined()
 	})
 })

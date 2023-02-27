@@ -115,7 +115,7 @@ export function AdlibTagCutToBox(box: number): AdlibTags {
 export enum ControlClasses {
 	SERVER_ON_AIR = 'server_on_air',
 	LYD_ON_AIR = 'lyd_on_air',
-	LIVE_SOURCE_ON_AIR = 'live_source_on_air',
+	OVERRIDEN_ON_MIX_MINUS = 'overriden_on_mix_minus',
 	ABSTRACT_LOOKAHEAD = 'abstract_lookahead',
 	PLACEHOLDER = 'placeholder'
 }
@@ -201,6 +201,7 @@ export enum SwitcherMixEffectLLayer {
 export enum SwitcherAuxLLayer {
 	AuxProgram = 'aux_pgm',
 	AuxClean = 'aux_clean',
+	AuxMixEffect3 = 'aux_mix_effect_3', // AUX set by Sofie, but the M/E is uncontrolled by Sofie
 	AuxWall = 'aux_wall',
 	AuxAR = 'aux_ar',
 	AuxVizOvlIn1 = 'aux_viz_ovl_in_1',
@@ -216,6 +217,8 @@ export enum SwitcherDveLLayer {
 	Dve = 'dve',
 	DveBoxes = 'dve_boxes'
 }
+
+export type SwitcherDskLLayer = `dsk_${number}`
 
 export enum SwitcherMediaPlayerLLayer {
 	Mp1 = 'mp1'

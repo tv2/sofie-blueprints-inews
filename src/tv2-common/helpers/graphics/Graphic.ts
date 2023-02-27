@@ -1,17 +1,15 @@
 import { PieceLifespan, TSR } from 'blueprints-integration'
 import {
-	CalculateTime,
-	CreateTimingEnable,
+	calculateTime,
 	CueDefinitionGraphic,
 	ExtendedShowStyleContext,
-	GetDefaultOut,
-	GetEnableForWall,
+	getDefaultOut,
+	getLifeSpan,
+	getTimingEnable,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
-	GraphicIsPilot,
 	IsTargetingTLF,
 	IsTargetingWall,
-	LifeSpan,
 	TableConfigItemGfxTemplate,
 	TV2ShowStyleConfig
 } from 'tv2-common'
@@ -28,6 +26,7 @@ export abstract class Graphic {
 		this.engine = cue.target
 	}
 
+	public abstract getTemplateId(): string
 	public abstract getTemplateName(): string
 
 	protected getGraphicDuration(): number | undefined {
@@ -38,12 +37,12 @@ export abstract class Graphic {
 			}
 		}
 
-		return GetDefaultOut(this.config)
+		return getDefaultOut(this.config)
 	}
 
 	protected getSourceLayerForGraphic(name: string) {
 		const conf = this.config.showStyle.GfxTemplates
-			? this.config.showStyle.GfxTemplates.find(gfx => gfx.VizTemplate.toString() === name)
+			? this.config.showStyle.GfxTemplates.find((gfx) => gfx.VizTemplate.toString() === name)
 			: undefined
 
 		if (!conf) {
@@ -79,14 +78,14 @@ export abstract class Graphic {
 
 	protected createTimingGraphic(): { start: number; duration?: number } {
 		const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
-		const start = this.cue.start ? CalculateTime(this.cue.start) : 0
+		const start = this.cue.start ? calculateTime(this.cue.start) : 0
 		start !== undefined ? (ret.start = start) : (ret.start = 0)
 
 		const duration = this.getGraphicDuration()
 		const end = this.cue.end
 			? this.cue.end.infiniteMode
 				? undefined
-				: CalculateTime(this.cue.end)
+				: calculateTime(this.cue.end)
 			: duration
 			? ret.start + duration
 			: undefined
@@ -97,10 +96,12 @@ export abstract class Graphic {
 
 	protected GetEnableForGraphic(): TSR.TSRTimelineObj['enable'] {
 		if (IsTargetingWall(this.engine)) {
-			return GetEnableForWall()
+			return {
+				while: '1'
+			}
 		}
 
-		const timing = CreateTimingEnable(this.cue, GetDefaultOut(this.config))
+		const timing = getTimingEnable(this.cue, getDefaultOut(this.config))
 
 		if (!timing.lifespan) {
 			return timing.enable
@@ -118,18 +119,10 @@ export abstract class Graphic {
 	}
 
 	protected findGfxTemplate(): TableConfigItemGfxTemplate | undefined {
-		let graphicId: string | undefined
-		// @todo: this should be implemented in derivatives
-		if (GraphicIsInternal(this.cue)) {
-			graphicId = this.cue.graphic.template
-		} else if (GraphicIsPilot(this.cue)) {
-			graphicId = this.cue.graphic.vcpid.toString()
-		}
-		if (graphicId === undefined) {
-			return undefined
-		}
-		return this.config.showStyle.GfxTemplates.find(templ =>
-			templ.INewsName ? templ.INewsName.toString().toUpperCase() === graphicId?.toUpperCase() : false
+		const templateId = this.getTemplateId()
+
+		return this.config.showStyle.GfxTemplates.find((templ) =>
+			templ.INewsName ? templ.INewsName.toString().toUpperCase() === templateId?.toUpperCase() : false
 		)
 	}
 
@@ -141,9 +134,9 @@ export abstract class Graphic {
 			return PieceLifespan.WithinPart
 		}
 		if (this.cue.end?.infiniteMode) {
-			return LifeSpan(this.cue.end.infiniteMode)
+			return getLifeSpan(this.cue.end.infiniteMode)
 		}
-		if (this.cue.end && CalculateTime(this.cue.end)) {
+		if (this.cue.end && calculateTime(this.cue.end)) {
 			return PieceLifespan.WithinPart
 		}
 		return this.FindInfiniteModeFromConfig()
@@ -152,7 +145,7 @@ export abstract class Graphic {
 	protected FindInfiniteModeFromConfig(): PieceLifespan {
 		const template = this.getTemplateName()
 		const iNewsName = GraphicIsInternal(this.cue) ? this.cue.graphic.template : undefined
-		const conf = this.config.showStyle.GfxTemplates.find(gfx =>
+		const conf = this.config.showStyle.GfxTemplates.find((gfx) =>
 			gfx.VizTemplate
 				? gfx.VizTemplate.toString().toUpperCase() === template.toUpperCase() &&
 				  (iNewsName ? gfx.INewsName.toUpperCase() === iNewsName.toUpperCase() : true)
@@ -173,6 +166,6 @@ export abstract class Graphic {
 			return PieceLifespan.WithinPart
 		}
 
-		return LifeSpan(type)
+		return getLifeSpan(type)
 	}
 }

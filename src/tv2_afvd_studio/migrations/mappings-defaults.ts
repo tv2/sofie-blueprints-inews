@@ -9,11 +9,11 @@ import {
 	getTriCasterDskMappings,
 	literal,
 	prefixLayers,
-	SisyfosPlayerClip,
 	TRICASTER_CLEAN_ME,
 	TRICASTER_DEVICE_ID,
 	TRICASTER_DVE_ME,
-	TRICASTER_LAYER_PREFIX
+	TRICASTER_LAYER_PREFIX,
+	TRICASTER_PROGRAM_ME
 } from 'tv2-common'
 import {
 	AbstractLLayer,
@@ -24,7 +24,6 @@ import {
 	SwitcherMixEffectLLayer
 } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import { GalleryStudioConfig } from '../helpers/config'
 import { CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
@@ -580,7 +579,7 @@ export const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	})
 }
 
-export const MAPPINGS_ATEM: Record<string, TSR.MappingAtem & BlueprintMapping> = prefixLayers(ATEM_LAYER_PREFIX, {
+export const MAPPINGS_ATEM = prefixLayers<TSR.MappingAtem & BlueprintMapping>(ATEM_LAYER_PREFIX, {
 	[SwitcherMixEffectLLayer.Program]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: ATEM_DEVICE_ID,
@@ -633,7 +632,7 @@ export const MAPPINGS_ATEM: Record<string, TSR.MappingAtem & BlueprintMapping> =
 	[SwitcherAuxLLayer.AuxVideoMixMinus]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: ATEM_DEVICE_ID,
-		lookahead: LookaheadMode.WHEN_CLEAR,
+		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 6 // 6 = out 7
 	},
@@ -675,104 +674,100 @@ export const MAPPINGS_ATEM: Record<string, TSR.MappingAtem & BlueprintMapping> =
 	...getAtemDskMappings(ATEMModel.CONSTELLATION_8K_UHD_MODE)
 })
 
-export const MAPPINGS_TRICASTER: Record<string, TSR.MappingTriCaster & BlueprintMapping> = prefixLayers(
-	TRICASTER_LAYER_PREFIX,
-	{
-		[SwitcherMixEffectLLayer.Program]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.NONE,
-			mappingType: TSR.MappingTriCasterType.ME,
-			name: 'main'
-		},
-		[SwitcherMixEffectLLayer.Clean]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.NONE,
-			mappingType: TSR.MappingTriCasterType.ME,
-			name: TRICASTER_CLEAN_ME
-		},
-		[SwitcherMixEffectLLayer.CleanUSKEffect]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.NONE,
-			mappingType: TSR.MappingTriCasterType.ME,
-			name: TRICASTER_CLEAN_ME
-		},
-		[SwitcherAuxLLayer.AuxProgram]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.NONE,
-			mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-			name: 'mix1'
-		},
-		[SwitcherAuxLLayer.AuxClean]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.NONE,
-			mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-			name: 'mix2'
-		},
-		[SwitcherAuxLLayer.AuxAR]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.WHEN_CLEAR,
-			mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-			name: 'mix4'
-		},
-		[SwitcherAuxLLayer.AuxVizOvlIn1]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.WHEN_CLEAR,
-			mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-			name: 'mix5'
-		},
-		[SwitcherAuxLLayer.AuxVideoMixMinus]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.WHEN_CLEAR,
-			mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-			name: 'mix7'
-		},
-		[SwitcherAuxLLayer.AuxLookahead]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.WHEN_CLEAR,
-			mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-			name: 'mix8'
-		},
-		[SwitcherAuxLLayer.AuxDve]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.WHEN_CLEAR,
-			mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-			name: 'mix8' // @todo: do we have too few auxes?!
-		},
-		[SwitcherDveLLayer.Dve]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.NONE,
-			mappingType: TSR.MappingTriCasterType.ME,
-			name: TRICASTER_DVE_ME
-		},
-		[SwitcherDveLLayer.DveBoxes]: {
-			device: TSR.DeviceType.TRICASTER,
-			deviceId: TRICASTER_DEVICE_ID,
-			lookahead: LookaheadMode.WHEN_CLEAR,
-			mappingType: TSR.MappingTriCasterType.ME,
-			name: TRICASTER_DVE_ME
-		},
-		...getTriCasterDskMappings()
-		// @todo: are we using media players in the TriCaster?
-		// [SwitcherMediaPlayerLLayer.Mp1]: {
-		// 	device: TSR.DeviceType.TRICASTER,
-		// 	deviceId: TRICASTER_DEVICE_ID,
-		// 	lookahead: LookaheadMode.NONE,
-		// 	mappingType: TSR.MappingAtemType.MediaPlayer,
-		// 	index: 0
-		// }
-	}
-)
+export const MAPPINGS_TRICASTER = prefixLayers<TSR.MappingTriCaster & BlueprintMapping>(TRICASTER_LAYER_PREFIX, {
+	[SwitcherMixEffectLLayer.Program]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_PROGRAM_ME
+	},
+	[SwitcherMixEffectLLayer.Clean]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_CLEAN_ME
+	},
+	[SwitcherMixEffectLLayer.CleanUSKEffect]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_CLEAN_ME
+	},
+	[SwitcherAuxLLayer.AuxProgram]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix1'
+	},
+	[SwitcherAuxLLayer.AuxClean]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix2'
+	},
+	[SwitcherAuxLLayer.AuxWall]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix3'
+	},
+	[SwitcherAuxLLayer.AuxAR]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix4'
+	},
+	[SwitcherAuxLLayer.AuxVizOvlIn1]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix5'
+	},
+	[SwitcherAuxLLayer.AuxLookahead]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix6'
+	},
+	[SwitcherAuxLLayer.AuxMixEffect3]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix7'
+	},
+	[SwitcherAuxLLayer.AuxVideoMixMinus]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix8'
+	},
+	[SwitcherDveLLayer.Dve]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_DVE_ME
+	},
+	[SwitcherDveLLayer.DveBoxes]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_DVE_ME
+	},
+	...getTriCasterDskMappings()
+})
 
 export const MAPPINGS_TELEMETRICS: BlueprintMappings = {
 	[RobotCameraLayer.TELEMETRICS]: literal<TSR.Mapping & BlueprintMapping>({
@@ -791,40 +786,3 @@ export default literal<BlueprintMappings>({
 	...MAPPINGS_TRICASTER,
 	...MAPPINGS_TELEMETRICS
 })
-
-export function getMediaPlayerMappings(mediaPlayers: GalleryStudioConfig['mediaPlayers']) {
-	const res: BlueprintMappings = {
-		casparcg_player_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
-			device: TSR.DeviceType.ABSTRACT,
-			deviceId: 'abstract0',
-			lookahead: LookaheadMode.PRELOAD,
-			lookaheadDepth: mediaPlayers.length // Number of players
-		}),
-		sisyfos_source_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
-			device: TSR.DeviceType.ABSTRACT,
-			deviceId: 'abstract0',
-			lookahead: LookaheadMode.NONE
-		})
-	}
-
-	for (const mp of mediaPlayers) {
-		res[CasparPlayerClip(mp.id)] = literal<TSR.MappingCasparCG & BlueprintMapping>({
-			device: TSR.DeviceType.CASPARCG,
-			deviceId: 'caspar01',
-			lookahead: LookaheadMode.NONE,
-			channel: 0, // TODO?
-			layer: 110
-		})
-		res[SisyfosPlayerClip(mp.id)] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-			device: TSR.DeviceType.SISYFOS,
-			deviceId: 'sisyfos0',
-			lookahead: LookaheadMode.NONE,
-			channel: Number(mp.id) || 0,
-			mappingType: TSR.MappingSisyfosType.CHANNEL,
-			layerName: `Server ${mp.id === '1' ? 'A' : 'B'}`,
-			setLabelToLayerName: true
-		})
-	}
-
-	return res
-}
