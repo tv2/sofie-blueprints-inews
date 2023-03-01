@@ -16,7 +16,6 @@ import { ITV2ActionExecutionContext } from './context'
 
 export class CoreActionExecutionContext implements ITV2ActionExecutionContext {
 	public studioId: string
-	public isTV2Context: true = true
 
 	private modifiedParts: Set<'current' | 'next'> = new Set()
 

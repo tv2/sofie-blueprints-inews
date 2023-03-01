@@ -2,7 +2,7 @@ import {
 	CueDefinitionFromLayout,
 	PostProcessDefinitions,
 	TransitionStyle,
-	TransitionStyleFromString,
+	parseTransitionStyle,
 	TV2ShowStyleConfig,
 	UnparsedCue
 } from 'tv2-common'
@@ -564,7 +564,7 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 
 	if (transitionMatch) {
 		definition.transition = {
-			style: TransitionStyleFromString(transitionMatch[1].toUpperCase()),
+			style: parseTransitionStyle(transitionMatch[1].toUpperCase()),
 			duration: transitionMatch[2] ? getTimeForTransition(transitionMatch[2]) : undefined
 		}
 	}
