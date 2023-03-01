@@ -1,4 +1,4 @@
-import { TSR } from '../../../../../tv-automation-server-core/packages/blueprints-integration/src'
+import { TSR } from 'blueprints-integration'
 import { AtemToTricasterDveConverter } from '../atemToTricasterDveConverter'
 
 describe('AtemToTricasterDveConverter', () => {

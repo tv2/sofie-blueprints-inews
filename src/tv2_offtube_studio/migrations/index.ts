@@ -277,7 +277,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	renameStudioConfig('1.4.6', 'Offtube', 'GraphicBasePath', 'NetworkBasePathGraphic'),
 	renameStudioConfig('1.4.6', 'Offtube', 'GraphicFlowId', 'GraphicMediaFlowId'),
 
-	 	GetMappingDefaultMigrationStepForLayer('1.4.8', 'casparcg_player_jingle_looakhead', true),
+	GetMappingDefaultMigrationStepForLayer('1.4.8', 'casparcg_player_jingle_looakhead', true),
 
 	renameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
 	renameStudioConfig('1.5.0', 'Offtube', 'NetworkBasePathClip', 'ClipNetworkBasePath'),

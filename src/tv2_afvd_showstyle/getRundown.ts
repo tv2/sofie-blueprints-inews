@@ -77,17 +77,17 @@ class GlobalAdLibPiecesGenerator {
 
 		this.config.sources.lives
 			.slice(0, 10) // the first x lives to create live-adlibs from
-			.forEach(info => {
+			.forEach((info) => {
 				adLibPieces.push(...this.makeRemoteAdLibs(info, globalRank++))
 			})
 
 		this.config.sources.lives
 			.slice(0, 10) // the first x lives to create AUX1 (studio) adlibs
-			.forEach(info => {
+			.forEach((info) => {
 				adLibPieces.push(...this.makeRemoteAuxStudioAdLibs(info, globalRank++))
 			})
 
-		this.config.sources.replays.forEach(info => {
+		this.config.sources.replays.forEach((info) => {
 			if (!/EPSIO/i.test(info.id)) {
 				adLibPieces.push(this.makeEvsAdLib(info, globalRank++, false))
 			}
@@ -400,7 +400,7 @@ class GlobalAdLibPiecesGenerator {
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
 								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-								channels: this.config.studio.StudioMics.map(layer => ({
+								channels: this.config.studio.StudioMics.map((layer) => ({
 									mappedLayer: layer,
 									isPgm: 1
 								})),
@@ -429,7 +429,7 @@ class GlobalAdLibPiecesGenerator {
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
 								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-								channels: this.config.studio.StudioMics.map(layer => ({
+								channels: this.config.studio.StudioMics.map((layer) => ({
 									mappedLayer: layer,
 									isPgm: 0
 								})),
@@ -723,7 +723,7 @@ function getBaseline(context: ExtendedShowStyleContext<GalleryBlueprintConfig>):
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-					channels: Object.keys(sisyfosChannels).map(key => {
+					channels: Object.keys(sisyfosChannels).map((key) => {
 						const llayer = key as SisyfosLLAyer
 						const channel = sisyfosChannels[llayer] as SisyfosChannel
 						return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
@@ -739,7 +739,7 @@ function getBaseline(context: ExtendedShowStyleContext<GalleryBlueprintConfig>):
 			...CreateLYDBaseline('afvd'),
 
 			...(context.config.showStyle.CasparCGLoadingClip && context.config.showStyle.CasparCGLoadingClip.length
-				? [...context.config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
+				? [...context.config.mediaPlayers.map((mp) => CasparPlayerClipLoadingLoop(mp.id))].map((layer) => {
 						return literal<TSR.TimelineObjCCGMedia>({
 							id: '',
 							enable: { while: '1' },
@@ -770,7 +770,7 @@ function getBaseline(context: ExtendedShowStyleContext<GalleryBlueprintConfig>):
 }
 
 function getMixEffectBaseline(context: ExtendedShowStyleContext<GalleryBlueprintConfig>): TSR.TSRTimelineObj[] {
-	return Object.values(context.uniformConfig.mixEffects).flatMap(mixEffect =>
+	return Object.values(context.uniformConfig.mixEffects).flatMap((mixEffect) =>
 		_.compact([
 			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },

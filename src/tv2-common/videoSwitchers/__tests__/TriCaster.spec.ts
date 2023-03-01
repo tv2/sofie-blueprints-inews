@@ -15,10 +15,14 @@ import { AuxProps, DskProps, MixEffectProps, SpecialInput, TransitionStyle } fro
 const DURATION_FRAMES: number = 50
 const DURATION_SECONDS: number = DURATION_FRAMES / 25
 
-function createTestee(studioMock?: TV2StudioConfig): TriCaster {
-	const context = mock<IStudioContext>()
-	const config = studioMock ?? mock<TV2StudioConfig>()
-	const uniformConfig = mock<UniformConfig>()
+function createTestee(mocks?: {
+	context?: IStudioContext
+	config?: TV2StudioConfig
+	uniformConfig?: UniformConfig
+}): TriCaster {
+	const context = mocks?.context ?? mock<IStudioContext>()
+	const config = mocks?.config ?? mock<TV2StudioConfig>()
+	const uniformConfig = mocks?.uniformConfig ?? mock<UniformConfig>()
 	const dveConverter = mock<TriCasterDveConverter>()
 
 	return new TriCaster(context, config, uniformConfig, dveConverter)
@@ -154,16 +158,14 @@ describe('TriCaster', () => {
 		test('supports WIPE for GFX', () => {
 			const wipeRate = 22
 			const config = mock<TV2StudioConfig>()
-			when(config.studio).thenReturn(({
-				studioConfig: {
-					HTMLGraphics: {
-						GraphicURL: 'donotcare',
-						TransitionSettings: { wipeRate, borderSoftness: 20, loopOutTransitionDuration: 15 },
-						KeepAliveDuration: 120
-					}
+			when(config.studio).thenReturn({
+				HTMLGraphics: {
+					GraphicURL: 'donotcare',
+					TransitionSettings: { wipeRate, borderSoftness: 20, loopOutTransitionDuration: 15 },
+					KeepAliveDuration: 120
 				}
-			} as any) as TV2StudioConfigBase)
-			const testee: TriCaster = createTestee(instance(config))
+			} as any as TV2StudioConfigBase)
+			const testee: TriCaster = createTestee({ config: instance(config) })
 			const timelineObject = testee.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.Program,
 				content: {
@@ -296,7 +298,7 @@ describe('TriCaster', () => {
 
 		test('sets Mix Output when layer mapping is MIX_OUTPUT', () => {
 			const config = mock<TV2StudioConfig>()
-			when(config.studio).thenReturn(({
+			when(config.studio).thenReturn({
 				studioConfig: {
 					mappingDefaults: {
 						[prefixLayer(DEFAULT_AUX.layer)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
@@ -308,8 +310,8 @@ describe('TriCaster', () => {
 						})
 					}
 				}
-			} as any) as TV2StudioConfigBase)
-			const testee: TriCaster = createTestee(instance(config))
+			} as any as TV2StudioConfigBase)
+			const testee: TriCaster = createTestee({ config: instance(config) })
 
 			const timelineObject = testee.getAuxTimelineObject(DEFAULT_AUX)
 
@@ -323,21 +325,20 @@ describe('TriCaster', () => {
 		})
 
 		test('sets Matrix Output when layer mapping is MATRIX_OUTPUT', () => {
-			const config = mock<TV2StudioConfig>()
-			when(config.studio).thenReturn(({
-				studioConfig: {
-					mappingDefaults: {
-						[prefixLayer(DEFAULT_AUX.layer)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
-							device: TSR.DeviceType.TRICASTER,
-							deviceId: TRICASTER_DEVICE_ID,
-							lookahead: LookaheadMode.WHEN_CLEAR,
-							mappingType: TSR.MappingTriCasterType.MATRIX_OUTPUT,
-							name: 'out2'
-						})
-					}
+			const context = mock<IStudioContext>()
+			when(context.getStudioMappings).thenReturn(() => {
+				return {
+					[prefixLayer(DEFAULT_AUX.layer)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+						device: TSR.DeviceType.TRICASTER,
+						deviceId: TRICASTER_DEVICE_ID,
+						lookahead: LookaheadMode.WHEN_CLEAR,
+						mappingType: TSR.MappingTriCasterType.MATRIX_OUTPUT,
+						name: 'out2'
+					})
 				}
-			} as any) as TV2StudioConfigBase)
-			const testee = createTestee(instance(config))
+			})
+
+			const testee = createTestee({ context: instance(context) })
 
 			const timelineObject = testee.getAuxTimelineObject(DEFAULT_AUX)
 
@@ -351,34 +352,33 @@ describe('TriCaster', () => {
 		})
 
 		test('resolves Special Input for Matrix Output', () => {
-			const config = mock<TV2StudioConfig>()
-			when(config.studio).thenReturn(({
-				studioConfig: {
-					mappingDefaults: {
-						[prefixLayer(SwitcherAuxLLayer.AuxClean)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
-							device: TSR.DeviceType.TRICASTER,
-							deviceId: TRICASTER_DEVICE_ID,
-							lookahead: LookaheadMode.WHEN_CLEAR,
-							mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
-							name: 'mix5'
-						}),
-						[prefixLayer(SwitcherAuxLLayer.AuxVideoMixMinus)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
-							device: TSR.DeviceType.TRICASTER,
-							deviceId: TRICASTER_DEVICE_ID,
-							lookahead: LookaheadMode.WHEN_CLEAR,
-							mappingType: TSR.MappingTriCasterType.MATRIX_OUTPUT,
-							name: 'out2'
-						})
-					},
-					uniformConfig: {
-						specialInputAuxLLayers: {
-							[SpecialInput.ME1_PROGRAM]: SwitcherAuxLLayer.AuxProgram,
-							[SpecialInput.ME3_PROGRAM]: SwitcherAuxLLayer.AuxClean
-						}
-					}
+			const context = mock<IStudioContext>()
+			when(context.getStudioMappings).thenReturn(() => {
+				return {
+					[prefixLayer(SwitcherAuxLLayer.AuxClean)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+						device: TSR.DeviceType.TRICASTER,
+						deviceId: TRICASTER_DEVICE_ID,
+						lookahead: LookaheadMode.WHEN_CLEAR,
+						mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+						name: 'mix5'
+					}),
+					[prefixLayer(SwitcherAuxLLayer.AuxVideoMixMinus)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+						device: TSR.DeviceType.TRICASTER,
+						deviceId: TRICASTER_DEVICE_ID,
+						lookahead: LookaheadMode.WHEN_CLEAR,
+						mappingType: TSR.MappingTriCasterType.MATRIX_OUTPUT,
+						name: 'out2'
+					})
 				}
-			} as any) as TV2StudioConfigBase)
-			const testee = createTestee(instance(config))
+			})
+
+			const uniformConfig = mock<UniformConfig>()
+			when(uniformConfig.specialInputAuxLLayers).thenReturn({
+				[SpecialInput.ME1_PROGRAM]: SwitcherAuxLLayer.AuxProgram,
+				[SpecialInput.ME3_PROGRAM]: SwitcherAuxLLayer.AuxClean
+			})
+
+			const testee = createTestee({ context: instance(context), uniformConfig: instance(uniformConfig) })
 
 			const timelineObject = testee.getAuxTimelineObject({
 				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
@@ -510,12 +510,12 @@ describe('TriCaster', () => {
 		it('generate overlay keyer', () => {
 			const config = mock<TV2StudioConfig>()
 			const artFillSource = 10
-			when(config.studio).thenReturn(({
+			when(config.studio).thenReturn({
 				SwitcherSource: {
 					SplitArtFill: artFillSource
 				}
-			} as any) as TV2StudioConfigBase)
-			const testee: TriCaster = createTestee(instance(config))
+			} as any as TV2StudioConfigBase)
+			const testee: TriCaster = createTestee({ config: instance(config) })
 			const content: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(getBasicDveProps())[0]
 				.content as TSR.TimelineObjTriCasterME['content']
 			const result: Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> = content.me.keyers!
@@ -532,10 +532,9 @@ describe('TriCaster', () => {
 			const emptyBoxes = [{ enabled: false }, { enabled: false }, { enabled: false }, { enabled: false }]
 			const content = testee.getDveTimelineObjects(getBasicDveProps(emptyBoxes))[0]
 				.content as TSR.TimelineObjTriCasterME['content']
-			const result: Partial<Record<
-				TSR.TriCasterLayerName,
-				TSR.TriCasterLayer
-			>> = (content.me as TSR.TriCasterMixEffectInEffectMode).layers!
+			const result: Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> = (
+				content.me as TSR.TriCasterMixEffectInEffectMode
+			).layers!
 
 			expect(result.a).toMatchObject(invisibleBox())
 			expect(result.b).toMatchObject(invisibleBox())
