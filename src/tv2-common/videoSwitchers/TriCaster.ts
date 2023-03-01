@@ -40,7 +40,7 @@ const TRANSITION_MAP: Record<TransitionStyle, TSR.TriCasterTransitionEffect> = {
 	[TransitionStyle.STING]: 5 // not really supported??
 }
 
-const DVE_OVERLAY_INPUT_NUMBER: number = 5
+const DVE_OVERLAY_INPUT_NUMBER = 5
 
 export class TriCaster extends VideoSwitcherImpl {
 	public readonly type = SwitcherType.ATEM

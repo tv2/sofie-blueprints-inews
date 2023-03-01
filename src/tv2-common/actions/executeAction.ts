@@ -863,10 +863,7 @@ async function startNewDVELayout<
 					timelineObjects: pieceContent.timelineObjects
 						.filter(
 							(tlObj) =>
-								!(
-									tlObj.content.deviceType === TSR.DeviceType.ATEM && // @todo: tricaster
-									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
-								) && tlObj.content.deviceType !== TSR.DeviceType.SISYFOS
+								!context.videoSwitcher.isMixEffect(tlObj) && tlObj.content.deviceType !== TSR.DeviceType.SISYFOS
 						)
 						.map((obj) => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
 				}

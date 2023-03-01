@@ -7,6 +7,8 @@ const ATEM_HEIGHT = 18
 const ATEM_CROP_LEFT_RIGHT_MAX_VALUE = 32000
 const ATEM_CROP_TOP_BOTTOM_MAX_VALUE = 18000
 
+const TRICASTER_WIDTH = (2 / 9) * 16
+
 export class AtemToTricasterDveConverter implements TriCasterDveConverter {
 	public convertPosition(x: number, y: number): TSR.TriCasterLayer['position'] {
 		return {
@@ -17,7 +19,7 @@ export class AtemToTricasterDveConverter implements TriCasterDveConverter {
 
 	private convertPositionX(atemX: number): number {
 		const positionPercentage = atemX / ATEM_WIDTH
-		return (positionPercentage * ((2 / 9) * 16)) / 100
+		return (positionPercentage * TRICASTER_WIDTH) / 100
 	}
 
 	private convertPositionY(atemY: number): number {
