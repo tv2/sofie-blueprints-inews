@@ -1,7 +1,6 @@
 import { IBlueprintActionManifest } from 'blueprints-integration'
 import {
 	ActionSelectServerClip,
-	ExtendedShowStyleContext,
 	getSourceDuration,
 	GetTagForServer,
 	GetTagForServerNext,
@@ -9,17 +8,18 @@ import {
 	literal,
 	PartDefinition,
 	ServerPartLayers,
+	ShowStyleContext,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayer } from 'tv2-constants'
 import { getServerAdLibTriggerModes, t } from '../helpers'
 
 export async function CreateAdlibServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedShowStyleContext<ShowStyleConfig>,
+	context: ShowStyleContext<ShowStyleConfig>,
 	rank: number,
 	partDefinition: PartDefinition,
 	file: string,
@@ -49,7 +49,7 @@ export async function CreateAdlibServer<
 			_rank: rank,
 			label: t(`${partDefinition.storyName}`),
 			sourceLayerId: sourceLayers.SourceLayer.PgmServer,
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			content: GetVTContentProperties(context.config, {
 				file,
 				clipDuration: mediaObjectDuration,

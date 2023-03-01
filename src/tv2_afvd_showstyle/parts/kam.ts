@@ -12,24 +12,24 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	CreatePartKamBase,
-	ExtendedSegmentContext,
 	FindDSKJingle,
 	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	literal,
 	PartDefinitionKam,
 	PieceMetaData,
+	SegmentContext,
 	TimeFromINewsField,
 	TransitionStyle
 } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { SharedOutputLayer } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartKam(
-	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
+	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
@@ -50,7 +50,7 @@ export async function CreatePartKam(
 			externalId: partDefinition.externalId,
 			name: 'CS 3 (JINGLE)',
 			enable: { start: 0 },
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			sourceLayerId: SourceLayer.PgmJingle,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: {
@@ -89,7 +89,7 @@ export async function CreatePartKam(
 			externalId: partDefinition.externalId,
 			name: part.title,
 			enable: { start: 0 },
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			sourceLayerId: SourceLayer.PgmCam,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: {

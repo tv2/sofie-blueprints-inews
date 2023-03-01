@@ -5,13 +5,13 @@ import {
 	TimelineObjectCoreExt,
 	WithTimeline
 } from 'blueprints-integration'
-import { CueDefinitionPgmClean, ExtendedSegmentContext, findSourceInfo, literal, SourceInfo } from 'tv2-common'
-import { SharedOutputLayers, SourceType, SwitcherAuxLLayer } from 'tv2-constants'
+import { CueDefinitionPgmClean, findSourceInfo, literal, SegmentContext, SourceInfo } from 'tv2-common'
+import { SharedOutputLayer, SourceType, SwitcherAuxLLayer } from 'tv2-constants'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluatePgmClean(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	partId: string,
 	parsedCue: CueDefinitionPgmClean
@@ -36,7 +36,7 @@ export function OfftubeEvaluatePgmClean(
 		enable: {
 			start: 0
 		},
-		outputLayerId: SharedOutputLayers.AUX,
+		outputLayerId: SharedOutputLayer.AUX,
 		sourceLayerId: OfftubeSourceLayer.AuxPgmClean,
 		lifespan: PieceLifespan.OutOnShowStyleEnd,
 		content: literal<WithTimeline<BaseContent>>({

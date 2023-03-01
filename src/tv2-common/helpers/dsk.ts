@@ -6,25 +6,25 @@ import {
 	TableConfigItemValue,
 	TSR
 } from 'blueprints-integration'
-import { ExtendedShowStyleContext, getDskLLayerName, literal, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
-import { AdlibTags, DSKRoles, SharedOutputLayers } from 'tv2-constants'
+import { getDskLLayerName, literal, ShowStyleContext, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
+import { AdlibTags, DskRole, SharedOutputLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { TableConfigItemDSK } from '../types'
 
 export function FindDSKFullGFX(config: TV2ShowStyleConfig): TableConfigItemDSK {
-	return FindDSKWithRoles(config, [DSKRoles.FULLGFX])
+	return FindDSKWithRoles(config, [DskRole.FULLGFX])
 }
 
 export function FindDSKOverlayGFX(config: TV2ShowStyleConfig): TableConfigItemDSK {
-	return FindDSKWithRoles(config, [DSKRoles.OVERLAYGFX])
+	return FindDSKWithRoles(config, [DskRole.OVERLAYGFX])
 }
 
 export function FindDSKJingle(config: TV2ShowStyleConfig): TableConfigItemDSK {
-	return FindDSKWithRoles(config, [DSKRoles.JINGLE])
+	return FindDSKWithRoles(config, [DskRole.JINGLE])
 }
 
-function FindDSKWithRoles(config: TV2ShowStyleConfig, roles: DSKRoles[]): TableConfigItemDSK {
+function FindDSKWithRoles(config: TV2ShowStyleConfig, roles: DskRole[]): TableConfigItemDSK {
 	return config.dsk.find((dsk) => dsk.Roles?.some((role) => roles.includes(role))) ?? config.dsk[0]
 }
 
@@ -42,8 +42,8 @@ export function GetDSKCount(atemModel: ATEMModel) {
 }
 
 export function getDskOnAirTimelineObjects(
-	context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
-	dskRole: DSKRoles,
+	context: ShowStyleContext<TV2ShowStyleConfig>,
+	dskRole: DskRole,
 	enable?: TSR.TSRTimelineObj['enable']
 ): TSR.TSRTimelineObj[] {
 	const dskConf = FindDSKWithRoles(context.config, [dskRole])
@@ -58,7 +58,7 @@ export function getDskOnAirTimelineObjects(
 				config: dskConf
 			}
 		}),
-		...(dskRole === DSKRoles.JINGLE && context.uniformConfig.switcherLLayers.jingleUskMixEffect
+		...(dskRole === DskRole.JINGLE && context.uniformConfig.switcherLLayers.jingleUskMixEffect
 			? [
 					context.videoSwitcher.getMixEffectTimelineObject({
 						enable,
@@ -92,7 +92,7 @@ export function CreateDSKBaselineAdlibs(
 					name: `DSK ${dsk.Number + 1} ON`,
 					_rank: baseRank + dsk.Number,
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
-					outputLayerId: SharedOutputLayers.SEC,
+					outputLayerId: SharedOutputLayer.SEC,
 					lifespan: PieceLifespan.OutOnRundownChange,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_OFF],
 					invertOnAirState: true,
@@ -116,7 +116,7 @@ export function CreateDSKBaselineAdlibs(
 					name: `DSK ${dsk.Number + 1} ON`,
 					_rank: baseRank + dsk.Number,
 					sourceLayerId: SourceLayerAtemDSK(dsk.Number),
-					outputLayerId: SharedOutputLayers.SEC,
+					outputLayerId: SharedOutputLayer.SEC,
 					lifespan: PieceLifespan.OutOnRundownChange,
 					tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_NO_NEXT_HIGHLIGHT, AdlibTags.ADLIB_DSK_ON],
 					content: {
@@ -161,7 +161,7 @@ export function createDskBaseline(
 export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 	return literal<ConfigManifestEntryTable>({
 		id: 'SwitcherSource.DSK',
-		name: 'Switcher DSK',
+		name: 'Video Switcher DSK',
 		description: 'Video Switcher Downstream Keyers Fill and Key',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
@@ -181,7 +181,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			},
 			{
 				id: 'Fill',
-				name: 'Switcher Fill',
+				name: 'Video Switcher Fill',
 				description: 'Video Switcher input for DSK Fill',
 				type: ConfigManifestEntryType.INT,
 				required: true,
@@ -190,7 +190,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			},
 			{
 				id: 'Key',
-				name: 'Switcher Key',
+				name: 'Video Switcher Key',
 				description: 'Video Switcher input for DSK Key',
 				type: ConfigManifestEntryType.INT,
 				required: true,
@@ -222,7 +222,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 				type: ConfigManifestEntryType.SELECT,
 				required: true,
 				multiple: true,
-				options: [DSKRoles.FULLGFX, DSKRoles.OVERLAYGFX, DSKRoles.JINGLE],
+				options: [DskRole.FULLGFX, DskRole.OVERLAYGFX, DskRole.JINGLE],
 				defaultVal: [],
 				rank: 5
 			},

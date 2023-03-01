@@ -13,7 +13,7 @@ import {
 	TimelineBlueprintExt,
 	TransitionStyle
 } from 'tv2-common'
-import { DSKRoles } from 'tv2-constants'
+import { DskRole } from 'tv2-constants'
 
 import { PilotGraphicGenerator } from '../pilot'
 
@@ -84,7 +84,7 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 				}),
 				...(IsTargetingFull(this.engine)
 					? this.getFullPilotTimeline()
-					: getDskOnAirTimelineObjects(this.context, DSKRoles.OVERLAYGFX))
+					: getDskOnAirTimelineObjects(this.context, DskRole.OVERLAYGFX))
 			]
 		}
 	}

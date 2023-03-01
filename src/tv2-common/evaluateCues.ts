@@ -17,10 +17,10 @@ import {
 	CueDefinitionLYD,
 	CueDefinitionRobotCamera,
 	CueDefinitionTelefon,
-	ExtendedShowStyleContext,
 	IsTargetingFull,
 	IsTargetingOVL,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { TV2ShowStyleConfig } from './blueprintConfig'
@@ -53,14 +53,14 @@ export class EvaluateCueResult {
 }
 export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueGraphic?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		partId: string,
 		parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 		partDefinition: PartDefinition,
 		adlib?: Adlib
 	) => EvaluateCueResult
 	EvaluateCueBackgroundLoop?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -70,7 +70,7 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => void
 	EvaluateCueGraphicDesign?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -80,12 +80,12 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => void
 	EvaluateCueRouting?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		partId: string,
 		parsedCue: CueDefinitionRouting
 	) => EvaluateCueResult
 	EvaluateCueEkstern?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		part: IBlueprintPart,
 		partId: string,
 		parsedCue: CueDefinitionEkstern,
@@ -94,7 +94,7 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => EvaluateCueResult
 	EvaluateCueDVE?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		actions: IBlueprintActionManifest[],
 		partDefinition: PartDefinition,
@@ -103,7 +103,7 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => void
 	EvaluateCueAdLib?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		actions: IBlueprintActionManifest[],
 		mediaSubscriptions: HackPartMediaObjectSubscription[],
 		parsedCue: CueDefinitionAdLib,
@@ -111,14 +111,14 @@ export interface EvaluateCuesShowstyleOptions {
 		rank: number
 	) => Promise<void>
 	EvaluateCueTelefon?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		partId: string,
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTelefon,
 		adlib?: Adlib
 	) => EvaluateCueResult
 	EvaluateCueJingle?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -129,7 +129,7 @@ export interface EvaluateCuesShowstyleOptions {
 		effekt?: boolean
 	) => void
 	EvaluateCueLYD?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -139,7 +139,7 @@ export interface EvaluateCuesShowstyleOptions {
 		rank?: number
 	) => void
 	EvaluateCueClearGrafiks?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
@@ -148,13 +148,13 @@ export interface EvaluateCuesShowstyleOptions {
 		shouldAdlib: boolean
 	) => void
 	EvaluateCuePgmClean?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		partId: string,
 		parsedCue: CueDefinitionPgmClean
 	) => void
 	EvaluateCueMixMinus?: (
-		context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		part: PartDefinition,
 		parsedCue: CueDefinitionMixMinus
@@ -181,7 +181,7 @@ export interface EvaluateCuesOptions {
 
 export async function EvaluateCuesBase(
 	showStyleOptions: EvaluateCuesShowstyleOptions,
-	context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+	context: ShowStyleContext<TV2ShowStyleConfig>,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],

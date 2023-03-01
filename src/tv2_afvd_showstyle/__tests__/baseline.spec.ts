@@ -9,7 +9,7 @@ global.VERSION_INTEGRATION = 'test'
 
 import { ExtendedIngestRundown, IGetRundownContext, TSR } from 'blueprints-integration'
 import { SwitcherType } from 'tv2-common'
-import { GetRundownContext } from '../../__mocks__/context'
+import { GetRundownContextMock } from '../../__mocks__/context'
 import { SharedGraphicLLayer } from '../../tv2-constants'
 import { preprocessConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -28,7 +28,7 @@ describe.each([SwitcherType.ATEM, SwitcherType.TRICASTER])('Baseline', (switcher
 		expect(configSpec.showStyleConfig).toBeTruthy()
 
 		const mockRundown: ExtendedIngestRundown = createMockRundown()
-		const mockContext: GetRundownContext = createMockContext(mockRundown.name, switcherType)
+		const mockContext: GetRundownContextMock = createMockContext(mockRundown.name, switcherType)
 
 		const result = await Blueprints.getRundown(mockContext, mockRundown)
 		if (result === null) {
@@ -74,8 +74,8 @@ function createMockRundown(): ExtendedIngestRundown {
 	}
 }
 
-function createMockContext(rundownName: string, switcherType: SwitcherType): GetRundownContext {
-	const mockContext = new GetRundownContext(
+function createMockContext(rundownName: string, switcherType: SwitcherType): GetRundownContextMock {
+	const mockContext = new GetRundownContextMock(
 		rundownName,
 		mappingsDefaults,
 		parseStudioConfig,

@@ -1,4 +1,4 @@
-import { SharedSourceLayers } from 'tv2-constants'
+import { SharedSourceLayer } from 'tv2-constants'
 
 export enum AFVDSourceLayer {
 	// Pgm
@@ -8,15 +8,12 @@ export enum AFVDSourceLayer {
 	AuxStudioScreen = 'studio0_aux_studio_screen',
 	PgmDVEBackground = 'studio0_dve_back',
 	PgmFullBackground = 'studio0_full_back',
-	GraphicsShowLifecycle = 'studio0_graphic_show_lifecycle',
-
-	// Wall
-	WallGraphics = 'studio0_wall_graphics'
+	GraphicsShowLifecycle = 'studio0_graphic_show_lifecycle'
 }
 
 // tslint:disable-next-line: variable-name
 export const SourceLayer = {
 	...AFVDSourceLayer,
-	...SharedSourceLayers
+	...SharedSourceLayer
 }
-export type SourceLayer = AFVDSourceLayer | SharedSourceLayers
+export type SourceLayer = AFVDSourceLayer | SharedSourceLayer

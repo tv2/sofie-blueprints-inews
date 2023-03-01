@@ -8,15 +8,8 @@ import {
 	PieceLifespan,
 	WithTimeline
 } from 'blueprints-integration'
-import {
-	ExtendedSegmentContext,
-	ExtendedSegmentContextImpl,
-	getSegmentBase,
-	INewsPayload,
-	literal,
-	TransitionStyle
-} from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { getSegmentBase, INewsPayload, literal, SegmentContext, SegmentContextImpl, TransitionStyle } from 'tv2-common'
+import { SharedOutputLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { GalleryBlueprintConfig } from './helpers/config'
@@ -36,7 +29,7 @@ export async function getSegment(
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
 	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
-	const context = new ExtendedSegmentContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
+	const context = new SegmentContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
 
 	const result: BlueprintResultSegment = await getSegmentBase<GalleryBlueprintConfig>(context, ingestSegment, {
 		CreatePartContinuity,
@@ -65,7 +58,7 @@ export async function getSegment(
 }
 
 export function CreatePartContinuity(
-	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
+	context: SegmentContext<GalleryBlueprintConfig>,
 	ingestSegment: IngestSegment
 ): BlueprintResultPart {
 	return {
@@ -82,7 +75,7 @@ export function CreatePartContinuity(
 				},
 				name: 'CONTINUITY',
 				sourceLayerId: SourceLayer.PgmContinuity,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',

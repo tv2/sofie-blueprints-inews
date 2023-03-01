@@ -10,8 +10,8 @@ import {
 	EvaluateCuesBase,
 	EvaluateCuesOptions,
 	EvaluateLYD,
-	ExtendedSegmentContext,
-	PartDefinition
+	PartDefinition,
+	SegmentContext
 } from 'tv2-common'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
@@ -24,7 +24,7 @@ import { OfftubeEvaluatePgmClean } from '../cues/OfftubePgmClean'
 import { OfftubeBlueprintConfig } from './config'
 
 export async function OfftubeEvaluateCues(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],

@@ -3,12 +3,12 @@ import {
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
 	EvaluateCueResult,
-	ExtendedShowStyleContext,
-	GraphicPilot
+	GraphicPilot,
+	ShowStyleContext
 } from 'tv2-common'
 
 export function EvaluateCueGraphicPilot(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	segmentExternalId: string,

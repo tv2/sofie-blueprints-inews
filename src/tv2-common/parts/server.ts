@@ -8,15 +8,15 @@ import {
 } from 'blueprints-integration'
 import {
 	CutToServer,
-	ExtendedShowStyleContext,
 	GetTagForServer,
 	GetTagForServerNext,
 	MakeContentServer,
 	MakeContentServerSourceLayers,
 	PieceMetaData,
-	ServerPieceMetaData
+	ServerPieceMetaData,
+	ShowStyleContext
 } from 'tv2-common'
-import { AdlibActionType, PartType, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import { AdlibActionType, PartType, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { getSourceDuration, GetVTContentProperties } from '../content'
@@ -58,7 +58,7 @@ export async function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedShowStyleContext<ShowStyleConfig>,
+	context: ShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps,
 	layers: ServerPartLayers
@@ -188,7 +188,7 @@ function getUserData(
 }
 
 function getContentServerElement(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers
@@ -209,7 +209,7 @@ function getContentServerElement(
 }
 
 function getServerSelectionBlueprintPiece(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	partDefinition: PartDefinition,
 	actualDuration: number,
 	partProps: ServerPartProps,
@@ -224,7 +224,7 @@ function getServerSelectionBlueprintPiece(
 		externalId: partDefinition.externalId,
 		name: contentProps.file,
 		enable: { start: 0 },
-		outputLayerId: SharedOutputLayers.SEC,
+		outputLayerId: SharedOutputLayer.SEC,
 		sourceLayerId: layers.SourceLayer.SelectedServer,
 		lifespan: PieceLifespan.OutOnSegmentEnd,
 		metaData: {
@@ -245,7 +245,7 @@ function getPgmBlueprintPiece<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedShowStyleContext<ShowStyleConfig>,
+	context: ShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
@@ -255,7 +255,7 @@ function getPgmBlueprintPiece<
 		externalId: partDefinition.externalId,
 		name: contentProps.file,
 		enable: { start: 0 },
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		sourceLayerId: layers.SourceLayer.PgmServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {

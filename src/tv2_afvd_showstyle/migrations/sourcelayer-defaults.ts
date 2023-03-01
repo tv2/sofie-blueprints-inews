@@ -1,6 +1,6 @@
 import { ISourceLayer, SourceLayerType } from 'blueprints-integration'
 import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
-import { SharedSourceLayers } from 'tv2-constants'
+import { SharedSourceLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { SourceLayer } from '../layers'
 
@@ -519,7 +519,7 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: SharedSourceLayers.RobotCamera,
+		_id: SharedSourceLayer.RobotCamera,
 		_rank: 70,
 		name: 'Robot Camera',
 		abbreviation: '',
@@ -631,7 +631,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 		onPresenterScreen: true
 	},
 	{
-		_id: SharedSourceLayers.SelectedAdlibGraphicsFull,
+		_id: SharedSourceLayer.SelectedAdlibGraphicsFull,
 		_rank: 0,
 		name: 'GFX Full (selected)',
 		abbreviation: 'GFX Full',

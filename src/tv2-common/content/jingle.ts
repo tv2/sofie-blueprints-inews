@@ -1,6 +1,6 @@
 import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import { ExtendedShowStyleContext, FindDSKJingle, getDskOnAirTimelineObjects, TimeFromFrames } from 'tv2-common'
-import { DSKRoles } from 'tv2-constants'
+import { FindDSKJingle, getDskOnAirTimelineObjects, getTimeFromFrames, ShowStyleContext } from 'tv2-common'
+import { DskRole } from 'tv2-constants'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { joinAssetToFolder, joinAssetToNetworkPath, literal } from '../util'
@@ -37,8 +37,8 @@ export function CreateJingleExpectedMedia(
 		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
 		ignoreBlackFrames: true,
 		ignoreFreezeFrame: true,
-		sourceDuration: TimeFromFrames(Number(duration) - Number(alphaAtEnd)),
-		postrollDuration: TimeFromFrames(Number(alphaAtEnd)),
+		sourceDuration: getTimeFromFrames(Number(duration) - Number(alphaAtEnd)),
+		postrollDuration: getTimeFromFrames(Number(alphaAtEnd)),
 		timelineObjects: []
 	})
 }
@@ -47,7 +47,7 @@ export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedShowStyleContext<ShowStyleConfig>,
+	context: ShowStyleContext<ShowStyleConfig>,
 	file: string,
 	alphaAtStart: number,
 	loadFirstFrame: boolean,
@@ -63,7 +63,7 @@ export function CreateJingleContentBase<
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			CreateJingleCasparTimelineObject(fileName, loadFirstFrame, layers),
 
-			...getDskOnAirTimelineObjects(context, DSKRoles.JINGLE, { start: Number(config.studio.CasparPrerollDuration) }),
+			...getDskOnAirTimelineObjects(context, DskRole.JINGLE, { start: Number(config.studio.CasparPrerollDuration) }),
 
 			// @todo: this is a Qbox-only feature, should be refactored at some point not to use ATEM object directly
 			...(context.uniformConfig.switcherLLayers.jingleNextMixEffect

@@ -418,7 +418,7 @@ export function PrefixEvsWithEvs(
 export function convertStudioTableColumnToFloat(
 	versionStr: string,
 	tableId: string,
-	columnId: string,
+	columnId: string
 ): MigrationStepStudio {
 	return {
 		id: `${versionStr}.convertStudioTableColumnToFloat.${tableId}.${columnId}`,
@@ -437,8 +437,9 @@ export function convertStudioTableColumnToFloat(
 			let config = context.getConfig(tableId) as unknown as TableConfigItemValue
 			config = config.map((row) => {
 				const value = row[columnId]
-				if (typeof value === 'string')
-				row[columnId] = parseFloat(value)
+				if (typeof value === 'string') {
+					row[columnId] = parseFloat(value)
+				}
 				return row
 			})
 			context.setConfig(tableId, config as unknown as ConfigItemValue)

@@ -16,9 +16,9 @@ import {
 	ActionSelectServerClip,
 	assignMediaPlayers,
 	CasparPlayerClip,
-	ExtendedTimelineContext,
 	getServerPositionForPartInstance,
-	ServerPosition
+	ServerPosition,
+	TimelineContext
 } from 'tv2-common'
 import { AbstractLLayer, PartType, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -99,7 +99,7 @@ export function onTimelineGenerate<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedTimelineContext<ShowStyleConfig>,
+	context: TimelineContext<ShowStyleConfig>,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
@@ -139,7 +139,7 @@ export function onTimelineGenerate<
 }
 
 function processServerLookaheads(
-	context: ExtendedTimelineContext,
+	context: TimelineContext,
 	timeline: OnGenerateTimelineObj[],
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
@@ -205,7 +205,7 @@ function processServerLookaheads(
 }
 
 function isAnyPieceInjectedIntoPart(
-	context: ExtendedTimelineContext,
+	context: TimelineContext,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ) {
 	return resolvedPieces

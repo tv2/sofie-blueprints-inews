@@ -3,9 +3,9 @@ import {
 	CueDefinitionDVE,
 	DVEConfigInput,
 	DVEOptions,
-	ExtendedShowStyleContext,
 	MakeContentDVEBase,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
@@ -29,7 +29,7 @@ export const AFVD_DVE_GENERATOR_OPTIONS: DVEOptions = {
 }
 
 export function MakeContentDVE(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined

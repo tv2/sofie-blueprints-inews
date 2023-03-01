@@ -17,7 +17,7 @@ import {
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
-import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
+import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
 import { OVL_SHOW_NAME } from '../../../__tests__/configs'
@@ -125,7 +125,7 @@ describe('grafik piece', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
@@ -188,7 +188,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				expectedDuration: 5000,
@@ -228,7 +228,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				expectedDuration: 4000,
@@ -294,7 +294,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
@@ -334,7 +334,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
@@ -407,7 +407,7 @@ describe('grafik piece', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
@@ -558,7 +558,7 @@ describe('grafik piece', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'direkte',
@@ -628,7 +628,7 @@ describe('grafik piece', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'arkiv',
@@ -691,7 +691,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
 				expectedDuration: 5000,
 				tags: ['kommentator'],
@@ -731,7 +731,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
 				tags: ['flow_producer'],
 				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_flow',

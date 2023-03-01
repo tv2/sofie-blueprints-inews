@@ -5,19 +5,13 @@ import {
 	PieceLifespan,
 	TSR
 } from 'blueprints-integration'
-import {
-	CueDefinitionClearGrafiks,
-	ExtendedShowStyleContext,
-	getDefaultOut,
-	getTimingEnable,
-	literal
-} from 'tv2-common'
-import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { CueDefinitionClearGrafiks, getDefaultOut, getTimingEnable, literal, ShowStyleContext } from 'tv2-common'
+import { SharedGraphicLLayer, SharedOutputLayer } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 
 export function EvaluateClearGrafiks(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	_adLibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -44,7 +38,7 @@ export function EvaluateClearGrafiks(
 				start: getTimingEnable(parsedCue, getDefaultOut(context.config)).enable.start,
 				duration: 1000
 			},
-			outputLayerId: SharedOutputLayers.SEC,
+			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId,
 			lifespan: PieceLifespan.WithinPart,
 			virtual: true,
@@ -58,7 +52,7 @@ export function EvaluateClearGrafiks(
 		externalId: partId,
 		name: 'CLEAR',
 		...getTimingEnable(parsedCue, getDefaultOut(context.config)),
-		outputLayerId: SharedOutputLayers.SEC,
+		outputLayerId: SharedOutputLayer.SEC,
 		sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
 		lifespan: PieceLifespan.WithinPart,
 		content: {

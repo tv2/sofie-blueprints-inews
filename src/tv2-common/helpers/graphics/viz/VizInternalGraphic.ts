@@ -1,6 +1,6 @@
 import { SomeContent, TSR, WithTimeline } from 'blueprints-integration'
-import { getDskOnAirTimelineObjects, GetTimelineLayerForGraphic, literal } from 'tv2-common'
-import { DSKRoles } from 'tv2-constants'
+import { getDskOnAirTimelineObjects, getTimelineLayerForGraphic, literal } from 'tv2-common'
+import { DskRole } from 'tv2-constants'
 
 import { InternalGraphic } from '../internal'
 
@@ -13,9 +13,9 @@ export class VizInternalGraphic extends InternalGraphic {
 			timelineObjects: literal<TSR.TSRTimelineObj[]>([
 				literal<TSR.TimelineObjVIZMSEElementInternal>({
 					id: '',
-					enable: this.GetEnableForGraphic(),
+					enable: this.getTimelineObjectEnable(),
 					priority: 1,
-					layer: GetTimelineLayerForGraphic(this.config, this.templateName),
+					layer: getTimelineLayerForGraphic(this.config, this.templateName),
 					content: {
 						deviceType: TSR.DeviceType.VIZMSE,
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
@@ -26,7 +26,7 @@ export class VizInternalGraphic extends InternalGraphic {
 					}
 				}),
 				// Assume DSK is off by default (config table)
-				...getDskOnAirTimelineObjects(this.context, DSKRoles.OVERLAYGFX)
+				...getDskOnAirTimelineObjects(this.context, DskRole.OVERLAYGFX)
 			])
 		}
 	}

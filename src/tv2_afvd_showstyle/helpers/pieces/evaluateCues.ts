@@ -12,8 +12,8 @@ import {
 	EvaluateCuesBase,
 	EvaluateCuesOptions,
 	EvaluateLYD,
-	ExtendedShowStyleContext,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
@@ -28,7 +28,7 @@ import { EvaluateCueRouting } from './routing'
 import { EvaluateTelefon } from './telefon'
 
 export async function EvaluateCues(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],

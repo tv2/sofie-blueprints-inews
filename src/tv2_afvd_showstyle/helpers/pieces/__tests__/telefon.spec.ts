@@ -8,7 +8,7 @@ import {
 	literal,
 	PartDefinitionKam
 } from 'tv2-common'
-import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
 import { OVL_SHOW_NAME } from '../../../../tv2_afvd_showstyle/__tests__/configs'
@@ -67,7 +67,7 @@ describe('telefon', () => {
 				enable: {
 					start: 0
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {

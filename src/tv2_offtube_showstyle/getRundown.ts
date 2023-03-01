@@ -27,14 +27,14 @@ import {
 	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateLYDBaseline,
-	ExtendedShowStyleContext,
-	ExtendedShowStyleContextImpl,
 	generateExternalId,
 	getGraphicBaseline,
 	GetTagForKam,
 	GetTagForLive,
 	GetTransitionAdLibActions,
 	literal,
+	ShowStyleContext,
+	ShowStyleContextImpl,
 	SourceDefinitionKam,
 	SourceDefinitionRemote,
 	SourceInfo,
@@ -49,9 +49,9 @@ import {
 	AdlibTagCutToBox,
 	AdlibTags,
 	CONSTANTS,
-	SharedOutputLayers,
+	SharedOutputLayer,
 	SharedSisyfosLLayer,
-	SharedSourceLayers,
+	SharedSourceLayer,
 	SourceType,
 	SwitcherAuxLLayer,
 	SwitcherDveLLayer,
@@ -66,7 +66,7 @@ import { NUMBER_OF_DVE_BOXES } from './content/OfftubeDVEContent'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
 
 export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const context = new ExtendedShowStyleContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
+	const context = new ShowStyleContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
 
 	let startTime: number = 0
 	let endTime: number = 0
@@ -104,9 +104,7 @@ export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: In
 	}
 }
 
-function getGlobalAdLibPiecesOfftube(
-	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>
-): IBlueprintAdLibPiece[] {
+function getGlobalAdLibPiecesOfftube(context: ShowStyleContext<OfftubeBlueprintConfig>): IBlueprintAdLibPiece[] {
 	const adlibItems: IBlueprintAdLibPiece[] = []
 
 	adlibItems.push(...CreateDSKBaselineAdlibs(context.config, 500, context.videoSwitcher))
@@ -115,8 +113,8 @@ function getGlobalAdLibPiecesOfftube(
 		externalId: 'micUp',
 		name: 'Mics Up',
 		_rank: 600,
-		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
-		outputLayerId: SharedOutputLayers.SEC,
+		sourceLayerId: SharedSourceLayer.PgmSisyfosAdlibs,
+		outputLayerId: SharedOutputLayer.SEC,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_UP],
 		expectedDuration: 0,
@@ -145,8 +143,8 @@ function getGlobalAdLibPiecesOfftube(
 		externalId: 'micDown',
 		name: 'Mics Down',
 		_rank: 650,
-		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
-		outputLayerId: SharedOutputLayers.SEC,
+		sourceLayerId: SharedSourceLayer.PgmSisyfosAdlibs,
+		outputLayerId: SharedOutputLayer.SEC,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_DOWN],
 		expectedDuration: 0,
@@ -175,8 +173,8 @@ function getGlobalAdLibPiecesOfftube(
 		externalId: 'resyncSisyfos',
 		name: 'Resync Sisyfos',
 		_rank: 700,
-		sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
-		outputLayerId: SharedOutputLayers.SEC,
+		sourceLayerId: SharedSourceLayer.PgmSisyfosAdlibs,
+		outputLayerId: SharedOutputLayer.SEC,
 		lifespan: PieceLifespan.WithinPart,
 		tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 		expectedDuration: 1000,
@@ -201,7 +199,7 @@ function getGlobalAdLibPiecesOfftube(
 		externalId: 'stopAudioBed',
 		name: 'Stop Soundplayer',
 		_rank: 700,
-		sourceLayerId: SharedSourceLayers.PgmAudioBed,
+		sourceLayerId: SharedSourceLayer.PgmAudioBed,
 		outputLayerId: 'musik',
 		expectedDuration: 1000,
 		lifespan: PieceLifespan.WithinPart,
@@ -253,7 +251,7 @@ function getGlobalAdlibActionsOfftube(
 				_rank: rank,
 				label: t(sourceDefinition.name),
 				sourceLayerId: OfftubeSourceLayer.PgmCam,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				content: {},
 				tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT, AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT],
 				currentPieceTags: [GetTagForKam(sourceDefinition)],
@@ -334,7 +332,7 @@ function getGlobalAdlibActionsOfftube(
 					_rank: rank + 0.1 * box,
 					label: t(`Server inp ${box + 1}`),
 					sourceLayerId: OfftubeSourceLayer.PgmServer,
-					outputLayerId: SharedOutputLayers.SEC,
+					outputLayerId: SharedOutputLayer.SEC,
 					content: {},
 					tags: [AdlibTagCutToBox(box)]
 				}
@@ -402,7 +400,7 @@ function getGlobalAdlibActionsOfftube(
 			display: {
 				_rank: globalRank++,
 				label: t('GFX FULL'),
-				sourceLayerId: SharedSourceLayers.PgmPilot,
+				sourceLayerId: SharedSourceLayer.PgmPilot,
 				outputLayerId: OfftubeOutputLayers.PGM,
 				content: {},
 				tags: [AdlibTags.OFFTUBE_SET_FULL_NEXT],
@@ -428,8 +426,8 @@ function getGlobalAdlibActionsOfftube(
 			display: {
 				_rank: 400,
 				label: t(`GFX Altud`),
-				sourceLayerId: SharedSourceLayers.PgmAdlibGraphicCmd,
-				outputLayerId: SharedOutputLayers.SEC,
+				sourceLayerId: SharedSourceLayer.PgmAdlibGraphicCmd,
+				outputLayerId: SharedOutputLayer.SEC,
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
@@ -477,7 +475,7 @@ function getGlobalAdlibActionsOfftube(
 				_rank: 200 + i,
 				label: t(dveConfig.DVEName),
 				sourceLayerId: OfftubeSourceLayer.PgmDVEAdLib,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
 			}
 		})
@@ -514,7 +512,7 @@ function getGlobalAdlibActionsOfftube(
 				_rank: 1,
 				label: t('Last Live'),
 				sourceLayerId: OfftubeSourceLayer.PgmLive,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
 			}
 		}
@@ -575,7 +573,7 @@ function getGlobalAdlibActionsOfftube(
 	return blueprintActions
 }
 
-function getBaseline(context: ExtendedShowStyleContext<OfftubeBlueprintConfig>): BlueprintResultBaseline {
+function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): BlueprintResultBaseline {
 	return {
 		timelineObjects: _.compact([
 			...getGraphicBaseline(context.config),

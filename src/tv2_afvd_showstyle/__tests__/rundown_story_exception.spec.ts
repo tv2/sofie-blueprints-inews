@@ -12,7 +12,7 @@ global.VERSION_TSR = 'test'
 global.VERSION_INTEGRATION = 'test'
 
 import { INewsStory } from 'tv2-common'
-import { SegmentUserContext } from '../../__mocks__/context'
+import { SegmentUserContextMock } from '../../__mocks__/context'
 import { preprocessConfig as parseStudioConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { GalleryShowStyleConfig, preprocessConfig as parseShowStyleConfig } from '../helpers/config'
@@ -36,7 +36,12 @@ describe('Generate rundowns without error', () => {
 
 		for (const segment of roData.segments) {
 			test(`Rundown segment: ${segment.name} - ${roSpec.ro} - ${roData.externalId}`, async () => {
-				const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
+				const mockContext = new SegmentUserContextMock(
+					'test',
+					mappingsDefaults,
+					parseStudioConfig,
+					parseShowStyleConfig
+				)
 				mockContext.studioConfig = roSpec.studioConfig as any
 				mockContext.showStyleConfig = roSpec.showStyleConfig as any
 

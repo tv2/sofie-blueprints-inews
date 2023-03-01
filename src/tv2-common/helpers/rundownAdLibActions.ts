@@ -11,7 +11,7 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { CreateJingleExpectedMedia } from '../content'
 import { t } from './translation'
@@ -146,8 +146,8 @@ function makeTransitionAction(
 		display: {
 			_rank: transitionValues.rank,
 			label: t(`${isEffekt ? 'EFFEKT ' : ''}${transitionValues.label}`),
-			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
-			outputLayerId: SharedOutputLayers.PGM,
+			sourceLayerId: SharedSourceLayer.PgmAdlibJingle,
+			outputLayerId: SharedOutputLayer.PGM,
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON, adlibTag],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],

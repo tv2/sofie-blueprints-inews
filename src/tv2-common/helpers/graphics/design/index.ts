@@ -10,15 +10,15 @@ import {
 import {
 	calculateTime,
 	CueDefinitionGraphicDesign,
-	ExtendedShowStyleContext,
 	getHtmlTemplateName,
 	literal,
+	ShowStyleContext,
 	TV2ShowStyleConfig
 } from 'tv2-common'
-import { SharedGraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 
 export function EvaluateDesignBase(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -38,8 +38,8 @@ export function EvaluateDesignBase(
 			_rank: rank || 0,
 			externalId: partId,
 			name: parsedCue.design,
-			outputLayerId: SharedOutputLayers.SEC,
-			sourceLayerId: SharedSourceLayers.PgmDesign,
+			outputLayerId: SharedOutputLayer.SEC,
+			sourceLayerId: SharedSourceLayer.PgmDesign,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: parsedCue.design,
@@ -55,8 +55,8 @@ export function EvaluateDesignBase(
 			enable: {
 				start
 			},
-			outputLayerId: SharedOutputLayers.SEC,
-			sourceLayerId: SharedSourceLayers.PgmDesign,
+			outputLayerId: SharedOutputLayer.SEC,
+			sourceLayerId: SharedSourceLayer.PgmDesign,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: parsedCue.design,

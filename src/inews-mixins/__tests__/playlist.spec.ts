@@ -6,7 +6,7 @@ import {
 	PlaylistTimingType
 } from 'blueprints-integration'
 import { getRundownWithBackTime } from 'inews-mixins'
-import { ShowStyleUserContext } from '../../__mocks__/context'
+import { ShowStyleUserContextMock } from '../../__mocks__/context'
 import { preprocessConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { preprocessConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -18,7 +18,7 @@ const SEGMENT_ID = 'test_segment'
 const PART_ID = 'test_part'
 
 function getMockContext(): IShowStyleUserContext {
-	return new ShowStyleUserContext(
+	return new ShowStyleUserContextMock(
 		RUNDOWN_NAME,
 		mappingsDefaults,
 		parseStudioConfig,

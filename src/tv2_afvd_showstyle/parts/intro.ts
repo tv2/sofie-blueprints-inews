@@ -10,10 +10,10 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	CueDefinitionJingle,
-	ExtendedShowStyleContext,
 	GetJinglePartProperties,
 	PartDefinition,
-	PartTime
+	PartTime,
+	ShowStyleContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../helpers/config'
@@ -21,7 +21,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export async function CreatePartIntro(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): Promise<BlueprintResultPart> {

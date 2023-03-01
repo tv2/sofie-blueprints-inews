@@ -7,12 +7,12 @@ import {
 } from 'blueprints-integration'
 import {
 	AddScript,
-	ApplyFullGraphicPropertiesToPart,
-	ExtendedShowStyleContext,
+	applyFullGraphicPropertiesToPart,
 	GetJinglePartProperties,
 	GraphicIsPilot,
 	PartDefinition,
-	PartTime
+	PartTime,
+	ShowStyleContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../helpers/config'
@@ -21,7 +21,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartUnknown(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number,
 	asAdlibs?: boolean
@@ -48,7 +48,7 @@ export async function CreatePartUnknown(
 		partDefinition.cues.some((cue) => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
 		!partDefinition.cues.filter((c) => c.type === CueType.Jingle).length
 	) {
-		ApplyFullGraphicPropertiesToPart(context.config, part)
+		applyFullGraphicPropertiesToPart(context.config, part)
 	}
 
 	await EvaluateCues(

@@ -6,13 +6,13 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, ExtendedSegmentContext, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export async function CreatePartTeknik(
-	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
+	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): Promise<BlueprintResultPart> {

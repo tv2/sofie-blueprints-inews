@@ -6,7 +6,7 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, CueDefinitionEkstern, ExtendedSegmentContext, PartDefinition, PartTime } from 'tv2-common'
+import { AddScript, CueDefinitionEkstern, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -14,7 +14,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartLive(
-	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
+	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): Promise<BlueprintResultPart> {

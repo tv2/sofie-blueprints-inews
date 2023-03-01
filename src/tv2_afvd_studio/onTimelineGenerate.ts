@@ -6,7 +6,7 @@ import {
 	PartEndState,
 	TimelinePersistentState
 } from 'blueprints-integration'
-import { ExtendedTimelineContext, onTimelineGenerate, PieceMetaData } from 'tv2-common'
+import { onTimelineGenerate, PieceMetaData, TimelineContext } from 'tv2-common'
 import { CasparLLayer, SisyfosLLAyer } from './layers'
 import { GALLERY_UNIFORM_CONFIG } from './uniformConfig'
 
@@ -17,7 +17,7 @@ export function onTimelineGenerateAFVD(
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ): Promise<BlueprintResultTimeline> {
-	const context = new ExtendedTimelineContext(coreContext, GALLERY_UNIFORM_CONFIG)
+	const context = new TimelineContext(coreContext, GALLERY_UNIFORM_CONFIG)
 	return onTimelineGenerate(context, timeline, previousPersistentState, previousPartEndState, resolvedPieces, {
 		Caspar: {
 			ClipPending: CasparLLayer.CasparPlayerClipPending

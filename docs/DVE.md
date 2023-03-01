@@ -1,6 +1,6 @@
 # DVE
 
-To use DVEs, first add the studio settings `ATEM Split Screen Art Fill` and `ATEM Split Screen Art Key`.
+To use DVEs, first add the studio settings `Video Switcher Split Screen Art Fill` and `Video Switcher Split Screen Art Key`.
 
 Then, go to your showstyle settings and add the setting `DVE Styles`. Here you can define all the DVEs for your show.
 

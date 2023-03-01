@@ -1,5 +1,5 @@
 import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
-import { CueType, RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
+import { CueType, RobotCameraLayer, SharedOutputLayer, SharedSourceLayer } from '../../tv2-constants'
 import { EvaluateCueRobotCamera } from '../cues/EvaluateCueRobotCamera'
 import { CueDefinitionRobotCamera } from '../inewsConversion'
 
@@ -70,7 +70,7 @@ describe('EvaluateCueRobotCamera', () => {
 
 		EvaluateCueRobotCamera(cueDefinition, pieces, '')
 
-		expect(pieces[0].sourceLayerId).toEqual(SharedSourceLayers.RobotCamera)
+		expect(pieces[0].sourceLayerId).toEqual(SharedSourceLayer.RobotCamera)
 	})
 
 	it('has SEC for output layer', () => {
@@ -79,7 +79,7 @@ describe('EvaluateCueRobotCamera', () => {
 
 		EvaluateCueRobotCamera(cueDefinition, pieces, '')
 
-		expect(pieces[0].outputLayerId).toEqual(SharedOutputLayers.SEC)
+		expect(pieces[0].outputLayerId).toEqual(SharedOutputLayer.SEC)
 	})
 
 	it('receives cameraPreset 1, blueprint piece name is Robot[1]', () => {
@@ -148,14 +148,14 @@ describe('EvaluateCueRobotCamera', () => {
 
 	it('already has a piece with another sourceLayer, creates a new piece', () => {
 		const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition()
-		const pieces: IBlueprintPiece[] = [createRobotCameraBlueprintPiece(SharedSourceLayers.PgmDesign)]
+		const pieces: IBlueprintPiece[] = [createRobotCameraBlueprintPiece(SharedSourceLayer.PgmDesign)]
 
 		EvaluateCueRobotCamera(cueDefinition, pieces, 'someOtherExternalId')
 
 		expect(pieces.length).toEqual(2)
 	})
 
-	function createRobotCameraBlueprintPiece(sourceLayer: SharedSourceLayers, startTimeInMs?: number): IBlueprintPiece {
+	function createRobotCameraBlueprintPiece(sourceLayer: SharedSourceLayer, startTimeInMs?: number): IBlueprintPiece {
 		return {
 			externalId: '',
 			name: 'Robot',
@@ -175,7 +175,7 @@ describe('EvaluateCueRobotCamera', () => {
 		it('has another start time, creates another blueprint piece', () => {
 			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1, 20)
 
-			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayers.RobotCamera, 10000)
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayer.RobotCamera, 10000)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(2))
 			const pieces: IBlueprintPiece[] = [existingPiece]
 
@@ -203,7 +203,7 @@ describe('EvaluateCueRobotCamera', () => {
 			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1, startTime)
 
 			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(
-				SharedSourceLayers.RobotCamera,
+				SharedSourceLayer.RobotCamera,
 				startTime * 1000
 			)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject())
@@ -219,7 +219,7 @@ describe('EvaluateCueRobotCamera', () => {
 			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(2, startTime)
 
 			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(
-				SharedSourceLayers.RobotCamera,
+				SharedSourceLayer.RobotCamera,
 				startTime * 1000
 			)
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
@@ -235,7 +235,7 @@ describe('EvaluateCueRobotCamera', () => {
 		it('has a blueprint piece with same start time and same presetIdentifier, no presetIdentifier is added', () => {
 			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1)
 
-			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayers.RobotCamera)
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayer.RobotCamera)
 			existingPiece.name = 'Robot[1]'
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]
@@ -250,7 +250,7 @@ describe('EvaluateCueRobotCamera', () => {
 		it('has a blueprint piece with same start time and same presetIdentifier, no new timeline object is created', () => {
 			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1)
 
-			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayers.RobotCamera)
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayer.RobotCamera)
 			existingPiece.name = 'Robot[1]'
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]
@@ -263,7 +263,7 @@ describe('EvaluateCueRobotCamera', () => {
 		it('has a blueprint piece with same start time, name is updated to reflect presets in the piece', () => {
 			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(2)
 
-			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayers.RobotCamera)
+			const existingPiece: IBlueprintPiece = createRobotCameraBlueprintPiece(SharedSourceLayer.RobotCamera)
 			existingPiece.name = 'Robot[1]'
 			existingPiece.content.timelineObjects.push(createTelemetricsTimelineObject(1))
 			const pieces: IBlueprintPiece[] = [existingPiece]

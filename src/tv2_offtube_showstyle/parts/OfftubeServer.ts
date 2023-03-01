@@ -3,8 +3,8 @@ import {
 	AddScript,
 	CreateAdlibServer,
 	CreatePartServerBase,
-	ExtendedSegmentContext,
 	PartDefinition,
+	SegmentContext,
 	ServerPartProps
 } from 'tv2-common'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
@@ -14,7 +14,7 @@ import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export async function OfftubeCreatePartServer(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps
 ): Promise<BlueprintResultPart> {

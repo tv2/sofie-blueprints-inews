@@ -115,7 +115,7 @@ export function AdlibTagCutToBox(box: number): AdlibTags {
 export enum ControlClasses {
 	SERVER_ON_AIR = 'server_on_air',
 	LYD_ON_AIR = 'lyd_on_air',
-	OVERRIDEN_ON_MIX_MINUS = 'overriden_on_mix_minus',
+	OVERRIDDEN_ON_MIX_MINUS = 'overridden_on_mix_minus',
 	ABSTRACT_LOOKAHEAD = 'abstract_lookahead',
 	PLACEHOLDER = 'placeholder'
 }
@@ -240,7 +240,7 @@ export enum RobotCameraLayer {
 	TELEMETRICS = 'telemetrics_layer'
 }
 
-export enum SharedOutputLayers {
+export enum SharedOutputLayer {
 	OVERLAY = 'overlay',
 	SEC = 'sec',
 	PGM = 'pgm',
@@ -251,7 +251,7 @@ export enum SharedOutputLayers {
 	SELECTED_ADLIB = 'selectedAdlib'
 }
 
-export enum SharedSourceLayers {
+export enum SharedSourceLayer {
 	PgmCam = 'studio0_camera',
 	PgmLive = 'studio0_live',
 	PgmDVE = 'studio0_dve',
@@ -297,7 +297,7 @@ export enum SharedSourceLayers {
 	RobotCamera = 'studio0_robot_camera'
 }
 
-export enum DSKRoles {
+export enum DskRole {
 	FULLGFX = 'full_graphics',
 	OVERLAYGFX = 'overlay_graphics',
 	JINGLE = 'jingle'

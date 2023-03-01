@@ -1,11 +1,11 @@
 import { IBlueprintPiece } from 'blueprints-integration'
-import { CreateEffektForPartBase, ExtendedShowStyleContext, PartDefinition } from 'tv2-common'
+import { CreateEffektForPartBase, PartDefinition, ShowStyleContext } from 'tv2-common'
 import { CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 
 export function CreateEffektForpart(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[]
 ) {

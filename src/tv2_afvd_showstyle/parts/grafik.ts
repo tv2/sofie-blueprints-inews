@@ -8,11 +8,11 @@ import {
 } from 'blueprints-integration'
 import {
 	AddScript,
-	ApplyFullGraphicPropertiesToPart,
-	ExtendedShowStyleContext,
+	applyFullGraphicPropertiesToPart,
 	GraphicIsPilot,
 	PartDefinition,
-	PartTime
+	PartTime,
+	ShowStyleContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../helpers/config'
@@ -20,7 +20,7 @@ import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export async function CreatePartGrafik(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
@@ -39,7 +39,7 @@ export async function CreatePartGrafik(
 	if (
 		partDefinition.cues.filter((c) => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length
 	) {
-		ApplyFullGraphicPropertiesToPart(context.config, part)
+		applyFullGraphicPropertiesToPart(context.config, part)
 	}
 
 	await EvaluateCues(

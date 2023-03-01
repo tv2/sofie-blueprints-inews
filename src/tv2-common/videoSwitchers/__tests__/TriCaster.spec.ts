@@ -1,19 +1,19 @@
 import { BlueprintMapping, LookaheadMode, TSR } from 'blueprints-integration'
-import { literal, TRICASTER_DEVICE_ID } from 'tv2-common'
+import { FRAME_RATE, literal, TRICASTER_DEVICE_ID } from 'tv2-common'
 import { SwitcherAuxLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 import { makeMockGalleryContext, MockConfigOverrides } from '../../../__mocks__/context'
 import { AuxProps, DskProps, MixEffectProps, SpecialInput, SwitcherType, TransitionStyle } from '../types'
-import { VideoSwitcherImpl } from '../VideoSwitcher'
+import { VideoSwitcherBase } from '../VideoSwitcher'
 
 const DURATION_FRAMES: number = 50
-const DURATION_SECONDS: number = DURATION_FRAMES / 25
+const DURATION_SECONDS: number = DURATION_FRAMES / FRAME_RATE
 
 function setupTriCaster(mockConfigOverrides?: MockConfigOverrides) {
 	const context = makeMockGalleryContext({
 		...mockConfigOverrides,
 		studioConfig: { SwitcherType: SwitcherType.TRICASTER, ...mockConfigOverrides?.studioConfig }
 	})
-	return VideoSwitcherImpl.getVideoSwitcher(context.core, context.config, context.uniformConfig)
+	return VideoSwitcherBase.getVideoSwitcher(context.core, context.config, context.uniformConfig)
 }
 
 describe('TriCaster', () => {
