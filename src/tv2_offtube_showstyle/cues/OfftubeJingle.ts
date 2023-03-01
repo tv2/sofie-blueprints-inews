@@ -1,4 +1,4 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
 	CreateJingleContentBase,
@@ -21,7 +21,6 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 export function OfftubeEvaluateJingle(
 	context: SegmentContext<OfftubeBlueprintConfig>,
 	pieces: Array<IBlueprintPiece<PieceMetaData>>,
-	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
@@ -29,11 +28,6 @@ export function OfftubeEvaluateJingle(
 	_rank?: number,
 	effekt?: boolean
 ) {
-	if (!context.config.showStyle.BreakerConfig) {
-		context.core.notifyUserWarning(`Jingles have not been configured`)
-		return
-	}
-
 	let file = ''
 
 	const jingle = context.config.showStyle.BreakerConfig.find((brkr) =>

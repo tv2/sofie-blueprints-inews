@@ -1,4 +1,4 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
 	CreateJingleContentBase,
@@ -19,7 +19,6 @@ import { GalleryBlueprintConfig } from '../config'
 export function EvaluateJingle(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
@@ -27,11 +26,6 @@ export function EvaluateJingle(
 	rank?: number,
 	effekt?: boolean
 ) {
-	if (!context.config.showStyle.BreakerConfig) {
-		context.core.notifyUserWarning(`Jingles have not been configured`)
-		return
-	}
-
 	let file = ''
 
 	const jingle = context.config.showStyle.BreakerConfig.find((brkr) =>

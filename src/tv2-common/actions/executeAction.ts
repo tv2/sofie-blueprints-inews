@@ -929,11 +929,6 @@ async function executeActionSelectJingle<
 ) {
 	let file = ''
 
-	if (!context.config.showStyle.BreakerConfig) {
-		context.core.notifyUserWarning(`Jingles have not been configured`)
-		return
-	}
-
 	const externalId = generateExternalId(context, actionId, [userData.clip])
 
 	const jingle = context.config.showStyle.BreakerConfig.find((brkr) =>

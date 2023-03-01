@@ -91,11 +91,6 @@ export function CreateEffektForPartInner<
 	},
 	label: string
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | false {
-	if (!context.config.showStyle.BreakerConfig) {
-		context.core.notifyUserWarning(`Jingles have not been configured`)
-		return false
-	}
-
 	const effektConfig = context.config.showStyle.BreakerConfig.find(
 		(conf) => conf.BreakerName.toString().trim().toUpperCase() === effekt.toUpperCase()
 	)

@@ -120,7 +120,6 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueJingle?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
 		actions: IBlueprintActionManifest[],
 		parsedCue: CueDefinitionJingle,
 		part: PartDefinition,
@@ -261,16 +260,7 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.Jingle:
 					if (showStyleOptions.EvaluateCueJingle) {
-						showStyleOptions.EvaluateCueJingle(
-							context,
-							pieces,
-							adLibPieces,
-							actions,
-							cue,
-							partDefinition,
-							shouldAdlib,
-							adLibRank
-						)
+						showStyleOptions.EvaluateCueJingle(context, pieces, actions, cue, partDefinition, shouldAdlib, adLibRank)
 					}
 					break
 				case CueType.LYD:
