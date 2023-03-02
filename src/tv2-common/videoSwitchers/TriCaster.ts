@@ -192,19 +192,35 @@ export class TriCaster extends VideoSwitcherBase {
 	}
 
 	public updateUnpopulatedDveBoxes(
-		_timelineObject: TSR.TSRTimelineObj,
-		_input: number | SpecialInput
+		timelineObject: TSR.TSRTimelineObj,
+		input: number | SpecialInput
 	): TSR.TSRTimelineObj {
-		throw new Error('Method not implemented.')
+		if (!this.isDveBoxes(timelineObject)) {
+			this.logWrongTimelineObjectType(timelineObject, this.updateUnpopulatedDveBoxes.name)
+			return timelineObject
+		}
+		const layers: Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> = (
+			(timelineObject as TSR.TimelineObjTriCasterME).content.me as TSR.TriCasterMixEffectInEffectMode
+		).layers!
+
+		this.assignInputIfPlaceholder(layers.a!, input)
+		this.assignInputIfPlaceholder(layers.b!, input)
+		this.assignInputIfPlaceholder(layers.c!, input)
+		this.assignInputIfPlaceholder(layers.d!, input)
+		return timelineObject
+	}
+
+	public assignInputIfPlaceholder(layer: TSR.TriCasterLayer, input: number | SpecialInput): void {
+		const dveServerPlaceholder = 'input-1'
+		if (layer.input && layer.input === dveServerPlaceholder) {
+			layer.input = this.getInputName(input)
+		}
 	}
 
 	public getDveTimelineObjects(dveProps: DveProps): TSR.TSRTimelineObj[] {
 		return [
 			literal<TSR.TimelineObjTriCasterME>({
-				id: '',
-				enable: dveProps.enable ?? { start: 0 },
-				layer: TRICASTER_LAYER_PREFIX + SwitcherDveLLayer.DveBoxes,
-				priority: 1,
+				...this.getBaseProperties(dveProps, SwitcherDveLLayer.DveBoxes),
 				content: {
 					deviceType: TSR.DeviceType.TRICASTER,
 					type: TSR.TimelineContentTypeTriCaster.ME,
