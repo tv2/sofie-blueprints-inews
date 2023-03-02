@@ -477,6 +477,113 @@ describe('TriCaster', () => {
 		})
 	})
 
+	describe('updateUnpopulatedDveBoxes', () => {
+		it('receives unpopulated box for A with input 5, it populates A with input5', () => {
+			assertPopulateUnpopulatedBox(5, 'a')
+		})
+
+		function assertPopulateUnpopulatedBox(inputToUpdate: number, layerName: TSR.TriCasterLayerName): void {
+			const testee: TriCaster = createTestee()
+			const timelineObject: TSR.TimelineObjTriCasterME = {
+				content: {
+					deviceType: TSR.DeviceType.TRICASTER,
+					type: TSR.TimelineContentTypeTriCaster.ME,
+					me: {
+						layers: {
+							[layerName]: {
+								input: 'input-1'
+							}
+						}
+					}
+				}
+			} as any as TSR.TimelineObjTriCasterME
+
+			const timelineObjTriCasterME: TSR.TimelineObjTriCasterME = testee.updateUnpopulatedDveBoxes(
+				timelineObject,
+				inputToUpdate
+			) as TSR.TimelineObjTriCasterME
+			const result: TSR.TriCasterMixEffectInEffectMode = timelineObjTriCasterME.content
+				.me as TSR.TriCasterMixEffectInEffectMode
+
+			expect(result.layers![layerName]!.input).toBe(`input${inputToUpdate}`)
+		}
+
+		it('receives unpopulated box for A with input 7, it populates A with input7', () => {
+			assertPopulateUnpopulatedBox(7, 'a')
+		})
+
+		it('receives populated box for A, it does not populate A', () => {
+			assertPopulatedBoxIsNotReassigned('a', 10, 2)
+		})
+
+		function assertPopulatedBoxIsNotReassigned(
+			layerName: TSR.TriCasterLayerName,
+			alreadyPopulatedInputSource: number,
+			otherInputSource: number
+		): void {
+			const testee: TriCaster = createTestee()
+			const timelineObject: TSR.TimelineObjTriCasterME = {
+				content: {
+					deviceType: TSR.DeviceType.TRICASTER,
+					type: TSR.TimelineContentTypeTriCaster.ME,
+					me: {
+						layers: {
+							[layerName]: {
+								input: `input${alreadyPopulatedInputSource}`
+							}
+						}
+					}
+				}
+			} as any as TSR.TimelineObjTriCasterME
+
+			const timelineObjTriCasterME: TSR.TimelineObjTriCasterME = testee.updateUnpopulatedDveBoxes(
+				timelineObject,
+				otherInputSource
+			) as TSR.TimelineObjTriCasterME
+			const result: TSR.TriCasterMixEffectInEffectMode = timelineObjTriCasterME.content
+				.me as TSR.TriCasterMixEffectInEffectMode
+
+			expect(result.layers![layerName]!.input).toBe(`input${alreadyPopulatedInputSource}`)
+			expect(result.layers![layerName]!.input).not.toBe(otherInputSource.toString())
+		}
+
+		it('receives unpopulated box for B with input 5, it populates B with input5', () => {
+			assertPopulateUnpopulatedBox(5, 'b')
+		})
+
+		it('receives unpopulated box for B with input 7, it populates B with input7', () => {
+			assertPopulateUnpopulatedBox(7, 'b')
+		})
+
+		it('receives populated box for B, it does not populate C', () => {
+			assertPopulatedBoxIsNotReassigned('b', 10, 2)
+		})
+
+		it('receives unpopulated box for C with input 5, it populates C with input5', () => {
+			assertPopulateUnpopulatedBox(5, 'c')
+		})
+
+		it('receives unpopulated box for C with input 7, it populates C with input7', () => {
+			assertPopulateUnpopulatedBox(7, 'c')
+		})
+
+		it('receives populated box for C, it does not populate C', () => {
+			assertPopulatedBoxIsNotReassigned('c', 10, 2)
+		})
+
+		it('receives unpopulated box for D with input 5, it populates D with input5', () => {
+			assertPopulateUnpopulatedBox(5, 'd')
+		})
+
+		it('receives unpopulated box for D with input 7, it populates D with input7', () => {
+			assertPopulateUnpopulatedBox(7, 'd')
+		})
+
+		it('receives populated box for D, it does not populate D', () => {
+			assertPopulatedBoxIsNotReassigned('d', 10, 2)
+		})
+	})
+
 	describe('getDveTimelineObjects', () => {
 		it('creates one TriCaster DVE timelineObject', () => {
 			const testee: TriCaster = createTestee()

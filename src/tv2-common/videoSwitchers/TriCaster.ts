@@ -199,6 +199,7 @@ export class TriCaster extends VideoSwitcherBase {
 			this.logWrongTimelineObjectType(timelineObject, this.updateUnpopulatedDveBoxes.name)
 			return timelineObject
 		}
+
 		const layers: Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> = (
 			(timelineObject as TSR.TimelineObjTriCasterME).content.me as TSR.TriCasterMixEffectInEffectMode
 		).layers!
@@ -212,7 +213,7 @@ export class TriCaster extends VideoSwitcherBase {
 
 	public assignInputIfPlaceholder(layer: TSR.TriCasterLayer, input: number | SpecialInput): void {
 		const dveServerPlaceholder = 'input-1'
-		if (layer.input && layer.input === dveServerPlaceholder) {
+		if (layer && layer.input === dveServerPlaceholder) {
 			layer.input = this.getInputName(input)
 		}
 	}
