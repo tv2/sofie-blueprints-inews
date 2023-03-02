@@ -1,5 +1,5 @@
 import { IStudioContext, TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { FRAME_RATE, getTimeFromFrames, literal, TimeFromFrames, TV2StudioConfig, UniformConfig } from 'tv2-common'
+import { FRAME_RATE, getTimeFromFrames, literal, TV2StudioConfig, UniformConfig } from 'tv2-common'
 import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '../layers'

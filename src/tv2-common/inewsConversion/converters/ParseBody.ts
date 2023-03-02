@@ -1,8 +1,8 @@
 import {
 	CueDefinitionFromLayout,
+	parseTransitionStyle,
 	PostProcessDefinitions,
 	TransitionStyle,
-	parseTransitionStyle,
 	TV2ShowStyleConfig,
 	UnparsedCue
 } from 'tv2-common'
