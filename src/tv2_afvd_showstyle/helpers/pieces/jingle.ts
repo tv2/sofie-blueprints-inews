@@ -1,25 +1,24 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
 	CreateJingleContentBase,
 	CueDefinitionJingle,
-	ExtendedShowStyleContext,
 	generateExternalId,
 	GetTagForJingle,
 	GetTagForJingleNext,
+	getTimeFromFrames,
 	PartDefinition,
-	t,
-	TimeFromFrames
+	ShowStyleContext,
+	t
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../config'
 
 export function EvaluateJingle(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
-	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
@@ -27,11 +26,6 @@ export function EvaluateJingle(
 	rank?: number,
 	effekt?: boolean
 ) {
-	if (!context.config.showStyle.BreakerConfig) {
-		context.core.notifyUserWarning(`Jingles have not been configured`)
-		return
-	}
-
 	let file = ''
 
 	const jingle = context.config.showStyle.BreakerConfig.find((brkr) =>
@@ -59,7 +53,7 @@ export function EvaluateJingle(
 				_rank: rank ?? 0,
 				label: t(effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip),
 				sourceLayerId: SourceLayer.PgmJingle,
-				outputLayerId: SharedOutputLayers.JINGLE,
+				outputLayerId: SharedOutputLayer.JINGLE,
 				content: {
 					...createJingleContentAFVD(
 						context,
@@ -83,9 +77,9 @@ export function EvaluateJingle(
 				start: 0
 			},
 			lifespan: PieceLifespan.WithinPart,
-			outputLayerId: SharedOutputLayers.JINGLE,
+			outputLayerId: SharedOutputLayer.JINGLE,
 			sourceLayerId: SourceLayer.PgmJingle,
-			prerollDuration: context.config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
+			prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(Number(jingle.StartAlpha)),
 			tags: [!effekt ? TallyTags.JINGLE : ''],
 			content: createJingleContentAFVD(
 				context,
@@ -100,7 +94,7 @@ export function EvaluateJingle(
 }
 
 export function createJingleContentAFVD(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	file: string,
 	alphaAtStart: number,
 	loadFirstFrame: boolean,

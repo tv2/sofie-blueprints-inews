@@ -1,8 +1,7 @@
-import { PieceLifespan, TSR } from 'blueprints-integration'
+import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
 import {
 	calculateTime,
 	CueDefinitionGraphic,
-	ExtendedShowStyleContext,
 	getDefaultOut,
 	getLifeSpan,
 	getTimingEnable,
@@ -10,18 +9,27 @@ import {
 	GraphicIsInternal,
 	IsTargetingTLF,
 	IsTargetingWall,
+	ShowStyleContext,
 	TableConfigItemGfxTemplate,
 	TV2ShowStyleConfig
 } from 'tv2-common'
-import { GraphicEngine, SharedSourceLayers } from 'tv2-constants'
+import { GraphicEngine, SharedSourceLayer } from 'tv2-constants'
+
+const GFX_LAYERS = new Set([
+	SharedSourceLayer.PgmGraphicsHeadline,
+	SharedSourceLayer.PgmGraphicsIdent,
+	SharedSourceLayer.PgmGraphicsLower,
+	SharedSourceLayer.PgmGraphicsOverlay,
+	SharedSourceLayer.PgmGraphicsTLF,
+	SharedSourceLayer.PgmGraphicsTema,
+	SharedSourceLayer.PgmGraphicsTop,
+	SharedSourceLayer.WallGraphics
+])
 
 export abstract class Graphic {
 	protected readonly config: TV2ShowStyleConfig
 	protected readonly engine: GraphicEngine
-	constructor(
-		protected context: ExtendedShowStyleContext,
-		protected cue: CueDefinitionGraphic<GraphicInternalOrPilot>
-	) {
+	constructor(protected context: ShowStyleContext, protected cue: CueDefinitionGraphic<GraphicInternalOrPilot>) {
 		this.config = context.config
 		this.engine = cue.target
 	}
@@ -30,71 +38,41 @@ export abstract class Graphic {
 	public abstract getTemplateName(): string
 
 	protected getGraphicDuration(): number | undefined {
-		if (this.config.showStyle.GfxTemplates) {
-			const template = this.findGfxTemplate()
-			if (template && template.OutType && !template.OutType.toString().match(/default/i)) {
-				return undefined
-			}
+		const template = this.findGfxTemplate()
+		if (template && template.OutType && !template.OutType.toString().match(/default/i)) {
+			return undefined
 		}
 
 		return getDefaultOut(this.config)
 	}
 
-	protected getSourceLayerForGraphic(name: string) {
-		const conf = this.config.showStyle.GfxTemplates
-			? this.config.showStyle.GfxTemplates.find((gfx) => gfx.VizTemplate.toString() === name)
-			: undefined
+	protected getSourceLayer(name: string): SharedSourceLayer {
+		const template = this.config.showStyle.GfxTemplates.find((gfx) => gfx.VizTemplate.toString() === name)
 
-		if (!conf) {
-			return SharedSourceLayers.PgmGraphicsOverlay
+		if (template && GFX_LAYERS.has(template.SourceLayer as SharedSourceLayer)) {
+			return this.getSubstituteLayer(template.SourceLayer as SharedSourceLayer)
 		}
 
-		switch (conf.SourceLayer) {
-			// TODO: When adding more sourcelayers
-			// This is here to guard against bad user input
-			case SharedSourceLayers.PgmGraphicsHeadline:
-				if (this.config.studio.GraphicsType === 'HTML') {
-					return SharedSourceLayers.PgmGraphicsLower
-				}
-				return SharedSourceLayers.PgmGraphicsHeadline
-			case SharedSourceLayers.PgmGraphicsIdent:
-				return SharedSourceLayers.PgmGraphicsIdent
-			case SharedSourceLayers.PgmGraphicsLower:
-				return SharedSourceLayers.PgmGraphicsLower
-			case SharedSourceLayers.PgmGraphicsOverlay:
-				return SharedSourceLayers.PgmGraphicsOverlay
-			case SharedSourceLayers.PgmGraphicsTLF:
-				return SharedSourceLayers.PgmGraphicsTLF
-			case SharedSourceLayers.PgmGraphicsTema:
-				return SharedSourceLayers.PgmGraphicsTema
-			case SharedSourceLayers.PgmGraphicsTop:
-				return SharedSourceLayers.PgmGraphicsTop
-			case SharedSourceLayers.WallGraphics:
-				return SharedSourceLayers.WallGraphics
-			default:
-				return SharedSourceLayers.PgmGraphicsOverlay
+		return SharedSourceLayer.PgmGraphicsOverlay
+	}
+
+	protected getSubstituteLayer(sourceLayer: SharedSourceLayer): SharedSourceLayer {
+		return sourceLayer
+	}
+
+	protected getPieceEnable(): IBlueprintPiece['enable'] {
+		const start = this.cue.start ? calculateTime(this.cue.start) ?? 0 : 0
+		let duration
+		if (this.cue.end) {
+			const end = calculateTime(this.cue.end)
+			duration = end ? end - start : undefined
+		} else {
+			duration = this.getGraphicDuration()
 		}
+		return { start, duration }
 	}
 
-	protected createTimingGraphic(): { start: number; duration?: number } {
-		const ret: { start: number; duration?: number } = { start: 0, duration: 0 }
-		const start = this.cue.start ? calculateTime(this.cue.start) : 0
-		start !== undefined ? (ret.start = start) : (ret.start = 0)
-
-		const duration = this.getGraphicDuration()
-		const end = this.cue.end
-			? this.cue.end.infiniteMode
-				? undefined
-				: calculateTime(this.cue.end)
-			: duration
-			? ret.start + duration
-			: undefined
-		ret.duration = end ? end - ret.start : undefined
-
-		return ret
-	}
-
-	protected GetEnableForGraphic(): TSR.TSRTimelineObj['enable'] {
+	protected getTimelineObjectEnable(): TSR.TSRTimelineObj['enable'] {
 		if (IsTargetingWall(this.engine)) {
 			return {
 				while: '1'
@@ -143,24 +121,24 @@ export abstract class Graphic {
 	}
 
 	protected FindInfiniteModeFromConfig(): PieceLifespan {
-		const template = this.getTemplateName()
+		const templateName = this.getTemplateName()
 		const iNewsName = GraphicIsInternal(this.cue) ? this.cue.graphic.template : undefined
-		const conf = this.config.showStyle.GfxTemplates.find((gfx) =>
+		const template = this.config.showStyle.GfxTemplates.find((gfx) =>
 			gfx.VizTemplate
-				? gfx.VizTemplate.toString().toUpperCase() === template.toUpperCase() &&
+				? gfx.VizTemplate.toString().toUpperCase() === templateName.toUpperCase() &&
 				  (iNewsName ? gfx.INewsName.toUpperCase() === iNewsName.toUpperCase() : true)
 				: false
 		)
 
-		if (!conf) {
+		if (!template) {
 			return PieceLifespan.WithinPart
 		}
 
-		if (!conf.OutType || !conf.OutType.toString().length) {
+		if (!template.OutType || !template.OutType.toString().length) {
 			return PieceLifespan.WithinPart
 		}
 
-		const type = conf.OutType.toString().toUpperCase()
+		const type = template.OutType.toString().toUpperCase()
 
 		if (type !== 'B' && type !== 'S' && type !== 'O') {
 			return PieceLifespan.WithinPart

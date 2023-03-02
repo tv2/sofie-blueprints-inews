@@ -16,8 +16,6 @@ import {
 	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateLYDBaseline,
-	ExtendedShowStyleContext,
-	ExtendedShowStyleContextImpl,
 	FindDSKJingle,
 	getGraphicBaseline,
 	getMixMinusTimelineObject,
@@ -27,6 +25,8 @@ import {
 	MixMinusPriority,
 	PieceMetaData,
 	replaySourceName,
+	ShowStyleContext,
+	ShowStyleContextImpl,
 	SourceInfo,
 	SpecialInput,
 	SwitcherType,
@@ -37,7 +37,7 @@ import {
 	CONSTANTS,
 	ControlClasses,
 	SharedGraphicLLayer,
-	SharedOutputLayers,
+	SharedOutputLayer,
 	SwitcherAuxLLayer
 } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -50,7 +50,7 @@ import { GalleryBlueprintConfig } from './helpers/config'
 import { SourceLayer } from './layers'
 
 export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
-	const context = new ExtendedShowStyleContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
+	const context = new ShowStyleContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
 	return {
 		rundown: {
 			externalId: ingestRundown.externalId,
@@ -67,7 +67,7 @@ export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: In
 
 class GlobalAdLibPiecesGenerator {
 	private config: GalleryBlueprintConfig
-	constructor(private readonly context: ExtendedShowStyleContext<GalleryBlueprintConfig>) {
+	constructor(private readonly context: ShowStyleContext<GalleryBlueprintConfig>) {
 		this.config = context.config
 	}
 
@@ -144,7 +144,7 @@ class GlobalAdLibPiecesGenerator {
 			_rank: 301,
 			externalId: 'dve-design-sc',
 			name: 'DVE Design SC',
-			outputLayerId: SharedOutputLayers.SEC,
+			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId: SourceLayer.PgmDesign,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			tags: [AdlibTags.ADLIB_DESIGN_STYLE_SC],
@@ -164,7 +164,7 @@ class GlobalAdLibPiecesGenerator {
 			name: replaySourceName(info.id, vo),
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLocal,
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
@@ -198,7 +198,7 @@ class GlobalAdLibPiecesGenerator {
 			name: `EVS in studio aux`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.AuxStudioScreen,
-			outputLayerId: SharedOutputLayers.AUX,
+			outputLayerId: SharedOutputLayer.AUX,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
@@ -223,7 +223,7 @@ class GlobalAdLibPiecesGenerator {
 			name: `EVS in viz aux`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.VizFullIn1,
-			outputLayerId: SharedOutputLayers.AUX,
+			outputLayerId: SharedOutputLayer.AUX,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			tags: [AdlibTags.ADLIB_TO_GRAPHICS_ENGINE_AUX],
@@ -250,7 +250,7 @@ class GlobalAdLibPiecesGenerator {
 			name: `LIVE ${info.id}`,
 			_rank: rank,
 			sourceLayerId: SourceLayer.PgmLive,
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
@@ -271,7 +271,7 @@ class GlobalAdLibPiecesGenerator {
 							input: info.port,
 							transition: TransitionStyle.CUT
 						},
-						classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
+						classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 					}),
 					...eksternSisyfos
 				]
@@ -289,7 +289,7 @@ class GlobalAdLibPiecesGenerator {
 			name: info.id + '',
 			_rank: rank,
 			sourceLayerId: SourceLayer.AuxStudioScreen,
-			outputLayerId: SharedOutputLayers.AUX,
+			outputLayerId: SharedOutputLayer.AUX,
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			metaData: {
@@ -325,7 +325,7 @@ class GlobalAdLibPiecesGenerator {
 				name: 'OVL INIT',
 				_rank: 100,
 				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				expectedDuration: 1000,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_LOAD],
@@ -352,7 +352,7 @@ class GlobalAdLibPiecesGenerator {
 				name: 'GFX Continue',
 				_rank: 200,
 				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				expectedDuration: 1000,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_CONTINUE_FORWARD],
@@ -386,7 +386,7 @@ class GlobalAdLibPiecesGenerator {
 				name: 'Mics Up',
 				_rank: 600,
 				sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_UP],
 				expectedDuration: 0,
@@ -415,7 +415,7 @@ class GlobalAdLibPiecesGenerator {
 				name: 'Mics Down',
 				_rank: 650,
 				sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_MICS_DOWN],
 				expectedDuration: 0,
@@ -444,7 +444,7 @@ class GlobalAdLibPiecesGenerator {
 				name: 'Resync Sisyfos',
 				_rank: 700,
 				sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				lifespan: PieceLifespan.WithinPart,
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIBS_RESYNC_SISYFOS],
 				expectedDuration: 1000,
@@ -499,7 +499,7 @@ class GlobalAdLibPiecesGenerator {
 	}
 }
 
-function getBaseline(context: ExtendedShowStyleContext<GalleryBlueprintConfig>): BlueprintResultBaseline {
+function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): BlueprintResultBaseline {
 	const jingleDSK = FindDSKJingle(context.config)
 
 	return {
@@ -769,7 +769,7 @@ function getBaseline(context: ExtendedShowStyleContext<GalleryBlueprintConfig>):
 	}
 }
 
-function getMixEffectBaseline(context: ExtendedShowStyleContext<GalleryBlueprintConfig>): TSR.TSRTimelineObj[] {
+function getMixEffectBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): TSR.TSRTimelineObj[] {
 	return Object.values(context.uniformConfig.mixEffects).flatMap((mixEffect) =>
 		_.compact([
 			context.videoSwitcher.getMixEffectTimelineObject({

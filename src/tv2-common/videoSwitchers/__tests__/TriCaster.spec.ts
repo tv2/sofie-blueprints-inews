@@ -1,6 +1,7 @@
 import { BlueprintMapping, IStudioContext, LookaheadMode, TSR } from 'blueprints-integration'
 import { instance, mock, when } from 'ts-mockito'
 import {
+	FRAME_RATE,
 	literal,
 	TriCaster,
 	TRICASTER_DEVICE_ID,
@@ -13,7 +14,7 @@ import { TriCasterDveConverter } from '../TriCasterDveConverter'
 import { AuxProps, DskProps, MixEffectProps, SpecialInput, TransitionStyle } from '../types'
 
 const DURATION_FRAMES: number = 50
-const DURATION_SECONDS: number = DURATION_FRAMES / 25
+const DURATION_SECONDS: number = DURATION_FRAMES / FRAME_RATE
 
 function createTestee(mocks?: {
 	context?: IStudioContext

@@ -7,15 +7,15 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { calculateTime, CueDefinitionBackgroundLoop, ExtendedSegmentContext, literal } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { calculateTime, CueDefinitionBackgroundLoop, literal, SegmentContext } from 'tv2-common'
+import { SharedOutputLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeCasparLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateCueBackgroundLoop(
-	_context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	_context: SegmentContext<OfftubeBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -32,7 +32,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 			_rank: rank || 0,
 			externalId: partId,
 			name: fileName,
-			outputLayerId: SharedOutputLayers.SEC,
+			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId: OfftubeSourceLayer.PgmDVEBackground,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<GraphicsContent>>({
@@ -62,7 +62,7 @@ export function OfftubeEvaluateCueBackgroundLoop(
 			enable: {
 				start
 			},
-			outputLayerId: SharedOutputLayers.SEC,
+			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId: OfftubeSourceLayer.PgmDVEBackground,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<GraphicsContent>>({

@@ -11,25 +11,25 @@ import {
 import {
 	AddScript,
 	CreatePartInvalid,
-	ExtendedSegmentContext,
-	ExtendedShowStyleContext,
 	findSourceInfo,
 	GetSisyfosTimelineObjForReplay,
 	literal,
 	PartDefinitionEVS,
 	PartTime,
 	PieceMetaData,
+	SegmentContext,
+	ShowStyleContext,
 	SourceInfo,
 	TransitionStyle
 } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { SharedOutputLayer } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartEVS(
-	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
+	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionEVS,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
@@ -60,7 +60,7 @@ export async function CreatePartEVS(
 		externalId: partDefinition.externalId,
 		name: part.title,
 		enable: { start: 0 },
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		sourceLayerId: SourceLayer.PgmLocal,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
@@ -99,7 +99,7 @@ export async function CreatePartEVS(
 }
 
 function makeContentEVS(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	switcherInput: number,
 	partDefinition: PartDefinitionEVS,
 	sourceInfoReplay: SourceInfo

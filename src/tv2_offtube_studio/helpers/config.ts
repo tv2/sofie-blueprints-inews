@@ -6,7 +6,7 @@ import {
 	TableConfigItemSourceMapping,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { DSKRoles } from 'tv2-constants'
+import { DskRole } from 'tv2-constants'
 import * as _ from 'underscore'
 import { parseMediaPlayers, parseSources } from './sources'
 
@@ -67,7 +67,7 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Fill: 7,
 		Toggle: true,
 		DefaultOn: true,
-		Roles: [DSKRoles.JINGLE, DSKRoles.OVERLAYGFX],
+		Roles: [DskRole.JINGLE, DskRole.OVERLAYGFX],
 		Clip: 50.0,
 		Gain: 12.5
 	},
@@ -78,7 +78,7 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Fill: 12,
 		Toggle: false,
 		DefaultOn: false,
-		Roles: [DSKRoles.FULLGFX],
+		Roles: [DskRole.FULLGFX],
 		Clip: 50.0,
 		Gain: 12.5
 	}

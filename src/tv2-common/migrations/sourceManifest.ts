@@ -27,7 +27,7 @@ export function MakeConfigForSources(
 			},
 			{
 				id: 'SwitcherSource',
-				name: 'Switcher input',
+				name: 'Video Switcher input',
 				description: `Video Switcher input for ${displayName} input`,
 				type: ConfigManifestEntryType.INT,
 				required: true,

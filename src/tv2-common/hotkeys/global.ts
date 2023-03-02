@@ -8,7 +8,7 @@ import {
 	TriggerType
 } from 'blueprints-integration'
 import { literal, TRIGGER_HOTKEYS_ON_KEYUP } from 'tv2-common'
-import { AdlibTags, SharedSourceLayers } from 'tv2-constants'
+import { AdlibTags, SharedSourceLayer } from 'tv2-constants'
 import { CameraHotkeyAssignments, MakeCameraHotkeys } from './camera'
 import { ClearLayerHotkeyAssignments, MakeClearHotkeys } from './clear'
 import { DVEHotkeyAssignments, MakeDVELayoutHotkeys } from './dve'
@@ -56,14 +56,14 @@ export function MakeGlobalTriggers(
 ): IBlueprintTriggeredActions[] {
 	const cameraTriggers = MakeCameraHotkeys(
 		showStyleId,
-		SharedSourceLayers.PgmCam,
+		SharedSourceLayer.PgmCam,
 		sources.camera,
 		assignments.camera,
 		getNextRank
 	)
 	const remoteTriggers = MakeRemoteHotkeys(
 		showStyleId,
-		SharedSourceLayers.PgmLive,
+		SharedSourceLayer.PgmLive,
 		sources.remote,
 		assignments.remote,
 		getNextRank,
@@ -71,7 +71,7 @@ export function MakeGlobalTriggers(
 	)
 	const feedTriggers = MakeRemoteHotkeys(
 		showStyleId,
-		SharedSourceLayers.PgmLive,
+		SharedSourceLayer.PgmLive,
 		sources.feed,
 		assignments.feed,
 		getNextRank,
@@ -83,15 +83,15 @@ export function MakeGlobalTriggers(
 
 	const dveTriggers = MakeDVELayoutHotkeys(
 		showStyleId,
-		SharedSourceLayers.PgmDVEAdLib,
+		SharedSourceLayer.PgmDVEAdLib,
 		sources.dveLayouts,
 		assignments.dve,
 		getNextRank
 	)
-	const serverTriggers = MakeServerHotkeys(showStyleId, SharedSourceLayers.PgmServer, getNextRank)
+	const serverTriggers = MakeServerHotkeys(showStyleId, SharedSourceLayer.PgmServer, getNextRank)
 	const graphicsTriggers = MakeGraphicsHotkeys(
 		showStyleId,
-		SharedSourceLayers.PgmAdlibGraphicCmd,
+		SharedSourceLayer.PgmAdlibGraphicCmd,
 		assignments.graphics,
 		getNextRank
 	)
@@ -99,23 +99,23 @@ export function MakeGlobalTriggers(
 	const clearTriggers = MakeClearHotkeys(showStyleId, assignments.clear, getNextRank)
 	const sisyfosTriggers = MakeSisyfosHotkeys(
 		showStyleId,
-		SharedSourceLayers.PgmSisyfosAdlibs,
+		SharedSourceLayer.PgmSisyfosAdlibs,
 		assignments.sisyfos,
 		getNextRank
 	)
 	const recallLastTriggers = [
 		makeRecallLastTrigger(
-			SharedSourceLayers.PgmDVEAdLib,
+			SharedSourceLayer.PgmDVEAdLib,
 			getNextRank,
-			recallLastHotkeyId(showStyleId, SharedSourceLayers.PgmDVE, 'dve', 0),
+			recallLastHotkeyId(showStyleId, SharedSourceLayer.PgmDVE, 'dve', 0),
 			'Last DVE',
 			assignments.recallLast.DVE,
 			[AdlibTags.ADLIB_RECALL_LAST_DVE]
 		),
 		makeRecallLastTrigger(
-			SharedSourceLayers.PgmLive,
+			SharedSourceLayer.PgmLive,
 			getNextRank,
-			recallLastHotkeyId(showStyleId, SharedSourceLayers.PgmLive, 'live', 0),
+			recallLastHotkeyId(showStyleId, SharedSourceLayer.PgmLive, 'live', 0),
 			'Last Live',
 			assignments.recallLast.Live,
 			[AdlibTags.ADLIB_RECALL_LAST_LIVE]
@@ -123,9 +123,9 @@ export function MakeGlobalTriggers(
 	]
 	const takeWithTransitionTriggers = assignments.takeWithTransition.map((key, index) =>
 		makeTakeWithTransitionTrigger(
-			SharedSourceLayers.PgmAdlibJingle,
+			SharedSourceLayer.PgmAdlibJingle,
 			getNextRank,
-			takeWithTransitionHotkeyId(showStyleId, SharedSourceLayers.PgmAdlibJingle, key, index),
+			takeWithTransitionHotkeyId(showStyleId, SharedSourceLayer.PgmAdlibJingle, key, index),
 			`Take with transition ${index + 1}`,
 			key,
 			index

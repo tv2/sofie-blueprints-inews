@@ -3,14 +3,14 @@ import {
 	CueDefinitionEkstern,
 	EvaluateCueResult,
 	EvaluateEksternBase,
-	ExtendedSegmentContext,
-	PartDefinition
+	PartDefinition,
+	SegmentContext
 } from 'tv2-common'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateEkstern(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	part: IBlueprintPart,
 	partId: string,
 	parsedCue: CueDefinitionEkstern,

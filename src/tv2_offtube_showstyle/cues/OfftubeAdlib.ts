@@ -4,12 +4,12 @@ import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
-	ExtendedSegmentContext,
 	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
+	SegmentContext,
 	t,
 	TemplateIsValid
 } from 'tv2-common'
@@ -20,7 +20,7 @@ import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export async function OfftubeEvaluateAdLib(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	parsedCue: CueDefinitionAdLib,

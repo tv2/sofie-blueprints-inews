@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { ExtendedStudioContext, literal, SpecialInput, TransitionStyle } from 'tv2-common'
+import { literal, SpecialInput, StudioContext, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { SharedGraphicLLayer, SwitcherMediaPlayerLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
@@ -31,7 +31,7 @@ function filterMappings(
 }
 
 export function getBaseline(coreContext: IStudioContext): BlueprintResultBaseline {
-	const context = new ExtendedStudioContext<GalleryStudioConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
+	const context = new StudioContext<GalleryStudioConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
 	const mappings = coreContext.getStudioMappings()
 
 	const sisyfosMappings = filterMappings(

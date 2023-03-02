@@ -3,16 +3,16 @@ import {
 	calculateTime,
 	CueDefinitionRouting,
 	EvaluateCueResult,
-	ExtendedShowStyleContext,
 	findSourceInfo,
-	literal
+	literal,
+	ShowStyleContext
 } from 'tv2-common'
-import { SharedOutputLayers, SwitcherAuxLLayer } from 'tv2-constants'
+import { SharedOutputLayer, SwitcherAuxLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueRouting(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	partId: string,
 	parsedCue: CueDefinitionRouting
 ): EvaluateCueResult {
@@ -37,7 +37,7 @@ export function EvaluateCueRouting(
 			start: time
 		},
 		name,
-		outputLayerId: SharedOutputLayers.AUX,
+		outputLayerId: SharedOutputLayer.AUX,
 		sourceLayerId: SourceLayer.VizFullIn1,
 		lifespan: PieceLifespan.WithinPart,
 		content: literal<WithTimeline<CameraContent>>({

@@ -60,6 +60,12 @@ export interface TableConfigGfxSetup {
 	FullShowName?: string
 }
 
+export interface ProcessedStudioConfig {
+	sources: SourceMapping
+	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	dsk: TableConfigItemDSK[]
+}
+
 export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number

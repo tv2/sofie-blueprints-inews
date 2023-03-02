@@ -1,9 +1,9 @@
 import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
-import { CueDefinitionGraphicDesign, EvaluateDesignBase, ExtendedShowStyleContext } from 'tv2-common'
+import { CueDefinitionGraphicDesign, EvaluateDesignBase, ShowStyleContext } from 'tv2-common'
 import * as _ from 'underscore'
 
 export function EvaluateCueDesign(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],

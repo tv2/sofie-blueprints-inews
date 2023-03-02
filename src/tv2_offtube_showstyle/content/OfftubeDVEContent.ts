@@ -3,9 +3,9 @@ import {
 	CueDefinitionDVE,
 	DVEConfigInput,
 	DVEOptions,
-	ExtendedShowStyleContext,
 	MakeContentDVEBase,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
@@ -29,7 +29,7 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 }
 
 export function OfftubeMakeContentDVE(
-	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>,
+	context: ShowStyleContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined

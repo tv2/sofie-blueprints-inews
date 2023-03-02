@@ -1,8 +1,6 @@
 import { BlueprintResultPart, BlueprintResultSegment, IBlueprintSegment, IngestSegment } from 'blueprints-integration'
 import {
 	assertUnreachable,
-	ExtendedSegmentContext,
-	ExtendedShowStyleContext,
 	GetNextPartCue,
 	INewsPayload,
 	IsTargetingFull,
@@ -11,9 +9,11 @@ import {
 	PartDefinition,
 	PartDefinitionEVS,
 	PartDefinitionKam,
-	PartMetaData
+	PartMetaData,
+	SegmentContext,
+	ShowStyleContext
 } from 'tv2-common'
-import { CueType, PartType, SharedSourceLayers, TallyTags } from 'tv2-constants'
+import { CueType, PartType, SharedSourceLayer, TallyTags } from 'tv2-constants'
 import { TV2ShowStyleConfig } from './blueprintConfig'
 import {
 	CueDefinitionUnpairedTarget,
@@ -28,64 +28,64 @@ import { CreatePartInvalid, ServerPartProps } from './parts'
 
 export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyleConfig> {
 	CreatePartContinuity: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		ingestSegment: IngestSegment
 	) => BlueprintResultPart
 	CreatePartUnknown: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinition,
 		totalWords: number,
 		asAdlibs?: boolean
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartIntro?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinition,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartKam?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionKam,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartServer?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinition,
 		partProps: ServerPartProps
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartTeknik?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionTeknik,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartGrafik?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionGrafik,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartEkstern?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionEkstern,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartTelefon?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionTelefon,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartDVE?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionDVE,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartEVS?: (
-		context: ExtendedShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionEVS,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 }
 
 export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>(
-	context: ExtendedSegmentContext<ShowStyleConfig>,
+	context: SegmentContext<ShowStyleConfig>,
 	ingestSegment: IngestSegment,
 	showStyleOptions: GetSegmentShowstyleOptions<ShowStyleConfig>
 ): Promise<BlueprintResultSegment> {
@@ -323,7 +323,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		blueprintParts.length > 1 ||
 		(blueprintParts[blueprintParts.length - 1] &&
 			!blueprintParts[blueprintParts.length - 1].pieces.some(
-				(piece) => piece.sourceLayerId === SharedSourceLayers.PgmJingle
+				(piece) => piece.sourceLayerId === SharedSourceLayer.PgmJingle
 			))
 	) {
 		blueprintParts[0].part.budgetDuration = totalTimeMs
@@ -338,7 +338,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 			part.part.expectedDuration! < config.studio.DefaultPartDuration &&
 			// Jingle-only part, do not modify duration
 			!part.pieces.some(
-				(p) => p.sourceLayerId === SharedSourceLayers.PgmJingle && p.tags?.some((tag) => TallyTags.JINGLE === tag)
+				(p) => p.sourceLayerId === SharedSourceLayer.PgmJingle && p.tags?.some((tag) => TallyTags.JINGLE === tag)
 			)
 		) {
 			part.part.expectedDuration = config.studio.DefaultPartDuration

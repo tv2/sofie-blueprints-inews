@@ -1,5 +1,5 @@
 import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
-import { RobotCameraLayer, SharedOutputLayers, SharedSourceLayers } from '../../tv2-constants'
+import { RobotCameraLayer, SharedOutputLayer, SharedSourceLayer } from '../../tv2-constants'
 import { PieceMetaData } from '../onTimelineGenerate'
 import { literal } from '../util'
 
@@ -18,8 +18,8 @@ export function createTelemetricsPieceForRobotCamera(
 			duration: 100
 		},
 		lifespan: PieceLifespan.WithinPart,
-		sourceLayerId: SharedSourceLayers.RobotCamera,
-		outputLayerId: SharedOutputLayers.SEC,
+		sourceLayerId: SharedSourceLayer.RobotCamera,
+		outputLayerId: SharedOutputLayer.SEC,
 		content: {
 			timelineObjects: [createTelemetricsTimelineObject(preset)]
 		}

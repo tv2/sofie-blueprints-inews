@@ -1,5 +1,5 @@
 import { IBlueprintPiece, TSR } from 'blueprints-integration'
-import { SharedSourceLayers } from '../../tv2-constants'
+import { SharedSourceLayer } from '../../tv2-constants'
 import { calculateTime } from '../cueTiming'
 import { CueDefinitionRobotCamera } from '../inewsConversion'
 import { createTelemetricsPieceForRobotCamera, ROBOT_CAMERA_NAME_PREFIX } from '../pieces/telemetric'
@@ -29,7 +29,7 @@ function findExistingPieceForRobotCameraLayerAndStartTime(
 ): IBlueprintPiece | undefined {
 	return pieces.find(
 		(piece) =>
-			piece.sourceLayerId === SharedSourceLayers.RobotCamera &&
+			piece.sourceLayerId === SharedSourceLayer.RobotCamera &&
 			piece.name.startsWith(ROBOT_CAMERA_NAME_PREFIX) &&
 			piece.enable.start === startTime
 	)

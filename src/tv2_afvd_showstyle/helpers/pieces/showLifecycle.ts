@@ -1,6 +1,6 @@
 import { BlueprintResultPart, PieceLifespan, TSR } from 'blueprints-integration'
 import { literal, TV2ShowStyleConfig } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { SharedOutputLayer } from 'tv2-constants'
 import { GraphicLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
@@ -15,7 +15,7 @@ export function CreateShowLifecyclePieces(
 			externalId: part.part.externalId,
 			name: 'GFX Show Init',
 			enable: { start: 0 },
-			outputLayerId: SharedOutputLayers.SEC,
+			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId: SourceLayer.GraphicsShowLifecycle,
 			lifespan: PieceLifespan.OutOnSegmentChange,
 			content: {

@@ -1,9 +1,9 @@
 import { fail } from 'assert'
 import { BlueprintResultSegment, IBlueprintPart, IBlueprintPiece, IngestSegment, TSR } from 'blueprints-integration'
-import { TimeFromFrames } from 'tv2-common'
+import { getTimeFromFrames } from 'tv2-common'
 import { SwitcherMixEffectLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
-import { SegmentUserContext } from '../../__mocks__/context'
+import { SegmentUserContextMock } from '../../__mocks__/context'
 import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { preprocessConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
@@ -58,7 +58,7 @@ const templateSegment: IngestSegment = {
 	parts: []
 }
 
-function makeMockContextWithoutTransitionsConfig(): SegmentUserContext {
+function makeMockContextWithoutTransitionsConfig(): SegmentUserContextMock {
 	const context = makeMockContext()
 
 	// context.showStyleConfig.DefaultTransitions = []
@@ -66,10 +66,10 @@ function makeMockContextWithoutTransitionsConfig(): SegmentUserContext {
 	return context
 }
 
-function makeMockContext(): SegmentUserContext {
+function makeMockContext(): SegmentUserContextMock {
 	const config = { id: 'default', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 
-	const mockContext = new SegmentUserContext('test', mappingsDefaults, preprocessConfig, parseShowStyleConfig)
+	const mockContext = new SegmentUserContextMock('test', mappingsDefaults, preprocessConfig, parseShowStyleConfig)
 	mockContext.studioConfig = config.studioConfig as any
 	mockContext.showStyleConfig = config.showStyleConfig as any
 
@@ -93,10 +93,10 @@ function getTransitionProperties(effekt: GalleryShowStyleConfig['BreakerConfig']
 	const preroll = defaultStudioConfig.CasparPrerollDuration as number
 	return {
 		inTransition: {
-			blockTakeDuration: TimeFromFrames(Number(effekt.Duration)) + preroll,
-			previousPartKeepaliveDuration: TimeFromFrames(Number(effekt.StartAlpha)) + preroll,
+			blockTakeDuration: getTimeFromFrames(Number(effekt.Duration)) + preroll,
+			previousPartKeepaliveDuration: getTimeFromFrames(Number(effekt.StartAlpha)) + preroll,
 			partContentDelayDuration:
-				TimeFromFrames(Number(effekt.Duration)) - TimeFromFrames(Number(effekt.EndAlpha)) + preroll
+				getTimeFromFrames(Number(effekt.Duration)) - getTimeFromFrames(Number(effekt.EndAlpha)) + preroll
 		}
 	}
 }
@@ -120,7 +120,7 @@ function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
 	return atemMEObj
 }
 
-function testNotes(context: SegmentUserContext) {
+function testNotes(context: SegmentUserContextMock) {
 	expect(context.getNotes()).toStrictEqual([])
 }
 

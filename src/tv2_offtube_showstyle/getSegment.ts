@@ -7,14 +7,8 @@ import {
 	PieceLifespan,
 	WithTimeline
 } from 'blueprints-integration'
-import {
-	ExtendedSegmentContextImpl,
-	ExtendedShowStyleContext,
-	getSegmentBase,
-	literal,
-	TransitionStyle
-} from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { getSegmentBase, literal, SegmentContextImpl, ShowStyleContext, TransitionStyle } from 'tv2-common'
+import { SharedOutputLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { OfftubeBlueprintConfig } from './helpers/config'
@@ -29,7 +23,7 @@ export async function getSegment(
 	coreContext: ISegmentUserContext,
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
-	const context = new ExtendedSegmentContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
+	const context = new SegmentContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
 
 	const result: BlueprintResultSegment = await getSegmentBase(context, ingestSegment, {
 		CreatePartContinuity,
@@ -54,7 +48,7 @@ export async function getSegment(
 }
 
 function CreatePartContinuity(
-	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>,
+	context: ShowStyleContext<OfftubeBlueprintConfig>,
 	ingestSegment: IngestSegment
 ): BlueprintResultPart {
 	return {
@@ -71,7 +65,7 @@ function CreatePartContinuity(
 				},
 				name: 'CONTINUITY',
 				sourceLayerId: OfftubeSourceLayer.PgmContinuity,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',

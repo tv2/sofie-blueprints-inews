@@ -12,7 +12,6 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	CreatePartKamBase,
-	ExtendedSegmentContext,
 	FindDSKJingle,
 	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
@@ -20,16 +19,17 @@ import {
 	literal,
 	PartDefinitionKam,
 	PieceMetaData,
+	SegmentContext,
 	TransitionStyle
 } from 'tv2-common'
-import { SharedOutputLayers, TallyTags } from 'tv2-constants'
+import { SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 import { CreateEffektForpart } from './OfftubeEffekt'
 
 export async function OfftubeCreatePartKam(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinitionKam,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
@@ -50,7 +50,7 @@ export async function OfftubeCreatePartKam(
 			externalId: partDefinition.externalId,
 			name: 'CS 3 (JINGLE)',
 			enable: { start: 0 },
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
 			lifespan: PieceLifespan.WithinPart,
 			tags: [GetTagForKam(partDefinition.sourceDefinition), TallyTags.JINGLE_IS_LIVE],
@@ -81,7 +81,7 @@ export async function OfftubeCreatePartKam(
 			externalId: partDefinition.externalId,
 			name: part.title,
 			enable: { start: 0 },
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			sourceLayerId: OfftubeSourceLayer.PgmCam,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: {

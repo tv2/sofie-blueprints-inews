@@ -12,15 +12,8 @@ import {
 	PartDefinition,
 	RemoteType
 } from 'tv2-common'
-import {
-	CueType,
-	PartType,
-	SharedGraphicLLayer,
-	SharedOutputLayers,
-	SourceType,
-	SwitcherAuxLLayer
-} from 'tv2-constants'
-import { makeMockGalleryContext, SegmentUserContext } from '../../__mocks__/context'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType, SwitcherAuxLLayer } from 'tv2-constants'
+import { makeMockGalleryContext, SegmentUserContextMock } from '../../__mocks__/context'
 import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { SourceLayer } from '../../tv2_afvd_showstyle/layers'
 import { CreatePartGrafik } from '../../tv2_afvd_showstyle/parts/grafik'
@@ -55,7 +48,7 @@ describe('Graphics', () => {
 
 		const result = await CreatePartGrafik(context, partDefintion, 0)
 
-		expect((context.core as SegmentUserContext).getNotes().map((msg) => msg.message)).toEqual([
+		expect((context.core as SegmentUserContextMock).getNotes().map((msg) => msg.message)).toEqual([
 			`No graphic found after GRAFIK cue`
 		])
 		expect(result.pieces).toHaveLength(0)
@@ -91,7 +84,7 @@ describe('Graphics', () => {
 
 		CreatePartGrafik(context, partDefinition, 0)
 
-		expect((context.core as SegmentUserContext).getNotes().map((msg) => msg.message)).toEqual([
+		expect((context.core as SegmentUserContextMock).getNotes().map((msg) => msg.message)).toEqual([
 			`Graphic found without target engine`
 		])
 	})
@@ -129,7 +122,7 @@ describe('Graphics', () => {
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
 		// expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
@@ -192,7 +185,7 @@ describe('Graphics', () => {
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.OVERLAY)
 		expect(piece.enable).toEqual({ start: 2000 })
 		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
@@ -248,7 +241,7 @@ describe('Graphics', () => {
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.enable).toEqual({ start: 0 })
 		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
@@ -301,7 +294,7 @@ describe('Graphics', () => {
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
 		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
@@ -362,7 +355,7 @@ describe('Graphics', () => {
 
 		const result = await CreatePartGrafik(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(3)
-		const auxPiece = result.pieces.find((p) => p.outputLayerId === SharedOutputLayers.AUX)!
+		const auxPiece = result.pieces.find((p) => p.outputLayerId === SharedOutputLayer.AUX)!
 		expect(auxPiece.enable).toEqual({ start: 0 })
 		expect(auxPiece.sourceLayerId).toBe(SourceLayer.VizFullIn1)
 		expect(auxPiece.lifespan).toBe(PieceLifespan.WithinPart)
@@ -402,7 +395,7 @@ describe('Graphics', () => {
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDesign)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		expect(piece.enable).toEqual({ start: 0 })
@@ -437,7 +430,7 @@ describe('Graphics', () => {
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.name).toBe('DESIGN_SC')
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
@@ -487,7 +480,7 @@ describe('Graphics', () => {
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.enable).toEqual({ start: 5000, duration: 4000 })
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.OVERLAY)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsLower)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(

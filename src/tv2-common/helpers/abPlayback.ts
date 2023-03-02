@@ -9,7 +9,7 @@ import {
 	TimelineBlueprintExt,
 	TimelinePersistentStateExt
 } from '../onTimelineGenerate'
-import { ExtendedTimelineContext } from '../showstyle'
+import { TimelineContext } from '../showstyle'
 
 export interface SessionToPlayerMap {
 	[sessionId: string]: MediaPlayerClaim | undefined
@@ -184,7 +184,7 @@ export function resolveMediaPlayerAssignments<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedTimelineContext<ShowStyleConfig>,
+	context: TimelineContext<ShowStyleConfig>,
 	previousAssignmentRev: SessionToPlayerMap,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ) {
@@ -248,7 +248,7 @@ function updateObjectsToMediaPlayer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedTimelineContext<ShowStyleConfig>,
+	context: TimelineContext<ShowStyleConfig>,
 	playerId: number,
 	objs: OnGenerateTimelineObj[],
 	sourceLayers: ABSourceLayers
@@ -290,7 +290,9 @@ function updateObjectsToMediaPlayer<
 				context.videoSwitcher.updateUnpopulatedDveBoxes(obj, input)
 			} else {
 				context.core.logWarning(
-					`Trying to move ATEM object of unknown type (${(obj.content as any).type}) for media player assignment`
+					`Trying to move Video Switcher object of unknown type (${
+						(obj.content as any).type
+					}) for media player assignment`
 				)
 			}
 		} else if (obj.content.deviceType === TSR.DeviceType.SISYFOS) {
@@ -326,7 +328,7 @@ export function assignMediaPlayers<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedTimelineContext<ShowStyleConfig>,
+	context: TimelineContext<ShowStyleConfig>,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignment: TimelinePersistentStateExt['activeMediaPlayers'],
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
@@ -348,7 +350,7 @@ export function applyMediaPlayersAssignments<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedTimelineContext<ShowStyleConfig>,
+	context: TimelineContext<ShowStyleConfig>,
 	timelineObjs: OnGenerateTimelineObj[],
 	previousAssignmentRev: SessionToPlayerMap,
 	activeRequests: ActiveRequest[],

@@ -1,4 +1,4 @@
-import { DSKRoles } from 'tv2-constants'
+import { DskRole } from 'tv2-constants'
 
 export interface TableConfigItemSourceMapping {
 	SourceName: string
@@ -24,5 +24,5 @@ export interface SwitcherDskProps {
 export interface TableConfigItemDSK extends SwitcherDskProps {
 	Toggle: boolean
 	DefaultOn: boolean
-	Roles?: DSKRoles[]
+	Roles?: DskRole[]
 }

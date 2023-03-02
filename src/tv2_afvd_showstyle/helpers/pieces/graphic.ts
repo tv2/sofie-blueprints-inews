@@ -3,18 +3,18 @@ import {
 	CreateInternalGraphic,
 	CueDefinitionGraphic,
 	EvaluateCueResult,
-	ExtendedShowStyleContext,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
 import { GalleryBlueprintConfig } from '../config'
 import { EvaluateCueGraphicPilot } from './graphicPilot'
 import { EvaluateCueRouting } from './routing'
 
 export function EvaluateCueGraphic(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	partDefinition: PartDefinition,

@@ -11,7 +11,7 @@ import {
 	PilotGraphicProps,
 	TransitionStyle
 } from 'tv2-common'
-import { DSKRoles } from 'tv2-constants'
+import { DskRole } from 'tv2-constants'
 
 import { PilotGraphicGenerator } from '../pilot'
 
@@ -47,7 +47,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 
 	private getEnable() {
 		if (IsTargetingOVL(this.engine) || IsTargetingWall(this.engine)) {
-			return this.GetEnableForGraphic()
+			return this.getTimelineObjectEnable()
 		}
 		return { start: 0 }
 	}
@@ -93,7 +93,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 				}
 			}),
 			// Assume DSK is off by default (config table)
-			...getDskOnAirTimelineObjects(this.context, DSKRoles.FULLGFX),
+			...getDskOnAirTimelineObjects(this.context, DskRole.FULLGFX),
 			...GetSisyfosTimelineObjForFull(this.config)
 		]
 		if (this.context.uniformConfig.mixEffects.program.auxLayer) {

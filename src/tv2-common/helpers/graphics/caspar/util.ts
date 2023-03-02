@@ -1,6 +1,6 @@
 import { TSR } from 'blueprints-integration'
 import {
-	GetTimelineLayerForGraphic,
+	getTimelineLayerForGraphic,
 	joinAssetToFolder,
 	layerToHTMLGraphicSlot,
 	Slots,
@@ -35,7 +35,7 @@ export function getHtmlTemplateContent(
 	graphicTemplate: string,
 	data: object
 ): Partial<Slots> {
-	const layer = GetTimelineLayerForGraphic(config, graphicTemplate)
+	const layer = getTimelineLayerForGraphic(config, graphicTemplate)
 
 	const slot = layerToHTMLGraphicSlot[layer]
 

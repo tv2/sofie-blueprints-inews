@@ -4,23 +4,23 @@ import {
 	calculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
-	ExtendedSegmentContext,
 	generateExternalId,
 	GetDVETemplate,
 	GetTagForDVE,
 	GetTagForDVENext,
 	literal,
 	PartDefinition,
+	SegmentContext,
 	t,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateDVE(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
@@ -58,7 +58,7 @@ export function OfftubeEvaluateDVE(
 				start,
 				...(end ? { duration: end - start } : {})
 			},
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			sourceLayerId: OfftubeSourceLayer.PgmDVE,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,

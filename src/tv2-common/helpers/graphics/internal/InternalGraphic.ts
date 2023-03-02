@@ -1,7 +1,6 @@
 import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext, PieceLifespan } from 'blueprints-integration'
 import {
 	CueDefinitionGraphic,
-	ExtendedShowStyleContext,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	HtmlInternalGraphic,
@@ -9,9 +8,10 @@ import {
 	IsTargetingWall,
 	PartDefinition,
 	PieceMetaData,
+	ShowStyleContext,
 	VizInternalGraphic
 } from 'tv2-common'
-import { AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { AdlibTags, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 
 import { Graphic } from '../Graphic'
@@ -28,8 +28,8 @@ export abstract class InternalGraphic extends Graphic {
 	protected readonly core: IShowStyleUserContext
 	private readonly partDefinition?: PartDefinition
 	private readonly displayName: string
-	private readonly sourceLayerId: SharedSourceLayers
-	private readonly outputLayerId: SharedOutputLayers
+	private readonly sourceLayerId: SharedSourceLayer
+	private readonly outputLayerId: SharedOutputLayer
 	private readonly partId?: string
 	private readonly rank?: number
 	private readonly content: IBlueprintPiece['content']
@@ -37,13 +37,13 @@ export abstract class InternalGraphic extends Graphic {
 	protected constructor(graphicProps: InternalGraphicProps) {
 		super(graphicProps.context, graphicProps.parsedCue)
 		this.templateName = this.getTemplateName()
-		this.sourceLayerId = this.getSourceLayerForGraphic(this.templateName)
+		this.sourceLayerId = this.getSourceLayer(this.templateName)
 		this.core = graphicProps.context.core
 		this.context = graphicProps.context
 		this.cue = graphicProps.parsedCue
 		this.partDefinition = graphicProps.partDefinition
 		this.displayName = this.getDisplayName()
-		this.outputLayerId = IsTargetingWall(this.engine) ? SharedOutputLayers.SEC : SharedOutputLayers.OVERLAY
+		this.outputLayerId = IsTargetingWall(this.engine) ? SharedOutputLayer.SEC : SharedOutputLayer.OVERLAY
 		this.partId = graphicProps.partId
 		this.content = this.getContent()
 	}
@@ -55,7 +55,7 @@ export abstract class InternalGraphic extends Graphic {
 			name: this.displayName,
 			uniquenessId: `gfx_${this.displayName}_${this.sourceLayerId}_${this.outputLayerId}_commentator`,
 			sourceLayerId: this.sourceLayerId,
-			outputLayerId: SharedOutputLayers.OVERLAY,
+			outputLayerId: SharedOutputLayer.OVERLAY,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: {
 				sisyfosPersistMetaData: {
@@ -80,7 +80,7 @@ export abstract class InternalGraphic extends Graphic {
 			...(IsTargetingTLF(this.engine) || (this.cue.end && this.cue.end.infiniteMode)
 				? {}
 				: {
-						expectedDuration: this.createTimingGraphic().duration
+						expectedDuration: this.getPieceEnable().duration
 				  }),
 			lifespan: this.getPieceLifespan(),
 			metaData: {
@@ -99,7 +99,7 @@ export abstract class InternalGraphic extends Graphic {
 			...(IsTargetingTLF(this.engine) || IsTargetingWall(this.engine)
 				? { enable: { start: 0 } }
 				: {
-						enable: this.createTimingGraphic()
+						enable: this.getPieceEnable()
 				  }),
 			outputLayerId: this.outputLayerId,
 			sourceLayerId: this.sourceLayerId,
@@ -142,7 +142,7 @@ export abstract class InternalGraphic extends Graphic {
 }
 
 export interface InternalGraphicProps {
-	context: ExtendedShowStyleContext
+	context: ShowStyleContext
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
 	partId?: string
 	partDefinition?: PartDefinition

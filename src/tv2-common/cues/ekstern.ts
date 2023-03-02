@@ -8,14 +8,14 @@ import {
 import {
 	CueDefinitionEkstern,
 	EvaluateCueResult,
-	ExtendedShowStyleContext,
 	literal,
 	PartDefinition,
+	ShowStyleContext,
 	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { ControlClasses, SharedOutputLayers, SourceType } from 'tv2-constants'
+import { ControlClasses, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { GetSisyfosTimelineObjForRemote } from '../helpers'
 import { GetTagForLive } from '../pieces'
 import { findSourceInfo } from '../sources'
@@ -30,7 +30,7 @@ export function EvaluateEksternBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedShowStyleContext<ShowStyleConfig>,
+	context: ShowStyleContext<ShowStyleConfig>,
 	part: IBlueprintPart,
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
@@ -53,7 +53,7 @@ export function EvaluateEksternBase<
 			_rank: rank || 0,
 			externalId: partId,
 			name: parsedCue.sourceDefinition.name,
-			outputLayerId: SharedOutputLayers.PGM,
+			outputLayerId: SharedOutputLayer.PGM,
 			sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 			toBeQueued: true,
 			lifespan: PieceLifespan.WithinPart,
@@ -75,7 +75,7 @@ export function EvaluateEksternBase<
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						},
-						classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
+						classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 					}),
 
 					...GetSisyfosTimelineObjForRemote(context.config, sourceInfoEkstern)
@@ -90,7 +90,7 @@ export function EvaluateEksternBase<
 		enable: {
 			start: 0
 		},
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		sourceLayerId: layersEkstern.SourceLayer.PgmLive,
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
@@ -113,7 +113,7 @@ export function EvaluateEksternBase<
 						transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 						transitionDuration: partDefinition.transition?.duration
 					},
-					classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
+					classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 				}),
 
 				...GetSisyfosTimelineObjForRemote(context.config, sourceInfoEkstern)

@@ -3,14 +3,14 @@ import {
 	CueDefinitionEkstern,
 	EvaluateCueResult,
 	EvaluateEksternBase,
-	ExtendedShowStyleContext,
 	PartDefinition,
+	ShowStyleContext,
 	TV2ShowStyleConfig
 } from 'tv2-common'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateEkstern(
-	context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+	context: ShowStyleContext<TV2ShowStyleConfig>,
 	part: IBlueprintPart,
 	partId: string,
 	parsedCue: CueDefinitionEkstern,

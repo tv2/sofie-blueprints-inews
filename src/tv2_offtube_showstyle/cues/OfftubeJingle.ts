@@ -1,27 +1,26 @@
-import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
+import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
 	CreateJingleContentBase,
 	CueDefinitionJingle,
-	ExtendedSegmentContext,
 	generateExternalId,
 	GetJinglePartProperties,
 	GetTagForJingle,
 	GetTagForJingleNext,
+	getTimeFromFrames,
 	PartDefinition,
 	PieceMetaData,
-	t,
-	TimeFromFrames
+	SegmentContext,
+	t
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	pieces: Array<IBlueprintPiece<PieceMetaData>>,
-	_adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
 	part: PartDefinition,
@@ -29,11 +28,6 @@ export function OfftubeEvaluateJingle(
 	_rank?: number,
 	effekt?: boolean
 ) {
-	if (!context.config.showStyle.BreakerConfig) {
-		context.core.notifyUserWarning(`Jingles have not been configured`)
-		return
-	}
-
 	let file = ''
 
 	const jingle = context.config.showStyle.BreakerConfig.find((brkr) =>
@@ -90,14 +84,14 @@ export function OfftubeEvaluateJingle(
 			start: 0
 		},
 		lifespan: PieceLifespan.WithinPart,
-		outputLayerId: SharedOutputLayers.JINGLE,
+		outputLayerId: SharedOutputLayer.JINGLE,
 		sourceLayerId: OfftubeSourceLayer.PgmJingle,
 		metaData: {
 			sisyfosPersistMetaData: {
 				sisyfosLayers: []
 			}
 		},
-		prerollDuration: context.config.studio.CasparPrerollDuration + TimeFromFrames(Number(jingle.StartAlpha)),
+		prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(Number(jingle.StartAlpha)),
 		content: createJingleContentOfftube(
 			context,
 			file,
@@ -116,7 +110,7 @@ export function OfftubeEvaluateJingle(
 }
 
 export function createJingleContentOfftube(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	file: string,
 	alphaAtStart: number,
 	loadFirstFrame: boolean,

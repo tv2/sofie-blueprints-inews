@@ -6,13 +6,13 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, ExtendedSegmentContext, PartDefinitionDVE, PartTime } from 'tv2-common'
+import { AddScript, PartDefinitionDVE, PartTime, SegmentContext } from 'tv2-common'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export async function OfftubeCreatePartDVE(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinitionDVE,
 	totalWords: number
 ): Promise<BlueprintResultPart> {

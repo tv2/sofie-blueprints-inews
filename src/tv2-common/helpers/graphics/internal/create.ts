@@ -2,15 +2,15 @@ import {
 	Adlib,
 	CueDefinitionGraphic,
 	EvaluateCueResult,
-	ExtendedShowStyleContext,
 	GraphicInternal,
 	InternalGraphic,
 	IsTargetingOVL,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
 
 export function CreateInternalGraphic(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	partDefinition: PartDefinition,

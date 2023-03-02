@@ -14,7 +14,6 @@ import {
 	CueDefinitionDVE,
 	DVEConfigInput,
 	DVESources,
-	ExtendedShowStyleContext,
 	FindDSKFullGFX,
 	findSourceInfo,
 	getMixMinusTimelineObject,
@@ -23,6 +22,7 @@ import {
 	MixMinusPriority,
 	PartDefinition,
 	PieceMetaData,
+	ShowStyleContext,
 	SpecialInput,
 	TransitionStyle,
 	TV2BlueprintConfigBase,
@@ -119,7 +119,7 @@ export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedShowStyleContext<ShowStyleConfig>,
+	context: ShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
@@ -155,7 +155,7 @@ export function MakeContentDVE2<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedShowStyleContext<ShowStyleConfig>,
+	context: ShowStyleContext<ShowStyleConfig>,
 	dveConfig: DVEConfigInput,
 	graphicsTemplateContent: { [key: string]: string },
 	sources: DVESources | undefined,
@@ -325,7 +325,7 @@ export function MakeContentDVE2<
 						input: SpecialInput.DVE,
 						transition: TransitionStyle.CUT
 					},
-					classes: [ControlClasses.OVERRIDEN_ON_MIX_MINUS]
+					classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 				}),
 				literal<TSR.TimelineObjCCGTemplate>({
 					id: '',

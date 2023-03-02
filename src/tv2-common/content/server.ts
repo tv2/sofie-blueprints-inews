@@ -1,11 +1,5 @@
 import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import {
-	ExtendedShowStyleContext,
-	GetSisyfosTimelineObjForServer,
-	literal,
-	PartDefinition,
-	TransitionStyle
-} from 'tv2-common'
+import { GetSisyfosTimelineObjForServer, literal, PartDefinition, ShowStyleContext, TransitionStyle } from 'tv2-common'
 import { AbstractLLayer, GetEnableClassForServer } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
@@ -48,7 +42,7 @@ export function GetVTContentProperties(
 }
 
 export function MakeContentServer(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
@@ -61,7 +55,7 @@ export function MakeContentServer(
 }
 
 function GetServerTimeline(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
@@ -125,7 +119,7 @@ function GetServerTimeline(
 }
 
 export function CutToServer(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	mediaPlayerSessionId: string,
 	partDefinition: PartDefinition
 ): TimelineBlueprintExt[] {

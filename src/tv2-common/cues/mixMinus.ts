@@ -1,9 +1,9 @@
 import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
-import { CueDefinitionMixMinus, ExtendedShowStyleContext, findSourceInfo, PartDefinition } from 'tv2-common'
-import { ControlClasses, SharedOutputLayers, SharedSourceLayers, SwitcherAuxLLayer } from 'tv2-constants'
+import { CueDefinitionMixMinus, findSourceInfo, PartDefinition, ShowStyleContext } from 'tv2-common'
+import { ControlClasses, SharedOutputLayer, SharedSourceLayer, SwitcherAuxLLayer } from 'tv2-constants'
 
 export function EvaluateCueMixMinus(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	part: PartDefinition,
 	parsedCue: CueDefinitionMixMinus
@@ -29,8 +29,8 @@ export function EvaluateCueMixMinus(
 			start: 0
 		},
 		lifespan: PieceLifespan.OutOnShowStyleEnd,
-		sourceLayerId: SharedSourceLayers.AuxMixMinus,
-		outputLayerId: SharedOutputLayers.AUX,
+		sourceLayerId: SharedSourceLayer.AuxMixMinus,
+		outputLayerId: SharedOutputLayer.AUX,
 		content: {
 			timelineObjects: [getMixMinusTimelineObject(context, switcherInput, MixMinusPriority.MINUSKAM_CUE)]
 		}
@@ -44,7 +44,7 @@ export enum MixMinusPriority {
 }
 
 export function getMixMinusTimelineObject(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	switcherInput: number,
 	priority: MixMinusPriority
 ): TSR.TSRTimelineObj {
@@ -53,7 +53,7 @@ export function getMixMinusTimelineObject(
 			input: switcherInput
 		},
 		enable: {
-			while: `.${ControlClasses.OVERRIDEN_ON_MIX_MINUS}`
+			while: `.${ControlClasses.OVERRIDDEN_ON_MIX_MINUS}`
 		},
 		layer: SwitcherAuxLLayer.AuxVideoMixMinus,
 		priority

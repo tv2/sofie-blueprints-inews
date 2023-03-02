@@ -4,22 +4,22 @@ import {
 	CreateAdlibServer,
 	CueDefinitionAdLib,
 	CueDefinitionDVE,
-	ExtendedShowStyleContext,
 	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	PartDefinition,
+	ShowStyleContext,
 	t,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, CueType, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, CueType, SharedOutputLayer } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 import { MakeContentDVE } from '../content/dve'
 
 export async function EvaluateAdLib(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	parsedCue: CueDefinitionAdLib,
@@ -100,7 +100,7 @@ export async function EvaluateAdLib(
 			userDataManifest: {},
 			display: {
 				sourceLayerId: SourceLayer.PgmDVE,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				uniquenessId: getUniquenessIdDVE(cueDVE),
 				label: t(`${partDefinition.storyName}`),
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],

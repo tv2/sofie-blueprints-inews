@@ -15,7 +15,7 @@ import {
 	StripFolderFromDVEConfig,
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
-import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
+import { SharedGraphicLLayer, SharedSourceLayer } from 'tv2-constants'
 import {
 	renameBlueprintConfiguration,
 	renameBlueprintsConfigurationForAllVariants,
@@ -107,9 +107,9 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 */
 	forceSourceLayerToDefaults('1.4.6', OfftubeSourceLayer.PgmLive),
 
-	renameSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_graphicsFull', SharedSourceLayers.SelectedAdlibGraphicsFull),
-	renameSourceLayer('1.5.0', 'Offtube', 'studio0_full', SharedSourceLayers.PgmPilot),
-	renameSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_continuity', SharedSourceLayers.PgmContinuity),
+	renameSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_graphicsFull', SharedSourceLayer.SelectedAdlibGraphicsFull),
+	renameSourceLayer('1.5.0', 'Offtube', 'studio0_full', SharedSourceLayer.PgmPilot),
+	renameSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_continuity', SharedSourceLayer.PgmContinuity),
 	removeSourceLayer('1.5.0', 'Offtube', 'studio0_offtube_pgm_source_select'),
 	forceSourceLayerToDefaults('1.5.1', OfftubeSourceLayer.PgmDVE),
 
@@ -165,7 +165,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsTLF, 'GFX Telefon'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmGraphicsTema, 'GFX Tema'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.WallGraphics, 'GFX Wall'),
-	SetSourceLayerName('1.6.9', SharedSourceLayers.PgmPilotOverlay, 'GFX overlay (VCP)(shared)'),
+	SetSourceLayerName('1.6.9', SharedSourceLayer.PgmPilotOverlay, 'GFX overlay (VCP)(shared)'),
 	// PGM group
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmCam, 'Camera'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmDVEAdLib, 'DVE (adlib)'),
@@ -173,7 +173,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmPilot, 'GFX FULL (VCP)'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmContinuity, 'Continuity'),
 	// MUSIK group
-	SetSourceLayerName('1.6.9', SharedSourceLayers.PgmAudioBed, 'Audiobed (shared)'),
+	SetSourceLayerName('1.6.9', SharedSourceLayer.PgmAudioBed, 'Audiobed (shared)'),
 	// SEC group
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmAdlibGraphicCmd, 'GFX Cmd (adlib)'),
 	SetSourceLayerName('1.6.9', OfftubeSourceLayer.PgmSisyfosAdlibs, 'Sisyfos (adlib)'),

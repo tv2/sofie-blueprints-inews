@@ -10,26 +10,26 @@ import {
 } from 'blueprints-integration'
 import {
 	CueDefinitionLYD,
-	ExtendedShowStyleContext,
+	getTimeFromFrames,
 	getTimingEnable,
 	joinAssetToFolder,
 	literal,
 	PartDefinition,
-	TimeFromFrames
+	ShowStyleContext
 } from 'tv2-common'
 import {
 	AbstractLLayer,
 	AdlibTags,
 	ControlClasses,
 	SharedCasparLLayer,
-	SharedOutputLayers,
+	SharedOutputLayer,
 	SharedSisyfosLLayer,
-	SharedSourceLayers
+	SharedSourceLayer
 } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 
 export function EvaluateLYD(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -62,13 +62,13 @@ export function EvaluateLYD(
 			_rank: rank || 0,
 			externalId: part.externalId,
 			name: parsedCue.variant,
-			outputLayerId: SharedOutputLayers.MUSIK,
-			sourceLayerId: SharedSourceLayers.PgmAudioBed,
+			outputLayerId: SharedOutputLayer.MUSIK,
+			sourceLayerId: SharedSourceLayer.PgmAudioBed,
 			lifespan,
 			expectedDuration: stop
 				? 2000
 				: fade
-				? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
+				? Math.max(1000, fadeIn ? getTimeFromFrames(fadeIn) : 0)
 				: getTimingEnable(parsedCue).enable.duration ?? undefined,
 			content: LydContent(context.config, file, lydType, fadeIn, fadeOut),
 			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
@@ -83,12 +83,12 @@ export function EvaluateLYD(
 				? {
 						enable: {
 							start: getTimingEnable(parsedCue).enable.start,
-							duration: Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
+							duration: Math.max(1000, fadeIn ? getTimeFromFrames(fadeIn) : 0)
 						}
 				  }
 				: getTimingEnable(parsedCue)),
-			outputLayerId: SharedOutputLayers.MUSIK,
-			sourceLayerId: SharedSourceLayers.PgmAudioBed,
+			outputLayerId: SharedOutputLayer.MUSIK,
+			sourceLayerId: SharedSourceLayer.PgmAudioBed,
 			lifespan,
 			content: LydContent(context.config, file, lydType, fadeIn, fadeOut)
 		})
@@ -148,13 +148,13 @@ function LydContent(
 							type: TSR.Transition.MIX,
 							easing: TSR.Ease.LINEAR,
 							direction: TSR.Direction.LEFT,
-							duration: TimeFromFrames(fadeIn ?? config.studio.AudioBedSettings.fadeIn ?? 0)
+							duration: getTimeFromFrames(fadeIn ?? config.studio.AudioBedSettings.fadeIn ?? 0)
 						},
 						outTransition: {
 							type: TSR.Transition.MIX,
 							easing: TSR.Ease.LINEAR,
 							direction: TSR.Direction.LEFT,
-							duration: TimeFromFrames(fadeOut ?? config.studio.AudioBedSettings.fadeOut ?? 0)
+							duration: getTimeFromFrames(fadeOut ?? config.studio.AudioBedSettings.fadeOut ?? 0)
 						}
 					}
 				},

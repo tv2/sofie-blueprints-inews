@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { ExtendedStudioContext, literal, TransitionStyle } from 'tv2-common'
+import { literal, StudioContext, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from './helpers/config'
 import { OfftubeSisyfosLLayer } from './layers'
@@ -29,7 +29,7 @@ function filterMappings(
 }
 
 export function getBaseline(coreContext: IStudioContext): BlueprintResultBaseline {
-	const context = new ExtendedStudioContext<OfftubeStudioBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
+	const context = new StudioContext<OfftubeStudioBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
 	const mappings = coreContext.getStudioMappings()
 
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)

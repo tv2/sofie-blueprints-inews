@@ -16,7 +16,7 @@ import {
 	TIMELINE_OBJECT_DEFAULTS,
 	TimelineObjectProps,
 	TransitionStyle,
-	VideoSwitcherImpl
+	VideoSwitcherBase
 } from './index'
 
 const TRANSITION_MAP = {
@@ -28,7 +28,7 @@ const TRANSITION_MAP = {
 	[TransitionStyle.WIPE_FOR_GFX]: TSR.AtemTransitionStyle.WIPE
 }
 
-export class Atem extends VideoSwitcherImpl {
+export class Atem extends VideoSwitcherBase {
 	public readonly type = SwitcherType.ATEM
 
 	public isVideoSwitcherTimelineObject = (

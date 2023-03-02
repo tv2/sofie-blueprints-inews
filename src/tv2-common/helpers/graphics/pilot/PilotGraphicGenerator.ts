@@ -13,7 +13,6 @@ import {
 	Adlib,
 	assertUnreachable,
 	CueDefinitionGraphic,
-	ExtendedShowStyleContext,
 	FullPieceMetaData,
 	generateExternalId,
 	GetTagForFull,
@@ -24,6 +23,7 @@ import {
 	IsTargetingWall,
 	literal,
 	PieceMetaData,
+	ShowStyleContext,
 	SisyfosPersistMetaData,
 	t,
 	TV2ShowStyleConfig,
@@ -34,14 +34,14 @@ import {
 	AdlibTags,
 	GraphicEngine,
 	SharedGraphicLLayer,
-	SharedOutputLayers,
-	SharedSourceLayers,
+	SharedOutputLayer,
+	SharedSourceLayer,
 	TallyTags
 } from 'tv2-constants'
 import { Graphic } from '../index'
 
 export interface PilotGraphicProps {
-	context: ExtendedShowStyleContext
+	context: ShowStyleContext
 	partId: string
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
 	adlib?: Adlib
@@ -95,8 +95,8 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			display: {
 				_rank: (this.adlib && this.adlib.rank) || 0,
 				label: t(this.getTemplateName()),
-				sourceLayerId: SharedSourceLayers.PgmPilot,
-				outputLayerId: SharedOutputLayers.PGM,
+				sourceLayerId: SharedSourceLayer.PgmPilot,
+				outputLayerId: SharedOutputLayer.PGM,
 				content: this.getContent(),
 				uniquenessId: `gfx_${name}_${sourceLayerId}_${outputLayerId}`,
 				tags: [
@@ -118,7 +118,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			...(IsTargetingFull(this.engine) || IsTargetingWall(this.engine)
 				? { enable: { start: 0 } }
 				: {
-						enable: this.createTimingGraphic()
+						enable: this.getPieceEnable()
 				  }),
 			outputLayerId: this.getOutputLayer(),
 			sourceLayerId: this.getSourceLayer(),
@@ -161,8 +161,8 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			enable: {
 				start: 0
 			},
-			outputLayerId: SharedOutputLayers.SELECTED_ADLIB,
-			sourceLayerId: SharedSourceLayers.SelectedAdlibGraphicsFull,
+			outputLayerId: SharedOutputLayer.SELECTED_ADLIB,
+			sourceLayerId: SharedSourceLayer.SelectedAdlibGraphicsFull,
 			lifespan: PieceLifespan.OutOnSegmentEnd,
 			metaData: {
 				userData: {
@@ -194,30 +194,30 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			: this.config.studio.VizPilotGraphics.PrerollDuration
 	}
 
-	protected getSourceLayer(): SharedSourceLayers {
+	protected getSourceLayer(): SharedSourceLayer {
 		switch (this.engine) {
 			case 'WALL':
-				return SharedSourceLayers.WallGraphics
+				return SharedSourceLayer.WallGraphics
 			case 'TLF':
-				return SharedSourceLayers.PgmGraphicsTLF
+				return SharedSourceLayer.PgmGraphicsTLF
 			case 'OVL':
-				return SharedSourceLayers.PgmPilotOverlay
+				return SharedSourceLayer.PgmPilotOverlay
 			case 'FULL':
-				return SharedSourceLayers.PgmPilot
+				return SharedSourceLayer.PgmPilot
 			default:
 				assertUnreachable(this.engine)
 		}
 	}
 
-	protected getOutputLayer(): SharedOutputLayers {
+	protected getOutputLayer(): SharedOutputLayer {
 		switch (this.engine) {
 			case 'WALL':
-				return SharedOutputLayers.SEC
+				return SharedOutputLayer.SEC
 			case 'OVL':
-				return SharedOutputLayers.OVERLAY
+				return SharedOutputLayer.OVERLAY
 			case 'FULL':
 			case 'TLF':
-				return SharedOutputLayers.PGM
+				return SharedOutputLayer.PGM
 			default:
 				assertUnreachable(this.engine)
 		}

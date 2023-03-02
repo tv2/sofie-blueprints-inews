@@ -1,5 +1,5 @@
 import { BlueprintResultPart, HackPartMediaObjectSubscription, IBlueprintActionManifest } from 'blueprints-integration'
-import { AddScript, CreatePartServerBase, ExtendedSegmentContext, PartDefinition, ServerPartProps } from 'tv2-common'
+import { AddScript, CreatePartServerBase, PartDefinition, SegmentContext, ServerPartProps } from 'tv2-common'
 import { CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -7,7 +7,7 @@ import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartServer(
-	context: ExtendedSegmentContext<GalleryBlueprintConfig>,
+	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps
 ): Promise<BlueprintResultPart> {

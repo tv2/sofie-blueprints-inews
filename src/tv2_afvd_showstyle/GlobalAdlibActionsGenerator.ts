@@ -8,17 +8,17 @@ import {
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
-	ExtendedShowStyleContext,
 	generateExternalId,
 	GetTransitionAdLibActions,
 	replaySourceName,
+	ShowStyleContext,
 	SourceDefinitionKam,
 	SourceInfo,
 	SourceInfoToSourceDefinition,
 	SourceInfoType,
 	t
 } from 'tv2-common'
-import { AdlibActionType, AdlibTagCutToBox, AdlibTags, SharedOutputLayers, SourceType, TallyTags } from 'tv2-constants'
+import { AdlibActionType, AdlibTagCutToBox, AdlibTags, SharedOutputLayer, SourceType, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { GalleryBlueprintConfig } from './helpers/config'
 import { NUMBER_OF_DVE_BOXES } from './helpers/content/dve'
@@ -26,7 +26,7 @@ import { SourceLayer } from './layers'
 
 export class GlobalAdlibActionsGenerator {
 	private config: GalleryBlueprintConfig
-	constructor(private readonly context: ExtendedShowStyleContext<GalleryBlueprintConfig>) {
+	constructor(private readonly context: ShowStyleContext<GalleryBlueprintConfig>) {
 		this.config = context.config
 	}
 
@@ -106,7 +106,7 @@ export class GlobalAdlibActionsGenerator {
 				_rank: rank,
 				label: t(sourceDefinition.name),
 				sourceLayerId: SourceLayer.PgmCam,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				content: {},
 				tags: queue ? [AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT]
 			}
@@ -126,7 +126,7 @@ export class GlobalAdlibActionsGenerator {
 				_rank: 1,
 				label: t('Last Live'),
 				sourceLayerId: SourceLayer.PgmLive,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				tags: [AdlibTags.ADLIB_RECALL_LAST_LIVE]
 			}
 		}
@@ -153,7 +153,7 @@ export class GlobalAdlibActionsGenerator {
 					_rank: rank + 0.1 * box,
 					label: t(`${name} inp ${box + 1}`),
 					sourceLayerId: layer,
-					outputLayerId: SharedOutputLayers.SEC,
+					outputLayerId: SharedOutputLayer.SEC,
 					content: {},
 					tags: [AdlibTagCutToBox(box)]
 				}
@@ -187,7 +187,7 @@ export class GlobalAdlibActionsGenerator {
 					_rank: rank + 0.1 * box,
 					label: t(`${name} inp ${box + 1}`),
 					sourceLayerId: SourceLayer.PgmLocal,
-					outputLayerId: SharedOutputLayers.SEC,
+					outputLayerId: SharedOutputLayer.SEC,
 					content: {},
 					tags: [AdlibTagCutToBox(box), vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL]
 				}
@@ -214,7 +214,7 @@ export class GlobalAdlibActionsGenerator {
 					_rank: rank + 0.1 * box,
 					label: t(`Server inp ${box + 1}`),
 					sourceLayerId: SourceLayer.PgmServer,
-					outputLayerId: SharedOutputLayers.SEC,
+					outputLayerId: SharedOutputLayer.SEC,
 					content: {},
 					tags: [AdlibTagCutToBox(box)]
 				}
@@ -238,7 +238,7 @@ export class GlobalAdlibActionsGenerator {
 				_rank: 300,
 				label: t(`GFX Clear`),
 				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON],
 				currentPieceTags: [TallyTags.GFX_CLEAR],
@@ -262,7 +262,7 @@ export class GlobalAdlibActionsGenerator {
 				_rank: 400,
 				label: t(`GFX Altud`),
 				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				content: {},
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
@@ -303,7 +303,7 @@ export class GlobalAdlibActionsGenerator {
 				_rank: 400,
 				label: t(`Call Robot preset`),
 				sourceLayerId: SourceLayer.RobotCamera,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				tags: []
 			}
 		}
@@ -325,7 +325,7 @@ export class GlobalAdlibActionsGenerator {
 					_rank: 200 + i,
 					label: t(dveConfig.DVEName),
 					sourceLayerId: SourceLayer.PgmDVEAdLib,
-					outputLayerId: SharedOutputLayers.PGM,
+					outputLayerId: SharedOutputLayer.PGM,
 					tags: [AdlibTags.ADLIB_SELECT_DVE_LAYOUT, dveConfig.DVEName]
 				}
 			})
@@ -346,7 +346,7 @@ export class GlobalAdlibActionsGenerator {
 				_rank: 300,
 				label: t('Fade down persisted audio levels'),
 				sourceLayerId: SourceLayer.PgmSisyfosAdlibs,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				tags: [AdlibTags.ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS]
 			}
 		}

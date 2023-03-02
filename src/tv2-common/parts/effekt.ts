@@ -11,25 +11,25 @@ import {
 import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
-	ExtendedShowStyleContext,
 	getDskOnAirTimelineObjects,
 	GetTagForTransition,
+	getTimeFromFrames,
 	literal,
 	PartDefinition,
 	PieceMetaData,
-	TimeFromFrames,
+	ShowStyleContext,
 	TimelineBlueprintExt,
 	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { DSKRoles, SharedOutputLayers } from 'tv2-constants'
+import { DskRole, SharedOutputLayer } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { joinAssetToFolder, joinAssetToNetworkPath } from '../util'
 
 /** Has to be executed before calling EvaluateCues, as some cues may depend on it */
 export function CreateEffektForPartBase(
-	context: ExtendedShowStyleContext<TV2ShowStyleConfig>,
+	context: ShowStyleContext<TV2ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[],
 	layers: {
@@ -63,14 +63,14 @@ export function CreateEffektForPartBase(
 			CreateMixTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
 
 		pieces.push(blueprintPiece)
-		return CreateInTransitionForTransitionStyle(transition.duration)
+		return createInTransitionForTransitionStyle(transition.duration)
 	}
 
 	if (transition.style === TransitionStyle.DIP) {
 		const blueprintPiece: IBlueprintPiece =
-			CreateDipTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
+			createDipTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
 		pieces.push(blueprintPiece)
-		return CreateInTransitionForTransitionStyle(transition.duration)
+		return createInTransitionForTransitionStyle(transition.duration)
 	}
 
 	return {}
@@ -80,7 +80,7 @@ export function CreateEffektForPartInner<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ExtendedShowStyleContext<ShowStyleConfig>,
+	context: ShowStyleContext<ShowStyleConfig>,
 	pieces: IBlueprintPiece[],
 	effekt: string,
 	externalId: string,
@@ -91,11 +91,6 @@ export function CreateEffektForPartInner<
 	},
 	label: string
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | false {
-	if (!context.config.showStyle.BreakerConfig) {
-		context.core.notifyUserWarning(`Jingles have not been configured`)
-		return false
-	}
-
 	const effektConfig = context.config.showStyle.BreakerConfig.find(
 		(conf) => conf.BreakerName.toString().trim().toUpperCase() === effekt.toUpperCase()
 	)
@@ -116,8 +111,8 @@ export function CreateEffektForPartInner<
 	pieces.push({
 		externalId,
 		name: label,
-		enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
-		outputLayerId: SharedOutputLayers.JINGLE,
+		enable: { start: 0, duration: getTimeFromFrames(Number(effektConfig.Duration)) },
+		outputLayerId: SharedOutputLayer.JINGLE,
 		sourceLayerId: layers.sourceLayer,
 		lifespan: PieceLifespan.WithinPart,
 		pieceType: IBlueprintPieceType.InTransition,
@@ -148,7 +143,7 @@ export function CreateEffektForPartInner<
 						file: fileName
 					}
 				}),
-				...getDskOnAirTimelineObjects(context, DSKRoles.JINGLE, {
+				...getDskOnAirTimelineObjects(context, DskRole.JINGLE, {
 					start: Number(context.config.studio.CasparPrerollDuration)
 				}),
 				literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
@@ -170,12 +165,12 @@ export function CreateEffektForPartInner<
 
 	return {
 		inTransition: {
-			blockTakeDuration: TimeFromFrames(Number(effektConfig.Duration)) + context.config.studio.CasparPrerollDuration,
+			blockTakeDuration: getTimeFromFrames(Number(effektConfig.Duration)) + context.config.studio.CasparPrerollDuration,
 			previousPartKeepaliveDuration:
-				TimeFromFrames(Number(effektConfig.StartAlpha)) + context.config.studio.CasparPrerollDuration,
+				getTimeFromFrames(Number(effektConfig.StartAlpha)) + context.config.studio.CasparPrerollDuration,
 			partContentDelayDuration:
-				TimeFromFrames(Number(effektConfig.Duration)) -
-				TimeFromFrames(Number(effektConfig.EndAlpha)) +
+				getTimeFromFrames(Number(effektConfig.Duration)) -
+				getTimeFromFrames(Number(effektConfig.EndAlpha)) +
 				context.config.studio.CasparPrerollDuration
 		},
 		autoNext: false
@@ -209,12 +204,12 @@ function createEffectBlueprintPiece(
 	return {
 		enable: {
 			start: 0,
-			duration: Math.max(TimeFromFrames(durationInFrames), 1000)
+			duration: Math.max(getTimeFromFrames(durationInFrames), 1000)
 		},
 		externalId,
 		name: `${name.toUpperCase()} ${durationInFrames}`,
 		sourceLayerId: sourceLayer,
-		outputLayerId: SharedOutputLayers.JINGLE,
+		outputLayerId: SharedOutputLayer.JINGLE,
 		lifespan: PieceLifespan.WithinPart,
 		tags,
 		content: {
@@ -224,8 +219,8 @@ function createEffectBlueprintPiece(
 	}
 }
 
-export function CreateInTransitionForTransitionStyle(durationInFrames: number): Pick<IBlueprintPart, 'inTransition'> {
-	const transitionDuration = TimeFromFrames(durationInFrames)
+export function createInTransitionForTransitionStyle(durationInFrames: number): Pick<IBlueprintPart, 'inTransition'> {
+	const transitionDuration = getTimeFromFrames(durationInFrames)
 	return {
 		inTransition: {
 			previousPartKeepaliveDuration: transitionDuration,
@@ -235,7 +230,7 @@ export function CreateInTransitionForTransitionStyle(durationInFrames: number): 
 	}
 }
 
-export function CreateDipTransitionBlueprintPieceForPart(
+export function createDipTransitionBlueprintPieceForPart(
 	externalId: string,
 	durationInFrames: number,
 	sourceLayer: string

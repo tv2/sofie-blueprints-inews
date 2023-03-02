@@ -2,17 +2,17 @@ import {
 	Adlib,
 	CueDefinitionTelefon,
 	EvaluateCueResult,
-	ExtendedShowStyleContext,
 	GetSisyfosTimelineObjForTelefon,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { SharedOutputLayer } from 'tv2-constants'
 import { SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../config'
 import { EvaluateCueGraphic } from './graphic'
 
 export function EvaluateTelefon(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partId: string,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTelefon,
@@ -39,8 +39,8 @@ export function EvaluateTelefon(
 function findTelefonPiece(result: EvaluateCueResult) {
 	return result.pieces.find(
 		(p) =>
-			p.outputLayerId === SharedOutputLayers.OVERLAY ||
-			p.outputLayerId === SharedOutputLayers.PGM ||
-			p.outputLayerId === SharedOutputLayers.SEC
+			p.outputLayerId === SharedOutputLayer.OVERLAY ||
+			p.outputLayerId === SharedOutputLayer.PGM ||
+			p.outputLayerId === SharedOutputLayer.SEC
 	)
 }

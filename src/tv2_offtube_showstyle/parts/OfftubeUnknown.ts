@@ -7,12 +7,12 @@ import {
 } from 'blueprints-integration'
 import {
 	AddScript,
-	ApplyFullGraphicPropertiesToPart,
-	ExtendedSegmentContext,
+	applyFullGraphicPropertiesToPart,
 	GetJinglePartProperties,
 	GraphicIsPilot,
 	PartDefinition,
-	PartTime
+	PartTime,
+	SegmentContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { OfftubeBlueprintConfig } from '../helpers/config'
@@ -20,7 +20,7 @@ import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export async function CreatePartUnknown(
-	context: ExtendedSegmentContext<OfftubeBlueprintConfig>,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number,
 	asAdlibs?: boolean
@@ -46,7 +46,7 @@ export async function CreatePartUnknown(
 		partDefinition.cues.some((cue) => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
 		!partDefinition.cues.filter((c) => c.type === CueType.Jingle).length
 	) {
-		ApplyFullGraphicPropertiesToPart(context.config, part)
+		applyFullGraphicPropertiesToPart(context.config, part)
 	}
 
 	await OfftubeEvaluateCues(

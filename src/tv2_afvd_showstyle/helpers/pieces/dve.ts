@@ -4,22 +4,22 @@ import {
 	calculateTime,
 	CueDefinitionDVE,
 	DVEPieceMetaData,
-	ExtendedShowStyleContext,
 	generateExternalId,
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
+	ShowStyleContext,
 	t,
 	TemplateIsValid
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayer } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateDVE(
-	context: ExtendedShowStyleContext<GalleryBlueprintConfig>,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
@@ -60,7 +60,7 @@ export function EvaluateDVE(
 				userDataManifest: {},
 				display: {
 					_rank: rank,
-					outputLayerId: SharedOutputLayers.PGM,
+					outputLayerId: SharedOutputLayer.PGM,
 					sourceLayerId: SourceLayer.PgmDVE,
 					label: t(`${partDefinition.storyName} DVE: ${parsedCue.template}`),
 					tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
@@ -81,7 +81,7 @@ export function EvaluateDVE(
 						start,
 						...(end ? { duration: end - start } : {})
 					},
-					outputLayerId: SharedOutputLayers.PGM,
+					outputLayerId: SharedOutputLayer.PGM,
 					sourceLayerId: SourceLayer.PgmDVE,
 					lifespan: PieceLifespan.WithinPart,
 					toBeQueued: true,

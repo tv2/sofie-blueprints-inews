@@ -5,7 +5,7 @@ import { prefixLayer } from '../../../tv2-common/__tests__/testUtil'
 import { TV2StudioConfigBase } from '../../../tv2-common/blueprintConfig'
 import { AtemSourceIndex } from '../../../types/atem'
 import { AuxProps, DskProps, MixEffectProps, SwitcherType, TransitionStyle } from '../types'
-import { VideoSwitcherImpl } from '../VideoSwitcher'
+import { VideoSwitcherBase } from '../VideoSwitcher'
 
 const DURATION: number = 50
 
@@ -13,7 +13,7 @@ function setupAtem(studioConfigOverrides?: Partial<TV2StudioConfigBase>) {
 	const context = makeMockGalleryContext({
 		studioConfig: { SwitcherType: SwitcherType.ATEM, ...studioConfigOverrides }
 	})
-	return VideoSwitcherImpl.getVideoSwitcher(context.core, context.config, context.uniformConfig)
+	return VideoSwitcherBase.getVideoSwitcher(context.core, context.config, context.uniformConfig)
 }
 
 describe('ATEM', () => {

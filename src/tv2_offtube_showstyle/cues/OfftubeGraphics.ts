@@ -4,16 +4,16 @@ import {
 	CreatePilotGraphic,
 	CueDefinitionGraphic,
 	EvaluateCueResult,
-	ExtendedShowStyleContext,
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 
 export function OfftubeEvaluateGrafikCaspar(
-	context: ExtendedShowStyleContext<OfftubeBlueprintConfig>,
+	context: ShowStyleContext<OfftubeBlueprintConfig>,
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	partDefinition: PartDefinition,

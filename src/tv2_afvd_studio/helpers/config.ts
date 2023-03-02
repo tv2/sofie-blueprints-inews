@@ -1,20 +1,16 @@
 import { IBlueprintConfig, ICommonContext } from 'blueprints-integration'
 import {
-	MediaPlayerConfig,
-	SourceMapping,
+	ProcessedStudioConfig,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TableConfigItemSourceMappingWithSisyfos,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { DSKRoles } from 'tv2-constants'
+import { DskRole } from 'tv2-constants'
 import { parseMediaPlayers, parseSources } from './sources'
 
-export interface GalleryStudioConfig {
+export interface GalleryStudioConfig extends ProcessedStudioConfig {
 	studio: StudioConfig
-	sources: SourceMapping
-	mediaPlayers: MediaPlayerConfig // Atem Input Ids
-	dsk: TableConfigItemDSK[]
 }
 
 export interface StudioConfig extends TV2StudioConfigBase {
@@ -64,9 +60,9 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Fill: 21,
 		Toggle: true,
 		DefaultOn: true,
-		Roles: [DSKRoles.FULLGFX, DSKRoles.OVERLAYGFX],
+		Roles: [DskRole.FULLGFX, DskRole.OVERLAYGFX],
 		Clip: 50,
 		Gain: 12.5
 	},
-	{ Number: 1, Key: 31, Fill: 29, Toggle: true, DefaultOn: false, Roles: [DSKRoles.JINGLE], Clip: 50, Gain: 12.5 }
+	{ Number: 1, Key: 31, Fill: 29, Toggle: true, DefaultOn: false, Roles: [DskRole.JINGLE], Clip: 50, Gain: 12.5 }
 ]

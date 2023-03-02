@@ -1,5 +1,5 @@
 import { IStudioContext, TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { literal, TimeFromFrames, TV2StudioConfig, UniformConfig } from 'tv2-common'
+import { FRAME_RATE, getTimeFromFrames, literal, TimeFromFrames, TV2StudioConfig, UniformConfig } from 'tv2-common'
 import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '../layers'
@@ -16,7 +16,7 @@ import {
 	TimelineObjectProps,
 	TransitionStyle
 } from './types'
-import { VideoSwitcherImpl } from './VideoSwitcher'
+import { VideoSwitcherBase } from './VideoSwitcher'
 
 const MAX_REGULAR_INPUT_NUMBER = 1000 // everything >= is assumed a special input
 
@@ -42,7 +42,7 @@ const TRANSITION_MAP: Record<TransitionStyle, TSR.TriCasterTransitionEffect> = {
 
 const DVE_OVERLAY_INPUT_NUMBER = 5
 
-export class TriCaster extends VideoSwitcherImpl {
+export class TriCaster extends VideoSwitcherBase {
 	public readonly type = SwitcherType.ATEM
 
 	public isMixEffect = TSR.isTimelineObjTriCasterME
@@ -268,7 +268,7 @@ export class TriCaster extends VideoSwitcherImpl {
 		if (transition === TransitionStyle.WIPE_FOR_GFX) {
 			durationInFrames = this.config.studio.HTMLGraphics.TransitionSettings.wipeRate
 		}
-		return TimeFromFrames(durationInFrames ?? 25) / 1000
+		return getTimeFromFrames(durationInFrames ?? FRAME_RATE) / 1000
 	}
 
 	private getBaseProperties(

@@ -7,19 +7,13 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import {
-	calculateTime,
-	CueDefinitionBackgroundLoop,
-	ExtendedShowStyleContext,
-	literal,
-	TV2ShowStyleConfig
-} from 'tv2-common'
-import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { calculateTime, CueDefinitionBackgroundLoop, literal, ShowStyleContext, TV2ShowStyleConfig } from 'tv2-common'
+import { SharedGraphicLLayer, SharedOutputLayer } from 'tv2-constants'
 import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueBackgroundLoop(
-	context: ExtendedShowStyleContext,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -38,7 +32,7 @@ export function EvaluateCueBackgroundLoop(
 				_rank: rank || 0,
 				externalId: partId,
 				name: fileName,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmDVEBackground,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -55,7 +49,7 @@ export function EvaluateCueBackgroundLoop(
 				enable: {
 					start
 				},
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmDVEBackground,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -73,7 +67,7 @@ export function EvaluateCueBackgroundLoop(
 				_rank: rank || 0,
 				externalId: partId,
 				name: parsedCue.backgroundLoop,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmFullBackground,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -90,7 +84,7 @@ export function EvaluateCueBackgroundLoop(
 				enable: {
 					start
 				},
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmFullBackground,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({

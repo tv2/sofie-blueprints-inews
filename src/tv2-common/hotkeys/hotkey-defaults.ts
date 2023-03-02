@@ -1,4 +1,4 @@
-import { SharedSourceLayers } from 'tv2-constants'
+import { SharedSourceLayer } from 'tv2-constants'
 import { literal } from '../util'
 import { GlobalHotkeyAssignments } from './global'
 import { RundownViewHotkeyAssignments } from './rundownView'
@@ -35,44 +35,44 @@ export const defaultHotkeys: TV2Hotkeys = {
 		clear: [
 			{
 				sourceLayers: [
-					SharedSourceLayers.PgmGraphicsIdent,
-					SharedSourceLayers.PgmGraphicsTop,
-					SharedSourceLayers.PgmGraphicsLower,
-					SharedSourceLayers.PgmGraphicsHeadline,
-					SharedSourceLayers.PgmGraphicsTema,
-					SharedSourceLayers.PgmGraphicsOverlay,
-					SharedSourceLayers.PgmPilotOverlay
+					SharedSourceLayer.PgmGraphicsIdent,
+					SharedSourceLayer.PgmGraphicsTop,
+					SharedSourceLayer.PgmGraphicsLower,
+					SharedSourceLayer.PgmGraphicsHeadline,
+					SharedSourceLayer.PgmGraphicsTema,
+					SharedSourceLayer.PgmGraphicsOverlay,
+					SharedSourceLayer.PgmPilotOverlay
 				],
 				key: 'KeyQ',
 				name: 'overlay ALT UD'
 			},
 			{
-				sourceLayers: [SharedSourceLayers.PgmGraphicsIdent],
+				sourceLayers: [SharedSourceLayer.PgmGraphicsIdent],
 				key: 'Ctrl+Shift+KeyA',
 				name: 'ovl: ident OUT'
 			},
 			{
-				sourceLayers: [SharedSourceLayers.PgmGraphicsTop],
+				sourceLayers: [SharedSourceLayer.PgmGraphicsTop],
 				key: 'Ctrl+Shift+KeyS',
 				name: 'ovl: top OUT'
 			},
 			{
-				sourceLayers: [SharedSourceLayers.PgmGraphicsLower],
+				sourceLayers: [SharedSourceLayer.PgmGraphicsLower],
 				key: 'Ctrl+Shift+KeyD',
 				name: 'ovl:lower OUT'
 			},
 			{
-				sourceLayers: [SharedSourceLayers.PgmGraphicsHeadline],
+				sourceLayers: [SharedSourceLayer.PgmGraphicsHeadline],
 				key: 'Ctrl+Shift+KeyF',
 				name: 'ovl: headline OUT'
 			},
 			{
-				sourceLayers: [SharedSourceLayers.PgmGraphicsTema],
+				sourceLayers: [SharedSourceLayer.PgmGraphicsTema],
 				key: 'Ctrl+Shift+KeyG',
 				name: 'ovl: tema OUT'
 			},
 			{
-				sourceLayers: [SharedSourceLayers.PgmAudioBed],
+				sourceLayers: [SharedSourceLayer.PgmAudioBed],
 				key: 'Minus',
 				name: 'STOP soundpl.'
 			}

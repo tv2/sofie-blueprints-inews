@@ -6,8 +6,8 @@ import {
 	TSR
 } from 'blueprints-integration'
 import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
-import { AdlibTags, NoteType, PartType, SharedOutputLayers, SharedSourceLayers, SourceType } from 'tv2-constants'
-import { makeMockGalleryContext, SegmentUserContext } from '../../../../__mocks__/context'
+import { AdlibTags, NoteType, PartType, SharedOutputLayer, SharedSourceLayer, SourceType } from 'tv2-constants'
+import { makeMockGalleryContext, SegmentUserContextMock } from '../../../../__mocks__/context'
 
 const CONFIG = makeMockGalleryContext().config
 const MOCK_PART = literal<PartDefinitionKam>({
@@ -70,8 +70,8 @@ describe('lyd', () => {
 		EvaluateLYD(context, pieces, adlibPieces, actions, parsedCue, MOCK_PART)
 
 		expect(pieces.length).toEqual(0)
-		expect((context.core as SegmentUserContext).getNotes().length).toEqual(1)
-		expect((context.core as SegmentUserContext).getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
+		expect((context.core as SegmentUserContextMock).getNotes().length).toEqual(1)
+		expect((context.core as SegmentUserContextMock).getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
 	})
 
 	test('Lyd adlib', () => {
@@ -86,8 +86,8 @@ describe('lyd', () => {
 		expect(adlibPieces[0]).toMatchObject(
 			literal<Partial<IBlueprintAdLibPiece>>({
 				name: 'SN_INTRO',
-				outputLayerId: SharedOutputLayers.MUSIK,
-				sourceLayerId: SharedSourceLayers.PgmAudioBed,
+				outputLayerId: SharedOutputLayer.MUSIK,
+				sourceLayerId: SharedSourceLayer.PgmAudioBed,
 				lifespan: PieceLifespan.OutOnRundownChange,
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})

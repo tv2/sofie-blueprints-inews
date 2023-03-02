@@ -17,12 +17,12 @@ import {
 import _ = require('underscore')
 import { AtemToTricasterDveConverter } from './atemToTricasterDveConverter'
 
-export abstract class VideoSwitcherImpl implements VideoSwitcher {
+export abstract class VideoSwitcherBase implements VideoSwitcher {
 	public static getVideoSwitcher(
 		core: IStudioContext,
 		config: TV2StudioConfig,
 		uniformConfig: UniformConfig
-	): VideoSwitcherImpl {
+	): VideoSwitcherBase {
 		return config.studio.SwitcherType === SwitcherType.ATEM
 			? new Atem(core, config, uniformConfig)
 			: new TriCaster(core, config, uniformConfig, new AtemToTricasterDveConverter())

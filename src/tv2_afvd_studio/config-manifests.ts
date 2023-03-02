@@ -223,7 +223,7 @@ export const manifestAFVDSourcesReplay = MakeConfigForSources('Replay', 'Replay'
 export const manifestAFVDSourcesABMediaPlayers: ConfigManifestEntryTable = {
 	id: 'ABMediaPlayers',
 	name: 'Media Players inputs',
-	description: 'ATEM inputs for A/B media players',
+	description: 'Video Switcher inputs for A/B media players',
 	type: ConfigManifestEntryType.TABLE,
 	required: false,
 	defaultVal: literal<Array<TableConfigItemSourceMapping & TableConfigItemValue[0]>>([
@@ -250,7 +250,7 @@ export const manifestAFVDSourcesABMediaPlayers: ConfigManifestEntryTable = {
 		},
 		{
 			id: 'SwitcherSource',
-			name: 'Switcher input',
+			name: 'Video Switcher input',
 			description: 'Video Switcher input for Media player',
 			type: ConfigManifestEntryType.INT,
 			required: true,
@@ -307,7 +307,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'SwitcherSource.SplitArtFill',
-		name: 'Switcher Split Screen Art Fill',
+		name: 'Video Switcher Split Screen Art Fill',
 		description: 'Video Switcher input for Split Screen Art Fill',
 		type: ConfigManifestEntryType.INT,
 		required: true,
@@ -315,7 +315,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'SwitcherSource.SplitArtKey',
-		name: 'Switcher Split Screen Art Key',
+		name: 'Video Switcher Split Screen Art Key',
 		description: 'Video Switcher input for Split Screen Art Key',
 		type: ConfigManifestEntryType.INT,
 		required: true,
@@ -323,7 +323,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'SwitcherSource.Default',
-		name: 'Switcher Default source',
+		name: 'Video Switcher Default source',
 		description: 'Video Switcher default source',
 		type: ConfigManifestEntryType.INT,
 		required: true,
@@ -331,7 +331,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'SwitcherSource.MixMinusDefault',
-		name: 'Switcher Mix-minus default source',
+		name: 'Video Switcher Mix-minus default source',
 		description: 'Video Switcher default source for mix-minus',
 		type: ConfigManifestEntryType.INT,
 		required: true,
@@ -339,7 +339,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'SwitcherSource.Continuity',
-		name: 'Switcher continuity source',
+		name: 'Video Switcher continuity source',
 		description: 'Video Switcher input for continuity',
 		type: ConfigManifestEntryType.INT,
 		required: true,
@@ -347,7 +347,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'SwitcherSource.Dip',
-		name: 'Switcher Dip Source',
+		name: 'Video Switcher Dip Source',
 		description: 'Video Switcher source for the Dip - should match the desired input in the Video Switcher',
 		type: ConfigManifestEntryType.INT,
 		required: true,
@@ -495,7 +495,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'VizPilotGraphics.FullGraphicBackground',
 		name: 'Full frame grafik background source',
-		description: 'ATEM source for mos full-frame grafik background source',
+		description: 'Video Switcher source for mos full-frame grafik background source',
 		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 36
