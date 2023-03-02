@@ -624,13 +624,14 @@ describe('TriCaster', () => {
 				}
 			} as any as TV2StudioConfigBase)
 			const testee: TriCaster = createTestee({ config: instance(config) })
-			const content: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(getBasicDveProps())[0]
+			const basicDveProps = getBasicDveProps()
+			const content: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(basicDveProps)[0]
 				.content as TSR.TimelineObjTriCasterME['content']
 			const result: Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> = content.me.keyers!
 
 			expect(result).toBeTruthy()
 			expect(result.dsk1).toBeTruthy()
-			expect(result.dsk1.input).toBe(`input${artFillSource}`)
+			expect(result.dsk1.input).toBe(`input${basicDveProps.content.artFillSource}`)
 			expect(result.dsk1.onAir).toBeTruthy()
 			expect(result.dsk1.transitionEffect).toBe('cut')
 		})

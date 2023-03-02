@@ -40,8 +40,6 @@ const TRANSITION_MAP: Record<TransitionStyle, TSR.TriCasterTransitionEffect> = {
 	[TransitionStyle.STING]: 5 // not really supported??
 }
 
-const DVE_OVERLAY_INPUT_NUMBER = 5
-
 export class TriCaster extends VideoSwitcherBase {
 	public readonly type = SwitcherType.ATEM
 
@@ -228,7 +226,7 @@ export class TriCaster extends VideoSwitcherBase {
 					me: literal<TSR.TriCasterMixEffectInEffectMode>({
 						transitionEffect: 8,
 						layers: this.generateDveBoxLayers(dveProps.content.boxes),
-						keyers: this.generateOverlayKeyer()
+						keyers: this.generateOverlayKeyer(dveProps.content.artFillSource)
 					})
 				}
 			})
@@ -271,10 +269,12 @@ export class TriCaster extends VideoSwitcherBase {
 		}
 	}
 
-	private generateOverlayKeyer(): Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> {
+	private generateOverlayKeyer(
+		overlaySource: number | SpecialInput
+	): Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> {
 		return {
 			dsk1: {
-				input: this.getInputName(this.config.studio.SwitcherSource?.SplitArtFill ?? DVE_OVERLAY_INPUT_NUMBER),
+				input: this.getInputName(overlaySource),
 				onAir: true,
 				transitionEffect: 'cut'
 			}
