@@ -7,10 +7,11 @@ const ATEM_HEIGHT = 18
 const ATEM_CROP_LEFT_RIGHT_MAX_VALUE = 32000
 const ATEM_CROP_TOP_BOTTOM_MAX_VALUE = 18000
 
-const TRICASTER_WIDTH = (2 / 9) * 16
+const TRICASTER_HEIGHT = 2
+const TRICASTER_WIDTH = TRICASTER_HEIGHT * (16 / 9)
 
-export class AtemToTricasterDveConverter implements TriCasterDveConverter {
-	public convertPosition(x: number, y: number): TSR.TriCasterLayer['position'] {
+export class AtemToTriCasterDveConverter implements TriCasterDveConverter {
+	public convertPosition(x: number, y: number): NonNullable<TSR.TriCasterLayer['position']> {
 		return {
 			x: this.convertPositionX(x),
 			y: this.convertPositionY(y)
@@ -27,7 +28,7 @@ export class AtemToTricasterDveConverter implements TriCasterDveConverter {
 		return ((positionPercentage * 2) / 100) * -1
 	}
 
-	public convertScale(atemSize: number): TSR.TriCasterLayer['scale'] {
+	public convertScale(atemSize: number): NonNullable<TSR.TriCasterLayer['scale']> {
 		return {
 			x: atemSize / 1000,
 			y: atemSize / 1000

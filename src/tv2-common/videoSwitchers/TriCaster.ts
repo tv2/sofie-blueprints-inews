@@ -181,7 +181,9 @@ export class TriCaster extends VideoSwitcherBase {
 		return timelineObject
 	}
 
-	public isDveBoxes = (timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean => {
+	public isDveBoxes = (
+		timelineObject: TimelineObjectCoreExt<unknown, unknown>
+	): timelineObject is TSR.TimelineObjTriCasterME => {
 		// @todo: this is ugly, but works
 		return (
 			TSR.isTimelineObjTriCasterME(timelineObject) &&
@@ -198,22 +200,18 @@ export class TriCaster extends VideoSwitcherBase {
 			return timelineObject
 		}
 
-		const layers: Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> = (
-			(timelineObject as TSR.TimelineObjTriCasterME).content.me as TSR.TriCasterMixEffectInEffectMode
-		).layers!
-
-		this.assignInputIfPlaceholder(layers.a!, input)
-		this.assignInputIfPlaceholder(layers.b!, input)
-		this.assignInputIfPlaceholder(layers.c!, input)
-		this.assignInputIfPlaceholder(layers.d!, input)
+		const dveMixEffect = timelineObject.content.me as TSR.TriCasterMixEffectInEffectMode
+		const layers = dveMixEffect.layers as NonNullable<TSR.TriCasterMixEffectInEffectMode['layers']>
+		Object.values(layers).forEach((layer) => this.assignInputIfPlaceholder(layer, input))
 		return timelineObject
 	}
 
 	public assignInputIfPlaceholder(layer: TSR.TriCasterLayer, input: number | SpecialInput): void {
 		const dveServerPlaceholder = 'input-1'
-		if (layer && layer.input === dveServerPlaceholder) {
-			layer.input = this.getInputName(input)
+		if (layer.input !== dveServerPlaceholder) {
+			return
 		}
+		layer.input = this.getInputName(input)
 	}
 
 	public getDveTimelineObjects(dveProps: DveProps): TSR.TSRTimelineObj[] {

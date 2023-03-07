@@ -1,5 +1,5 @@
 import { TSR } from 'blueprints-integration'
-import { AtemToTricasterDveConverter } from '../atemToTricasterDveConverter'
+import { AtemToTriCasterDveConverter } from '../atemToTriCasterDveConverter'
 
 describe('AtemToTricasterDveConverter', () => {
 	describe('convertPosition', () => {
@@ -8,7 +8,7 @@ describe('AtemToTricasterDveConverter', () => {
 		})
 
 		function testConvertPositionX(testValue: number, expectedResult: number): void {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['position'] = testee.convertPosition(testValue, 0)
 			expect(result!.x).toBeCloseTo(expectedResult, 2)
 		}
@@ -50,7 +50,7 @@ describe('AtemToTricasterDveConverter', () => {
 		})
 
 		function testConvertPositionY(testValue: number, expectedResult: number): void {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['position'] = testee.convertPosition(0, testValue)
 			expect(result!.y).toBeCloseTo(expectedResult, 2)
 		}
@@ -94,7 +94,7 @@ describe('AtemToTricasterDveConverter', () => {
 		})
 
 		function testConvertScale(testValue: number, expectedResult: number): void {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['scale'] = testee.convertScale(testValue)!
 			expect(result.x).toBe(expectedResult)
 			expect(result.y).toBe(expectedResult)
@@ -115,7 +115,7 @@ describe('AtemToTricasterDveConverter', () => {
 
 	describe('convertCrop', () => {
 		it('has cropped set to false, return 0 for all', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(false, 12, 12, 12, 12))!
 			expect(result.up).toBe(0)
 			expect(result.down).toBe(0)
@@ -140,7 +140,7 @@ describe('AtemToTricasterDveConverter', () => {
 		}
 
 		it('has cropped set to true, but no values, return 0 for all', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 0, 0, 0, 0))!
 			expect(result.up).toBe(0)
 			expect(result.down).toBe(0)
@@ -149,49 +149,49 @@ describe('AtemToTricasterDveConverter', () => {
 		})
 
 		it('has crop top 100, return crop up 0.555', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 100, 0, 0, 0))!
 			expect(result.up).toBeCloseTo(0.555)
 		})
 
 		it('has crop top 8500, return crop up 47.222', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 8500, 0, 0, 0))!
 			expect(result.up).toBeCloseTo(47.222)
 		})
 
 		it('has crop bottom 100, return crop down 0.555', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 0, 100, 0, 0))!
 			expect(result.down).toBeCloseTo(0.555)
 		})
 
 		it('has crop bottom 8500, return crop down 47.222', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 0, 8500, 0, 0))!
 			expect(result.down).toBeCloseTo(47.222)
 		})
 
 		it('has crop left 100, return crop left 0.312', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 0, 0, 100, 0))!
 			expect(result.left).toBeCloseTo(0.312)
 		})
 
 		it('has crop left 6200, return crop left 19.375', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 0, 0, 6200, 0))!
 			expect(result.left).toBeCloseTo(19.375)
 		})
 
 		it('has crop right 100, return crop right 0.312', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 0, 0, 0, 100))!
 			expect(result.right).toBeCloseTo(0.312)
 		})
 
 		it('has crop right 6200, return crop right 19.375', () => {
-			const testee = new AtemToTricasterDveConverter()
+			const testee = new AtemToTriCasterDveConverter()
 			const result: TSR.TriCasterLayer['crop'] = testee.convertCrop(createCropObject(true, 0, 0, 0, 6200))!
 			expect(result.right).toBeCloseTo(19.375)
 		})
