@@ -3,8 +3,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
 import {
 	CueDefinition,
@@ -13,9 +12,10 @@ import {
 	EvaluateCuesBase,
 	EvaluateCuesOptions,
 	EvaluateLYD,
-	PartDefinition
+	PartDefinition,
+	ShowStyleContext
 } from 'tv2-common'
-import { BlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
+import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
 import { EvaluateCueDesign } from './design'
@@ -28,8 +28,7 @@ import { EvaluateCueRouting } from './routing'
 import { EvaluateTelefon } from './telefon'
 
 export async function EvaluateCues(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
@@ -56,7 +55,6 @@ export async function EvaluateCues(
 			EvaluateCueRobotCamera
 		},
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

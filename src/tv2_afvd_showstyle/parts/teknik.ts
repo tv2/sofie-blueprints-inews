@@ -4,21 +4,19 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, PartDefinition, PartTime } from 'tv2-common'
-import { BlueprintConfig } from '../helpers/config'
+import { AddScript, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export async function CreatePartTeknik(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
@@ -32,7 +30,6 @@ export async function CreatePartTeknik(
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

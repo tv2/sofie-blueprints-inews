@@ -4,8 +4,7 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
 import {
 	AddScript,
@@ -13,50 +12,45 @@ import {
 	CueDefinitionJingle,
 	GetJinglePartProperties,
 	PartDefinition,
-	PartTime
+	PartTime,
+	ShowStyleContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { BlueprintConfig } from '../helpers/config'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export async function CreatePartIntro(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 
-	const jingleCue = partDefinition.cues.find(cue => {
+	const jingleCue = partDefinition.cues.find((cue) => {
 		const parsedCue = cue
 		return parsedCue.type === CueType.Jingle
 	})
 
 	if (!jingleCue) {
-		context.notifyUserWarning(`Intro must contain a jingle`)
+		context.core.notifyUserWarning(`Intro must contain a jingle`)
 		return CreatePartInvalid(partDefinition)
 	}
 
 	const parsedJingle = jingleCue as CueDefinitionJingle
 
-	if (!config.showStyle.BreakerConfig) {
-		context.notifyUserWarning(`Jingles have not been configured`)
-		return CreatePartInvalid(partDefinition)
-	}
-
-	const jingle = config.showStyle.BreakerConfig.find(jngl =>
+	const jingle = context.config.showStyle.BreakerConfig.find((jngl) =>
 		jngl.BreakerName ? jngl.BreakerName.toString().toUpperCase() === parsedJingle.clip.toString().toUpperCase() : false
 	)
 	if (!jingle) {
-		context.notifyUserWarning(`Jingle ${parsedJingle.clip} is not configured`)
+		context.core.notifyUserWarning(`Jingle ${parsedJingle.clip} is not configured`)
 		return CreatePartInvalid(partDefinition)
 	}
 
 	const overlapFrames = jingle.EndAlpha
 
 	if (overlapFrames === undefined) {
-		context.notifyUserWarning(`Jingle ${parsedJingle.clip} does not have an out-duration set.`)
+		context.core.notifyUserWarning(`Jingle ${parsedJingle.clip} does not have an out-duration set.`)
 		return CreatePartInvalid(partDefinition)
 	}
 
@@ -73,12 +67,11 @@ export async function CreatePartIntro(
 
 	part = {
 		...part,
-		...GetJinglePartProperties(context, config, partDefinition)
+		...GetJinglePartProperties(context, partDefinition)
 	}
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

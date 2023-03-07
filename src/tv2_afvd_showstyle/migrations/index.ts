@@ -32,7 +32,6 @@ import {
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps
 } from './util'
-import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
 
@@ -44,7 +43,6 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
  */
 
 export const showStyleMigrations: MigrationStepShowStyle[] = [
-	...getCreateVariantMigrationSteps(),
 	remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
 	remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
@@ -114,7 +112,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.6.3
 	 * - Hide DSK toggle layers
 	 */
-	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map(layerName =>
+	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map((layerName) =>
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
 

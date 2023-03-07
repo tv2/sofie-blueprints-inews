@@ -1,3 +1,4 @@
+import { SwitcherType } from 'tv2-common'
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { defaultDSKConfig, StudioConfig } from '../helpers/config'
@@ -5,6 +6,7 @@ import { defaultDSKConfig, StudioConfig } from '../helpers/config'
 const blankStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
+	SwitcherType: SwitcherType.ATEM,
 	ClipMediaFlowId: '',
 	GraphicMediaFlowId: '',
 	JingleMediaFlowId: '',
@@ -38,10 +40,10 @@ const blankStudioConfig: StudioConfig = {
 	StudioMics: [],
 	ABPlaybackDebugLogging: false,
 
-	AtemSource: {
+	SwitcherSource: {
 		DSK: defaultDSKConfig,
-		SplitArtF: 0,
-		SplitArtK: 0,
+		SplitArtFill: 0,
+		SplitArtKey: 0,
 		Default: 0,
 		MixMinusDefault: 0,
 		Continuity: 0,
@@ -86,7 +88,7 @@ const blankStudioConfig: StudioConfig = {
 function getObjectKeys(obj: any): string[] {
 	const definedKeys: string[] = []
 	const processObj = (prefix: string, o: any) => {
-		_.each(_.keys(o), k => {
+		_.each(_.keys(o), (k) => {
 			if (_.isArray(o[k])) {
 				definedKeys.push(prefix + k)
 			} else if (_.isObject(o[k])) {
@@ -102,7 +104,7 @@ function getObjectKeys(obj: any): string[] {
 
 describe('Config Manifest', () => {
 	test('Exposed Studio Keys', () => {
-		const studioManifestKeys = _.map(studioConfigManifest, e => e.id)
+		const studioManifestKeys = _.map(studioConfigManifest, (e) => e.id)
 		const manifestKeys = studioManifestKeys.concat(CORE_INJECTED_KEYS).sort()
 
 		const definedKeys = getObjectKeys(blankStudioConfig)

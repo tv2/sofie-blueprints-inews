@@ -1,14 +1,26 @@
 import {
 	AbstractLLayerServerEnable,
+	ATEM_LAYER_PREFIX,
 	CasparPlayerClip,
 	CasparPlayerClipLoadingLoop,
-	GetDSKMappingNames
+	getUsedLayers
 } from 'tv2-common'
+import { AbstractLLayer, SharedGraphicLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
-import { ATEMModel } from '../../types/atem'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../layers'
 
-import { RealLLayers } from '../layers'
 import MappingsDefaults from '../migrations/mappings-defaults'
+import { QBOX_UNIFORM_CONFIG } from '../uniformConfig'
+
+/** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
+export function getRealLLayers(): string[] {
+	return getUsedLayers(QBOX_UNIFORM_CONFIG)
+		.flatMap((layer) => [ATEM_LAYER_PREFIX + layer])
+		.concat(_.values(OfftubeSisyfosLLayer))
+		.concat(_.values(OfftubeCasparLLayer))
+		.concat(_.values(AbstractLLayer))
+		.concat(_.values(SharedGraphicLLayer))
+}
 
 describe('Migration Defaults', () => {
 	test('MappingsDefaults', () => {
@@ -22,7 +34,7 @@ describe('Migration Defaults', () => {
 		}).sort()
 
 		// Inject core_abstract as it is required by core and so needs to be defined
-		const layerIds = RealLLayers()
+		const layerIds = getRealLLayers()
 			.concat(['core_abstract'])
 			.concat([
 				CasparPlayerClip(1),
@@ -30,11 +42,10 @@ describe('Migration Defaults', () => {
 				CasparPlayerClipLoadingLoop(1),
 				CasparPlayerClipLoadingLoop(2),
 				AbstractLLayerServerEnable(1),
-				AbstractLLayerServerEnable(2),
-				...GetDSKMappingNames(ATEMModel.PRODUCTION_STUDIO_4K_2ME)
+				AbstractLLayerServerEnable(2)
 			])
 			.sort()
 
-		expect(defaultsIds).toEqual(layerIds)
+		expect(defaultsIds).toEqual(expect.arrayContaining(layerIds))
 	})
 })

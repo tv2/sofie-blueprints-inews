@@ -1,6 +1,5 @@
 import {
 	GraphicsContent,
-	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
 	PieceLifespan,
@@ -8,9 +7,9 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	AtemLLayerDSK,
 	CueDefinitionGraphic,
 	CueTime,
+	getDskLLayerName,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	GraphicPilot,
@@ -18,24 +17,12 @@ import {
 	PartDefinitionKam,
 	PieceMetaData
 } from 'tv2-common'
-import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
-import { SegmentUserContext } from '../../../../__mocks__/context'
-import { parseConfig as parseStudioConfig } from '../../../../tv2_afvd_studio/helpers/config'
-import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { defaultShowStyleConfig, defaultStudioConfig, OVL_SHOW_NAME } from '../../../__tests__/configs'
+import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
+import { makeMockGalleryContext } from '../../../../__mocks__/context'
+import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
+import { OVL_SHOW_NAME } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
-import { BlueprintConfig, getConfig, parseConfig as parseShowStyleConfig } from '../../config'
 import { EvaluateCueGraphic } from '../graphic'
-
-function makeMockContext() {
-	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
-	mockContext.studioConfig = defaultStudioConfig as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
-
-	return mockContext
-}
-
-const config = getConfig(makeMockContext())
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
@@ -76,7 +63,7 @@ const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 		start: 0
 	},
 	priority: 1,
-	layer: AtemLLayerDSK(0),
+	layer: prefixLayer(getDskLLayerName(0)),
 	content: {
 		deviceType: TSR.DeviceType.ATEM,
 		type: TSR.TimelineContentTypeAtem.DSK,
@@ -113,23 +100,16 @@ describe('grafik piece', () => {
 			},
 			iNewsCommand: 'kg'
 		}
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(pieces).toEqual([
+		expect(result.pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
@@ -145,7 +125,7 @@ describe('grafik piece', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
@@ -188,23 +168,16 @@ describe('grafik piece', () => {
 			adlib: true,
 			iNewsCommand: 'kg'
 		}
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(adLibPieces).toEqual([
+		expect(result.adlibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
 				externalId: partId,
@@ -215,7 +188,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				expectedDuration: 5000,
@@ -255,7 +228,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				expectedDuration: 4000,
@@ -301,25 +274,16 @@ describe('grafik piece', () => {
 			adlib: true,
 			iNewsCommand: 'kg'
 		}
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		const newConfig = JSON.parse(JSON.stringify(config)) as BlueprintConfig
-		newConfig.studio.PreventOverlayWithFull = false
 
-		EvaluateCueGraphic(
-			newConfig,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext({ studioConfig: { PreventOverlayWithFull: false } }),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(adLibPieces).toEqual([
+		expect(result.adlibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
 				externalId: partId,
@@ -330,7 +294,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_commentator',
 				tags: [AdlibTags.ADLIB_KOMMENTATOR],
@@ -370,7 +334,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				uniquenessId: 'gfx_bund - Odense\n - Copenhagen_studio0_graphicsLower_overlay_flow',
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
@@ -418,23 +382,16 @@ describe('grafik piece', () => {
 			},
 			iNewsCommand: 'kg'
 		}
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(pieces).toEqual([
+		expect(result.pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
@@ -450,7 +407,7 @@ describe('grafik piece', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
@@ -482,31 +439,24 @@ describe('grafik piece', () => {
 
 	test('kg bund infinite (B) has piece and object timing', () => {
 		const cue = makeTestBundCue('B')
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(pieces.length).toBe(1)
-		expect(pieces[0]).toMatchObject({
+		expect(result.pieces.length).toBe(1)
+		expect(result.pieces[0]).toMatchObject({
 			enable: {
 				start: 10000
 			},
 			lifespan: PieceLifespan.WithinPart
 		})
 		expect(
-			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+			result.pieces[0].content.timelineObjects.find((tlObject) => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
 		).toMatchObject({
 			enable: {
 				while: `!.full`
@@ -516,31 +466,24 @@ describe('grafik piece', () => {
 
 	test('kg bund infinite (S) has piece and object timing', () => {
 		const cue = makeTestBundCue('S')
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(pieces.length).toBe(1)
-		expect(pieces[0]).toMatchObject({
+		expect(result.pieces.length).toBe(1)
+		expect(result.pieces[0]).toMatchObject({
 			enable: {
 				start: 10000
 			},
 			lifespan: PieceLifespan.OutOnSegmentEnd
 		})
 		expect(
-			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+			result.pieces[0].content.timelineObjects.find((tlObject) => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
 		).toMatchObject({
 			enable: {
 				while: `!.full`
@@ -550,32 +493,25 @@ describe('grafik piece', () => {
 
 	test('kg bund infinite (O)', () => {
 		const cue = makeTestBundCue('O')
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 
-		expect(pieces.length).toBe(1)
-		expect(pieces[0]).toMatchObject({
+		expect(result.pieces.length).toBe(1)
+		expect(result.pieces[0]).toMatchObject({
 			enable: {
 				start: 10000
 			},
 			lifespan: PieceLifespan.OutOnShowStyleEnd
 		})
 		expect(
-			pieces[0].content.timelineObjects.find(tlObject => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
+			result.pieces[0].content.timelineObjects.find((tlObject) => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)
 		).toMatchObject({
 			enable: {
 				while: `!.full`
@@ -598,23 +534,16 @@ describe('grafik piece', () => {
 			},
 			iNewsCommand: '#kg'
 		})
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(pieces).toEqual([
+		expect(result.pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'direkte - KØBENHAVN',
@@ -629,7 +558,7 @@ describe('grafik piece', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'direkte',
@@ -674,23 +603,16 @@ describe('grafik piece', () => {
 			},
 			iNewsCommand: '#kg'
 		})
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(pieces).toEqual([
+		expect(result.pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'arkiv - unnamed org',
@@ -706,7 +628,7 @@ describe('grafik piece', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'arkiv',
@@ -749,23 +671,16 @@ describe('grafik piece', () => {
 			adlib: true,
 			iNewsCommand: '#kg'
 		})
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(adLibPieces).toEqual([
+		expect(result.adlibPieces).toEqual([
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
 				externalId: partId,
@@ -776,7 +691,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
 				expectedDuration: 5000,
 				tags: ['kommentator'],
@@ -816,7 +731,7 @@ describe('grafik piece', () => {
 						sisyfosLayers: []
 					}
 				}),
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsTop,
 				tags: ['flow_producer'],
 				uniquenessId: 'gfx_tlftoptlive - Line 1\n - Line 2_studio0_graphicsTop_overlay_flow',
@@ -866,25 +781,18 @@ describe('grafik piece', () => {
 			},
 			iNewsCommand: 'kg'
 		})
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 
-		expect(pieces.length).toBe(1)
-		expect(pieces[0]).toMatchObject({
+		expect(result.pieces.length).toBe(1)
+		expect(result.pieces[0]).toMatchObject({
 			enable: {
 				start: 5000,
 				duration: 5000
@@ -909,24 +817,17 @@ describe('grafik piece', () => {
 			adlib: true,
 			iNewsCommand: 'kg'
 		})
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 
-		const adlibPiece = adLibPieces.find(piece => piece.tags?.includes('flow_producer'))
+		const adlibPiece = result.adlibPieces.find((piece) => piece.tags?.includes('flow_producer'))
 		expect(adlibPiece).toBeDefined()
 		expect(adlibPiece).toMatchObject({
 			expectedDuration: 10000,
@@ -947,26 +848,19 @@ describe('grafik piece', () => {
 			iNewsCommand: 'GRAFIK'
 		}
 
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
 
-		EvaluateCueGraphic(
-			config,
-			makeMockContext(),
-			pieces,
-			adLibPieces,
-			actions,
+		const result = EvaluateCueGraphic(
+			makeMockGalleryContext(),
 			partId,
 			cue,
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		const piece = pieces[0]
+		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj =>
+			(obj) =>
 				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined

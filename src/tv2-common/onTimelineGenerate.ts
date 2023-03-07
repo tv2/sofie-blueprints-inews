@@ -4,20 +4,26 @@ import {
 	IBlueprintPartInstance,
 	IBlueprintResolvedPieceInstance,
 	IRundownContext,
-	IShowStyleContext,
-	ITimelineEventContext,
 	OnGenerateTimelineObj,
 	PartEndState,
-	TimelineObjectCoreExt,
 	TimelinePersistentState,
 	TSR
 } from 'blueprints-integration'
-import { ActionSelectFullGrafik, ActionSelectJingle, ActionSelectServerClip, CasparPlayerClip } from 'tv2-common'
+import {
+	ABSourceLayers,
+	ActionSelectFullGrafik,
+	ActionSelectJingle,
+	ActionSelectServerClip,
+	assignMediaPlayers,
+	CasparPlayerClip,
+	getServerPositionForPartInstance,
+	ServerPosition,
+	TimelineContext
+} from 'tv2-common'
 import { AbstractLLayer, PartType, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
-import { ABSourceLayers, assignMediaPlayers, getServerPositionForPartInstance, ServerPosition } from './helpers'
 
 export interface PartEndStateExt {
 	sisyfosPersistMetaData: SisyfosPersistMetaData
@@ -40,21 +46,21 @@ export interface TimelinePersistentStateExt {
 	isNewSegment?: boolean
 }
 
-export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
-	/** Metadata for use by the OnTimelineGenerate or other callbacks */
-	metaData?: {
-		context?: string
-		mediaPlayerSession?: string
-		dveAdlibEnabler?: string // Used to restore the original while rule after lookahead
-		templateData?: any
-		fileName?: string
-	}
+/** Metadata for use by the OnTimelineGenerate or other callbacks */
+export interface TimelineObjectMetaData {
+	context?: string
+	mediaPlayerSession?: string
+	templateData?: any
+	fileName?: string
+}
+
+export type TimelineBlueprintExt = TSR.TSRTimelineObjBase & {
+	metaData?: TimelineObjectMetaData
 }
 
 export interface PieceMetaData {
 	sisyfosPersistMetaData?: SisyfosPersistMetaData
 	mediaPlayerSessions?: string[]
-	mediaPlayerOptional?: boolean
 	modifiedByAction?: boolean
 }
 
@@ -93,25 +99,20 @@ export function onTimelineGenerate<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: ITimelineEventContext,
+	context: TimelineContext<ShowStyleConfig>,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
-	getConfig: (context: IShowStyleContext) => ShowStyleConfig,
-	sourceLayers: ABSourceLayers,
-	_casparLayerClipPending: string,
-	_atemLayerNext: string
+	sourceLayers: ABSourceLayers
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	const persistentState: TimelinePersistentStateExt = {
 		activeMediaPlayers: {},
-		isNewSegment: context.previousPartInstance?.segmentId !== context.currentPartInstance?.segmentId
+		isNewSegment: context.core.previousPartInstance?.segmentId !== context.core.currentPartInstance?.segmentId
 	}
 
-	const config = getConfig(context)
-
-	if (!persistentState.isNewSegment || isAnyPieceInjectedIntoPart(resolvedPieces, context)) {
+	if (!persistentState.isNewSegment || isAnyPieceInjectedIntoPart(context, resolvedPieces)) {
 		const sisyfosPersistedLevelsTimelineObject = createSisyfosPersistedLevelsTimelineObject(
 			resolvedPieces,
 			previousPartEndState2 ? previousPartEndState2.sisyfosPersistMetaData.sisyfosLayers : []
@@ -125,14 +126,11 @@ export function onTimelineGenerate<
 
 	persistentState.activeMediaPlayers = assignMediaPlayers(
 		context,
-		config,
 		timeline,
 		previousPersistentState2 ? previousPersistentState2.activeMediaPlayers : {},
 		resolvedPieces,
 		sourceLayers
 	)
-
-	dveBoxLookaheadUseOriginalEnable(timeline)
 
 	return Promise.resolve({
 		timeline,
@@ -141,13 +139,13 @@ export function onTimelineGenerate<
 }
 
 function processServerLookaheads(
-	context: ITimelineEventContext,
+	context: TimelineContext,
 	timeline: OnGenerateTimelineObj[],
 	resolvedPieces: IBlueprintResolvedPieceInstance[],
 	sourceLayers: ABSourceLayers
 ): OnGenerateTimelineObj[] {
 	// Includes any non-active servers present in current part
-	const serversInCurrentPart = timeline.filter(obj => {
+	const serversInCurrentPart = timeline.filter((obj) => {
 		if (_.isArray(obj.enable)) {
 			return false
 		}
@@ -161,7 +159,9 @@ function processServerLookaheads(
 		return (
 			[sourceLayers.Caspar.ClipPending, CasparPlayerClip(1), CasparPlayerClip(2)].includes(layer) &&
 			!obj.isLookahead &&
-			resolvedPieces.some(p => p._id === obj.pieceInstanceId && p.partInstanceId === context.currentPartInstance?._id)
+			resolvedPieces.some(
+				(p) => p._id === obj.pieceInstanceId && p.partInstanceId === context.core.currentPartInstance?._id
+			)
 		)
 	})
 
@@ -177,7 +177,7 @@ function processServerLookaheads(
 
 	// Filter out lookaheads for servers that are currently in PGM.
 	// Does not filter out AUX lookaheads. Should it?
-	return timeline.filter(obj => {
+	return timeline.filter((obj) => {
 		if (_.isArray(obj.enable)) {
 			return true
 		}
@@ -196,7 +196,7 @@ function processServerLookaheads(
 
 		return !(
 			[sourceLayers.Caspar.ClipPending, CasparPlayerClip(1), CasparPlayerClip(2)]
-				.map(l => `${l}_lookahead`)
+				.map((l) => `${l}_lookahead`)
 				.includes(layer) &&
 			obj.isLookahead &&
 			sessionsInCurrentPart.includes(mediaPlayerSession)
@@ -205,12 +205,12 @@ function processServerLookaheads(
 }
 
 function isAnyPieceInjectedIntoPart(
-	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
-	context: ITimelineEventContext
+	context: TimelineContext,
+	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
 ) {
 	return resolvedPieces
-		.filter(piece => piece.partInstanceId === context.currentPartInstance?._id)
-		.some(piece => {
+		.filter((piece) => piece.partInstanceId === context.core.currentPartInstance?._id)
+		.some((piece) => {
 			return piece.piece.metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
 		})
 }
@@ -233,7 +233,7 @@ export function getEndStateForPart(
 	const previousPartEndState = partInstance?.previousPartEndState as Partial<PartEndStateExt>
 
 	const activePieces = resolvedPieces.filter(
-		p =>
+		(p) =>
 			_.isNumber(p.piece.enable.start) &&
 			p.piece.enable &&
 			p.piece.enable.start <= time &&
@@ -270,29 +270,6 @@ export function getEndStateForPart(
 	return endState
 }
 
-/**
- * DVE box lookahead uses classes to select the correct object.
- * Lookahead is replacing this selector rule with a '1' which causes every box to show the same.
- * This simply restores the original enable, which gets put into metaData for this purpose.
- */
-function dveBoxLookaheadUseOriginalEnable(timeline: OnGenerateTimelineObj[]) {
-	// DVE_box lookahead class
-	for (const obj of timeline) {
-		const obj2 = obj as TSR.TimelineObjAtemSsrc & TimelineBlueprintExt
-		if (
-			obj2.isLookahead &&
-			obj2.content.deviceType === TSR.DeviceType.ATEM &&
-			obj2.content.type === TSR.TimelineContentTypeAtem.SSRC
-		) {
-			const origClass = obj2.metaData ? obj2.metaData.dveAdlibEnabler : undefined
-			if (origClass) {
-				// Restore the original enable rule
-				obj2.enable = { while: origClass }
-			}
-		}
-	}
-}
-
 export function createSisyfosPersistedLevelsTimelineObject(
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	previousSisyfosLayersThatWantsToBePersisted: SisyfosPersistMetaData['sisyfosLayers']
@@ -308,7 +285,7 @@ export function createSisyfosPersistedLevelsTimelineObject(
 			deviceType: TSR.DeviceType.SISYFOS,
 			type: TSR.TimelineContentTypeSisyfos.CHANNELS,
 			overridePriority: 1,
-			channels: layersToPersist.map(layer => {
+			channels: layersToPersist.map((layer) => {
 				return {
 					mappedLayer: layer,
 					isPgm: 1
@@ -323,7 +300,7 @@ function findLayersToPersist(
 	sisyfosLayersThatWantsToBePersisted: string[]
 ): string[] {
 	const sortedPieces = pieces
-		.filter(piece => piece.piece.metaData?.sisyfosPersistMetaData)
+		.filter((piece) => piece.piece.metaData?.sisyfosPersistMetaData)
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)
 
 	if (sortedPieces.length === 0) {
@@ -372,7 +349,7 @@ export function disablePilotWipeAfterJingle(
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
-	if (previousPartEndState?.isJingle && resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))) {
+	if (previousPartEndState?.isJingle && resolvedPieces.find((p) => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))) {
 		for (const obj of timeline) {
 			if (obj.content.deviceType === TSR.DeviceType.ATEM && !obj.isLookahead) {
 				const obj2 = obj as TSR.TimelineObjAtemAny

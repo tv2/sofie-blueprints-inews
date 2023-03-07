@@ -2,7 +2,6 @@ import {
 	IBlueprintPart,
 	IBlueprintPiece,
 	IBlueprintPieceType,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
@@ -12,24 +11,25 @@ import {
 import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
-	EnableDSK,
+	getDskOnAirTimelineObjects,
 	GetTagForTransition,
+	getTimeFromFrames,
 	literal,
 	PartDefinition,
 	PieceMetaData,
-	TimeFromFrames,
+	ShowStyleContext,
 	TimelineBlueprintExt,
+	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { DskRole, SharedOutputLayer } from 'tv2-constants'
+import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { joinAssetToFolder, joinAssetToNetworkPath } from '../util'
 
 /** Has to be executed before calling EvaluateCues, as some cues may depend on it */
 export function CreateEffektForPartBase(
-	context: IShowStyleUserContext,
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext<TV2ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[],
 	layers: {
@@ -44,7 +44,6 @@ export function CreateEffektForPartBase(
 	if (effekt !== undefined) {
 		const ret = CreateEffektForPartInner(
 			context,
-			config,
 			pieces,
 			effekt.toString(),
 			partDefinition.externalId,
@@ -59,19 +58,19 @@ export function CreateEffektForPartBase(
 		return {}
 	}
 
-	if (transition.style === TSR.AtemTransitionStyle.MIX) {
+	if (transition.style === TransitionStyle.MIX) {
 		const blueprintPiece: IBlueprintPiece =
 			CreateMixTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
 
 		pieces.push(blueprintPiece)
-		return CreateInTransitionForAtemTransitionStyle(transition.duration)
+		return createInTransitionForTransitionStyle(transition.duration)
 	}
 
-	if (transition.style === TSR.AtemTransitionStyle.DIP) {
+	if (transition.style === TransitionStyle.DIP) {
 		const blueprintPiece: IBlueprintPiece =
-			CreateDipTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
+			createDipTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
 		pieces.push(blueprintPiece)
-		return CreateInTransitionForAtemTransitionStyle(transition.duration)
+		return createInTransitionForTransitionStyle(transition.duration)
 	}
 
 	return {}
@@ -81,8 +80,7 @@ export function CreateEffektForPartInner<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ShowStyleContext<ShowStyleConfig>,
 	pieces: IBlueprintPiece[],
 	effekt: string,
 	externalId: string,
@@ -93,50 +91,42 @@ export function CreateEffektForPartInner<
 	},
 	label: string
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | false {
-	if (!config.showStyle.BreakerConfig) {
-		context.notifyUserWarning(`Jingles have not been configured`)
-		return false
-	}
-
-	const effektConfig = config.showStyle.BreakerConfig.find(
-		conf =>
-			conf.BreakerName.toString()
-				.trim()
-				.toUpperCase() === effekt.toUpperCase()
+	const effektConfig = context.config.showStyle.BreakerConfig.find(
+		(conf) => conf.BreakerName.toString().trim().toUpperCase() === effekt.toUpperCase()
 	)
 	if (!effektConfig) {
-		context.notifyUserWarning(`Could not find effekt ${effekt}`)
+		context.core.notifyUserWarning(`Could not find effekt ${effekt}`)
 		return false
 	}
 
 	const file = effektConfig.ClipName.toString()
 
 	if (!file) {
-		context.notifyUserWarning(`Could not find file for ${effekt}`)
+		context.core.notifyUserWarning(`Could not find file for ${effekt}`)
 		return false
 	}
 
-	const fileName = joinAssetToFolder(config.studio.JingleFolder, file)
+	const fileName = joinAssetToFolder(context.config.studio.JingleFolder, file)
 
 	pieces.push({
 		externalId,
 		name: label,
-		enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
-		outputLayerId: SharedOutputLayers.JINGLE,
+		enable: { start: 0, duration: getTimeFromFrames(Number(effektConfig.Duration)) },
+		outputLayerId: SharedOutputLayer.JINGLE,
 		sourceLayerId: layers.sourceLayer,
 		lifespan: PieceLifespan.WithinPart,
 		pieceType: IBlueprintPieceType.InTransition,
 		content: literal<WithTimeline<VTContent>>({
 			fileName,
 			path: joinAssetToNetworkPath(
-				config.studio.JingleNetworkBasePath,
-				config.studio.JingleFolder,
+				context.config.studio.JingleNetworkBasePath,
+				context.config.studio.JingleFolder,
 				file,
-				config.studio.JingleFileExtension
+				context.config.studio.JingleFileExtension
 			), // full path on the source network storage
-			mediaFlowIds: [config.studio.JingleMediaFlowId],
+			mediaFlowIds: [context.config.studio.JingleMediaFlowId],
 			previewFrame: Number(effektConfig.StartAlpha),
-			ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
+			ignoreMediaObjectStatus: context.config.studio.JingleIgnoreStatus,
 			ignoreBlackFrames: true,
 			ignoreFreezeFrame: true,
 			timelineObjects: literal<TimelineObjectCoreExt[]>([
@@ -153,7 +143,9 @@ export function CreateEffektForPartInner<
 						file: fileName
 					}
 				}),
-				...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
+				...getDskOnAirTimelineObjects(context, DskRole.JINGLE, {
+					start: Number(context.config.studio.CasparPrerollDuration)
+				}),
 				literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 					id: '',
 					enable: {
@@ -173,13 +165,13 @@ export function CreateEffektForPartInner<
 
 	return {
 		inTransition: {
-			blockTakeDuration: TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
+			blockTakeDuration: getTimeFromFrames(Number(effektConfig.Duration)) + context.config.studio.CasparPrerollDuration,
 			previousPartKeepaliveDuration:
-				TimeFromFrames(Number(effektConfig.StartAlpha)) + config.studio.CasparPrerollDuration,
+				getTimeFromFrames(Number(effektConfig.StartAlpha)) + context.config.studio.CasparPrerollDuration,
 			partContentDelayDuration:
-				TimeFromFrames(Number(effektConfig.Duration)) -
-				TimeFromFrames(Number(effektConfig.EndAlpha)) +
-				config.studio.CasparPrerollDuration
+				getTimeFromFrames(Number(effektConfig.Duration)) -
+				getTimeFromFrames(Number(effektConfig.EndAlpha)) +
+				context.config.studio.CasparPrerollDuration
 		},
 		autoNext: false
 	}
@@ -212,12 +204,12 @@ function createEffectBlueprintPiece(
 	return {
 		enable: {
 			start: 0,
-			duration: Math.max(TimeFromFrames(durationInFrames), 1000)
+			duration: Math.max(getTimeFromFrames(durationInFrames), 1000)
 		},
 		externalId,
 		name: `${name.toUpperCase()} ${durationInFrames}`,
 		sourceLayerId: sourceLayer,
-		outputLayerId: SharedOutputLayers.JINGLE,
+		outputLayerId: SharedOutputLayer.JINGLE,
 		lifespan: PieceLifespan.WithinPart,
 		tags,
 		content: {
@@ -227,10 +219,8 @@ function createEffectBlueprintPiece(
 	}
 }
 
-export function CreateInTransitionForAtemTransitionStyle(
-	durationInFrames: number
-): Pick<IBlueprintPart, 'inTransition'> {
-	const transitionDuration = TimeFromFrames(durationInFrames)
+export function createInTransitionForTransitionStyle(durationInFrames: number): Pick<IBlueprintPart, 'inTransition'> {
+	const transitionDuration = getTimeFromFrames(durationInFrames)
 	return {
 		inTransition: {
 			previousPartKeepaliveDuration: transitionDuration,
@@ -240,7 +230,7 @@ export function CreateInTransitionForAtemTransitionStyle(
 	}
 }
 
-export function CreateDipTransitionBlueprintPieceForPart(
+export function createDipTransitionBlueprintPieceForPart(
 	externalId: string,
 	durationInFrames: number,
 	sourceLayer: string

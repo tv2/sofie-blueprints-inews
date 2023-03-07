@@ -1,6 +1,5 @@
 import {
 	BlueprintMapping,
-	ConfigItemValue,
 	MigrationContextStudio,
 	MigrationStepInput,
 	MigrationStepInputFilteredResult,
@@ -52,34 +51,6 @@ export function ensureStudioConfig(
 		},
 		migrate: (context: MigrationContextStudio, input: MigrationStepInputFilteredResult) => {
 			context.setConfig(configName, _.isNull(value) ? input.value : value)
-		}
-	}
-}
-
-export function renameStudioConfig(
-	version: string,
-	oldConfigName: string,
-	newConfigName: string,
-	updateValue?: (val: any) => ConfigItemValue
-): MigrationStepStudio {
-	return {
-		id: `${version}.${oldConfigName}`,
-		version,
-		canBeRunAutomatically: true,
-		validate: (context: MigrationContextStudio) => {
-			const configVal = context.getConfig(oldConfigName)
-			if (configVal !== undefined) {
-				return `${oldConfigName} is defined`
-			}
-
-			return false
-		},
-		migrate: (context: MigrationContextStudio) => {
-			const configVal = context.getConfig(oldConfigName)
-			if (configVal !== undefined) {
-				context.setConfig(newConfigName, updateValue ? updateValue(configVal) : configVal)
-				context.removeConfig(oldConfigName)
-			}
 		}
 	}
 }

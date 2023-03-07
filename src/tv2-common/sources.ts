@@ -28,7 +28,7 @@ export function parseMapStr(
 	const res: Array<{ id: string; val: number }> = []
 
 	const inputs = str.split(',')
-	inputs.forEach(i => {
+	inputs.forEach((i) => {
 		if (i === '') {
 			return
 		}
@@ -60,10 +60,10 @@ export function ParseMappingTable(
 	type: SourceInfoType,
 	sourceLayerType: SourceLayerType
 ): SourceInfo[] {
-	return studioConfig.map(conf => ({
+	return studioConfig.map((conf) => ({
 		type,
 		id: conf.SourceName,
-		port: conf.AtemSource,
+		port: conf.SwitcherSource,
 		sisyfosLayers: conf.SisyfosLayers,
 		useStudioMics: conf.StudioMics,
 		wantsToPersistAudio: conf.WantsToPersistAudio,
@@ -109,7 +109,7 @@ export function findSourceInfo(sources: SourceMapping, sourceDefinition: SourceD
 		default:
 			return undefined
 	}
-	return _.find(arrayToSearchIn, s => s.id === sourceDefinition.id)
+	return _.find(arrayToSearchIn, (s) => s.id === sourceDefinition.id)
 }
 
 export function SourceInfoToSourceDefinition(

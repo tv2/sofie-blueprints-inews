@@ -5,10 +5,8 @@ import {
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
 	IBlueprintPiece,
-	ISegmentUserContext,
 	PieceLifespan,
-	TimelineObjectCoreExt,
-	TSR
+	TimelineObjectCoreExt
 } from 'blueprints-integration'
 import {
 	AddScript,
@@ -19,23 +17,23 @@ import {
 	PartDefinitionEVS,
 	PartTime,
 	PieceMetaData,
+	SegmentContext,
+	ShowStyleContext,
 	SourceInfo,
-	TransitionSettings
+	TransitionStyle
 } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
-import { BlueprintConfig } from '../helpers/config'
+import { SharedOutputLayer } from 'tv2-constants'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartEVS(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionEVS,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 	const title = partDefinition.sourceDefinition.name
 
 	let part: IBlueprintPart = {
@@ -50,19 +48,19 @@ export async function CreatePartEVS(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
+	part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
 
-	const sourceInfoReplay = findSourceInfo(config.sources, partDefinition.sourceDefinition)
+	const sourceInfoReplay = findSourceInfo(context.config.sources, partDefinition.sourceDefinition)
 	if (sourceInfoReplay === undefined) {
 		return CreatePartInvalid(partDefinition)
 	}
-	const atemInput = sourceInfoReplay.port
+	const switcherInput = sourceInfoReplay.port
 
 	pieces.push({
 		externalId: partDefinition.externalId,
 		name: part.title,
 		enable: { start: 0 },
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		sourceLayerId: SourceLayer.PgmLocal,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
@@ -70,12 +68,11 @@ export async function CreatePartEVS(
 				sisyfosLayers: []
 			}
 		},
-		content: makeContentEVS(config, atemInput, partDefinition, sourceInfoReplay)
+		content: makeContentEVS(context, switcherInput, partDefinition, sourceInfoReplay)
 	})
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,
@@ -102,34 +99,25 @@ export async function CreatePartEVS(
 }
 
 function makeContentEVS(
-	config: BlueprintConfig,
-	atemInput: number,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
+	switcherInput: number,
 	partDefinition: PartDefinitionEVS,
 	sourceInfoReplay: SourceInfo
 ): IBlueprintPiece['content'] {
 	return {
 		studioLabel: '',
-		switcherInput: atemInput,
+		switcherInput,
 		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TSR.TimelineObjAtemME>({
-				id: ``,
-				enable: {
-					start: 0
-				},
+			...context.videoSwitcher.getOnAirTimelineObjects({
 				priority: 1,
-				layer: AtemLLayer.AtemMEProgram,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: atemInput,
-						transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-						transitionSettings: TransitionSettings(config, partDefinition)
-					}
+					input: switcherInput,
+					transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+					transitionDuration: partDefinition.transition?.duration
 				}
 			}),
-			...GetSisyfosTimelineObjForReplay(config, sourceInfoReplay, partDefinition.sourceDefinition.vo)
+			...GetSisyfosTimelineObjForReplay(context.config, sourceInfoReplay, partDefinition.sourceDefinition.vo)
 		])
 	}
 }

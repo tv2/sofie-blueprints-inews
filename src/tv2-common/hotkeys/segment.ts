@@ -8,7 +8,7 @@ import {
 	TriggerType
 } from 'blueprints-integration'
 import { literal, TRIGGER_HOTKEYS_ON_KEYUP } from 'tv2-common'
-import { AdlibTags, SharedSourceLayers } from 'tv2-constants'
+import { AdlibTags, SharedSourceLayer } from 'tv2-constants'
 
 export interface ActiveSegmentHotketAssignments {
 	lowerThirds: string[]
@@ -25,9 +25,9 @@ export function MakeActiveSegmentTriggers(
 ) {
 	return assignments.lowerThirds.map((key, index) =>
 		makeSegmentHotKey(
-			SharedSourceLayers.PgmGraphicsLower,
+			SharedSourceLayer.PgmGraphicsLower,
 			getNextRank,
-			activeSegmentAdLibHotkeyId(showStyleId, SharedSourceLayers.PgmGraphicsLower, key, index),
+			activeSegmentAdLibHotkeyId(showStyleId, SharedSourceLayer.PgmGraphicsLower, key, index),
 			`Lower GFX AdLib ${index + 1}`,
 			key,
 			index

@@ -3,10 +3,16 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
-import { CueDefinition, EvaluateCuesBase, EvaluateCuesOptions, EvaluateLYD, PartDefinition } from 'tv2-common'
+import {
+	CueDefinition,
+	EvaluateCuesBase,
+	EvaluateCuesOptions,
+	EvaluateLYD,
+	PartDefinition,
+	SegmentContext
+} from 'tv2-common'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateEkstern } from '../cues/OfftubeEkstern'
@@ -15,11 +21,10 @@ import { OfftubeEvaluateGraphicDesign } from '../cues/OfftubeGraphicDesign'
 import { OfftubeEvaluateGrafikCaspar } from '../cues/OfftubeGraphics'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
 import { OfftubeEvaluatePgmClean } from '../cues/OfftubePgmClean'
-import { OfftubeShowstyleBlueprintConfig } from './config'
+import { OfftubeBlueprintConfig } from './config'
 
 export async function OfftubeEvaluateCues(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	part: IBlueprintPart,
 	pieces: IBlueprintPiece[],
 	adLibPieces: IBlueprintAdLibPiece[],
@@ -42,7 +47,6 @@ export async function OfftubeEvaluateCues(
 			EvaluateCueLYD: EvaluateLYD
 		},
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

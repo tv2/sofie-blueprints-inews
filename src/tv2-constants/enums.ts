@@ -63,11 +63,6 @@ export const enum SourceType {
 	INVALID = 'INVALID'
 }
 
-export enum Enablers {
-	OFFTUBE_ENABLE_FULL = 'offtube_enable_full',
-	OFFTUBE_ENABLE_SERVER_LOOKAHEAD = 'offtube_enable_server_lookahead'
-}
-
 export enum AdlibTags {
 	OFFTUBE_ADLIB_SERVER = 'offtube_adlib_server',
 	OFFTUBE_100pc_SERVER = 'offtube_adlib_100pc_server',
@@ -118,18 +113,15 @@ export function AdlibTagCutToBox(box: number): AdlibTags {
 }
 
 export enum ControlClasses {
-	/** Indicates that a DVE is currently on air */
-	DVEOnAir = 'dve_on_air',
-	ServerOnAir = 'server_on_air',
-	LYDOnAir = 'lyd_on_air',
-	LiveSourceOnAir = 'live_source_on_air',
-	NOLookahead = 'no_lookahead',
-	CopyMediaPlayerSession = 'copy_media_player_session',
-	AbstractLookahead = 'abstract_lookahead'
+	SERVER_ON_AIR = 'server_on_air',
+	LYD_ON_AIR = 'lyd_on_air',
+	OVERRIDDEN_ON_MIX_MINUS = 'overridden_on_mix_minus',
+	ABSTRACT_LOOKAHEAD = 'abstract_lookahead',
+	PLACEHOLDER = 'placeholder'
 }
 
 export function GetEnableClassForServer(mediaPlayerSessionId: string) {
-	return `${ControlClasses.ServerOnAir}_${mediaPlayerSessionId}`
+	return `${ControlClasses.SERVER_ON_AIR}_${mediaPlayerSessionId}`
 }
 
 export enum AdlibActionType {
@@ -198,8 +190,38 @@ export enum AbstractLLayer {
 	AudioBedBaseline = 'audio_bed_baseline'
 }
 
-export enum SharedATEMLLayer {
-	AtemAuxVideoMixMinus = 'atem_aux_video_mix_minus'
+export enum SwitcherMixEffectLLayer {
+	Program = 'me_program',
+	Clean = 'me_clean',
+	CleanUSKEffect = 'clean_usk_effect',
+	Next = 'me_next',
+	NextJingle = 'me_next_jingle'
+}
+
+export enum SwitcherAuxLLayer {
+	AuxProgram = 'aux_pgm',
+	AuxClean = 'aux_clean',
+	AuxMixEffect3 = 'aux_mix_effect_3', // AUX set by Sofie, but the M/E is uncontrolled by Sofie
+	AuxWall = 'aux_wall',
+	AuxAR = 'aux_ar',
+	AuxVizOvlIn1 = 'aux_viz_ovl_in_1',
+	AuxVenue = 'aux_venue',
+	AuxLookahead = 'aux_lookahead',
+	AuxDve = 'aux_dve',
+	AuxVideoMixMinus = 'aux_video_mix_minus',
+	AuxScreen = 'aux_screen',
+	AuxServerLookahead = 'aux_server_lookahead'
+}
+
+export enum SwitcherDveLLayer {
+	Dve = 'dve',
+	DveBoxes = 'dve_boxes'
+}
+
+export type SwitcherDskLLayer = `dsk_${number}`
+
+export enum SwitcherMediaPlayerLLayer {
+	Mp1 = 'mp1'
 }
 
 export enum SharedCasparLLayer {
@@ -218,7 +240,7 @@ export enum RobotCameraLayer {
 	TELEMETRICS = 'telemetrics_layer'
 }
 
-export enum SharedOutputLayers {
+export enum SharedOutputLayer {
 	OVERLAY = 'overlay',
 	SEC = 'sec',
 	PGM = 'pgm',
@@ -229,7 +251,7 @@ export enum SharedOutputLayers {
 	SELECTED_ADLIB = 'selectedAdlib'
 }
 
-export enum SharedSourceLayers {
+export enum SharedSourceLayer {
 	PgmCam = 'studio0_camera',
 	PgmLive = 'studio0_live',
 	PgmDVE = 'studio0_dve',
@@ -275,7 +297,7 @@ export enum SharedSourceLayers {
 	RobotCamera = 'studio0_robot_camera'
 }
 
-export enum DSKRoles {
+export enum DskRole {
 	FULLGFX = 'full_graphics',
 	OVERLAYGFX = 'overlay_graphics',
 	JINGLE = 'jingle'

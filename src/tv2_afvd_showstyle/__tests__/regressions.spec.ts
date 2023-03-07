@@ -232,10 +232,10 @@ describe('regressions-migrations', () => {
  * @param reference Reference segment.
  */
 function migrate(reference: BlueprintResultSegment) {
-	reference.parts = reference.parts.map(part => {
-		part.adLibPieces = part.adLibPieces.map(adlib => {
+	reference.parts = reference.parts.map((part) => {
+		part.adLibPieces = part.adLibPieces.map((adlib) => {
 			if (adlib.content && adlib.content.timelineObjects) {
-				adlib.content.timelineObjects = (adlib.content.timelineObjects as TimelineObjectCoreExt[]).map(obj => {
+				adlib.content.timelineObjects = (adlib.content.timelineObjects as TimelineObjectCoreExt[]).map((obj) => {
 					const remappedLayer = remapVizLLayer.get(obj.layer.toString())
 
 					if (remappedLayer) {
@@ -249,9 +249,9 @@ function migrate(reference: BlueprintResultSegment) {
 			return adlib
 		})
 
-		part.pieces = part.pieces.map(adlib => {
+		part.pieces = part.pieces.map((adlib) => {
 			if (adlib.content && adlib.content.timelineObjects) {
-				adlib.content.timelineObjects = (adlib.content.timelineObjects as TimelineObjectCoreExt[]).map(obj => {
+				adlib.content.timelineObjects = (adlib.content.timelineObjects as TimelineObjectCoreExt[]).map((obj) => {
 					const remappedLayer = remapVizLLayer.get(obj.layer.toString())
 
 					if (remappedLayer) {

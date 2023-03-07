@@ -6,31 +6,10 @@ import {
 	TSR
 } from 'blueprints-integration'
 import { CueDefinitionLYD, EvaluateLYD, literal, ParseCue, PartDefinitionKam } from 'tv2-common'
-import { AdlibTags, NoteType, PartType, SharedOutputLayers, SharedSourceLayers, SourceType } from 'tv2-constants'
-import { SegmentUserContext } from '../../../../__mocks__/context'
-import {
-	DEFAULT_GFX_SETUP,
-	defaultShowStyleConfig,
-	defaultStudioConfig,
-	EMPTY_SOURCE_CONFIG
-} from '../../../../tv2_afvd_showstyle/__tests__/configs'
-import {
-	defaultDSKConfig,
-	parseConfig as parseStudioConfig,
-	StudioConfig
-} from '../../../../tv2_afvd_studio/helpers/config'
-import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { getConfig, parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../../config'
+import { AdlibTags, NoteType, PartType, SharedOutputLayer, SharedSourceLayer, SourceType } from 'tv2-constants'
+import { makeMockGalleryContext, SegmentUserContextMock } from '../../../../__mocks__/context'
 
-function makeMockContext() {
-	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
-	mockContext.studioConfig = defaultStudioConfig as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
-
-	return mockContext
-}
-
-const CONFIG = getConfig(makeMockContext())
+const CONFIG = makeMockGalleryContext().config
 const MOCK_PART = literal<PartDefinitionKam>({
 	type: PartType.Kam,
 	sourceDefinition: { sourceType: SourceType.KAM, id: '1', raw: 'Kam 1', minusMic: false, name: 'KAM 1' },
@@ -51,22 +30,7 @@ describe('lyd', () => {
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 
-		EvaluateLYD(
-			makeMockContext(),
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: EMPTY_SOURCE_CONFIG,
-				mediaPlayers: [],
-				dsk: defaultDSKConfig,
-				selectedGfxSetup: DEFAULT_GFX_SETUP
-			},
-			pieces,
-			adlibPieces,
-			actions,
-			parsedCue,
-			MOCK_PART
-		)
+		EvaluateLYD(makeMockGalleryContext(), pieces, adlibPieces, actions, parsedCue, MOCK_PART)
 
 		expect(pieces[0].enable).toEqual(
 			literal<IBlueprintPiece['enable']>({
@@ -83,22 +47,7 @@ describe('lyd', () => {
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 
-		EvaluateLYD(
-			makeMockContext(),
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: EMPTY_SOURCE_CONFIG,
-				mediaPlayers: [],
-				dsk: defaultDSKConfig,
-				selectedGfxSetup: DEFAULT_GFX_SETUP
-			},
-			pieces,
-			adlibPieces,
-			actions,
-			parsedCue,
-			MOCK_PART
-		)
+		EvaluateLYD(makeMockGalleryContext(), pieces, adlibPieces, actions, parsedCue, MOCK_PART)
 
 		expect(pieces[0].enable).toEqual(
 			literal<IBlueprintPiece['enable']>({
@@ -116,28 +65,13 @@ describe('lyd', () => {
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 
-		const context = makeMockContext()
+		const context = makeMockGalleryContext()
 
-		EvaluateLYD(
-			context,
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: EMPTY_SOURCE_CONFIG,
-				mediaPlayers: [],
-				dsk: defaultDSKConfig,
-				selectedGfxSetup: DEFAULT_GFX_SETUP
-			},
-			pieces,
-			adlibPieces,
-			actions,
-			parsedCue,
-			MOCK_PART
-		)
+		EvaluateLYD(context, pieces, adlibPieces, actions, parsedCue, MOCK_PART)
 
 		expect(pieces.length).toEqual(0)
-		expect(context.getNotes().length).toEqual(1)
-		expect(context.getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
+		expect((context.core as SegmentUserContextMock).getNotes().length).toEqual(1)
+		expect((context.core as SegmentUserContextMock).getNotes()[0].type).toEqual(NoteType.NOTIFY_USER_WARNING)
 	})
 
 	test('Lyd adlib', () => {
@@ -146,30 +80,14 @@ describe('lyd', () => {
 		const adlibPieces: IBlueprintAdLibPiece[] = []
 		const actions: IBlueprintActionManifest[] = []
 
-		EvaluateLYD(
-			makeMockContext(),
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: EMPTY_SOURCE_CONFIG,
-				mediaPlayers: [],
-				dsk: defaultDSKConfig,
-				selectedGfxSetup: DEFAULT_GFX_SETUP
-			},
-			pieces,
-			adlibPieces,
-			actions,
-			parsedCue,
-			MOCK_PART,
-			true
-		)
+		EvaluateLYD(makeMockGalleryContext(), pieces, adlibPieces, actions, parsedCue, MOCK_PART, true)
 
 		expect(adlibPieces.length).toEqual(1)
 		expect(adlibPieces[0]).toMatchObject(
 			literal<Partial<IBlueprintAdLibPiece>>({
 				name: 'SN_INTRO',
-				outputLayerId: SharedOutputLayers.MUSIK,
-				sourceLayerId: SharedSourceLayers.PgmAudioBed,
+				outputLayerId: SharedOutputLayer.MUSIK,
+				sourceLayerId: SharedSourceLayer.PgmAudioBed,
 				lifespan: PieceLifespan.OutOnRundownChange,
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 			})
@@ -184,7 +102,7 @@ describe('lyd', () => {
 
 		CONFIG.studio.AudioBedFolder = 'audio'
 
-		EvaluateLYD(makeMockContext(), CONFIG, pieces, adLibPieces, actions, parsedCue, MOCK_PART)
+		EvaluateLYD(makeMockGalleryContext(), pieces, adLibPieces, actions, parsedCue, MOCK_PART)
 
 		expect(pieces).toHaveLength(1)
 		const timelineObject: TSR.TimelineObjCCGMedia = pieces[0].content.timelineObjects[0] as TSR.TimelineObjCCGMedia
@@ -200,18 +118,28 @@ describe('lyd', () => {
 		const actions: IBlueprintActionManifest[] = []
 
 		const audioBedFolder = 'audio'
-		CONFIG.studio.AudioBedFolder = audioBedFolder
 
 		const fileName: string = 'someFileName'
-		CONFIG.showStyle.LYDConfig = [
-			{
-				_id: 'someId',
-				INewsName: iNewsName,
-				FileName: fileName
-			}
-		]
 
-		EvaluateLYD(makeMockContext(), CONFIG, pieces, adLibPieces, actions, parsedCue, MOCK_PART)
+		EvaluateLYD(
+			makeMockGalleryContext({
+				studioConfig: { AudioBedFolder: audioBedFolder },
+				showStyleConfig: {
+					LYDConfig: [
+						{
+							_id: 'someId',
+							INewsName: iNewsName,
+							FileName: fileName
+						}
+					]
+				}
+			}),
+			pieces,
+			adLibPieces,
+			actions,
+			parsedCue,
+			MOCK_PART
+		)
 
 		expect(pieces).toHaveLength(1)
 		const timelineObject: TSR.TimelineObjCCGMedia = pieces[0].content.timelineObjects[0] as TSR.TimelineObjCCGMedia

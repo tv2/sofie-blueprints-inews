@@ -5,30 +5,27 @@ import {
 	IngestSegment,
 	ISegmentUserContext,
 	PieceLifespan,
-	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { getSegmentBase, literal } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { getSegmentBase, literal, SegmentContextImpl, ShowStyleContext, TransitionStyle } from 'tv2-common'
+import { SharedOutputLayer } from 'tv2-constants'
 import * as _ from 'underscore'
-import { OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
-import { getConfig, OfftubeShowstyleBlueprintConfig } from './helpers/config'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
+import { OfftubeBlueprintConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
 import { OfftubeCreatePartDVE } from './parts/OfftubeDVE'
 import { OfftubeCreatePartGrafik } from './parts/OfftubeGrafik'
 import { OfftubeCreatePartKam } from './parts/OfftubeKam'
 import { OfftubeCreatePartServer } from './parts/OfftubeServer'
 import { CreatePartUnknown } from './parts/OfftubeUnknown'
-import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
 
 export async function getSegment(
-	context: ISegmentUserContext,
+	coreContext: ISegmentUserContext,
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
-	const config = getConfig(context)
+	const context = new SegmentContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
 
 	const result: BlueprintResultSegment = await getSegmentBase(context, ingestSegment, {
-		getConfig,
 		CreatePartContinuity,
 		CreatePartUnknown,
 		CreatePartKam: OfftubeCreatePartKam,
@@ -44,8 +41,6 @@ export async function getSegment(
 
 	const blueprintParts = result.parts
 
-	postProcessPartTimelineObjects(context, config, blueprintParts)
-
 	return {
 		segment: result.segment,
 		parts: blueprintParts
@@ -53,7 +48,7 @@ export async function getSegment(
 }
 
 function CreatePartContinuity(
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ShowStyleContext<OfftubeBlueprintConfig>,
 	ingestSegment: IngestSegment
 ): BlueprintResultPart {
 	return {
@@ -70,29 +65,20 @@ function CreatePartContinuity(
 				},
 				name: 'CONTINUITY',
 				sourceLayerId: OfftubeSourceLayer.PgmContinuity,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
-					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
-						literal<TSR.TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: 0
-							},
+					switcherInput: context.config.studio.SwitcherSource.Continuity,
+					timelineObjects: [
+						...context.videoSwitcher.getOnAirTimelineObjects({
 							priority: 1,
-							layer: OfftubeAtemLLayer.AtemMEClean,
 							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: config.studio.AtemSource.Continuity,
-									transition: TSR.AtemTransitionStyle.CUT
-								}
+								input: context.config.studio.SwitcherSource.Continuity,
+								transition: TransitionStyle.CUT
 							}
 						})
-					])
+					]
 				})
 			}
 		],

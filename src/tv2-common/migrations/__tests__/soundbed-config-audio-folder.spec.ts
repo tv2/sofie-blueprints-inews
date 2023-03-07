@@ -27,7 +27,7 @@ function testDescriptionToConfig(
 ): ConfigItemValue {
 	const preMigration = step === 'premigration'
 	return literal<TableConfigItemValue>(
-		description.map(item => ({
+		description.map((item) => ({
 			_id: item.iNewsName,
 			INewsName: item.iNewsName,
 			FileName: preMigration ? item.PreMigration : item.PostMigration ?? item.PreMigration
@@ -235,7 +235,7 @@ const normalizeSoundbedTests: StripAudioFolderMigrationTestCase[] = [
 ]
 
 describe('Remove audio folder from soundbed config', () => {
-	normalizeSoundbedTests.forEach(testDescription => {
+	normalizeSoundbedTests.forEach((testDescription) => {
 		test(testDescription.description, () => {
 			const context = new MockShowstyleMigrationContext()
 			context.configs.set(AUDIO_BED_CONFIG_KEY, testDescriptionToConfig(testDescription.data, 'premigration'))

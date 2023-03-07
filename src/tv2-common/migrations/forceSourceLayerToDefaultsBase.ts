@@ -19,7 +19,7 @@ export function forceSourceLayerToDefaultsBase(
 				return `SourceLayer "${layer}" doesn't exist on ShowBaseStyle`
 			}
 
-			const defaultVal = sourcelayerDefaults.find(l => l._id === layer)
+			const defaultVal = sourcelayerDefaults.find((l) => l._id === layer)
 
 			if (!defaultVal) {
 				return false
@@ -32,7 +32,7 @@ export function forceSourceLayerToDefaultsBase(
 				context.removeSourceLayer(layer)
 			}
 
-			const defaultVal = sourcelayerDefaults.find(l => l._id === layer)
+			const defaultVal = sourcelayerDefaults.find((l) => l._id === layer)
 
 			if (!defaultVal) {
 				return

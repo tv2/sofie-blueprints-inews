@@ -1,8 +1,8 @@
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'
-import { ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig } from '../helpers/config'
 
-const blankShowStyleConfig: ShowStyleConfig = {
+const blankShowStyleConfig: GalleryShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	DVEStyles: [],
 	GfxTemplates: [],
@@ -22,7 +22,7 @@ const blankShowStyleConfig: ShowStyleConfig = {
 
 describe('Config Manifest', () => {
 	test('Exposed ShowStyle Keys', () => {
-		const showStyleManifestKeys = _.map(showStyleConfigManifest, e => e.id)
+		const showStyleManifestKeys = _.map(showStyleConfigManifest, (e) => e.id)
 		const manifestKeys = showStyleManifestKeys.sort()
 
 		const definedKeys = Object.keys(blankShowStyleConfig)

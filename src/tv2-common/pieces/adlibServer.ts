@@ -1,4 +1,4 @@
-import { IBlueprintActionManifest, IShowStyleUserContext } from 'blueprints-integration'
+import { IBlueprintActionManifest } from 'blueprints-integration'
 import {
 	ActionSelectServerClip,
 	getSourceDuration,
@@ -8,23 +8,18 @@ import {
 	literal,
 	PartDefinition,
 	ServerPartLayers,
+	ShowStyleContext,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers } from 'tv2-constants'
+import { AdlibActionType, AdlibTags, SharedOutputLayer } from 'tv2-constants'
 import { getServerAdLibTriggerModes, t } from '../helpers'
-
-export interface AdlibServerOfftubeOptions {
-	/** By passing in this object, you're creating a server according to the OFFTUBE showstyle. */
-	isOfftube: boolean
-}
 
 export async function CreateAdlibServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ShowStyleContext<ShowStyleConfig>,
 	rank: number,
 	partDefinition: PartDefinition,
 	file: string,
@@ -33,9 +28,9 @@ export async function CreateAdlibServer<
 	sourceLayers: ServerPartLayers,
 	tagAsAdlib: boolean
 ): Promise<IBlueprintActionManifest> {
-	const mediaObjectDurationSec = await context.hackGetMediaObjectDuration(file)
+	const mediaObjectDurationSec = await context.core.hackGetMediaObjectDuration(file)
 	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
-	const sourceDuration = getSourceDuration(mediaObjectDuration, config.studio.ServerPostrollDuration)
+	const sourceDuration = getSourceDuration(mediaObjectDuration, context.config.studio.ServerPostrollDuration)
 
 	return {
 		externalId: partDefinition.externalId + '-adLib-server',
@@ -54,8 +49,8 @@ export async function CreateAdlibServer<
 			_rank: rank,
 			label: t(`${partDefinition.storyName}`),
 			sourceLayerId: sourceLayers.SourceLayer.PgmServer,
-			outputLayerId: SharedOutputLayers.PGM,
-			content: GetVTContentProperties(config, {
+			outputLayerId: SharedOutputLayer.PGM,
+			content: GetVTContentProperties(context.config, {
 				file,
 				clipDuration: mediaObjectDuration,
 				sourceDuration

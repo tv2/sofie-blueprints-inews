@@ -20,7 +20,7 @@ export interface TableConfigItemGfxTemplates {
 	IsDesign: boolean
 }
 
-export interface OfftubeShowstyleBlueprintConfig extends OfftubeStudioBlueprintConfig {
+export interface OfftubeBlueprintConfig extends OfftubeStudioBlueprintConfig {
 	showStyle: OfftubeShowStyleConfig
 	selectedGfxSetup: TableConfigGfxSetup
 }
@@ -39,8 +39,8 @@ export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 	GfxSetups: TableConfigGfxSetup[]
 }
 
-export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
-	const showstyleConfig = (rawConfig as unknown) as OfftubeShowStyleConfig
+export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
+	const showstyleConfig = rawConfig as unknown as OfftubeShowStyleConfig
 	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
 		Name: '',
 		HtmlPackageFolder: ''
@@ -51,13 +51,13 @@ export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig
 	}
 }
 
-export function getConfig(context: IShowStyleContext): OfftubeShowstyleBlueprintConfig {
-	return ({
+export function getConfig(context: IShowStyleContext): OfftubeBlueprintConfig {
+	return {
 		...(context.getStudioConfig() as any),
 		...(context.getShowStyleConfig() as any)
-	} as any) as OfftubeShowstyleBlueprintConfig
+	} as any as OfftubeBlueprintConfig
 }
 
-export function getStudioConfig(context: IStudioContext): OfftubeShowstyleBlueprintConfig {
-	return context.getStudioConfig() as OfftubeShowstyleBlueprintConfig
+export function getStudioConfig(context: IStudioContext): OfftubeBlueprintConfig {
+	return context.getStudioConfig() as OfftubeBlueprintConfig
 }

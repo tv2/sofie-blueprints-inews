@@ -1,15 +1,9 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	ISegmentUserContext
-} from 'blueprints-integration'
-import { CueDefinitionGraphicDesign, EvaluateDesignBase, TV2BlueprintConfig } from 'tv2-common'
+import { IBlueprintActionManifest, IBlueprintAdLibPiece, IBlueprintPiece } from 'blueprints-integration'
+import { CueDefinitionGraphicDesign, EvaluateDesignBase, ShowStyleContext } from 'tv2-common'
 import * as _ from 'underscore'
 
 export function EvaluateCueDesign(
-	config: TV2BlueprintConfig,
-	context: ISegmentUserContext,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	actions: IBlueprintActionManifest[],
@@ -18,5 +12,5 @@ export function EvaluateCueDesign(
 	adlib?: boolean,
 	rank?: number
 ) {
-	EvaluateDesignBase(config, context, pieces, adlibPieces, actions, partId, parsedCue, adlib, rank)
+	EvaluateDesignBase(context, pieces, adlibPieces, actions, partId, parsedCue, adlib, rank)
 }

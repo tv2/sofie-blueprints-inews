@@ -34,7 +34,7 @@ export function MoveSourcesToTable(
 							literal<TableConfigItemSourceMappingWithSisyfos & TableConfigItemValue[0]>({
 								_id: i.toString(),
 								SourceName: source.id,
-								AtemSource: source.val,
+								SwitcherSource: source.val,
 								SisyfosLayers: getSisyfosLayersForMigration(configName, source.id.toString().toUpperCase()),
 								StudioMics: !!studioMics
 							})
@@ -44,7 +44,7 @@ export function MoveSourcesToTable(
 							literal<TableConfigItemSourceMapping & TableConfigItemValue[0]>({
 								_id: i.toString(),
 								SourceName: source.id,
-								AtemSource: source.val
+								SwitcherSource: source.val
 							})
 						)
 					}

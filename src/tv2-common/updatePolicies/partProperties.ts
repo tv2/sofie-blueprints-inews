@@ -20,7 +20,7 @@ const partPropertiesToOmit = [
 	'shouldNotifyCurrentPlayingPart'
 ] as const
 
-const clearedMutatablePart: Complete<Omit<IBlueprintMutatablePart, typeof partPropertiesToOmit[number] | 'title'>> = {
+const clearedMutatablePart: Complete<Omit<IBlueprintMutatablePart, (typeof partPropertiesToOmit)[number] | 'title'>> = {
 	metaData: undefined,
 	expectedDuration: undefined,
 	budgetDuration: undefined,

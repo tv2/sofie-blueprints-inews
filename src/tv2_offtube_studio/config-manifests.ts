@@ -10,6 +10,7 @@ import {
 	literal,
 	MakeConfigForSources,
 	MakeConfigWithMediaFlow,
+	SwitcherType,
 	TableConfigItemSourceMapping
 } from 'tv2-common'
 import { AtemSourceIndex } from '../types/atem'
@@ -28,7 +29,7 @@ export const manifestOfftubeSourcesCam = MakeConfigForSources('Cam', 'Cameras', 
 	{
 		_id: '',
 		SourceName: '1',
-		AtemSource: 4,
+		SwitcherSource: 4,
 		SisyfosLayers: [],
 		StudioMics: true
 	}
@@ -38,7 +39,7 @@ export const manifestOfftubeSourcesRM = MakeConfigForSources('RM', 'Live', true,
 	{
 		_id: '',
 		SourceName: '1',
-		AtemSource: 3,
+		SwitcherSource: 3,
 		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
 		StudioMics: true,
 		WantsToPersistAudio: true,
@@ -50,7 +51,7 @@ export const manifestOfftubeSourcesFeed = MakeConfigForSources('Feed', 'Feed', t
 	{
 		_id: '',
 		SourceName: '1',
-		AtemSource: 1,
+		SwitcherSource: 1,
 		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo, OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround],
 		StudioMics: true,
 		WantsToPersistAudio: false
@@ -58,7 +59,7 @@ export const manifestOfftubeSourcesFeed = MakeConfigForSources('Feed', 'Feed', t
 	{
 		_id: '',
 		SourceName: '2',
-		AtemSource: 2,
+		SwitcherSource: 2,
 		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo],
 		StudioMics: true,
 		WantsToPersistAudio: false
@@ -68,19 +69,19 @@ export const manifestOfftubeSourcesFeed = MakeConfigForSources('Feed', 'Feed', t
 export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 	id: 'ABMediaPlayers',
 	name: 'Media Players inputs',
-	description: 'ATEM inputs for A/B media players',
+	description: 'Video Switcher inputs for A/B media players',
 	type: ConfigManifestEntryType.TABLE,
 	required: false,
 	defaultVal: literal<Array<TableConfigItemSourceMapping & TableConfigItemValue[0]>>([
 		{
 			_id: '',
 			SourceName: '1',
-			AtemSource: 5
+			SwitcherSource: 5
 		},
 		{
 			_id: '',
 			SourceName: '2',
-			AtemSource: 6
+			SwitcherSource: 6
 		}
 	]),
 	columns: [
@@ -94,9 +95,9 @@ export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 			rank: 0
 		},
 		{
-			id: 'AtemSource',
-			name: 'ATEM input',
-			description: 'ATEM vision mixer input for Media player',
+			id: 'SwitcherSource',
+			name: 'Video Switcher input',
+			description: 'Video Switcher input for Media player',
 			type: ConfigManifestEntryType.INT,
 			required: true,
 			defaultVal: 0,
@@ -121,6 +122,15 @@ export const manifestOfftubeStudioMics: ConfigManifestEntry = {
 export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = DSKConfigManifest(defaultDSKConfig)
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
+	{
+		id: 'SwitcherType',
+		name: 'Video Switcher Type',
+		description: 'Type of the video switcher',
+		type: ConfigManifestEntryType.ENUM,
+		options: Object.values(SwitcherType),
+		required: true,
+		defaultVal: SwitcherType.ATEM
+	},
 	...MakeConfigWithMediaFlow('Clip', '', 'flow0', '.mxf', '', false),
 	...MakeConfigWithMediaFlow('Jingle', '', 'flow1', '.mov', 'jingler', false),
 	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png', '', false),
@@ -141,57 +151,57 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: false
 	},
 	{
-		id: 'AtemSource.SplitArtF',
-		name: 'ATEM Split Screen Art Fill',
-		description: 'ATEM vision mixer input for Split Screen Art Fill',
+		id: 'SwitcherSource.SplitArtFill',
+		name: 'Video Switcher Split Screen Art Fill',
+		description: 'Video Switcher input for Split Screen Art Fill',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 10
 	},
 	{
-		id: 'AtemSource.SplitArtK',
-		name: 'ATEM Split Screen Art Key',
-		description: 'ATEM vision mixer input for Split Screen Art Key',
+		id: 'SwitcherSource.SplitArtKey',
+		name: 'Video Switcher Split Screen Art Key',
+		description: 'Video Switcher input for Split Screen Art Key',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 9
 	},
 	{
-		id: 'AtemSource.SplitBackground',
-		name: 'ATEM split screen background loop source',
-		description: 'ATEM source for mos full-frame grafik background source',
+		id: 'SwitcherSource.SplitBackground',
+		name: 'Video Switcher split screen background loop source',
+		description: 'Video Switcher source for mos full-frame grafik background source',
 		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 11
 	},
 	{
-		id: 'AtemSource.Loop',
+		id: 'SwitcherSource.Loop',
 		name: 'Studio screen loop graphics source',
-		description: 'ATEM source for loop for studio screen',
+		description: 'Video Switcher source for loop for studio screen',
 		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 12
 	},
 	{
-		id: 'AtemSource.Default',
-		name: 'ATEM Default source',
-		description: 'ATEM vision mixer default source',
+		id: 'SwitcherSource.Default',
+		name: 'Video Switcher Default source',
+		description: 'Video Switcher default source',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col1
 	},
 	{
-		id: 'AtemSource.Continuity',
-		name: 'ATEM continuity source',
-		description: 'ATEM input for continuity',
+		id: 'SwitcherSource.Continuity',
+		name: 'Video Switcher continuity source',
+		description: 'Video Switcher input for continuity',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col2
 	},
 	{
-		id: 'AtemSource.Dip',
-		name: 'ATEM Dip Source',
-		description: 'ATEM input for the Dip - should match the desired input in the ATEM',
+		id: 'SwitcherSource.Dip',
+		name: 'Video Switcher Dip Source',
+		description: 'Video Switcher source for the Dip - should match the desired input in the Video Switcher',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col2
@@ -358,7 +368,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'VizPilotGraphics.FullGraphicBackground',
 		name: 'Full frame grafik background source',
-		description: 'ATEM source for mos full-frame grafik background source',
+		description: 'Video Switcher source for mos full-frame grafik background source',
 		type: ConfigManifestEntryType.INT,
 		required: false,
 		defaultVal: 0

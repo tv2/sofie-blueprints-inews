@@ -3,30 +3,29 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
 import {
 	AddScript,
-	ApplyFullGraphicPropertiesToPart,
+	applyFullGraphicPropertiesToPart,
 	GetJinglePartProperties,
 	GraphicIsPilot,
 	PartDefinition,
-	PartTime
+	PartTime,
+	SegmentContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export async function CreatePartUnknown(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
-	const partTime = PartTime(config, partDefinition, totalWords)
+	const partTime = PartTime(context.config, partDefinition, totalWords)
 
 	let part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
@@ -41,18 +40,17 @@ export async function CreatePartUnknown(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
+	part = { ...part, ...GetJinglePartProperties(context, partDefinition) }
 
 	if (
-		partDefinition.cues.some(cue => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
-		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
+		partDefinition.cues.some((cue) => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
+		!partDefinition.cues.filter((c) => c.type === CueType.Jingle).length
 	) {
-		ApplyFullGraphicPropertiesToPart(config, part)
+		applyFullGraphicPropertiesToPart(context.config, part)
 	}
 
 	await OfftubeEvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

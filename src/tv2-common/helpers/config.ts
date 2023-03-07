@@ -18,7 +18,7 @@ export function findGfxSetup<ShowStyleConfig extends TV2ShowstyleBlueprintConfig
 	fallbackGfxSetup: ShowStyleConfig['GfxSetups'][0]
 ): ShowStyleConfig['GfxSetups'][0] {
 	const foundTableConfigGfxSetup: TableConfigGfxSetup | undefined = config.GfxSetups.find(
-		tableConfigGfxSetup => tableConfigGfxSetup.Name === config.SelectedGfxSetupName
+		(tableConfigGfxSetup) => tableConfigGfxSetup.Name === config.SelectedGfxSetupName
 	)
 	if (!foundTableConfigGfxSetup) {
 		context.logWarning(`No GFX setup found for profile: ${config.SelectedGfxSetupName}`)
