@@ -38,8 +38,7 @@ import {
 	ControlClasses,
 	SharedGraphicLLayer,
 	SharedOutputLayer,
-	SwitcherAuxLLayer,
-	SwitcherDveLLayer
+	SwitcherAuxLLayer
 } from 'tv2-constants'
 import * as _ from 'underscore'
 import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
@@ -579,61 +578,45 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 						}
 				  })
 				: undefined,
-			literal<TSR.TimelineObjAtemSsrcProps>({
-				id: '',
+			...context.videoSwitcher.getDveTimelineObjects({
 				enable: { while: '1' },
-				priority: 0,
-				layer: SwitcherDveLLayer.Dve,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
-					ssrcProps: {
-						artFillSource: context.config.studio.SwitcherSource.SplitArtF,
-						artCutSource: context.config.studio.SwitcherSource.SplitArtK,
-						artOption: 1,
-						artPreMultiplied: true
-					}
-				}
-			}),
-			literal<TSR.TimelineObjAtemSsrc>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: SwitcherDveLLayer.DveBoxes,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.SSRC,
-					ssrc: {
-						boxes: [
-							{
-								// left
-								enabled: true,
-								source: AtemSourceIndex.Bars,
-								size: 580,
-								x: -800,
-								y: 50,
-								cropped: true,
-								cropRight: 2000
-							},
-							{
-								// right
-								enabled: true,
-								source: AtemSourceIndex.Bars,
-								size: 580,
-								x: 800,
-								y: 50
-								// note: this sits behind box1, so don't crop it to ensure there is no gap between
-							},
-							{
-								// box 3
-								enabled: false
-							},
-							{
-								// box 4
-								enabled: false
-							}
-						]
-					}
+					boxes: [
+						{
+							// left
+							enabled: true,
+							source: AtemSourceIndex.Bars,
+							size: 580,
+							x: -800,
+							y: 50,
+							cropped: true,
+							cropRight: 2000
+						},
+						{
+							// right
+							enabled: true,
+							source: AtemSourceIndex.Bars,
+							size: 580,
+							x: 800,
+							y: 50
+							// note: this sits behind box1, so don't crop it to ensure there is no gap between
+						},
+						{
+							// box 3
+							enabled: false
+						},
+						{
+							// box 4
+							enabled: false
+						}
+					],
+					template: {
+						properties: {
+							artPreMultiplied: true
+						}
+					},
+					artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
+					artCutSource: context.config.studio.SwitcherSource.SplitArtKey
 				}
 			}),
 			literal<TSR.TimelineObjCCGMedia>({

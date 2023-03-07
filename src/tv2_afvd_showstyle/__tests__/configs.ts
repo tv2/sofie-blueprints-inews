@@ -104,8 +104,8 @@ export const defaultStudioConfig: StudioConfig = {
 	SwitcherSource: {
 		MixMinusDefault: 2,
 		DSK: defaultDSKConfig,
-		SplitArtF: 30,
-		SplitArtK: 32,
+		SplitArtFill: 30,
+		SplitArtKey: 32,
 		Default: 2001,
 		Continuity: 2002,
 		Dip: 2002

@@ -306,7 +306,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: false
 	},
 	{
-		id: 'SwitcherSource.SplitArtF',
+		id: 'SwitcherSource.SplitArtFill',
 		name: 'Video Switcher Split Screen Art Fill',
 		description: 'Video Switcher input for Split Screen Art Fill',
 		type: ConfigManifestEntryType.INT,
@@ -314,7 +314,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 30
 	},
 	{
-		id: 'SwitcherSource.SplitArtK',
+		id: 'SwitcherSource.SplitArtKey',
 		name: 'Video Switcher Split Screen Art Key',
 		description: 'Video Switcher input for Split Screen Art Key',
 		type: ConfigManifestEntryType.INT,

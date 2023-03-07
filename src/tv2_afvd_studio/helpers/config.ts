@@ -22,8 +22,8 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	ABPlaybackDebugLogging: boolean
 	StudioMics: string[]
 	SwitcherSource: {
-		SplitArtF: number // Atem MP1 Fill
-		SplitArtK: number // Atem MP1 Key
+		SplitArtFill: number // Atem MP1 Fill
+		SplitArtKey: number // Atem MP1 Key
 		DSK: TableConfigItemDSK[]
 
 		Default: number

@@ -54,7 +54,6 @@ import {
 	SharedSourceLayer,
 	SourceType,
 	SwitcherAuxLLayer,
-	SwitcherDveLLayer,
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
@@ -627,56 +626,39 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 
 			// keyers
 			...createDskBaseline(context.config, context.videoSwitcher),
-
-			literal<TSR.TimelineObjAtemSsrcProps>({
-				id: '',
+			...context.videoSwitcher.getDveTimelineObjects({
 				enable: { while: '1' },
-				priority: 0,
-				layer: SwitcherDveLLayer.Dve,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
-					ssrcProps: {
-						artFillSource: context.config.studio.SwitcherSource.SplitArtF,
-						artCutSource: context.config.studio.SwitcherSource.SplitArtK,
-						artOption: 1, // foreground
-						artPreMultiplied: true
-					}
-				}
-			}),
-			literal<TSR.TimelineObjAtemSsrc>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: SwitcherDveLLayer.DveBoxes,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.SSRC,
-					ssrc: {
-						boxes: [
-							{
-								// left
-								enabled: true,
-								source: context.config.studio.SwitcherSource.SplitBackground,
-								size: 1000,
-								x: 0,
-								y: 0,
-								cropped: false
-							},
-							{
-								// right
-								enabled: false
-							},
-							{
-								// box 3
-								enabled: false
-							},
-							{
-								// box 4
-								enabled: false
-							}
-						]
-					}
+					boxes: [
+						{
+							// left
+							enabled: true,
+							source: context.config.studio.SwitcherSource.SplitBackground,
+							size: 1000,
+							x: 0,
+							y: 0,
+							cropped: false
+						},
+						{
+							// right
+							enabled: false
+						},
+						{
+							// box 3
+							enabled: false
+						},
+						{
+							// box 4
+							enabled: false
+						}
+					],
+					template: {
+						properties: {
+							artPreMultiplied: true
+						}
+					},
+					artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
+					artCutSource: context.config.studio.SwitcherSource.SplitArtKey
 				}
 			}),
 			literal<TSR.TimelineObjCCGMedia>({

@@ -42,8 +42,8 @@ const blankStudioConfig: StudioConfig = {
 
 	SwitcherSource: {
 		DSK: defaultDSKConfig,
-		SplitArtF: 0,
-		SplitArtK: 0,
+		SplitArtFill: 0,
+		SplitArtKey: 0,
 		Default: 0,
 		MixMinusDefault: 0,
 		Continuity: 0,

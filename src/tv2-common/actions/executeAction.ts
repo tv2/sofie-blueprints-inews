@@ -488,7 +488,7 @@ async function executeActionSelectServerClip<
 	}
 }
 
-function dveContainsServer(sources: DVESources) {
+function dveContainsServer(sources: DVESources): boolean {
 	return (
 		sources.INP1?.sourceType === SourceType.SERVER ||
 		sources.INP2?.sourceType === SourceType.SERVER ||
@@ -616,7 +616,7 @@ async function cutServerToBox<
 
 	const meta = newDvePiece.metaData
 
-	const containsServer = dveContainsServer(meta.sources)
+	const containsServer: boolean = dveContainsServer(meta.sources)
 
 	if (!containsServer) {
 		if (containedServerBefore) {
@@ -650,7 +650,7 @@ async function cutServerToBox<
 			(obj) => obj.layer === settings.LLayer.Sisyfos.ClipPending
 		) as TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt
 		// Find DVE Boxes object in DVE piece
-		const dveBoxesObj = currentServer.piece.content.timelineObjects.find(context.videoSwitcher.isDveBoxes) as
+		const dveBoxesObj = newDvePiece.content.timelineObjects.find(context.videoSwitcher.isDveBoxes) as
 			| TimelineBlueprintExt
 			| undefined
 		if (
@@ -859,10 +859,7 @@ async function startNewDVELayout<
 					timelineObjects: pieceContent.timelineObjects
 						.filter(
 							(tlObj) =>
-								!(
-									tlObj.content.deviceType === TSR.DeviceType.ATEM && // @todo: tricaster
-									(tlObj as TSR.TimelineObjAtemAny).content.type === TSR.TimelineContentTypeAtem.ME
-								) && tlObj.content.deviceType !== TSR.DeviceType.SISYFOS
+								!context.videoSwitcher.isMixEffect(tlObj) && tlObj.content.deviceType !== TSR.DeviceType.SISYFOS
 						)
 						.map((obj) => ({ ...obj, priority: obj.priority ?? 1 / 2 }))
 				}
@@ -1256,11 +1253,11 @@ async function executeActionCutSourceToBox<
 		sisyfosLayers: []
 	}
 
-	const containsServerBefore = dveContainsServer(meta.sources)
+	const containsServerBefore: boolean = dveContainsServer(meta.sources)
 
 	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.sourceDefinition
 
-	const containsServerAfter = dveContainsServer(meta.sources)
+	const containsServerAfter: boolean = dveContainsServer(meta.sources)
 
 	const graphicsTemplateContent: { [key: string]: string } = {}
 

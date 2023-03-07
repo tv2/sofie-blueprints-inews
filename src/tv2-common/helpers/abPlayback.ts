@@ -274,7 +274,9 @@ function updateObjectsToMediaPlayer<
 				switcherInput = { id: playerId.toString(), val: context.config.studio.SwitcherSource.Default.toString() }
 			}
 			const input = Number(switcherInput.val) || 0
-			if (context.videoSwitcher.isMixEffect(obj)) {
+			if (context.videoSwitcher.isDveBoxes(obj)) {
+				context.videoSwitcher.updateUnpopulatedDveBoxes(obj, input)
+			} else if (context.videoSwitcher.isMixEffect(obj)) {
 				// the `endsWith` below is a nasty hack, but this will be gone after AB refactor
 				if (
 					context.uniformConfig.switcherLLayers.nextPreviewMixEffect &&
@@ -286,8 +288,6 @@ function updateObjectsToMediaPlayer<
 				}
 			} else if (context.videoSwitcher.isAux(obj)) {
 				context.videoSwitcher.updateAuxInput(obj, input)
-			} else if (context.videoSwitcher.isDveBoxes(obj)) {
-				context.videoSwitcher.updateUnpopulatedDveBoxes(obj, input)
 			} else {
 				context.core.logWarning(
 					`Trying to move Video Switcher object of unknown type (${

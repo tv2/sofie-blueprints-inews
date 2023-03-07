@@ -107,8 +107,8 @@ export interface TV2StudioConfigBase {
 	SwitcherType: SwitcherType
 	SwitcherSource: {
 		Default: number
-		SplitArtF: number
-		SplitArtK: number
+		SplitArtFill: number
+		SplitArtKey: number
 		DSK: TableConfigItemDSK[]
 		Dip: number
 	}

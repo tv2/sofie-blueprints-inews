@@ -1,7 +1,9 @@
-import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { FRAME_RATE, getTimeFromFrames } from 'tv2-common'
+import { IStudioContext, TimelineObjectCoreExt, TSR } from 'blueprints-integration'
+import { FRAME_RATE, getTimeFromFrames, literal, TV2StudioConfig, UniformConfig } from 'tv2-common'
+import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '../layers'
+import { TriCasterDveConverter } from './TriCasterDveConverter'
 import {
 	AuxProps,
 	DskProps,
@@ -49,6 +51,18 @@ export class TriCaster extends VideoSwitcherBase {
 		timelineObject: TSR.TSRTimelineObj
 	): timelineObject is TSR.TimelineObjTriCasterMixOutput | TSR.TimelineObjTriCasterMatrixOutput =>
 		TSR.isTimelineObjTriCasterMixOutput(timelineObject) || TSR.isTimelineObjTriCasterMatrixOutput(timelineObject)
+
+	private dveConverter: TriCasterDveConverter
+
+	constructor(
+		core: IStudioContext,
+		config: TV2StudioConfig,
+		uniformConfig: UniformConfig,
+		dveConverter: TriCasterDveConverter
+	) {
+		super(core, config, uniformConfig)
+		this.dveConverter = dveConverter
+	}
 
 	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjTriCasterME {
 		const { content } = props
@@ -167,7 +181,9 @@ export class TriCaster extends VideoSwitcherBase {
 		return timelineObject
 	}
 
-	public isDveBoxes = (timelineObject: TimelineObjectCoreExt<unknown, unknown>): boolean => {
+	public isDveBoxes = (
+		timelineObject: TimelineObjectCoreExt<unknown, unknown>
+	): timelineObject is TSR.TimelineObjTriCasterME => {
 		// @todo: this is ugly, but works
 		return (
 			TSR.isTimelineObjTriCasterME(timelineObject) &&
@@ -175,15 +191,92 @@ export class TriCaster extends VideoSwitcherBase {
 		)
 	}
 
-	public getDveTimelineObjects(_properties: DveProps): TSR.TSRTimelineObj[] {
-		throw new Error('Method not implemented.')
+	public updateUnpopulatedDveBoxes(
+		timelineObject: TSR.TSRTimelineObj,
+		input: number | SpecialInput
+	): TSR.TSRTimelineObj {
+		if (!this.isDveBoxes(timelineObject)) {
+			this.logWrongTimelineObjectType(timelineObject, this.updateUnpopulatedDveBoxes.name)
+			return timelineObject
+		}
+
+		const dveMixEffect = timelineObject.content.me as TSR.TriCasterMixEffectInEffectMode
+		const layers = dveMixEffect.layers as NonNullable<TSR.TriCasterMixEffectInEffectMode['layers']>
+		Object.values(layers).forEach((layer) => this.assignInputIfPlaceholder(layer, input))
+		return timelineObject
 	}
 
-	public updateUnpopulatedDveBoxes(
-		_timelineObject: TSR.TSRTimelineObj,
-		_input: number | SpecialInput
-	): TSR.TSRTimelineObj {
-		throw new Error('Method not implemented.')
+	public assignInputIfPlaceholder(layer: TSR.TriCasterLayer, input: number | SpecialInput): void {
+		const dveServerPlaceholder = 'input-1'
+		if (layer.input !== dveServerPlaceholder) {
+			return
+		}
+		layer.input = this.getInputName(input)
+	}
+
+	public getDveTimelineObjects(dveProps: DveProps): TSR.TSRTimelineObj[] {
+		return [
+			literal<TSR.TimelineObjTriCasterME>({
+				...this.getBaseProperties(dveProps, SwitcherDveLLayer.DveBoxes),
+				content: {
+					deviceType: TSR.DeviceType.TRICASTER,
+					type: TSR.TimelineContentTypeTriCaster.ME,
+					me: literal<TSR.TriCasterMixEffectInEffectMode>({
+						transitionEffect: 8,
+						layers: this.generateDveBoxLayers(dveProps.content.boxes),
+						keyers: this.generateOverlayKeyer(dveProps.content.artFillSource)
+					})
+				}
+			})
+		]
+	}
+
+	private generateDveBoxLayers(boxes: any[]): Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> {
+		return {
+			a: boxes[0].enabled ? this.generateDveBoxLayout(boxes[0]) : this.generateInvisibleBoxLayer(),
+			b: boxes[1].enabled ? this.generateDveBoxLayout(boxes[1]) : this.generateInvisibleBoxLayer(),
+			c: boxes[2].enabled ? this.generateDveBoxLayout(boxes[2]) : this.generateInvisibleBoxLayer(),
+			d: boxes[3].enabled ? this.generateDveBoxLayout(boxes[3]) : this.generateInvisibleBoxLayer()
+		}
+	}
+
+	private generateDveBoxLayout(box: any): TSR.TriCasterLayer {
+		return {
+			input: this.getInputName(box.source),
+			positioningAndCropEnabled: true,
+			position: this.dveConverter.convertPosition(box.x, box.y),
+			scale: this.dveConverter.convertScale(box.size),
+			crop: this.dveConverter.convertCrop(box)
+		}
+	}
+
+	private generateInvisibleBoxLayer(): TSR.TriCasterLayer {
+		return {
+			input: 'Black',
+			positioningAndCropEnabled: true,
+			position: {
+				x: -3.555,
+				y: -2
+			},
+			crop: {
+				down: 0,
+				up: 0,
+				left: 0,
+				right: 0
+			}
+		}
+	}
+
+	private generateOverlayKeyer(
+		overlaySource: number | SpecialInput
+	): Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> {
+		return {
+			dsk1: {
+				input: this.getInputName(overlaySource),
+				onAir: true,
+				transitionEffect: 'cut'
+			}
+		}
 	}
 
 	private getTransitionDuration(transition?: TransitionStyle, durationInFrames?: number): number {
