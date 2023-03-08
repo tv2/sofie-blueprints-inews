@@ -111,7 +111,10 @@ export function CreateEffektForPartInner<
 	pieces.push({
 		externalId,
 		name: label,
-		enable: { start: 0, duration: getTimeFromFrames(Number(effektConfig.Duration)) },
+		enable: {
+			start: 0,
+			duration: getTimeFromFrames(effektConfig.Duration) + context.config.studio.CasparPrerollDuration
+		},
 		outputLayerId: SharedOutputLayer.JINGLE,
 		sourceLayerId: layers.sourceLayer,
 		lifespan: PieceLifespan.WithinPart,
@@ -125,7 +128,7 @@ export function CreateEffektForPartInner<
 				context.config.studio.JingleFileExtension
 			), // full path on the source network storage
 			mediaFlowIds: [context.config.studio.JingleMediaFlowId],
-			previewFrame: Number(effektConfig.StartAlpha),
+			previewFrame: effektConfig.StartAlpha,
 			ignoreMediaObjectStatus: context.config.studio.JingleIgnoreStatus,
 			ignoreBlackFrames: true,
 			ignoreFreezeFrame: true,
@@ -144,7 +147,7 @@ export function CreateEffektForPartInner<
 					}
 				}),
 				...getDskOnAirTimelineObjects(context, DskRole.JINGLE, {
-					start: Number(context.config.studio.CasparPrerollDuration)
+					start: context.config.studio.CasparPrerollDuration
 				}),
 				literal<TSR.TimelineObjSisyfosChannel & TimelineBlueprintExt>({
 					id: '',
