@@ -1,5 +1,5 @@
 import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
-import { CueDefinitionMixMinus, findSourceInfo, PartDefinition, ShowStyleContext } from 'tv2-common'
+import { CueDefinitionMixMinus, findSourceInfo, PartDefinition, ShowStyleContext, TemporalPriority } from 'tv2-common'
 import { ControlClasses, SharedOutputLayer, SharedSourceLayer, SwitcherAuxLLayer } from 'tv2-constants'
 
 export function EvaluateCueMixMinus(
@@ -56,6 +56,7 @@ export function getMixMinusTimelineObject(
 			while: `.${ControlClasses.OVERRIDDEN_ON_MIX_MINUS}`
 		},
 		layer: SwitcherAuxLLayer.AuxVideoMixMinus,
-		priority
+		priority,
+		temporalPriority: TemporalPriority.AUX_MIX_MINUS_OVERRIDE
 	})
 }

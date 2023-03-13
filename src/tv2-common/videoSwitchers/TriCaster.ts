@@ -14,7 +14,8 @@ import {
 	SwitcherType,
 	TIMELINE_OBJECT_DEFAULTS,
 	TimelineObjectProps,
-	TransitionStyle
+	TransitionStyle,
+	TemporalPriority
 } from './types'
 import { VideoSwitcherBase } from './VideoSwitcher'
 
@@ -214,21 +215,20 @@ export class TriCaster extends VideoSwitcherBase {
 		layer.input = this.getInputName(input)
 	}
 
-	public getDveTimelineObjects(dveProps: DveProps): TSR.TSRTimelineObj[] {
-		return [
-			literal<TSR.TimelineObjTriCasterME>({
-				...this.getBaseProperties(dveProps, SwitcherDveLLayer.DveBoxes),
-				content: {
-					deviceType: TSR.DeviceType.TRICASTER,
-					type: TSR.TimelineContentTypeTriCaster.ME,
-					me: literal<TSR.TriCasterMixEffectInEffectMode>({
-						transitionEffect: 8,
-						layers: this.generateDveBoxLayers(dveProps.content.boxes),
-						keyers: this.generateOverlayKeyer(dveProps.content.artFillSource)
-					})
-				}
-			})
-		]
+	public getDveTimelineObjects(dveProps: DveProps): TSR.TimelineObjTriCasterME[] {
+		return [{
+			...this.getBaseProperties(dveProps, SwitcherDveLLayer.DveBoxes),
+			content: {
+				deviceType: TSR.DeviceType.TRICASTER,
+				type: TSR.TimelineContentTypeTriCaster.ME,
+				me: literal<TSR.TriCasterMixEffectInEffectMode>({
+					transitionEffect: 7,
+					layers: this.generateDveBoxLayers(dveProps.content.boxes),
+					keyers: this.generateOverlayKeyer(dveProps.content.artFillSource)
+				}),
+				temporalPriority: TemporalPriority.DVE
+			}
+		}]
 	}
 
 	private generateDveBoxLayers(boxes: any[]): Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> {
