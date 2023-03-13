@@ -272,7 +272,8 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
 	GfxSchemaTemplates: [],
-	GfxShowMapping: []
+	GfxShowMapping: [],
+	GfxDefaults: []
 }
 
 export const EMPTY_SOURCE_CONFIG = {

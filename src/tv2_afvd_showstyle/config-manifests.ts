@@ -1,10 +1,5 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
-import {
-	DEFAULT_GRAPHICS,
-	getGfxSetupsEntries,
-	GRAPHICS_SETUPS_NAME_COLUMN_ID,
-	GRAPHICS_SETUPS_TABLE_ID
-} from 'tv2-common'
+import { CommonConfigId, DEFAULT_GRAPHICS, getGfxDefaults, getGfxSetupsEntries } from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -180,6 +175,8 @@ const gfxSetups = getGfxSetupsEntries([
 	}
 ])
 
+const gfxDefaults = getGfxDefaults
+
 const DESIGN_TABLE_ID = 'GfxDesignTemplates'
 const DESIGN_NAME_COLUMN_ID = 'INewsName'
 
@@ -275,7 +272,7 @@ export const gfxShowMapping: ConfigManifestEntry = {
 	defaultVal: [],
 	columns: [
 		{
-			id: 'Design',
+			id: CommonConfigId.GFX_SHOW_MAPPING_DESIGN_COLUMN_ID,
 			name: 'Design',
 			rank: 0,
 			description: 'Name of the Design from the GFX Design table',
@@ -287,19 +284,19 @@ export const gfxShowMapping: ConfigManifestEntry = {
 			defaultVal: ''
 		},
 		{
-			id: 'GfxSetup',
+			id: CommonConfigId.GFX_SHOW_MAPPING_GFX_SETUP_COLUMN_ID,
 			name: 'GFX Setup',
 			rank: 1,
 			description: 'Names of the GFX Setups',
 			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
-			tableId: GRAPHICS_SETUPS_TABLE_ID,
-			columnId: GRAPHICS_SETUPS_NAME_COLUMN_ID,
+			tableId: CommonConfigId.GRAPHICS_SETUPS_TABLE_ID,
+			columnId: CommonConfigId.GRAPHICS_SETUPS_NAME_COLUMN_ID,
 			multiple: true,
 			required: false,
 			defaultVal: []
 		},
 		{
-			id: 'Schema',
+			id: CommonConfigId.GFX_SHOW_MAPPING_SCHEMA_COLUMN_ID,
 			name: 'GFX Skema Templates',
 			rank: 2,
 			description: 'Names of the Skemas',
@@ -417,6 +414,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	...gfxSetups,
 	...gfxSchemaTemplates,
 	gfxShowMapping,
+	gfxDefaults,
 	{
 		/*
 		Wipes Config

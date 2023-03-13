@@ -2,6 +2,7 @@ import { IBlueprintConfig, ICommonContext, IShowStyleContext, TableConfigItemVal
 import {
 	findGfxSetup,
 	TableConfigGfxSetup,
+	TableConfigItemGfxDefaults,
 	TableConfigItemGfxShowMapping,
 	TV2ShowstyleBlueprintConfigBase
 } from 'tv2-common'
@@ -23,6 +24,7 @@ export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	SelectedGfxSetupName: string
 	GfxSetups: GalleryTableConfigGfxSetup[]
 	GfxShowMapping: TableConfigItemGfxShowMapping[]
+	GfxDefaults: TableConfigItemGfxDefaults[]
 }
 
 export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
