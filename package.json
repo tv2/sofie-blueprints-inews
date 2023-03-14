@@ -60,7 +60,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@sofie-automation/blueprints-integration": "npm:@tv2media/blueprints-integration@46.2.0",
+    "@sofie-automation/blueprints-integration": "npm:@tv2media/blueprints-integration@46.2.1",
     "underscore": "^1.12.1",
     "ts-mockito": "^2.6.1"
   },

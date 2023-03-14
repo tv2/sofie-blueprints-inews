@@ -33,7 +33,7 @@ export enum TransitionStyle {
 export enum TemporalPriority {
 	AUX_MIX_MINUS_OVERRIDE = -1, // to make the overriding timelineobjects act before the cut on an M/E
 	DEFAULT = 0, // the default (does not have to be explicitly set)
-	DVE = 1, // to place DVE commands afer regular M/E and AUX commands (ATEM integration does that by default)
+	DVE = 1 // to place DVE commands afer regular M/E and AUX commands (ATEM integration does that by default)
 }
 
 export enum SwitcherLLayer {}
