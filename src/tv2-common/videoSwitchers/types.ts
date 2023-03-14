@@ -30,6 +30,12 @@ export enum TransitionStyle {
 	// ...
 }
 
+export enum TemporalPriority {
+	AUX_MIX_MINUS_OVERRIDE = -1, // to make the overriding timelineobjects act before the cut on an M/E
+	DEFAULT = 0, // the default (does not have to be explicitly set)
+	DVE = 1, // to place DVE commands afer regular M/E and AUX commands (ATEM integration does that by default)
+}
+
 export enum SwitcherLLayer {}
 
 export const TIMELINE_OBJECT_DEFAULTS = {
@@ -45,6 +51,12 @@ export interface TimelineObjectProps {
 	enable?: TimelineObjectEnable
 	// Default: 0
 	priority?: number
+	/**
+	 * Currently a TriCaster-only feature allowing reordering of commands in a single batch
+	 * Lower means the command will execue faster
+	 * Default: 0
+	 */
+	temporalPriority?: number
 	metaData?: TimelineObjectMetaData
 	classes?: string[]
 }

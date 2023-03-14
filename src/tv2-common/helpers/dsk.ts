@@ -190,8 +190,8 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			},
 			{
 				id: 'Key',
-				name: 'Video Switcher Key',
-				description: 'Video Switcher input for DSK Key',
+				name: 'ATEM Key',
+				description: 'ATEM input for DSK Key (for TriCaster see documentation)',
 				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 34,

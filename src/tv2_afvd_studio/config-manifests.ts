@@ -315,8 +315,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'SwitcherSource.SplitArtKey',
-		name: 'Video Switcher Split Screen Art Key',
-		description: 'Video Switcher input for Split Screen Art Key',
+		name: 'ATEM Split Screen Art Key',
+		description: 'ATEM input for Split Screen Art Key (for TriCaster see documentation)',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: 32
@@ -347,8 +347,8 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	},
 	{
 		id: 'SwitcherSource.Dip',
-		name: 'Video Switcher Dip Source',
-		description: 'Video Switcher source for the Dip - should match the desired input in the Video Switcher',
+		name: 'ATEM Dip Source',
+		description: 'ATEM source for the Dip - should match the desired input in the Video Switcher',
 		type: ConfigManifestEntryType.INT,
 		required: true,
 		defaultVal: AtemSourceIndex.Col2
