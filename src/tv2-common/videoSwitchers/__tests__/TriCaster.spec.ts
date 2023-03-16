@@ -653,7 +653,7 @@ describe('TriCaster', () => {
 
 		function invisibleBox(): TSR.TriCasterLayer {
 			return {
-				input: 'Black',
+				input: 'black',
 				positioningAndCropEnabled: true,
 				position: {
 					x: -3.555,
