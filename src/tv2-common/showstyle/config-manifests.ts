@@ -1,4 +1,5 @@
 import { ConfigManifestEntry, ConfigManifestEntryTable, ConfigManifestEntryType } from 'blueprints-integration'
+import {TableConfigItemGfxDefaults} from "../blueprintConfig";
 
 export enum CommonConfigId {
 	GRAPHICS_SETUPS_TABLE_ID = 'GfxSetups',
@@ -47,13 +48,22 @@ export const getGfxSetupsEntries = (columns: ConfigManifestEntryTable['columns']
 	}
 ]
 
+const GFX_DEFAULT_VALUES: TableConfigItemGfxDefaults[] = [
+	{
+		GfxSetup: '',
+		DefaultSchema: [''],
+		DefaultDesign: ['']
+	}
+]
+
 export const getGfxDefaults: ConfigManifestEntry = {
 	id: CommonConfigId.GFX_DEFAULTS_TABLE_ID,
 	name: 'GFX Defaults',
 	description: 'The possible defaults available for the GFX setup',
 	type: ConfigManifestEntryType.TABLE,
 	required: false,
-	defaultVal: [],
+	defaultVal: GFX_DEFAULT_VALUES.map(gfxDefaultValue => ({ _id: '', ...gfxDefaultValue })),
+	disableRowManipulation: true,
 	columns: [
 		{
 			id: CommonConfigId.DEFAULTS_SELECTED_GFX_SETUP_NAME_COLUMN_ID,
