@@ -560,13 +560,13 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@46.2.0":
-  version "46.2.0"
-  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.2.0.tgz#ff2cf16e6350510b8083e7b2781a17d1b1141c4d"
-  integrity sha512-hWKDVEQo1stlMNtxkumEy+PwM99ZAffBWkgSzBMJyIneb5pR/Dkm/3vl5f3LHWnFVZGuwISq5LvpPkNEdv+Nvg==
+"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@46.2.1":
+  version "46.2.1"
+  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.2.1.tgz#adfa9818481546cb8b472a35835277f020fc20d5"
+  integrity sha512-3bqG/XVHWoxSJ20wGADT3Z1wIc3i5O5ZtN0JYwKu8H+DzVaVOyGjZTvzSP6nzBGr3dOX1acm3q7A3fZC4tAX0Q==
   dependencies:
     "@sofie-automation/shared-lib" "npm:@tv2media/shared-lib@46.2.0"
-    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@3.3.0"
+    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@3.4.0"
     tslib "^2.4.0"
     type-fest "^2.19.0"
 
@@ -5956,10 +5956,10 @@ through@2, "through@>=2.2.7 <3":
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
-"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-3.3.0.tgz#08e5b700d59a92855f27e80e98830307f0e50ead"
-  integrity sha512-2fnXgtg3H1mZwQNz1ax7kHPXhcMmp3ak7qVf8WIPysodtBXExP4LoRypv6fgOzX15og+gmgR3YYQGLrqiw14QA==
+"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-3.4.0.tgz#179b66c64616fec2ec541fd9dd5a73517d8706fc"
+  integrity sha512-P174WyTAa6PVAotOJOEw8Dsqu1L3Cx/jEDmikLDLfFgRgmsYNSjtmgLzuzBY/O39iAxcqXs0ItM7QKcnX+ilwg==
   dependencies:
     tslib "^2.3.1"
 
