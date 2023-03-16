@@ -9,8 +9,8 @@ export function getShowStyleVariantId(
 ): string | null {
 	const ingestVariantName = ingestRundown.payload?.showstyleVariant?.trim().toLowerCase()
 	const showStyleVariant =
-		showStyleVariants.find(variant => variant.name?.trim().toLowerCase() === ingestVariantName) ??
-		showStyleVariants.find(variant => variant.name?.trim().toLowerCase() === DEFAULT_VARIANT_NAME)
+		showStyleVariants.find((variant) => variant.name?.trim().toLowerCase() === ingestVariantName) ??
+		showStyleVariants.find((variant) => variant.name?.trim().toLowerCase() === DEFAULT_VARIANT_NAME)
 
 	return showStyleVariant?._id ?? null
 }

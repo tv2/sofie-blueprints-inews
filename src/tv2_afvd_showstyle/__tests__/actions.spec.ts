@@ -8,13 +8,13 @@ import {
 	TSR
 } from 'blueprints-integration'
 import { ActionCutToCamera, ActionTakeWithTransition, literal, SourceDefinitionKam } from 'tv2-common'
-import { AdlibActionType, NoteType, SharedOutputLayers, SourceType } from 'tv2-constants'
-import { ActionExecutionContext } from '../../__mocks__/context'
-import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
+import { AdlibActionType, NoteType, SharedOutputLayer, SourceType, SwitcherMixEffectLLayer } from 'tv2-constants'
+import { ActionExecutionContextMock } from '../../__mocks__/context'
+import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
+import { preprocessConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { executeActionAFVD } from '../actions'
-import { parseConfig as parseShowStyleConfig } from '../helpers/config'
+import { preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { MOCK_EFFEKT_1 } from './breakerConfigDefault'
 import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
@@ -55,7 +55,7 @@ const kamPieceInstance: IBlueprintPieceInstance = {
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: []
@@ -74,7 +74,7 @@ const evsPieceInstance: IBlueprintPieceInstance = {
 		externalId: CURRENT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: []
@@ -133,13 +133,13 @@ const kamPieceInstance_Cut: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -169,13 +169,13 @@ const kamPieceInstance_Mix: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -210,13 +210,13 @@ const kamPieceInstance_Effekt: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'KAM 1',
 		sourceLayerId: SourceLayer.PgmCam,
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -247,7 +247,7 @@ const effektPieceInstance_1: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EFFEKT 1',
 		sourceLayerId: SourceLayer.PgmJingle,
-		outputLayerId: SharedOutputLayers.JINGLE,
+		outputLayerId: SharedOutputLayer.JINGLE,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: []
@@ -267,13 +267,13 @@ const evsPieceInstance_Cut: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -303,13 +303,13 @@ const evsPieceInstance_Mix: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -344,13 +344,13 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EVS 1',
 		sourceLayerId: SourceLayer.PgmLocal,
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: AtemLLayer.AtemMEProgram,
+					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
 					enable: {
 						start: 0
 					},
@@ -370,36 +370,36 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 }
 
 async function getCameraPiece(
-	context: ActionExecutionContext,
+	context: ActionExecutionContextMock,
 	part: 'current' | 'next'
 ): Promise<IBlueprintPieceInstance> {
 	const piece = await context
 		.getPieceInstances(part)
-		.then(pieceInstance => pieceInstance.find(p => p.piece.sourceLayerId === SourceLayer.PgmCam))
+		.then((pieceInstance) => pieceInstance.find((p) => p.piece.sourceLayerId === SourceLayer.PgmCam))
 	expect(piece).toBeTruthy()
 
 	return piece!
 }
 
 async function getEVSPiece(
-	context: ActionExecutionContext,
+	context: ActionExecutionContextMock,
 	part: 'current' | 'next'
 ): Promise<IBlueprintPieceInstance> {
 	const piece = await context
 		.getPieceInstances(part)
-		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SourceLayer.PgmLocal))
+		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === SourceLayer.PgmLocal))
 	expect(piece).toBeTruthy()
 
 	return piece!
 }
 
 async function getTransitionPiece(
-	context: ActionExecutionContext,
+	context: ActionExecutionContextMock,
 	part: 'current' | 'next'
 ): Promise<IBlueprintPieceInstance> {
 	const piece = await context
 		.getPieceInstances(part)
-		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SourceLayer.PgmJingle))
+		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === SourceLayer.PgmJingle))
 	expect(piece).toBeTruthy()
 
 	return piece!
@@ -407,8 +407,8 @@ async function getTransitionPiece(
 
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-		obj =>
-			obj.layer === AtemLLayer.AtemMEProgram &&
+		(obj) =>
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.Program) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME | undefined
@@ -430,14 +430,16 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 	expect(atemObj.content.me.transitionSettings?.mix).toStrictEqual({ rate: frames })
 }
 
-function expectTakeAfterExecute(context: ActionExecutionContext) {
+function expectTakeAfterExecute(context: ActionExecutionContextMock) {
 	expect(context.takeAfterExecute).toBe(true)
 }
 
-function expectNoWarningsOrErrors(context: ActionExecutionContext) {
-	expect(context.getNotes().filter(n => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual([])
+function expectNoWarningsOrErrors(context: ActionExecutionContextMock) {
+	expect(context.getNotes().filter((n) => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual(
+		[]
+	)
 	expect(
-		context.getNotes().filter(n => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
+		context.getNotes().filter((n) => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
 	).toEqual([])
 }
 
@@ -445,10 +447,10 @@ function makeMockContext(
 	defaultTransition: 'cut' | 'mix' | 'effekt',
 	currentPiece: 'cam' | 'evs',
 	nextPiece: 'cam' | 'evs'
-): ActionExecutionContext {
+): ActionExecutionContextMock {
 	switch (defaultTransition) {
 		case 'cut': {
-			const context = new ActionExecutionContext(
+			const context = new ActionExecutionContextMock(
 				'test',
 				mappingsDefaults,
 				parseStudioConfig,
@@ -466,7 +468,7 @@ function makeMockContext(
 			return context
 		}
 		case 'mix': {
-			const context = new ActionExecutionContext(
+			const context = new ActionExecutionContextMock(
 				'test',
 				mappingsDefaults,
 				parseStudioConfig,
@@ -484,7 +486,7 @@ function makeMockContext(
 			return context
 		}
 		case 'effekt': {
-			const context = new ActionExecutionContext(
+			const context = new ActionExecutionContextMock(
 				'test',
 				mappingsDefaults,
 				parseStudioConfig,
@@ -508,7 +510,7 @@ function makeMockContext(
 }
 
 async function checkPartExistsWithProperties(
-	context: ActionExecutionContext,
+	context: ActionExecutionContextMock,
 	part: 'current' | 'next',
 	props: Partial<IBlueprintPart>
 ) {
@@ -802,7 +804,7 @@ describe('Camera shortcuts on server', () => {
 					externalId: CURRENT_PART_EXTERNAL_ID,
 					name: 'SERVER',
 					sourceLayerId: SourceLayer.PgmServer,
-					outputLayerId: SharedOutputLayers.PGM,
+					outputLayerId: SharedOutputLayer.PGM,
 					lifespan: PieceLifespan.WithinPart,
 					content: {
 						timelineObjects: []
@@ -845,7 +847,7 @@ describe('Camera shortcuts on server', () => {
 					externalId: CURRENT_PART_EXTERNAL_ID,
 					name: 'SERVER',
 					sourceLayerId: SourceLayer.PgmServer,
-					outputLayerId: SharedOutputLayers.PGM,
+					outputLayerId: SharedOutputLayer.PGM,
 					lifespan: PieceLifespan.WithinPart,
 					content: {
 						timelineObjects: []
@@ -890,7 +892,7 @@ describe('Camera shortcuts on VO', () => {
 					externalId: CURRENT_PART_EXTERNAL_ID,
 					name: 'VO',
 					sourceLayerId: SourceLayer.PgmVoiceOver,
-					outputLayerId: SharedOutputLayers.PGM,
+					outputLayerId: SharedOutputLayer.PGM,
 					lifespan: PieceLifespan.WithinPart,
 					content: {
 						timelineObjects: []
@@ -933,7 +935,7 @@ describe('Camera shortcuts on VO', () => {
 					externalId: CURRENT_PART_EXTERNAL_ID,
 					name: 'VO',
 					sourceLayerId: SourceLayer.PgmVoiceOver,
-					outputLayerId: SharedOutputLayers.PGM,
+					outputLayerId: SharedOutputLayer.PGM,
 					lifespan: PieceLifespan.WithinPart,
 					content: {
 						timelineObjects: []

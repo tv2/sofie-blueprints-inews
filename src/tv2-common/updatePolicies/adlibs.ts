@@ -26,11 +26,11 @@ export function updateAdLibInstances(
 	const rawAdlibRefs = normalizeArrayToMap(newPart.referencedAdlibs, '_id')
 	const groupedAdlibInstances = _.groupBy(
 		existingPartInstance.pieceInstances,
-		p => p.adLibSourceId ?? defaultAdlibSourceId
+		(p) => p.adLibSourceId ?? defaultAdlibSourceId
 	)
 	for (const [adlibId, adlibPieces] of Object.entries(groupedAdlibInstances)) {
 		if (adlibId !== defaultAdlibSourceId) {
-			const updatableAdlibPieces = adlibPieces.filter(p => {
+			const updatableAdlibPieces = adlibPieces.filter((p) => {
 				const metaData = p.piece.metaData as PieceMetaData
 				return !metaData?.modifiedByAction
 			})

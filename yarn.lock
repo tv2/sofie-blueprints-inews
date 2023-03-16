@@ -560,20 +560,20 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@46.1.0":
-  version "46.1.0"
-  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.1.0.tgz#9b2b6f776ecdcd1d0009853bc300452a771a36d5"
-  integrity sha512-y02lVzd0rNpxyRVUF3FJcnW0uF56Zjc2rsKugZzimd7+XjWSZfFx0Ic35n1Vm2S1+rvb4oSVEh9pvPbpWrCiFg==
+"@sofie-automation/blueprints-integration@npm:@tv2media/blueprints-integration@46.2.1":
+  version "46.2.1"
+  resolved "https://registry.yarnpkg.com/@tv2media/blueprints-integration/-/blueprints-integration-46.2.1.tgz#adfa9818481546cb8b472a35835277f020fc20d5"
+  integrity sha512-3bqG/XVHWoxSJ20wGADT3Z1wIc3i5O5ZtN0JYwKu8H+DzVaVOyGjZTvzSP6nzBGr3dOX1acm3q7A3fZC4tAX0Q==
   dependencies:
-    "@sofie-automation/shared-lib" "npm:@tv2media/shared-lib@46.1.0"
-    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@2.3.1"
+    "@sofie-automation/shared-lib" "npm:@tv2media/shared-lib@46.2.0"
+    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@3.4.0"
     tslib "^2.4.0"
     type-fest "^2.19.0"
 
-"@sofie-automation/shared-lib@npm:@tv2media/shared-lib@46.1.0":
-  version "46.1.0"
-  resolved "https://registry.yarnpkg.com/@tv2media/shared-lib/-/shared-lib-46.1.0.tgz#ea13b33b0be2feb5cc3d821a6fe992c865f73c5f"
-  integrity sha512-87h3/w/9vuP6fafH3If8S5j6PlLDSwZGJ1vghpXHHSMtqMV5pm5KZPuT80hGITxXO5GNF1JizaX52Lvb3L6iWw==
+"@sofie-automation/shared-lib@npm:@tv2media/shared-lib@46.2.0":
+  version "46.2.0"
+  resolved "https://registry.yarnpkg.com/@tv2media/shared-lib/-/shared-lib-46.2.0.tgz#934f14339330bd0064d7a0c3046dae10e2754099"
+  integrity sha512-ojW4qHQ+dfQDzFotqq4kEJNb6nVSDk/KU2u1S2fzXkZzgXW4Xq2hNUyk5lfUMcd7nBsiRVnPzmVSqxbRfUd1MQ==
   dependencies:
     tslib "^2.4.0"
     type-fest "^2.19.0"
@@ -4175,7 +4175,7 @@ lodash.memoize@4.x:
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
 
-lodash@^4.17.15, lodash@^4.7.0:
+lodash@^4.17.15, lodash@^4.17.5, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -4938,10 +4938,10 @@ prelude-ls@~1.1.2:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
 
-prettier@^1.18.2:
-  version "1.19.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
-  integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
+prettier@^2.0.0:
+  version "2.8.4"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.4.tgz#34dd2595629bfbb79d344ac4a91ff948694463c3"
+  integrity sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==
 
 pretty-format@^27.0.0, pretty-format@^27.5.1:
   version "27.5.1"
@@ -5956,10 +5956,10 @@ through@2, "through@>=2.2.7 <3":
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
-"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-2.3.1.tgz#8c29069c84ea086d9eb9e48e5f2f244cc5f1e823"
-  integrity sha512-T78ObNn8pd4we4fCdX4VcUDeSRV+X0L//tdmLFEaHqrAMY3TBAS36oTsLHvU+az5m1wqns7EBXFbu9FystVQFQ==
+"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-3.4.0.tgz#179b66c64616fec2ec541fd9dd5a73517d8706fc"
+  integrity sha512-P174WyTAa6PVAotOJOEw8Dsqu1L3Cx/jEDmikLDLfFgRgmsYNSjtmgLzuzBY/O39iAxcqXs0ItM7QKcnX+ilwg==
   dependencies:
     tslib "^2.3.1"
 
@@ -6067,6 +6067,13 @@ ts-loader@^6.2.1:
     loader-utils "^1.0.2"
     micromatch "^4.0.0"
     semver "^6.0.0"
+
+ts-mockito@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/ts-mockito/-/ts-mockito-2.6.1.tgz#bc9ee2619033934e6fad1c4455aca5b5ace34e73"
+  integrity sha512-qU9m/oEBQrKq5hwfbJ7MgmVN5Gu6lFnIGWvpxSjrqq6YYEVv+RwVFWySbZMBgazsWqv6ctAyVBpo9TmAxnOEKw==
+  dependencies:
+    lodash "^4.17.5"
 
 ts-node@^8.0.3:
   version "8.10.2"

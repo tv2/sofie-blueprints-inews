@@ -1,48 +1,32 @@
-import {
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
-} from 'blueprints-integration'
+import { IBlueprintPart } from 'blueprints-integration'
 import {
 	CueDefinitionEkstern,
+	EvaluateCueResult,
 	EvaluateEksternBase,
 	PartDefinition,
-	PieceMetaData,
-	TV2BlueprintConfig
+	ShowStyleContext,
+	TV2ShowStyleConfig
 } from 'tv2-common'
-import { AtemLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateEkstern(
-	context: ISegmentUserContext,
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext<TV2ShowStyleConfig>,
 	part: IBlueprintPart,
-	pieces: Array<IBlueprintPiece<PieceMetaData>>,
-	adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>>,
-	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
 	adlib?: boolean,
 	rank?: number
-) {
-	EvaluateEksternBase(
+): EvaluateCueResult {
+	return EvaluateEksternBase(
 		context,
-		config,
 		part,
-		pieces,
-		adlibPieces,
 		partId,
 		parsedCue,
 		partDefinition,
 		{
 			SourceLayer: {
 				PgmLive: SourceLayer.PgmLive
-			},
-			ATEM: {
-				MEProgram: AtemLLayer.AtemMEProgram
 			}
 		},
 		adlib,

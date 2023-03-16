@@ -1,13 +1,11 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
 import { executeAction, ServerSelectMode } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { OFFTUBE_DVE_GENERATOR_OPTIONS } from './content/OfftubeDVEContent'
-import { pilotGeneratorSettingsOfftube } from './cues/OfftubeGraphics'
 import { createJingleContentOfftube } from './cues/OfftubeJingle'
-import { getConfig } from './helpers/config'
 import { OfftubeEvaluateCues } from './helpers/EvaluateCues'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
-import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 const SELECTED_ADLIB_LAYERS = [
 	OfftubeSourceLayer.SelectedAdLibDVE,
@@ -24,9 +22,8 @@ export async function executeActionOfftube(
 ): Promise<void> {
 	await executeAction(
 		context,
+		QBOX_UNIFORM_CONFIG,
 		{
-			getConfig,
-			postProcessPieceTimelineObjects,
 			EvaluateCues: OfftubeEvaluateCues,
 			DVEGeneratorOptions: OFFTUBE_DVE_GENERATOR_OPTIONS,
 			SourceLayers: {
@@ -50,14 +47,6 @@ export async function executeActionOfftube(
 					ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
 					Effekt: OfftubeSisyfosLLayer.SisyfosSourceJingle,
 					StudioMics: OfftubeSisyfosLLayer.SisyfosGroupStudioMics
-				},
-				Atem: {
-					MEProgram: OfftubeAtemLLayer.AtemMEProgram,
-					MEClean: OfftubeAtemLLayer.AtemMEClean,
-					Next: OfftubeAtemLLayer.AtemMENext,
-					ServerLookaheadAUX: OfftubeAtemLLayer.AtemAuxServerLookahead,
-					SSrcDefault: OfftubeAtemLLayer.AtemSSrcDefault,
-					cutOnclean: true
 				}
 			},
 			SelectedAdlibs: {
@@ -71,7 +60,6 @@ export async function executeActionOfftube(
 				SELECTED_ADLIB_LAYERS
 			},
 			createJingleContent: createJingleContentOfftube,
-			pilotGraphicSettings: pilotGeneratorSettingsOfftube,
 			serverActionSettings: {
 				defaultTriggerMode: ServerSelectMode.RESET
 			}

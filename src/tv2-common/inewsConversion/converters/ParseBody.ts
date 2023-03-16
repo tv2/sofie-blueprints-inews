@@ -1,16 +1,16 @@
-import { TSR } from 'blueprints-integration'
 import {
-	AtemTransitionStyleFromString,
 	CueDefinitionFromLayout,
+	parseTransitionStyle,
 	PostProcessDefinitions,
-	TV2BlueprintConfig,
+	TransitionStyle,
+	TV2ShowStyleConfig,
 	UnparsedCue
 } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
 import { CueDefinition, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
 export interface PartTransition {
-	style: TSR.AtemTransitionStyle
+	style: TransitionStyle
 	duration?: number
 }
 
@@ -181,7 +181,7 @@ const ENGINE_CUE = /ENGINE ?([^\s]+)/i
 const MAX_ALLOWED_TRANSITION_FRAMES = 250
 
 export function ParseBody(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	segmentId: string,
 	segmentName: string,
 	body: string,
@@ -201,7 +201,7 @@ export function ParseBody(
 			externalId: `${segmentId}-${definitions.length}`,
 			segmentExternalId: segmentId
 		}
-		cues.forEach(cue => {
+		cues.forEach((cue) => {
 			if (cue !== null) {
 				const parsedCue = ParseCue(cue, config)
 
@@ -220,9 +220,9 @@ export function ParseBody(
 	for (let i = 0; i < lines.length; i++) {
 		lines[i] = lines[i].replace(/<cc>(.*?)<\/cc>/gi, '')
 	}
-	lines = lines.filter(line => line !== '<p></p>' && line !== '<p><pi></pi></p>')
+	lines = lines.filter((line) => line !== '<p></p>' && line !== '<p><pi></pi></p>')
 
-	lines.forEach(line => {
+	lines.forEach((line) => {
 		const type = line.match(/<pi>(.*?)<\/pi>/i)
 
 		if (type) {
@@ -235,11 +235,11 @@ export function ParseBody(
 				.replace(/<\/tab>/i, '')
 				.trim()
 
-			if (typeStr && ACCEPTED_RED_TEXT.some(r => r.test(typeStr))) {
+			if (typeStr && ACCEPTED_RED_TEXT.some((r) => r.test(typeStr))) {
 				const inlineCues = line
 					.replace(/<\/?p>/g, '')
 					.split(/<pi>(.*?)<\/pi>/i)
-					.filter(cue => cue !== '' && !/<\/a>/.test(cue))
+					.filter((cue) => cue !== '' && !/<\/a>/.test(cue))
 
 				/** Hold any secondary cues in the form: `[] KAM 1` */
 				const secondaryInlineCues: CueDefinition[] = []
@@ -248,11 +248,11 @@ export function ParseBody(
 				let pos = 0
 				let redTextFound = false
 				while (pos < inlineCues.length && !redTextFound) {
-					if (ACCEPTED_RED_TEXT.some(r => r.test(inlineCues[pos]))) {
+					if (ACCEPTED_RED_TEXT.some((r) => r.test(inlineCues[pos]))) {
 						redTextFound = true
 					} else {
 						const parsedCues = getCuesInLine(inlineCues[pos], cues, config)
-						parsedCues.forEach(cue => {
+						parsedCues.forEach((cue) => {
 							// Create standalone parts for primary cues.
 							if (
 								isPrimaryCue(cue) &&
@@ -316,7 +316,7 @@ export function ParseBody(
 		if (cueInLine(line)) {
 			const parsedCues = getCuesInLine(line, cues, config)
 
-			parsedCues.forEach(cue => {
+			parsedCues.forEach((cue) => {
 				if (isPrimaryCue(cue)) {
 					let storedScript = ''
 					if (shouldPushDefinition(definition)) {
@@ -350,7 +350,7 @@ export function ParseBody(
 	}
 
 	// Flatten cues such as targetEngine.
-	definitions.forEach(partDefinition => {
+	definitions.forEach((partDefinition) => {
 		if (partDefinition.cues.length) {
 			while (FindTargetPair(partDefinition)) {
 				// NO-OP
@@ -358,7 +358,7 @@ export function ParseBody(
 		}
 
 		// Discard UNKNOWN cues, we won't do anything with them
-		partDefinition.cues = partDefinition.cues.filter(c => c.type !== CueType.UNKNOWN)
+		partDefinition.cues = partDefinition.cues.filter((c) => c.type !== CueType.UNKNOWN)
 	})
 
 	definitions = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
@@ -368,7 +368,7 @@ export function ParseBody(
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
 	const index = partDefinition.cues.findIndex(
-		cue => (cue.type === CueType.UNPAIRED_TARGET && cue.mergeable) || (cue.type === CueType.Telefon && !cue.graphic)
+		(cue) => (cue.type === CueType.UNPAIRED_TARGET && cue.mergeable) || (cue.type === CueType.Telefon && !cue.graphic)
 	)
 
 	if (index === -1) {
@@ -429,7 +429,7 @@ function cueInLine(line: string) {
 }
 
 /** Returns all the cues in a given line as parsed cues. */
-function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2BlueprintConfig): CueDefinition[] {
+function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2ShowStyleConfig): CueDefinition[] {
 	if (!cueInLine(line)) {
 		return []
 	}
@@ -437,7 +437,7 @@ function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2BlueprintCo
 	const definitions: CueDefinition[] = []
 
 	const cue = line.match(/<a idref=["|'](\d+)["|']>/gi)
-	cue?.forEach(c => {
+	cue?.forEach((c) => {
 		const value = c.match(/<a idref=["|'](\d+)["|']>/i)
 		if (value) {
 			const realCue = cues[Number(value[1])]
@@ -457,10 +457,7 @@ function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2BlueprintCo
 function addScript(line: string, definition: PartDefinition) {
 	const script = line.match(/<p>(.*?)<\/p>/i)
 	if (script && script[1] && !/<pi>.*?<\/pi>/i.test(script[1])) {
-		const trimscript = script[1]
-			.replace(/<.*?>/gi, '')
-			.replace('\n\r', '')
-			.trim()
+		const trimscript = script[1].replace(/<.*?>/gi, '').replace('\n\r', '').trim()
 		if (trimscript) {
 			definition.script += `${trimscript}\n`
 		}
@@ -478,7 +475,7 @@ function isPrimaryCue(cue: CueDefinition) {
 
 function shouldPushDefinition(definition: PartDefinition) {
 	return (
-		(definition.cues.filter(c => c.type !== CueType.UNKNOWN).length ||
+		(definition.cues.filter((c) => c.type !== CueType.UNKNOWN).length ||
 			(definition.script.length && definition.cues.length) ||
 			definition.type !== PartType.Unknown) &&
 		!(definition.type === PartType.Grafik && definition.cues.length === 0)
@@ -567,7 +564,7 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 
 	if (transitionMatch) {
 		definition.transition = {
-			style: AtemTransitionStyleFromString(transitionMatch[1].toUpperCase()),
+			style: parseTransitionStyle(transitionMatch[1].toUpperCase()),
 			duration: transitionMatch[2] ? getTimeForTransition(transitionMatch[2]) : undefined
 		}
 	}
@@ -601,10 +598,7 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 			break
 	}
 
-	const tokens = stripTransitionProperties(typeStr)
-		.replace(/100%/g, '')
-		.trim()
-		.split(' ')
+	const tokens = stripTransitionProperties(typeStr).replace(/100%/g, '').trim().split(' ')
 	const firstToken = tokens[0]
 
 	if (/SERVER|ATTACK/i.test(firstToken)) {
@@ -636,9 +630,7 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 }
 
 export function getSourceDefinition(typeStr: string): SourceDefinition | undefined {
-	const strippedTypeStr = stripTransitionProperties(typeStr)
-		.replace(/100%/g, '')
-		.trim()
+	const strippedTypeStr = stripTransitionProperties(typeStr).replace(/100%/g, '').trim()
 	if (CAMERA_RED_TEXT.test(strippedTypeStr)) {
 		const id = strippedTypeStr.match(CAMERA_RED_TEXT)![1].toUpperCase()
 		return {
@@ -706,8 +698,8 @@ export function isMinusMic(inputName: string): boolean {
 }
 
 export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {
-	const hasLayoutCue: boolean = partDefinitions.some(definition =>
-		definition.cues.some(cue => {
+	const hasLayoutCue: boolean = partDefinitions.some((definition) =>
+		definition.cues.some((cue) => {
 			const cueFromLayout = cue as CueDefinitionFromLayout
 			return cueFromLayout.isFromLayout
 		})
@@ -717,8 +709,8 @@ export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDe
 		return partDefinitions
 	}
 
-	return partDefinitions.map(definition => {
-		const cues = definition.cues.filter(cue => {
+	return partDefinitions.map((definition) => {
+		const cues = definition.cues.filter((cue) => {
 			if (cue.type !== CueType.GraphicDesign && cue.type !== CueType.BackgroundLoop) {
 				return true
 			}

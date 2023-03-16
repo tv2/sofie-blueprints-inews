@@ -1,10 +1,9 @@
-import { IShowStyleUserContext, TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import { GetSisyfosTimelineObjForServer, literal, PartDefinition, TransitionSettings } from 'tv2-common'
-import { AbstractLLayer, ControlClasses, GetEnableClassForServer } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
+import { GetSisyfosTimelineObjForServer, literal, PartDefinition, ShowStyleContext, TransitionStyle } from 'tv2-common'
+import { AbstractLLayer, GetEnableClassForServer } from 'tv2-constants'
+import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { ServerContentProps, ServerPartProps } from '../parts'
-import { AdlibServerOfftubeOptions } from '../pieces'
 import { joinAssetToNetworkPath } from '../util'
 
 // TODO: These are TSR layers, not sourcelayers
@@ -15,9 +14,6 @@ export interface MakeContentServerSourceLayers {
 	Sisyfos: {
 		ClipPending: string
 	}
-	ATEM: {
-		ServerLookaheadAux?: string
-	}
 }
 
 type VTProps = Pick<
@@ -26,7 +22,7 @@ type VTProps = Pick<
 >
 
 export function GetVTContentProperties(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	contentProps: Omit<ServerContentProps, 'mediaPlayerSession'>
 ): VTProps {
 	return literal<VTProps>({
@@ -46,21 +42,20 @@ export function GetVTContentProperties(
 }
 
 export function MakeContentServer(
-	_context: IShowStyleUserContext,
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
 ): WithTimeline<VTContent> {
 	return literal<WithTimeline<VTContent>>({
-		...GetVTContentProperties(config, contentProps),
+		...GetVTContentProperties(context.config, contentProps),
 		ignoreMediaObjectStatus: true,
-		timelineObjects: GetServerTimeline(config, sourceLayers, partProps, contentProps)
+		timelineObjects: GetServerTimeline(context, sourceLayers, partProps, contentProps)
 	})
 }
 
 function GetServerTimeline(
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext,
 	sourceLayers: MakeContentServerSourceLayers,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
@@ -101,27 +96,18 @@ function GetServerTimeline(
 		mediaObj,
 		mediaOffObj,
 		...GetSisyfosTimelineObjForServer(
-			config,
+			context.config,
 			partProps.voLevels,
 			sourceLayers.Sisyfos.ClipPending,
 			contentProps.mediaPlayerSession,
 			audioEnable
 		),
-		...(sourceLayers.ATEM.ServerLookaheadAux
+		...(context.uniformConfig.switcherLLayers.nextServerAux
 			? [
-					literal<TSR.TimelineObjAtemAUX & TimelineBlueprintExt>({
-						id: '',
-						enable: {
-							start: 0
-						},
-						priority: 0,
-						layer: sourceLayers.ATEM.ServerLookaheadAux,
+					context.videoSwitcher.getAuxTimelineObject({
+						layer: context.uniformConfig.switcherLLayers.nextServerAux,
 						content: {
-							deviceType: TSR.DeviceType.ATEM,
-							type: TSR.TimelineContentTypeAtem.AUX,
-							aux: {
-								input: -1
-							}
+							input: -1
 						},
 						metaData: {
 							mediaPlayerSession: contentProps.mediaPlayerSession
@@ -133,34 +119,25 @@ function GetServerTimeline(
 }
 
 export function CutToServer(
+	context: ShowStyleContext,
 	mediaPlayerSessionId: string,
-	partDefinition: PartDefinition,
-	config: TV2BlueprintConfig,
-	atemLLayerMEPGM: string,
-	offtubeOptions?: AdlibServerOfftubeOptions
-) {
+	partDefinition: PartDefinition
+): TimelineBlueprintExt[] {
 	return [
 		EnableServer(mediaPlayerSessionId),
-		literal<TSR.TimelineObjAtemME & TimelineBlueprintExt>({
-			id: '',
+		...context.videoSwitcher.getOnAirTimelineObjects({
 			enable: {
-				start: config.studio.CasparPrerollDuration
+				start: context.config.studio.CasparPrerollDuration
 			},
 			priority: 1,
-			layer: atemLLayerMEPGM,
 			content: {
-				deviceType: TSR.DeviceType.ATEM,
-				type: TSR.TimelineContentTypeAtem.ME,
-				me: {
-					input: -1,
-					transition: partDefinition.transition ? partDefinition.transition.style : TSR.AtemTransitionStyle.CUT,
-					transitionSettings: TransitionSettings(config, partDefinition)
-				}
+				input: -1,
+				transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+				transitionDuration: partDefinition.transition?.duration
 			},
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId
-			},
-			classes: [...(offtubeOptions?.isOfftube ? [ControlClasses.AbstractLookahead] : [])]
+			}
 		})
 	]
 }

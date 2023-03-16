@@ -1,46 +1,8 @@
-import { TV2BlueprintConfig } from 'tv2-common'
-import { SharedGraphicLLayer, SharedSourceLayers } from 'tv2-constants'
+import { TV2ShowStyleConfig } from 'tv2-common'
+import { SharedGraphicLLayer } from 'tv2-constants'
 
-export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: string) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
-		: undefined
-
-	if (!conf) {
-		return SharedSourceLayers.PgmGraphicsOverlay
-	}
-
-	switch (conf.SourceLayer) {
-		// TODO: When adding more sourcelayers
-		// This is here to guard against bad user input
-		case SharedSourceLayers.PgmGraphicsHeadline:
-			if (config.studio.GraphicsType === 'HTML') {
-				return SharedSourceLayers.PgmGraphicsLower
-			}
-			return SharedSourceLayers.PgmGraphicsHeadline
-		case SharedSourceLayers.PgmGraphicsIdent:
-			return SharedSourceLayers.PgmGraphicsIdent
-		case SharedSourceLayers.PgmGraphicsLower:
-			return SharedSourceLayers.PgmGraphicsLower
-		case SharedSourceLayers.PgmGraphicsOverlay:
-			return SharedSourceLayers.PgmGraphicsOverlay
-		case SharedSourceLayers.PgmGraphicsTLF:
-			return SharedSourceLayers.PgmGraphicsTLF
-		case SharedSourceLayers.PgmGraphicsTema:
-			return SharedSourceLayers.PgmGraphicsTema
-		case SharedSourceLayers.PgmGraphicsTop:
-			return SharedSourceLayers.PgmGraphicsTop
-		case SharedSourceLayers.WallGraphics:
-			return SharedSourceLayers.WallGraphics
-		default:
-			return SharedSourceLayers.PgmGraphicsOverlay
-	}
-}
-
-export function GetTimelineLayerForGraphic(config: TV2BlueprintConfig, name: string) {
-	const conf = config.showStyle.GFXTemplates
-		? config.showStyle.GFXTemplates.find(gfk => gfk.VizTemplate.toString() === name)
-		: undefined
+export function getTimelineLayerForGraphic(config: TV2ShowStyleConfig, name: string) {
+	const conf = config.showStyle.GfxTemplates.find((gfx) => gfx.VizTemplate.toString() === name)
 
 	if (!conf) {
 		return SharedGraphicLLayer.GraphicLLayerOverlay

@@ -3,17 +3,22 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { CalculateTime, CueDefinitionGraphicDesign, getHtmlTemplateName, literal, TV2BlueprintConfig } from 'tv2-common'
-import { SharedGraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import {
+	calculateTime,
+	CueDefinitionGraphicDesign,
+	getHtmlTemplateName,
+	literal,
+	ShowStyleContext,
+	TV2ShowStyleConfig
+} from 'tv2-common'
+import { SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 
 export function EvaluateDesignBase(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -22,9 +27,9 @@ export function EvaluateDesignBase(
 	adlib?: boolean,
 	rank?: number
 ) {
-	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
+	const start = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 	if (!parsedCue.design || !parsedCue.design.length) {
-		context.notifyUserWarning(`No valid design found for ${parsedCue.design}`)
+		context.core.notifyUserWarning(`No valid design found for ${parsedCue.design}`)
 		return
 	}
 
@@ -33,14 +38,14 @@ export function EvaluateDesignBase(
 			_rank: rank || 0,
 			externalId: partId,
 			name: parsedCue.design,
-			outputLayerId: SharedOutputLayers.SEC,
-			sourceLayerId: SharedSourceLayers.PgmDesign,
+			outputLayerId: SharedOutputLayer.SEC,
+			sourceLayerId: SharedSourceLayer.PgmDesign,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: parsedCue.design,
 				path: parsedCue.design,
 				ignoreMediaObjectStatus: true,
-				timelineObjects: designTimeline(config, parsedCue)
+				timelineObjects: designTimeline(context.config, parsedCue)
 			})
 		})
 	} else {
@@ -50,20 +55,20 @@ export function EvaluateDesignBase(
 			enable: {
 				start
 			},
-			outputLayerId: SharedOutputLayers.SEC,
-			sourceLayerId: SharedSourceLayers.PgmDesign,
+			outputLayerId: SharedOutputLayer.SEC,
+			sourceLayerId: SharedSourceLayer.PgmDesign,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: parsedCue.design,
 				path: parsedCue.design,
 				ignoreMediaObjectStatus: true,
-				timelineObjects: designTimeline(config, parsedCue)
+				timelineObjects: designTimeline(context.config, parsedCue)
 			})
 		})
 	}
 }
 
-function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineObj[] {
+function designTimeline(config: TV2ShowStyleConfig, parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineObj[] {
 	switch (config.studio.GraphicsType) {
 		case 'HTML':
 			return [
@@ -100,7 +105,7 @@ function designTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionGrap
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: parsedCue.design,
 						templateData: [],
-						showId: config.selectedGraphicsSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
+						showName: config.selectedGfxSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
 					}
 				})
 			]

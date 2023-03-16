@@ -1,41 +1,27 @@
 import * as _ from 'underscore'
 
-import {
-	BlueprintMappings,
-	IBlueprintPieceGeneric,
-	IShowStyleUserContext,
-	TimelineObjectCoreExt,
-	TSR
-} from 'blueprints-integration'
+import { BlueprintMappings, IBlueprintPieceGeneric, TimelineObjectCoreExt, TSR } from 'blueprints-integration'
 
 import { GetDSKSourceLayerNames } from 'tv2-common'
-import mappingsDefaults, { getMediaPlayerMappings } from '../../tv2_afvd_studio/migrations/mappings-defaults'
+import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { ATEMModel } from '../../types/atem'
-import { getConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import OutputlayerDefaults from '../migrations/outputlayer-defaults'
 
-export function checkAllLayers(
-	context: IShowStyleUserContext,
-	pieces: IBlueprintPieceGeneric[],
-	otherObjs?: TSR.TSRTimelineObjBase[]
-) {
+export function checkAllLayers(pieces: IBlueprintPieceGeneric[], otherObjs?: TSR.TSRTimelineObjBase[]) {
 	const missingSourceLayers: string[] = []
 	const missingOutputLayers: string[] = []
 	const missingLayers: Array<string | number> = []
 	const wrongDeviceLayers: Array<string | number> = []
 
-	const config = getConfig(context)
-
 	const allSourceLayers: string[] = _.values(SourceLayer)
-		.map(l => l.toString())
+		.map((l) => l.toString())
 		.concat(GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE))
 		.sort()
-	const allOutputLayers = _.map(OutputlayerDefaults, m => m._id)
+	const allOutputLayers = _.map(OutputlayerDefaults, (m) => m._id)
 
 	const allMappings: BlueprintMappings = {
-		...mappingsDefaults,
-		...getMediaPlayerMappings(config.mediaPlayers)
+		...mappingsDefaults
 	}
 
 	const validateObject = (obj: TimelineObjectCoreExt) => {

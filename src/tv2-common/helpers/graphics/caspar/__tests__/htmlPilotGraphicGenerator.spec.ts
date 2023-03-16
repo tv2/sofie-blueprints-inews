@@ -1,46 +1,19 @@
-import { IBlueprintRundownDB, PieceLifespan, PlaylistTimingType, TSR } from 'blueprints-integration'
+import { PieceLifespan, TSR } from 'blueprints-integration'
 import { CueDefinitionGraphic, GraphicPilot, HtmlPilotGraphicGenerator, literal } from 'tv2-common'
 import { CueType, SharedGraphicLLayer } from 'tv2-constants'
-import { SegmentUserContext } from '../../../../../__mocks__/context'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../../../../tv2_afvd_showstyle/__tests__/configs'
-import { getConfig, parseConfig as parseShowStyleConfig } from '../../../../../tv2_afvd_showstyle/helpers/config'
-import { parseConfig as parseStudioConfig } from '../../../../../tv2_afvd_studio/helpers/config'
-import mappingsDefaults from '../../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { pilotGeneratorSettingsOfftube } from '../../../../../tv2_offtube_showstyle/cues/OfftubeGraphics'
+import { makeMockGalleryContext } from '../../../../../__mocks__/context'
 
-const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 function makeMockContext() {
-	const rundown = literal<IBlueprintRundownDB>({
-		externalId: RUNDOWN_EXTERNAL_ID,
-		name: RUNDOWN_EXTERNAL_ID,
-		_id: '',
-		showStyleVariantId: '',
-		timing: {
-			type: PlaylistTimingType.None
-		}
-	})
-	const mockContext = new SegmentUserContext(
-		'test',
-		mappingsDefaults,
-		parseStudioConfig,
-		parseShowStyleConfig,
-		rundown._id
-	)
-	mockContext.studioConfig = defaultStudioConfig as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
-	return mockContext
+	return makeMockGalleryContext()
 }
 
 function makeGenerator(cue: CueDefinitionGraphic<GraphicPilot>) {
 	const context = makeMockContext()
-	const config = getConfig(context)
 	const generator = new HtmlPilotGraphicGenerator({
-		config,
 		context,
 		partId: 'part01',
 		parsedCue: cue,
-		segmentExternalId: '',
-		settings: pilotGeneratorSettingsOfftube
+		segmentExternalId: ''
 	})
 	return generator
 }
@@ -89,7 +62,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const generator = makeGeneratorForOvl()
 			const pilotContent = generator.getContent()
 			const timelineObjects = pilotContent.timelineObjects.filter(
-				tlObject =>
+				(tlObject) =>
 					tlObject.content.deviceType === TSR.DeviceType.CASPARCG &&
 					(tlObject as TSR.TimelineObjCCGTemplate).content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE
 			)
@@ -123,7 +96,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const generator = makeGeneratorForOvl()
 			const pilotContent = generator.getContent()
 			const timelineObjects = pilotContent.timelineObjects.filter(
-				tlObject =>
+				(tlObject) =>
 					tlObject.content.deviceType === TSR.DeviceType.ATEM &&
 					(tlObject as TSR.TimelineObjAtemDSK).content.type === TSR.TimelineContentTypeAtem.DSK
 			)
@@ -159,7 +132,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 			const generator = makeGeneratorForFull()
 			const pilotContent = generator.getContent()
 			const timelineObjects = pilotContent.timelineObjects.filter(
-				tlObject =>
+				(tlObject) =>
 					tlObject.content.deviceType === TSR.DeviceType.CASPARCG &&
 					(tlObject as TSR.TimelineObjCCGTemplate).content.type === TSR.TimelineContentTypeCasparCg.TEMPLATE
 			)

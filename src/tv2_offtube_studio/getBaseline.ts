@@ -5,12 +5,12 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { literal } from 'tv2-common'
+import { literal, StudioContext, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
-import { AtemSourceIndex } from '../types/atem'
 import { OfftubeStudioBlueprintConfig } from './helpers/config'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from './layers'
+import { OfftubeSisyfosLLayer } from './layers'
 import { sisyfosChannels } from './sisyfosChannels'
+import { QBOX_UNIFORM_CONFIG } from './uniformConfig'
 
 function filterMappings(
 	input: BlueprintMappings,
@@ -18,7 +18,7 @@ function filterMappings(
 ): BlueprintMappings {
 	const result: BlueprintMappings = {}
 
-	_.each(_.keys(input), k => {
+	_.each(_.keys(input), (k) => {
 		const v = input[k]
 		if (filter(k, v)) {
 			result[k] = v
@@ -28,9 +28,9 @@ function filterMappings(
 	return result
 }
 
-export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
-	const mappings = context.getStudioMappings()
-	const config = context.getStudioConfig() as OfftubeStudioBlueprintConfig
+export function getBaseline(coreContext: IStudioContext): BlueprintResultBaseline {
+	const context = new StudioContext<OfftubeStudioBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
+	const mappings = coreContext.getStudioMappings()
 
 	const sisyfosMappings = filterMappings(mappings, (_id, v) => v.device === TSR.DeviceType.SISYFOS)
 
@@ -41,7 +41,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 			if (sisyfosChannel) {
 				mappedChannels.push({
 					mappedLayer: id,
-					isPgm: config.studio.IdleSisyfosLayers.includes(id) ? 1 : sisyfosChannel.isPgm,
+					isPgm: context.config.studio.IdleSisyfosLayers.includes(id) ? 1 : sisyfosChannel.isPgm,
 					visible: true
 				})
 			} else {
@@ -56,7 +56,7 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 	}
 
 	return {
-		timelineObjects: [
+		timelineObjects: _.compact([
 			literal<TSR.TimelineObjSisyfosChannels>({
 				id: '',
 				enable: {
@@ -73,48 +73,32 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 			}),
 
 			// have ATEM output default still image
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: OfftubeAtemLLayer.AtemMEClean,
+				layer: context.uniformConfig.mixEffects.clean.mixEffectLayer,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						input: config.studio.IdleSource,
-						transition: TSR.AtemTransitionStyle.CUT
-					}
+					input: context.config.studio.IdleSource,
+					transition: TransitionStyle.CUT
 				}
 			}),
 
 			// Route ME 2 PGM to ME 1 PGM
-			literal<TSR.TimelineObjAtemME>({
-				id: '',
+			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },
-				priority: 0,
-				layer: OfftubeAtemLLayer.AtemMEProgram,
+				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
 				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.ME,
-					me: {
-						programInput: AtemSourceIndex.Prg2
-					}
+					input: context.uniformConfig.mixEffects.clean.input
 				}
 			}),
-			literal<TSR.TimelineObjAtemAUX>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: OfftubeAtemLLayer.AtemAuxClean,
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: AtemSourceIndex.Prg2
-					}
-				}
-			})
-		]
+			context.uniformConfig.mixEffects.clean.auxLayer
+				? context.videoSwitcher.getAuxTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.mixEffects.clean.auxLayer,
+						content: {
+							input: context.uniformConfig.mixEffects.clean.input
+						}
+				  })
+				: undefined
+		])
 	}
 }

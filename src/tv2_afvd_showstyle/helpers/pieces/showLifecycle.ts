@@ -1,21 +1,21 @@
 import { BlueprintResultPart, PieceLifespan, TSR } from 'blueprints-integration'
-import { literal, TV2BlueprintConfig } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { literal, TV2ShowStyleConfig } from 'tv2-common'
+import { SharedOutputLayer } from 'tv2-constants'
 import { GraphicLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function CreateShowLifecyclePieces(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	part: BlueprintResultPart,
-	initializeShowIds: string[],
-	cleanupShowIds: string[]
+	initializeShowNames: string[],
+	cleanupShowNames: string[]
 ) {
 	if (config.studio.GraphicsType === 'VIZ') {
 		part.pieces.push({
 			externalId: part.part.externalId,
 			name: 'GFX Show Init',
 			enable: { start: 0 },
-			outputLayerId: SharedOutputLayers.SEC,
+			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId: SourceLayer.GraphicsShowLifecycle,
 			lifespan: PieceLifespan.OutOnSegmentChange,
 			content: {
@@ -29,7 +29,7 @@ export function CreateShowLifecyclePieces(
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.INITIALIZE_SHOWS,
-							showIds: initializeShowIds
+							showNames: initializeShowNames
 						}
 					}),
 					literal<TSR.TimelineObjVIZMSECleanupShows>({
@@ -41,7 +41,7 @@ export function CreateShowLifecyclePieces(
 						content: {
 							deviceType: TSR.DeviceType.VIZMSE,
 							type: TSR.TimelineContentTypeVizMSE.CLEANUP_SHOWS,
-							showIds: cleanupShowIds
+							showNames: cleanupShowNames
 						}
 					})
 				]

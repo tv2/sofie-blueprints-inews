@@ -1,32 +1,26 @@
-import {
-	BaseContent,
-	IBlueprintPiece,
-	IShowStyleUserContext,
-	PieceLifespan,
-	TimelineObjectCoreExt,
-	TSR,
-	WithTimeline
-} from 'blueprints-integration'
-import { CueDefinitionMixMinus, findSourceInfo, literal, PartDefinition } from 'tv2-common'
-import { ControlClasses, SharedATEMLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
+import { CueDefinitionMixMinus, findSourceInfo, PartDefinition, ShowStyleContext, TemporalPriority } from 'tv2-common'
+import { ControlClasses, SharedOutputLayer, SharedSourceLayer, SwitcherAuxLLayer } from 'tv2-constants'
 
 export function EvaluateCueMixMinus(
-	context: IShowStyleUserContext,
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	part: PartDefinition,
 	parsedCue: CueDefinitionMixMinus
 ) {
-	const sourceInfo = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+	if (!context.uniformConfig.switcherLLayers.mixMinusAux) {
+		context.core.notifyUserWarning(`Mix-Minus out not available in this studio (MINUSKAM)`)
+		return
+	}
+	const sourceInfo = findSourceInfo(context.config.sources, parsedCue.sourceDefinition)
 
 	const name = parsedCue.sourceDefinition.name || parsedCue.sourceDefinition.sourceType
 
 	if (sourceInfo === undefined) {
-		context.notifyUserWarning(`${name} does not exist in this studio (MINUSKAM)`)
+		context.core.notifyUserWarning(`${name} does not exist in this studio (MINUSKAM)`)
 		return
 	}
-	const atemInput = sourceInfo.port
+	const switcherInput = sourceInfo.port
 
 	pieces.push({
 		externalId: part.externalId,
@@ -35,30 +29,34 @@ export function EvaluateCueMixMinus(
 			start: 0
 		},
 		lifespan: PieceLifespan.OutOnShowStyleEnd,
-		sourceLayerId: SharedSourceLayers.AuxMixMinus,
-		outputLayerId: SharedOutputLayers.AUX,
-		content: MixMinusContent(atemInput)
+		sourceLayerId: SharedSourceLayer.AuxMixMinus,
+		outputLayerId: SharedOutputLayer.AUX,
+		content: {
+			timelineObjects: [getMixMinusTimelineObject(context, switcherInput, MixMinusPriority.MINUSKAM_CUE)]
+		}
 	})
 }
 
-function MixMinusContent(atemInput: number): WithTimeline<BaseContent> {
-	return {
-		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			literal<TSR.TimelineObjAtemAUX>({
-				content: {
-					deviceType: TSR.DeviceType.ATEM,
-					type: TSR.TimelineContentTypeAtem.AUX,
-					aux: {
-						input: atemInput
-					}
-				},
-				enable: {
-					while: `.${ControlClasses.LiveSourceOnAir}`
-				},
-				layer: SharedATEMLLayer.AtemAuxVideoMixMinus,
-				id: '',
-				priority: 1
-			})
-		])
-	}
+export enum MixMinusPriority {
+	STUDIO_CONFIG = 1,
+	MINUSKAM_CUE = 2,
+	CUSTOM_INPUT = 3
+}
+
+export function getMixMinusTimelineObject(
+	context: ShowStyleContext,
+	switcherInput: number,
+	priority: MixMinusPriority
+): TSR.TSRTimelineObj {
+	return context.videoSwitcher.getAuxTimelineObject({
+		content: {
+			input: switcherInput
+		},
+		enable: {
+			while: `.${ControlClasses.OVERRIDDEN_ON_MIX_MINUS}`
+		},
+		layer: SwitcherAuxLLayer.AuxVideoMixMinus,
+		priority,
+		temporalPriority: TemporalPriority.AUX_MIX_MINUS_OVERRIDE
+	})
 }

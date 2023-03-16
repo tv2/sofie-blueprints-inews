@@ -1,16 +1,15 @@
-import { BlueprintResultPart, IBlueprintPart, IShowStyleUserContext } from 'blueprints-integration'
-import { PartDefinition, PartTime, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
+import { BlueprintResultPart, IBlueprintPart } from 'blueprints-integration'
+import { PartDefinition, PartTime, ShowStyleContext, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
 
 export function CreatePartKamBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	_context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): { part: BlueprintResultPart; duration: number; invalid?: true } {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 
 	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,

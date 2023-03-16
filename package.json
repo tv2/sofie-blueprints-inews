@@ -1,6 +1,6 @@
 {
   "name": "tv2-sofie-blueprints-inews",
-  "version": "1.7.8",
+  "version": "1.8.0",
   "repository": "https://github.com/olzzon/tv2-sofie-blueprints-inews",
   "license": "MIT",
   "private": true,
@@ -46,7 +46,7 @@
     "jest-resolve": "^24.5.0",
     "license-checker": "^25.0.1",
     "moment": "^2.29.2",
-    "prettier": "^1.18.2",
+    "prettier": "^2.0.0",
     "standard-version": "9.1.1",
     "ts-jest": "^27.1.3",
     "ts-loader": "^6.2.1",
@@ -60,8 +60,9 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@sofie-automation/blueprints-integration": "npm:@tv2media/blueprints-integration@46.1.0",
-    "underscore": "^1.12.1"
+    "@sofie-automation/blueprints-integration": "npm:@tv2media/blueprints-integration@46.2.1",
+    "underscore": "^1.12.1",
+    "ts-mockito": "^2.6.1"
   },
   "resolutions": {
     "moment": "^2.29.2"

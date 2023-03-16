@@ -7,9 +7,9 @@ import SourcelayerDefaults from '../migrations/sourcelayer-defaults'
 
 describe('Migration Defaults', () => {
 	test('SourcelayerDefaults', () => {
-		const defaultsIds = _.map(SourcelayerDefaults, v => v._id).sort()
+		const defaultsIds = _.map(SourcelayerDefaults, (v) => v._id).sort()
 		const layerIds = _.values(SourceLayer)
-			.map(l => l.toString())
+			.map((l) => l.toString())
 			.concat(GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE))
 			.sort()
 

@@ -8,7 +8,7 @@ import {
 } from 'blueprints-integration'
 
 export function RemoveDefaultCoreShortcuts(versionStr: string): MigrationStepSystem {
-	const defaultTriggerIds = DEFAULT_CORE_TRIGGERS.map(trigger => trigger._id)
+	const defaultTriggerIds = DEFAULT_CORE_TRIGGERS.map((trigger) => trigger._id)
 
 	return {
 		id: `${versionStr}.disableCoreDefaultTriggers`,

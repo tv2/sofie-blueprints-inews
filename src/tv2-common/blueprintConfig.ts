@@ -1,7 +1,11 @@
 import { TableConfigItemValue } from 'blueprints-integration'
-import { TableConfigItemDSK, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
-import { DVEConfigInput } from './helpers'
-import { SourceInfo } from './sources'
+import {
+	DVEConfigInput,
+	SourceInfo,
+	SwitcherType,
+	TableConfigItemDSK,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
 
@@ -33,7 +37,7 @@ export interface TableConfigItemGfxDesignTemplate {
 	VizTemplate: string
 }
 
-export interface TableConfigItemOverlayShowMapping {
+export interface TableConfigItemGfxShowMapping {
 	Design: string
 	GraphicsSetup: string[]
 	Schema: string[]
@@ -49,11 +53,17 @@ export interface TableConfigGfxSchema {
 	VizTemplate: string
 }
 
-export interface TableConfigGraphicsSetup {
+export interface TableConfigGfxSetup {
 	Name: string
 	HtmlPackageFolder: string
 	OvlShowName?: string
 	FullShowName?: string
+}
+
+export interface ProcessedStudioConfig {
+	sources: SourceMapping
+	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	dsk: TableConfigItemDSK[]
 }
 
 export interface TV2StudioConfigBase {
@@ -94,10 +104,11 @@ export interface TV2StudioConfigBase {
 	DVEIgnoreStatus: boolean
 
 	ABPlaybackDebugLogging: boolean
-	AtemSource: {
+	SwitcherType: SwitcherType
+	SwitcherSource: {
 		Default: number
-		SplitArtF: number
-		SplitArtK: number
+		SplitArtFill: number
+		SplitArtKey: number
 		DSK: TableConfigItemDSK[]
 		Dip: number
 	}
@@ -152,21 +163,23 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemBreakers[]
 	DVEStyles: DVEConfigInput[]
-	GFXTemplates: TableConfigItemGfxTemplate[]
+	GfxTemplates: TableConfigItemGfxTemplate[]
 	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
 	GfxSchemaTemplates: TableConfigGfxSchema[]
-	GraphicsSetups: TableConfigGraphicsSetup[]
-	SelectedGraphicsSetupName: string
+	GfxSetups: TableConfigGfxSetup[]
+	SelectedGfxSetupName: string
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>
 	extends TV2StudioBlueprintConfigBase<StudioConfig> {
 	showStyle: TV2ShowstyleBlueprintConfigBase
-	selectedGraphicsSetup: TableConfigGraphicsSetup
+	selectedGfxSetup: TableConfigGfxSetup
 }
 
-export type TV2BlueprintConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>
+export type TV2StudioConfig = TV2StudioBlueprintConfigBase<TV2StudioConfigBase>
+
+export type TV2ShowStyleConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>

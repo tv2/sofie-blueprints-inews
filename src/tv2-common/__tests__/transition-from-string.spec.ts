@@ -1,18 +1,18 @@
-import { TSR } from 'blueprints-integration'
-import { AtemTransitionStyleFromString } from '../atemTransitionStyleFromString'
+import { TransitionStyle } from 'tv2-common'
+import { parseTransitionStyle } from '../transitionStyleFromString'
 
 describe('Transition From String', () => {
 	it('Converts strings', () => {
-		expect(AtemTransitionStyleFromString('mix')).toEqual(TSR.AtemTransitionStyle.MIX)
-		expect(AtemTransitionStyleFromString('MIX')).toEqual(TSR.AtemTransitionStyle.MIX)
-		expect(AtemTransitionStyleFromString('dip')).toEqual(TSR.AtemTransitionStyle.DIP)
-		expect(AtemTransitionStyleFromString('DIP')).toEqual(TSR.AtemTransitionStyle.DIP)
-		expect(AtemTransitionStyleFromString('wipe')).toEqual(TSR.AtemTransitionStyle.WIPE)
-		expect(AtemTransitionStyleFromString('WIPE')).toEqual(TSR.AtemTransitionStyle.WIPE)
-		expect(AtemTransitionStyleFromString('sting')).toEqual(TSR.AtemTransitionStyle.STING)
-		expect(AtemTransitionStyleFromString('STING')).toEqual(TSR.AtemTransitionStyle.STING)
-		expect(AtemTransitionStyleFromString('cut')).toEqual(TSR.AtemTransitionStyle.CUT)
-		expect(AtemTransitionStyleFromString('CUT')).toEqual(TSR.AtemTransitionStyle.CUT)
-		expect(AtemTransitionStyleFromString('unknown')).toEqual(TSR.AtemTransitionStyle.CUT)
+		expect(parseTransitionStyle('mix')).toEqual(TransitionStyle.MIX)
+		expect(parseTransitionStyle('MIX')).toEqual(TransitionStyle.MIX)
+		expect(parseTransitionStyle('dip')).toEqual(TransitionStyle.DIP)
+		expect(parseTransitionStyle('DIP')).toEqual(TransitionStyle.DIP)
+		expect(parseTransitionStyle('wipe')).toEqual(TransitionStyle.WIPE)
+		expect(parseTransitionStyle('WIPE')).toEqual(TransitionStyle.WIPE)
+		expect(parseTransitionStyle('sting')).toEqual(TransitionStyle.STING)
+		expect(parseTransitionStyle('STING')).toEqual(TransitionStyle.STING)
+		expect(parseTransitionStyle('cut')).toEqual(TransitionStyle.CUT)
+		expect(parseTransitionStyle('CUT')).toEqual(TransitionStyle.CUT)
+		expect(parseTransitionStyle('unknown')).toEqual(TransitionStyle.CUT)
 	})
 })
