@@ -80,7 +80,7 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 
 	private getFullPilotTimeline(): TSR.TSRTimelineObj[] {
 		return [
-			...this.context.videoSwitcher.getOnAirTimelineObjects({
+			...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 				enable: {
 					start: this.config.studio.VizPilotGraphics.CutToMediaPlayer
 				},

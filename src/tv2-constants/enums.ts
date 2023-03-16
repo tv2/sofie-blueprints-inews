@@ -116,7 +116,7 @@ export enum ControlClasses {
 	SERVER_ON_AIR = 'server_on_air',
 	LYD_ON_AIR = 'lyd_on_air',
 	OVERRIDDEN_ON_MIX_MINUS = 'overridden_on_mix_minus',
-	ABSTRACT_LOOKAHEAD = 'abstract_lookahead',
+	ABSTRACT_LOOKAHEAD = 'abstract_lookahead'
 }
 
 export function GetEnableClassForServer(mediaPlayerSessionId: string) {

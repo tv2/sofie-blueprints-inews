@@ -12,7 +12,7 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	CreatePartKamBase,
-	FindDSKJingle,
+	findDskJingle,
 	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	literal,
@@ -43,7 +43,7 @@ export async function CreatePartKam(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	const jingleDSK = FindDSKJingle(context.config)
+	const jingleDsk = findDskJingle(context.config)
 
 	if (/\bcs *\d*/i.test(partDefinition.sourceDefinition.id)) {
 		pieces.push({
@@ -63,10 +63,10 @@ export async function CreatePartKam(
 				fileName: '',
 				path: '',
 				timelineObjects: [
-					...context.videoSwitcher.getOnAirTimelineObjects({
+					...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						priority: 1,
 						content: {
-							input: jingleDSK.Fill,
+							input: jingleDsk.Fill,
 							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 							transitionDuration: partDefinition.transition?.duration
 						}
@@ -102,7 +102,7 @@ export async function CreatePartKam(
 				studioLabel: '',
 				switcherInput,
 				timelineObjects: [
-					...context.videoSwitcher.getOnAirTimelineObjects({
+					...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						priority: 1,
 						content: {
 							input: switcherInput,

@@ -12,19 +12,19 @@ import { ATEMModel } from '../../types/atem'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { TableConfigItemDSK } from '../types'
 
-export function FindDSKFullGFX(config: TV2ShowStyleConfig): TableConfigItemDSK {
-	return FindDSKWithRoles(config, [DskRole.FULLGFX])
+export function findDskFullGfx(config: TV2ShowStyleConfig): TableConfigItemDSK {
+	return findDskWithRoles(config, [DskRole.FULLGFX])
 }
 
-export function FindDSKOverlayGFX(config: TV2ShowStyleConfig): TableConfigItemDSK {
-	return FindDSKWithRoles(config, [DskRole.OVERLAYGFX])
+export function findDskOverlayGfx(config: TV2ShowStyleConfig): TableConfigItemDSK {
+	return findDskWithRoles(config, [DskRole.OVERLAYGFX])
 }
 
-export function FindDSKJingle(config: TV2ShowStyleConfig): TableConfigItemDSK {
-	return FindDSKWithRoles(config, [DskRole.JINGLE])
+export function findDskJingle(config: TV2ShowStyleConfig): TableConfigItemDSK {
+	return findDskWithRoles(config, [DskRole.JINGLE])
 }
 
-function FindDSKWithRoles(config: TV2ShowStyleConfig, roles: DskRole[]): TableConfigItemDSK {
+function findDskWithRoles(config: TV2ShowStyleConfig, roles: DskRole[]): TableConfigItemDSK {
 	return config.dsk.find((dsk) => dsk.Roles?.some((role) => roles.includes(role))) ?? config.dsk[0]
 }
 
@@ -46,7 +46,7 @@ export function getDskOnAirTimelineObjects(
 	dskRole: DskRole,
 	enable?: TSR.TSRTimelineObj['enable']
 ): TSR.TSRTimelineObj[] {
-	const dskConf = FindDSKWithRoles(context.config, [dskRole])
+	const dskConf = findDskWithRoles(context.config, [dskRole])
 	enable = enable ?? { start: 0 }
 	return [
 		context.videoSwitcher.getDskTimelineObject({

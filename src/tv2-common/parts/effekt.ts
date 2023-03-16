@@ -11,6 +11,8 @@ import {
 import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
+	findDskJingle,
+	getBreakerMixEffectCutEnable,
 	getDskOnAirTimelineObjects,
 	GetTagForTransition,
 	getTimeFromFrames,
@@ -108,6 +110,8 @@ export function CreateEffektForPartInner<
 
 	const fileName = joinAssetToFolder(context.config.studio.JingleFolder, file)
 
+	const jingleDsk = findDskJingle(context.config)
+
 	pieces.push({
 		externalId,
 		name: label,
@@ -144,6 +148,14 @@ export function CreateEffektForPartInner<
 						deviceType: TSR.DeviceType.CASPARCG,
 						type: TSR.TimelineContentTypeCasparCg.MEDIA,
 						file: fileName
+					}
+				}),
+				...context.videoSwitcher.getOnAirTimelineObjects({
+					enable: getBreakerMixEffectCutEnable(effektConfig, context.config.studio.CasparPrerollDuration),
+					priority: 1,
+					content: {
+						input: jingleDsk.Fill,
+						transition: TransitionStyle.CUT
 					}
 				}),
 				...getDskOnAirTimelineObjects(context, DskRole.JINGLE, {

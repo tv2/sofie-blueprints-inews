@@ -16,7 +16,7 @@ import {
 	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateLYDBaseline,
-	FindDSKJingle,
+	findDskJingle,
 	getGraphicBaseline,
 	getMixMinusTimelineObject,
 	GetSisyfosTimelineObjForRemote,
@@ -179,7 +179,7 @@ class GlobalAdLibPiecesGenerator {
 			content: {
 				ignoreMediaObjectStatus: true,
 				timelineObjects: [
-					...this.context.videoSwitcher.getOnAirTimelineObjects({
+					...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						enable: { while: '1' },
 						priority: 1,
 						content: {
@@ -265,7 +265,7 @@ class GlobalAdLibPiecesGenerator {
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
 				timelineObjects: [
-					...this.context.videoSwitcher.getOnAirTimelineObjects({
+					...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						enable: { while: '1' },
 						priority: 1,
 						content: {
@@ -501,7 +501,7 @@ class GlobalAdLibPiecesGenerator {
 }
 
 function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): BlueprintResultBaseline {
-	const jingleDSK = FindDSKJingle(context.config)
+	const jingleDSK = findDskJingle(context.config)
 
 	return {
 		timelineObjects: _.compact([

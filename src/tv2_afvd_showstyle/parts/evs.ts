@@ -109,7 +109,7 @@ function makeContentEVS(
 		switcherInput,
 		ignoreMediaObjectStatus: true,
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			...context.videoSwitcher.getOnAirTimelineObjects({
+			...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 				priority: 1,
 				content: {
 					input: switcherInput,

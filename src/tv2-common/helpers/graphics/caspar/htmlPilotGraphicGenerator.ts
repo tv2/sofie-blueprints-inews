@@ -1,6 +1,6 @@
 import { GraphicsContent, TSR, WithTimeline } from 'blueprints-integration'
 import {
-	FindDSKFullGFX,
+	findDskFullGfx,
 	getDskOnAirTimelineObjects,
 	getHtmlTemplateName,
 	GetSisyfosTimelineObjForFull,
@@ -90,15 +90,15 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 	}
 
 	protected getFullPilotTimeline(): TSR.TSRTimelineObj[] {
-		const fullDSK = FindDSKFullGFX(this.config)
+		const fullDsk = findDskFullGfx(this.config)
 		return [
-			...this.context.videoSwitcher.getOnAirTimelineObjects({
+			...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 				enable: {
 					start: Number(this.config.studio.CasparPrerollDuration)
 				},
 				priority: 1,
 				content: {
-					input: fullDSK.Fill,
+					input: fullDsk.Fill,
 					transition: TransitionStyle.WIPE_FOR_GFX,
 					transitionDuration: 20
 				}

@@ -11,7 +11,8 @@ import {
 	PartDefinition,
 	PieceMetaData,
 	SegmentContext,
-	t
+	t,
+	TableConfigItemBreaker
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
@@ -62,14 +63,7 @@ export function OfftubeEvaluateJingle(
 			sourceLayerId: OfftubeSourceLayer.PgmJingle,
 			outputLayerId: OfftubeOutputLayers.JINGLE,
 			content: {
-				...createJingleContentOfftube(
-					context,
-					file,
-					jingle.StartAlpha,
-					jingle.LoadFirstFrame,
-					jingle.Duration,
-					jingle.EndAlpha
-				)
+				...createJingleContentOfftube(context, file, jingle)
 			},
 			tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
 			currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
@@ -92,14 +86,7 @@ export function OfftubeEvaluateJingle(
 			}
 		},
 		prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(Number(jingle.StartAlpha)),
-		content: createJingleContentOfftube(
-			context,
-			file,
-			jingle.StartAlpha,
-			jingle.LoadFirstFrame,
-			jingle.Duration,
-			jingle.EndAlpha
-		),
+		content: createJingleContentOfftube(context, file, jingle),
 		tags: [
 			GetTagForJingle(part.segmentExternalId, parsedCue.clip),
 			GetTagForJingleNext(part.segmentExternalId, parsedCue.clip),
@@ -112,12 +99,9 @@ export function OfftubeEvaluateJingle(
 export function createJingleContentOfftube(
 	context: SegmentContext<OfftubeBlueprintConfig>,
 	file: string,
-	alphaAtStart: number,
-	loadFirstFrame: boolean,
-	duration: number,
-	alphaAtEnd: number
+	breakerConfig: TableConfigItemBreaker
 ) {
-	return CreateJingleContentBase(context, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
+	return CreateJingleContentBase(context, file, breakerConfig, {
 		Caspar: {
 			PlayerJingle: OfftubeCasparLLayer.CasparPlayerJingle,
 			PlayerJinglePreload: OfftubeCasparLLayer.CasparPlayerJinglePreload

@@ -9,7 +9,8 @@ import {
 	getTimeFromFrames,
 	PartDefinition,
 	ShowStyleContext,
-	t
+	t,
+	TableConfigItemBreaker
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
@@ -55,14 +56,7 @@ export function EvaluateJingle(
 				sourceLayerId: SourceLayer.PgmJingle,
 				outputLayerId: SharedOutputLayer.JINGLE,
 				content: {
-					...createJingleContentAFVD(
-						context,
-						file,
-						jingle.StartAlpha,
-						jingle.LoadFirstFrame,
-						jingle.Duration,
-						jingle.EndAlpha
-					)
+					...createJingleContentAFVD(context, file, jingle)
 				},
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
 				currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
@@ -79,16 +73,9 @@ export function EvaluateJingle(
 			lifespan: PieceLifespan.WithinPart,
 			outputLayerId: SharedOutputLayer.JINGLE,
 			sourceLayerId: SourceLayer.PgmJingle,
-			prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(Number(jingle.StartAlpha)),
+			prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(jingle.StartAlpha),
 			tags: [!effekt ? TallyTags.JINGLE : ''],
-			content: createJingleContentAFVD(
-				context,
-				file,
-				jingle.StartAlpha,
-				jingle.LoadFirstFrame,
-				jingle.Duration,
-				jingle.EndAlpha
-			)
+			content: createJingleContentAFVD(context, file, jingle)
 		})
 	}
 }
@@ -96,12 +83,9 @@ export function EvaluateJingle(
 export function createJingleContentAFVD(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
 	file: string,
-	alphaAtStart: number,
-	loadFirstFrame: boolean,
-	duration: number,
-	alphaAtEnd: number
+	breakerConfig: TableConfigItemBreaker
 ) {
-	return CreateJingleContentBase(context, file, alphaAtStart, loadFirstFrame, duration, alphaAtEnd, {
+	return CreateJingleContentBase(context, file, breakerConfig, {
 		Caspar: {
 			PlayerJingle: CasparLLayer.CasparPlayerJingle
 		},
