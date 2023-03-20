@@ -16,6 +16,7 @@ import {
 	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateLYDBaseline,
+	findDskFullGfx,
 	findDskJingle,
 	getGraphicBaseline,
 	getMixMinusTimelineObject,
@@ -501,7 +502,8 @@ class GlobalAdLibPiecesGenerator {
 }
 
 function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): BlueprintResultBaseline {
-	const jingleDSK = findDskJingle(context.config)
+	const jingleDsk = findDskJingle(context.config)
+	const fullGfxDsk = findDskFullGfx(context.config)
 
 	return {
 		timelineObjects: _.compact([
@@ -573,7 +575,21 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 							keyers: [
 								{
 									onAir: false,
-									config: jingleDSK
+									config: jingleDsk
+								}
+							]
+						}
+				  })
+				: undefined,
+			context.uniformConfig.switcherLLayers.fullUskMixEffect
+				? context.videoSwitcher.getMixEffectTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.switcherLLayers.fullUskMixEffect,
+						content: {
+							keyers: [
+								{
+									onAir: false,
+									config: fullGfxDsk
 								}
 							]
 						}

@@ -192,7 +192,8 @@ export enum AbstractLLayer {
 export enum SwitcherMixEffectLLayer {
 	Program = 'me_program',
 	Clean = 'me_clean',
-	CleanUSKEffect = 'clean_usk_effect',
+	CleanUskFull = 'clean_usk_full',
+	CleanUskEffect = 'clean_usk_effect',
 	Next = 'me_next',
 	NextJingle = 'me_next_jingle'
 }

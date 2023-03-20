@@ -15,6 +15,8 @@ export interface UniformConfig {
 		nextAux?: SwitcherAuxLLayer
 		/** Optional layer to show the jingles on an USK */
 		jingleUskMixEffect?: SwitcherMixEffectLLayer
+		/** Optional layer to show Fullscreen graphics on an USK */
+		fullUskMixEffect?: SwitcherMixEffectLLayer
 		/** Optional layer to show the jingles lookahead on */
 		jingleNextMixEffect?: SwitcherMixEffectLLayer
 		/** Optional layer to preview servers on Aux */

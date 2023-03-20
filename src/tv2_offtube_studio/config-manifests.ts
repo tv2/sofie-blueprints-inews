@@ -366,6 +366,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 2000
 	},
 	{
+		id: 'VizPilotGraphics.CleanFeedPrerollDuration',
+		name: 'Fullscreen Pilot Preroll Duration for Clean Feed',
+		description: 'ms of preroll before showing Pilot elements on the Clean Feed',
+		type: ConfigManifestEntryType.INT,
+		required: false,
+		defaultVal: 320
+	},
+	{
 		id: 'VizPilotGraphics.FullGraphicBackground',
 		name: 'Full frame grafik background source',
 		description: 'Video Switcher source for mos full-frame grafik background source',

@@ -594,7 +594,14 @@ export const MAPPINGS_ATEM = prefixLayers<TSR.MappingAtem & BlueprintMapping>(AT
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 3 // 3 = ME4
 	},
-	[SwitcherMixEffectLLayer.CleanUSKEffect]: {
+	[SwitcherMixEffectLLayer.CleanUskFull]: {
+		device: TSR.DeviceType.ATEM,
+		deviceId: ATEM_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingAtemType.MixEffect,
+		index: 3 // 3 = ME4
+	},
+	[SwitcherMixEffectLLayer.CleanUskEffect]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,
@@ -689,7 +696,14 @@ export const MAPPINGS_TRICASTER = prefixLayers<TSR.MappingTriCaster & BlueprintM
 		mappingType: TSR.MappingTriCasterType.ME,
 		name: TRICASTER_CLEAN_ME
 	},
-	[SwitcherMixEffectLLayer.CleanUSKEffect]: {
+	[SwitcherMixEffectLLayer.CleanUskFull]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_CLEAN_ME
+	},
+	[SwitcherMixEffectLLayer.CleanUskEffect]: {
 		device: TSR.DeviceType.TRICASTER,
 		deviceId: TRICASTER_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,

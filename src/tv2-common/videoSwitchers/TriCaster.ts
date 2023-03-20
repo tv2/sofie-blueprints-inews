@@ -78,6 +78,7 @@ export class TriCaster extends VideoSwitcherBase {
 					...(content.previewInput !== undefined && transition === 'cut'
 						? { previewInput: this.getInputName(content.previewInput) }
 						: {}),
+					// @todo: fix transitionEffect and transitionDuration being set when not needed
 					transitionEffect: transition,
 					transitionDuration: this.getTransitionDuration(content.transition, content.transitionDuration),
 					keyers: content.keyers && this.getKeyers(content.keyers)

@@ -135,7 +135,8 @@ export const defaultStudioConfig: StudioConfig = {
 		PrerollDuration: 2000,
 		OutTransitionDuration: 280,
 		CutToMediaPlayer: 1500,
-		FullGraphicBackground: 36
+		FullGraphicBackground: 36,
+		CleanFeedPrerollDuration: 320
 	},
 	HTMLGraphics: {
 		GraphicURL: 'E:/somepath',

@@ -128,7 +128,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline).toHaveLength(6) // @todo: this depends on unrelated configuration
+		expect(timeline).toHaveLength(7) // @todo: this depends on unrelated configuration
 		const vizObj = timeline.find(
 			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -300,7 +300,7 @@ describe('Graphics', () => {
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline).toHaveLength(6)
+		expect(timeline).toHaveLength(7)
 		const vizObj = timeline.find(
 			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT

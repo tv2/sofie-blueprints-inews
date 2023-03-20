@@ -18,7 +18,8 @@ export const GALLERY_UNIFORM_CONFIG: UniformConfig = {
 	switcherLLayers: {
 		primaryMixEffect: SwitcherMixEffectLLayer.Program,
 		primaryMixEffectClone: SwitcherMixEffectLLayer.Clean,
-		jingleUskMixEffect: SwitcherMixEffectLLayer.CleanUSKEffect,
+		jingleUskMixEffect: SwitcherMixEffectLLayer.CleanUskEffect,
+		fullUskMixEffect: SwitcherMixEffectLLayer.CleanUskFull,
 		nextAux: SwitcherAuxLLayer.AuxLookahead,
 		mixMinusAux: SwitcherAuxLLayer.AuxVideoMixMinus
 	},

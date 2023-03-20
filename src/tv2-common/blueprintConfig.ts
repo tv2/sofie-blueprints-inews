@@ -131,6 +131,7 @@ export interface TV2StudioConfigBase {
 	}
 	VizPilotGraphics: {
 		KeepAliveDuration: number
+		CleanFeedPrerollDuration: number
 		PrerollDuration: number
 		OutTransitionDuration: number
 		CutToMediaPlayer: number
