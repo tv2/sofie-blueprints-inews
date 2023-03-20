@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TSR
 } from 'blueprints-integration'
-import { literal, SpecialInput, StudioContext, TransitionStyle } from 'tv2-common'
+import { literal, ShowStyleContext, SpecialInput, StudioContext, SwitcherType, TransitionStyle } from 'tv2-common'
 import * as _ from 'underscore'
 import { SharedGraphicLLayer, SwitcherMediaPlayerLLayer } from '../tv2-constants'
 import { AtemSourceIndex } from '../types/atem'
@@ -59,6 +59,11 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 		}
 	}
 
+	const defaultInput =
+		context.config.studio.SwitcherType === SwitcherType.TRICASTER
+			? context.config.studio.SwitcherSource.Default
+			: AtemSourceIndex.MP1
+
 	return {
 		timelineObjects: _.compact([
 			literal<TSR.TimelineObjSisyfosChannels>({
@@ -77,15 +82,7 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			}),
 
 			// have ATEM output default still image
-			context.uniformConfig.mixEffects.program.auxLayer
-				? context.videoSwitcher.getAuxTimelineObject({
-						enable: { while: '1' },
-						layer: context.uniformConfig.mixEffects.program.auxLayer,
-						content: {
-							input: SpecialInput.ME1_PROGRAM
-						}
-				  })
-				: undefined,
+			...getMixEffectBaseline(context, defaultInput),
 			context.uniformConfig.switcherLLayers.nextAux
 				? context.videoSwitcher.getAuxTimelineObject({
 						enable: { while: '1' },
@@ -95,14 +92,6 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 						}
 				  })
 				: undefined,
-			context.videoSwitcher.getMixEffectTimelineObject({
-				enable: { while: '1' },
-				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
-				content: {
-					input: AtemSourceIndex.MP1,
-					transition: TransitionStyle.CUT
-				}
-			}),
 			literal<TSR.TimelineObjAtemMediaPlayer>({
 				id: '',
 				enable: { while: '1' },
@@ -134,4 +123,31 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			})
 		])
 	}
+}
+
+export function getMixEffectBaseline(
+	context: StudioContext | ShowStyleContext,
+	input: number | SpecialInput
+): TSR.TSRTimelineObj[] {
+	return Object.values(context.uniformConfig.mixEffects).flatMap((mixEffect) =>
+		_.compact([
+			context.videoSwitcher.getMixEffectTimelineObject({
+				enable: { while: '1' },
+				layer: mixEffect.mixEffectLayer,
+				content: {
+					input,
+					transition: TransitionStyle.CUT
+				}
+			}),
+			mixEffect.auxLayer
+				? context.videoSwitcher.getAuxTimelineObject({
+						enable: { while: '1' },
+						layer: mixEffect.auxLayer,
+						content: {
+							input: mixEffect.input
+						}
+				  })
+				: undefined
+		])
+	)
 }

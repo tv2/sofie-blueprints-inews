@@ -42,6 +42,7 @@ export abstract class VideoSwitcherBase implements VideoSwitcher {
 		this.core = core
 		this.uniformConfig = uniformConfig
 	}
+
 	public getOnAirTimelineObjects(properties: OnAirMixEffectProps): TSR.TSRTimelineObj[] {
 		const result: TSR.TSRTimelineObj[] = []
 		const primaryId = properties.id ?? this.core.getHashId(this.uniformConfig.switcherLLayers.primaryMixEffect, true)
@@ -61,6 +62,12 @@ export abstract class VideoSwitcherBase implements VideoSwitcher {
 				})
 			)
 		}
+		return result
+	}
+
+	public getOnAirTimelineObjectsWithLookahead(properties: OnAirMixEffectProps): TSR.TSRTimelineObj[] {
+		const result: TSR.TSRTimelineObj[] = this.getOnAirTimelineObjects(properties)
+		const primaryId = result[0].id
 		if (this.uniformConfig.switcherLLayers.nextPreviewMixEffect && properties.content.input) {
 			result.push(
 				this.getMixEffectTimelineObject({
@@ -84,6 +91,7 @@ export abstract class VideoSwitcherBase implements VideoSwitcher {
 		}
 		return result
 	}
+
 	public abstract updateAuxInput(
 		timelineObject: TimelineObjectCoreExt<unknown, unknown>,
 		input: number | SpecialInput
