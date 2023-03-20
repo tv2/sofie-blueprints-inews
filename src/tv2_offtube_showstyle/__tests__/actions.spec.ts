@@ -239,6 +239,7 @@ const selectCameraAction = literal<ActionCutToCamera>({
 
 const selectLiveAction = literal<ActionCutToRemote>({
 	type: AdlibActionType.CUT_TO_REMOTE,
+	cutDirectly: false,
 	sourceDefinition: SOURCE_DEFINITION_LIVE_2
 })
 

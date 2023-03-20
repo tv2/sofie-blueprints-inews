@@ -263,6 +263,7 @@ function getGlobalAdlibActionsOfftube(
 		const sourceDefinition = SourceInfoToSourceDefinition(sourceInfo) as SourceDefinitionRemote
 		const userData: ActionCutToRemote = {
 			type: AdlibActionType.CUT_TO_REMOTE,
+			cutDirectly: false,
 			sourceDefinition
 		}
 		blueprintActions.push({
