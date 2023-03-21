@@ -148,7 +148,7 @@ export function EnableServer(mediaPlayerSessionId: string) {
 		enable: {
 			start: 0
 		},
-		layer: AbstractLLayer.ServerEnablePending,
+		layer: AbstractLLayer.SERVER_ENABLE_PENDING,
 		content: {
 			deviceType: TSR.DeviceType.ABSTRACT
 		},

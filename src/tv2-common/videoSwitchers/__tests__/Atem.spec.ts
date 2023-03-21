@@ -19,7 +19,7 @@ function setupAtem(studioConfigOverrides?: Partial<TV2StudioConfigBase>) {
 describe('ATEM', () => {
 	describe('Mix Effect', () => {
 		const DEFAULT_ME: MixEffectProps = {
-			layer: SwitcherMixEffectLLayer.Program,
+			layer: SwitcherMixEffectLLayer.PROGRAM,
 			content: {
 				input: 5
 			}
@@ -64,7 +64,7 @@ describe('ATEM', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject(DEFAULT_ME)
 			expect(timelineObject).toMatchObject({
-				layer: prefixLayer(SwitcherMixEffectLLayer.Program)
+				layer: prefixLayer(SwitcherMixEffectLLayer.PROGRAM)
 			})
 		})
 
@@ -83,7 +83,7 @@ describe('ATEM', () => {
 		test('sets input when CUT transition provided', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.CUT
@@ -102,7 +102,7 @@ describe('ATEM', () => {
 		test('sets previewInput', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					previewInput: 5
 				}
@@ -119,7 +119,7 @@ describe('ATEM', () => {
 		test('supports MIX', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.MIX,
@@ -144,7 +144,7 @@ describe('ATEM', () => {
 		test('supports WIPE', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.WIPE,
@@ -176,7 +176,7 @@ describe('ATEM', () => {
 				}
 			})
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.WIPE_FOR_GFX
@@ -203,7 +203,7 @@ describe('ATEM', () => {
 		test('supports DIP', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.DIP,
@@ -245,7 +245,7 @@ describe('ATEM', () => {
 				}
 			})
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.DIP,
@@ -271,7 +271,7 @@ describe('ATEM', () => {
 		test('supports keyers', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					keyers: [
 						{
@@ -313,7 +313,7 @@ describe('ATEM', () => {
 
 	describe('Aux', () => {
 		const DEFAULT_AUX: AuxProps = {
-			layer: SwitcherAuxLLayer.AuxClean,
+			layer: SwitcherAuxLLayer.CLEAN,
 			content: {
 				input: 5
 			}
@@ -358,7 +358,7 @@ describe('ATEM', () => {
 			const atem = setupAtem()
 			const timelineObject = atem.getAuxTimelineObject(DEFAULT_AUX)
 			expect(timelineObject).toMatchObject({
-				layer: prefixLayer(SwitcherAuxLLayer.AuxClean)
+				layer: prefixLayer(SwitcherAuxLLayer.CLEAN)
 			})
 		})
 

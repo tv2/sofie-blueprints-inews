@@ -59,7 +59,7 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 		}
 	}
 
-	const defaultInput =
+	const defaultInput: number =
 		context.config.studio.SwitcherType === SwitcherType.TRICASTER
 			? context.config.studio.SwitcherSource.Default
 			: AtemSourceIndex.MP1

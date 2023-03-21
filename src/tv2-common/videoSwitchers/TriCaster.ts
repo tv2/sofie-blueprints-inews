@@ -78,6 +78,7 @@ export class TriCaster extends VideoSwitcherBase {
 					...(content.previewInput !== undefined && transition === 'cut'
 						? { previewInput: this.getInputName(content.previewInput) }
 						: {}),
+					// @todo: fix transitionEffect and transitionDuration being set when not needed
 					transitionEffect: transition,
 					transitionDuration: this.getTransitionDuration(content.transition, content.transitionDuration),
 					keyers: content.keyers && this.getKeyers(content.keyers)
@@ -218,7 +219,7 @@ export class TriCaster extends VideoSwitcherBase {
 	public getDveTimelineObjects(dveProps: DveProps): TSR.TimelineObjTriCasterME[] {
 		return [
 			{
-				...this.getBaseProperties(dveProps, SwitcherDveLLayer.DveBoxes),
+				...this.getBaseProperties(dveProps, SwitcherDveLLayer.DVE_BOXES),
 				content: {
 					deviceType: TSR.DeviceType.TRICASTER,
 					type: TSR.TimelineContentTypeTriCaster.ME,
