@@ -55,7 +55,7 @@ export function getMixMinusTimelineObject(
 		enable: {
 			while: `.${ControlClasses.OVERRIDDEN_ON_MIX_MINUS}`
 		},
-		layer: SwitcherAuxLLayer.AuxVideoMixMinus,
+		layer: SwitcherAuxLLayer.VIDEO_MIX_MINUS,
 		priority,
 		temporalPriority: TemporalPriority.AUX_MIX_MINUS_OVERRIDE
 	})

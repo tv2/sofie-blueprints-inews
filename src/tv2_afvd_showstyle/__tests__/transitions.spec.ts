@@ -111,7 +111,7 @@ function getPieceOnLayerFromPart(segment: BlueprintResultSegment, layer: SourceL
 function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
 	const atemMEObj = (piece!.content!.timelineObjects as TSR.TSRTimelineObj[]).find(
 		(obj) =>
-			obj.layer === prefixLayer(SwitcherMixEffectLLayer.Program) &&
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.PROGRAM) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME

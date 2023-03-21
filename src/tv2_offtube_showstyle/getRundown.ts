@@ -607,7 +607,7 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 				: undefined,
 			context.videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxScreen,
+				layer: SwitcherAuxLLayer.SCREEN,
 				content: {
 					input: context.config.studio.SwitcherSource.Loop
 				}

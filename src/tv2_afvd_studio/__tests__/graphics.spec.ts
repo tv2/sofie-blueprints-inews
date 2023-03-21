@@ -364,7 +364,7 @@ describe('Graphics', () => {
 		) as TSR.TimelineObjAtemAUX | undefined
 		expect(auxObj).toBeTruthy()
 		expect(auxObj?.enable).toEqual({ start: 0 })
-		expect(auxObj?.layer).toBe(prefixLayer(SwitcherAuxLLayer.AuxVizOvlIn1))
+		expect(auxObj?.layer).toBe(prefixLayer(SwitcherAuxLLayer.VIZ_OVL_IN_1))
 		expect(auxObj?.content.aux.input).toBe(1)
 	})
 

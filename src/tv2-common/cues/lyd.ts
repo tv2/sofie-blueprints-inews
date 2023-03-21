@@ -185,7 +185,7 @@ export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {
 				while: `!.${ControlClasses.LYD_ON_AIR}`
 			},
 			priority: 0,
-			layer: AbstractLLayer.AudioBedBaseline,
+			layer: AbstractLLayer.AUDIO_BED_BASELINE,
 			content: {
 				deviceType: TSR.DeviceType.ABSTRACT
 			}

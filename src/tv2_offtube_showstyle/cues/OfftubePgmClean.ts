@@ -43,7 +43,7 @@ export function OfftubeEvaluatePgmClean(
 			timelineObjects: literal<TimelineObjectCoreExt[]>([
 				context.videoSwitcher.getAuxTimelineObject({
 					enable: { while: '1' },
-					layer: SwitcherAuxLLayer.AuxClean,
+					layer: SwitcherAuxLLayer.CLEAN,
 					content: {
 						input: sourceInfo.port
 					}
