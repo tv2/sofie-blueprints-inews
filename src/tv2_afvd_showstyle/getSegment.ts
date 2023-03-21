@@ -81,7 +81,7 @@ export function CreatePartContinuity(
 					studioLabel: '',
 					switcherInput: context.config.studio.SwitcherSource.Continuity,
 					timelineObjects: [
-						...context.videoSwitcher.getOnAirTimelineObjects({
+						...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 							priority: 1,
 							content: {
 								input: context.config.studio.SwitcherSource.Continuity,

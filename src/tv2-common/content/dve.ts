@@ -14,7 +14,7 @@ import {
 	CueDefinitionDVE,
 	DVEConfigInput,
 	DVESources,
-	FindDSKFullGFX,
+	findDskFullGfx,
 	findSourceInfo,
 	getMixMinusTimelineObject,
 	joinAssetToFolder,
@@ -257,7 +257,7 @@ export function MakeContentDVE2<
 					if (mappingFrom.name === 'FULL') {
 						setBoxSource(box, boxSources, {
 							sourceLayerType: SourceLayerType.GRAPHICS,
-							port: FindDSKFullGFX(context.config).Fill
+							port: findDskFullGfx(context.config).Fill
 						})
 						dveTimeline.push(...GetSisyfosTimelineObjForFull(context.config))
 					} else {
@@ -318,7 +318,7 @@ export function MakeContentDVE2<
 						mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
 					}
 				}),
-				...context.videoSwitcher.getOnAirTimelineObjects({
+				...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 					enable: { start: context.config.studio.CasparPrerollDuration },
 					priority: 1,
 					content: {

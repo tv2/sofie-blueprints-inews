@@ -1,7 +1,6 @@
 import { GraphicsContent, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	assertUnreachable,
-	FindDSKFullGFX,
 	getDskOnAirTimelineObjects,
 	GetSisyfosTimelineObjForFull,
 	IsTargetingFull,
@@ -79,10 +78,9 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 		}
 	}
 
-	private getFullPilotTimeline() {
-		const fullDSK = FindDSKFullGFX(this.config)
-		const timelineObjects = [
-			...this.context.videoSwitcher.getOnAirTimelineObjects({
+	private getFullPilotTimeline(): TSR.TSRTimelineObj[] {
+		return [
+			...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 				enable: {
 					start: this.config.studio.VizPilotGraphics.CutToMediaPlayer
 				},
@@ -96,20 +94,5 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 			...getDskOnAirTimelineObjects(this.context, DskRole.FULLGFX),
 			...GetSisyfosTimelineObjForFull(this.config)
 		]
-		if (this.context.uniformConfig.mixEffects.program.auxLayer) {
-			timelineObjects.push(
-				this.context.videoSwitcher.getAuxTimelineObject({
-					enable: {
-						start: this.config.studio.VizPilotGraphics.CutToMediaPlayer
-					},
-					priority: 1,
-					layer: this.context.uniformConfig.mixEffects.program.auxLayer,
-					content: {
-						input: fullDSK.Fill
-					}
-				})
-			)
-		}
-		return timelineObjects
 	}
 }

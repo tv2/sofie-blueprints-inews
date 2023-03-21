@@ -16,7 +16,7 @@ import {
 	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateLYDBaseline,
-	FindDSKJingle,
+	findDskJingle,
 	getGraphicBaseline,
 	getMixMinusTimelineObject,
 	GetSisyfosTimelineObjForRemote,
@@ -41,6 +41,7 @@ import {
 	SwitcherAuxLLayer
 } from 'tv2-constants'
 import * as _ from 'underscore'
+import { getMixEffectBaseline } from '../tv2_afvd_studio/getBaseline'
 import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
 import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
@@ -178,7 +179,7 @@ class GlobalAdLibPiecesGenerator {
 			content: {
 				ignoreMediaObjectStatus: true,
 				timelineObjects: [
-					...this.context.videoSwitcher.getOnAirTimelineObjects({
+					...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						enable: { while: '1' },
 						priority: 1,
 						content: {
@@ -264,7 +265,7 @@ class GlobalAdLibPiecesGenerator {
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
 			content: {
 				timelineObjects: [
-					...this.context.videoSwitcher.getOnAirTimelineObjects({
+					...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						enable: { while: '1' },
 						priority: 1,
 						content: {
@@ -500,13 +501,13 @@ class GlobalAdLibPiecesGenerator {
 }
 
 function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): BlueprintResultBaseline {
-	const jingleDSK = FindDSKJingle(context.config)
+	const jingleDSK = findDskJingle(context.config)
 
 	return {
 		timelineObjects: _.compact([
 			...getGraphicBaseline(context.config),
 			// Default timeline
-			...getMixEffectBaseline(context),
+			...getMixEffectBaseline(context, context.config.studio.SwitcherSource.Default),
 
 			context.videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
@@ -767,28 +768,4 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 			})
 		])
 	}
-}
-
-function getMixEffectBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): TSR.TSRTimelineObj[] {
-	return Object.values(context.uniformConfig.mixEffects).flatMap((mixEffect) =>
-		_.compact([
-			context.videoSwitcher.getMixEffectTimelineObject({
-				enable: { while: '1' },
-				layer: mixEffect.mixEffectLayer,
-				content: {
-					input: context.config.studio.SwitcherSource.Default,
-					transition: TransitionStyle.CUT
-				}
-			}),
-			mixEffect.auxLayer
-				? context.videoSwitcher.getAuxTimelineObject({
-						enable: { while: '1' },
-						layer: mixEffect.auxLayer,
-						content: {
-							input: mixEffect.input
-						}
-				  })
-				: undefined
-		])
-	)
 }

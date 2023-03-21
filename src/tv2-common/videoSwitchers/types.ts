@@ -109,7 +109,18 @@ export interface DveProps extends TimelineObjectProps {
 export interface VideoSwitcher {
 	isMixEffect(timelineObject: TimelineObjectCoreExt): boolean
 	getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
+
+	/**
+	 * Returns timeline objects that cut (or transition) to a given input on Program and Clean M/Es
+	 * @param properties OnAirMixEffectProps
+	 */
 	getOnAirTimelineObjects(properties: OnAirMixEffectProps): TSR.TSRTimelineObj[]
+	/**
+	 * Returns timeline objects that cut (or transition) to a given input on Program and Clean M/Es
+	 * and objects letting lookahead logic show given input as Next
+	 * @param properties OnAirMixEffectProps
+	 */
+	getOnAirTimelineObjectsWithLookahead(properties: OnAirMixEffectProps): TSR.TSRTimelineObj[]
 	isVideoSwitcherTimelineObject(timelineObject: TimelineObjectCoreExt): boolean
 	updateTransition(
 		timelineObject: TimelineObjectCoreExt,

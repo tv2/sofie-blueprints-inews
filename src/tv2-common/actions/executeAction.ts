@@ -51,6 +51,7 @@ import {
 	ServerSelectMode,
 	ShowStyleContext,
 	SisyfosPersistMetaData,
+	TableConfigItemBreaker,
 	TimelineBlueprintExt,
 	TransitionStyle,
 	TV2AdlibAction,
@@ -156,10 +157,7 @@ export interface ActionExecutionSettings<
 	createJingleContent: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		file: string,
-		alphaAtStart: number,
-		loadFirstFrame: boolean,
-		duration: number,
-		alphaAtEnd: number
+		breakerConfig: TableConfigItemBreaker
 	) => WithTimeline<VTContent>
 	serverActionSettings: ServerActionSettings
 }
@@ -940,14 +938,7 @@ async function executeActionSelectJingle<
 
 	const props = GetJinglePartPropertiesFromTableValue(jingle)
 
-	const pieceContent = settings.createJingleContent(
-		context,
-		file,
-		jingle.StartAlpha,
-		jingle.LoadFirstFrame,
-		jingle.Duration,
-		jingle.EndAlpha
-	)
+	const pieceContent = settings.createJingleContent(context, file, jingle)
 
 	const piece: IBlueprintPiece<PieceMetaData> = {
 		externalId: `${externalId}-JINGLE`,
@@ -1041,7 +1032,7 @@ async function executeActionCutToCamera<
 		tags: [GetTagForKam(userData.sourceDefinition)],
 		content: {
 			timelineObjects: [
-				...context.videoSwitcher.getOnAirTimelineObjects({
+				...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 					priority: 1,
 					content: {
 						input: sourceInfoCam.port,
@@ -1172,7 +1163,7 @@ async function executeActionCutToRemote<
 		tags: [GetTagForLive(userData.sourceDefinition)],
 		content: {
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				...context.videoSwitcher.getOnAirTimelineObjects({
+				...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 					enable: { while: '1' },
 					priority: 1,
 					content: {

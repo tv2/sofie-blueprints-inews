@@ -9,7 +9,7 @@ import {
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
 
-export interface TableConfigItemBreakers {
+export interface TableConfigItemBreaker {
 	BreakerName: string
 	ClipName: string
 	Duration: number
@@ -161,7 +161,7 @@ export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConf
 export interface TV2ShowstyleBlueprintConfigBase {
 	DefaultTemplateDuration: number
 	CasparCGLoadingClip: string
-	BreakerConfig: TableConfigItemBreakers[]
+	BreakerConfig: TableConfigItemBreaker[]
 	DVEStyles: DVEConfigInput[]
 	GfxTemplates: TableConfigItemGfxTemplate[]
 	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]

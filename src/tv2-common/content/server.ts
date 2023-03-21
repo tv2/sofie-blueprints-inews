@@ -125,7 +125,7 @@ export function CutToServer(
 ): TimelineBlueprintExt[] {
 	return [
 		EnableServer(mediaPlayerSessionId),
-		...context.videoSwitcher.getOnAirTimelineObjects({
+		...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 			enable: {
 				start: context.config.studio.CasparPrerollDuration
 			},

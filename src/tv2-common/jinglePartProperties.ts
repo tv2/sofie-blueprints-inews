@@ -1,6 +1,6 @@
 import { IBlueprintPart } from 'blueprints-integration'
 import { CueType } from 'tv2-constants'
-import { TableConfigItemBreakers } from './blueprintConfig'
+import { TableConfigItemBreaker } from './blueprintConfig'
 import { getTimeFromFrames } from './frameTime'
 import { CueDefinitionJingle, PartDefinition } from './inewsConversion'
 import { ShowStyleContext } from './showstyle'
@@ -27,10 +27,10 @@ export function GetJinglePartProperties(
 }
 
 export function GetJinglePartPropertiesFromTableValue(
-	realBreaker: TableConfigItemBreakers
+	realBreaker: TableConfigItemBreaker
 ): Pick<IBlueprintPart, 'autoNext' | 'expectedDuration' | 'autoNextOverlap' | 'disableNextInTransition'> {
-	const expectedDuration = Math.max(0, getTimeFromFrames(Number(realBreaker.Duration) - Number(realBreaker.StartAlpha)))
-	const autoNextOverlap = Math.min(expectedDuration, getTimeFromFrames(Number(realBreaker.EndAlpha)))
+	const expectedDuration = Math.max(0, getTimeFromFrames(realBreaker.Duration - realBreaker.StartAlpha))
+	const autoNextOverlap = Math.min(expectedDuration, getTimeFromFrames(realBreaker.EndAlpha))
 	return {
 		expectedDuration,
 		autoNextOverlap,
