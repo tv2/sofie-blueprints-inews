@@ -788,6 +788,7 @@ async function executeActionSelectDVELayout<
 
 	const newMetaData2: DVEPieceMetaData = {
 		...meta,
+		sources: { ...sources, ...meta.sources },
 		config: userData.config,
 		sisyfosPersistMetaData: {
 			sisyfosLayers: []
@@ -799,6 +800,7 @@ async function executeActionSelectDVELayout<
 		...nextDVE.piece,
 		content: pieceContent.content,
 		metaData: newMetaData2,
+		name: userData.config.DVEName,
 		tags: [
 			GetTagForDVE('', userData.config.DVEName, sources),
 			GetTagForDVENext('', userData.config.DVEName, sources),
