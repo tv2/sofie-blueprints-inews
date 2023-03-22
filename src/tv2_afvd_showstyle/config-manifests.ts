@@ -266,7 +266,8 @@ export const gfxSchemaTemplates: ConfigManifestEntry[] = [
 export const gfxShowMapping: ConfigManifestEntry = {
 	id: 'GfxShowMapping',
 	name: 'GFX Show mapping',
-	description: 'Maps Overlay Shows to the variety of Skemas and Designs',
+	description:
+		'Maps Overlay Shows to the variety of Skemas and Designs. If a Setup does not have a corresponding Design/Skema, it should be left out of this table.',
 	type: ConfigManifestEntryType.TABLE,
 	required: false,
 	defaultVal: [],

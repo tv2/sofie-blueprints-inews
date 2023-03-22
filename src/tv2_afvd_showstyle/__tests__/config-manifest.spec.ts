@@ -17,7 +17,8 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	SelectedGfxSetupName: '',
 	GfxSetups: [],
 	GfxSchemaTemplates: [],
-	GfxShowMapping: []
+	GfxShowMapping: [],
+	GfxDefaults: [{ GfxSetup: '', DefaultSchema: [''], DefaultDesign: [''] }]
 }
 
 describe('Config Manifest', () => {
