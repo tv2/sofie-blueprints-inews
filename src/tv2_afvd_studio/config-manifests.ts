@@ -525,6 +525,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 2000
 	},
 	{
+		id: 'VizPilotGraphics.CleanFeedPrerollDuration',
+		name: 'Fullscreen Pilot Preroll Duration for Clean Feed',
+		description: 'ms of preroll before showing Pilot elements on the Clean Feed',
+		type: ConfigManifestEntryType.INT,
+		required: false,
+		defaultVal: 320
+	},
+	{
 		id: 'PreventOverlayWithFull',
 		name: 'Prevent Overlay with Full',
 		description: 'Stop overlay elements from showing when a Full graphic is on-air',

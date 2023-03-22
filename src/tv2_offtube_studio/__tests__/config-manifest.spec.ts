@@ -68,7 +68,8 @@ const blankStudioConfig: OfftubeStudioConfig = {
 		PrerollDuration: 1000,
 		OutTransitionDuration: 1000,
 		CutToMediaPlayer: 1000,
-		FullGraphicBackground: 0
+		FullGraphicBackground: 0,
+		CleanFeedPrerollDuration: 320
 	},
 	HTMLGraphics: {
 		GraphicURL: '',

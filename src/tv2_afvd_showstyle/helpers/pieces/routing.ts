@@ -46,7 +46,7 @@ export function EvaluateCueRouting(
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
 				context.videoSwitcher.getAuxTimelineObject({
 					priority: 100,
-					layer: SwitcherAuxLLayer.AuxVizOvlIn1,
+					layer: SwitcherAuxLLayer.VIZ_OVL_IN_1,
 					content: {
 						input: sourceInfo.port
 					}

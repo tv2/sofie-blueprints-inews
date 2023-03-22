@@ -93,7 +93,7 @@ const kamPieceInstance: IBlueprintPieceInstance<PieceMetaData> = {
 					enable: {
 						start: 0
 					},
-					layer: prefixLayer(SwitcherMixEffectLLayer.Clean),
+					layer: prefixLayer(SwitcherMixEffectLLayer.CLEAN),
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
@@ -397,7 +397,7 @@ function validateNextPartExistsWithPreviousPartKeepaliveDuration(
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 		(obj) =>
-			obj.layer === prefixLayer(SwitcherMixEffectLLayer.Clean) &&
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.CLEAN) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME | undefined

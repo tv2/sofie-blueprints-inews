@@ -158,7 +158,7 @@ export class Atem extends VideoSwitcherBase {
 	public getDveTimelineObjects(props: DveProps): TSR.TSRTimelineObj[] {
 		return [
 			literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
-				...this.getBaseProperties(props, SwitcherDveLLayer.DveBoxes),
+				...this.getBaseProperties(props, SwitcherDveLLayer.DVE_BOXES),
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRC,
@@ -166,7 +166,7 @@ export class Atem extends VideoSwitcherBase {
 				}
 			}),
 			literal<TSR.TimelineObjAtemSsrcProps>({
-				...this.getBaseProperties(props, SwitcherDveLLayer.Dve),
+				...this.getBaseProperties(props, SwitcherDveLLayer.DVE),
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,

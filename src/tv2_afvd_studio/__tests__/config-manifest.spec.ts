@@ -72,7 +72,8 @@ const blankStudioConfig: StudioConfig = {
 		PrerollDuration: 1000,
 		OutTransitionDuration: 1000,
 		CutToMediaPlayer: 1000,
-		FullGraphicBackground: 36
+		FullGraphicBackground: 36,
+		CleanFeedPrerollDuration: 320
 	},
 	HTMLGraphics: {
 		GraphicURL: '',

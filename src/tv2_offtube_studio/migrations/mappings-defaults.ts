@@ -18,7 +18,7 @@ const MAPPINGS_ABSTRACT: BlueprintMappings = {
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[AbstractLLayer.ServerEnablePending]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.SERVER_ENABLE_PENDING]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
@@ -33,12 +33,12 @@ const MAPPINGS_ABSTRACT: BlueprintMappings = {
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[AbstractLLayer.IdentMarker]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.IDENT_MARKER]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[AbstractLLayer.AudioBedBaseline]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.AUDIO_BED_BASELINE]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
@@ -447,21 +447,21 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 }
 
 const MAPPINGS_ATEM: Record<string, TSR.MappingAtem & BlueprintMapping> = prefixLayers(ATEM_LAYER_PREFIX, {
-	[SwitcherMixEffectLLayer.Clean]: {
+	[SwitcherMixEffectLLayer.CLEAN]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 1 // 1 = ME2
 	},
-	[SwitcherMixEffectLLayer.Program]: {
+	[SwitcherMixEffectLLayer.PROGRAM]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
 	},
-	[SwitcherMixEffectLLayer.Next]: {
+	[SwitcherMixEffectLLayer.NEXT]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
@@ -469,7 +469,7 @@ const MAPPINGS_ATEM: Record<string, TSR.MappingAtem & BlueprintMapping> = prefix
 		index: 0, // 0 = ME1
 		lookaheadDepth: 1
 	},
-	[SwitcherMixEffectLLayer.NextJingle]: {
+	[SwitcherMixEffectLLayer.NEXT_JINGLE]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.PRELOAD,
@@ -477,28 +477,28 @@ const MAPPINGS_ATEM: Record<string, TSR.MappingAtem & BlueprintMapping> = prefix
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
 	},
-	[SwitcherAuxLLayer.AuxClean]: {
+	[SwitcherAuxLLayer.CLEAN]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 0 // 0 = out 1
 	},
-	[SwitcherAuxLLayer.AuxScreen]: {
+	[SwitcherAuxLLayer.SCREEN]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 1 // 1 = out 2
 	},
-	[SwitcherAuxLLayer.AuxServerLookahead]: {
+	[SwitcherAuxLLayer.SERVER_LOOKAHEAD]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 2 // 2 = out 3
 	},
-	[SwitcherDveLLayer.Dve]: {
+	[SwitcherDveLLayer.DVE]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
@@ -506,7 +506,7 @@ const MAPPINGS_ATEM: Record<string, TSR.MappingAtem & BlueprintMapping> = prefix
 		mappingType: TSR.MappingAtemType.SuperSourceProperties,
 		index: 0 // 0 = SS
 	},
-	[SwitcherDveLLayer.DveBoxes]: {
+	[SwitcherDveLLayer.DVE_BOXES]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,

@@ -183,38 +183,39 @@ export enum SharedGraphicLLayer {
 }
 
 export enum AbstractLLayer {
-	ServerEnablePending = 'server_enable_pending',
+	SERVER_ENABLE_PENDING = 'server_enable_pending',
 	/* Exists to give the Ident UI marker a timeline object so that it gets the startedPlayback callback */
-	IdentMarker = 'ident_marker',
-	AudioBedBaseline = 'audio_bed_baseline'
+	IDENT_MARKER = 'ident_marker',
+	AUDIO_BED_BASELINE = 'audio_bed_baseline'
 }
 
 export enum SwitcherMixEffectLLayer {
-	Program = 'me_program',
-	Clean = 'me_clean',
-	CleanUSKEffect = 'clean_usk_effect',
-	Next = 'me_next',
-	NextJingle = 'me_next_jingle'
+	PROGRAM = 'me_program',
+	CLEAN = 'me_clean',
+	CLEAN_USK_FULL = 'clean_usk_full',
+	CLEAN_USK_EFFECT = 'clean_usk_effect',
+	NEXT = 'me_next',
+	NEXT_JINGLE = 'me_next_jingle'
 }
 
 export enum SwitcherAuxLLayer {
-	AuxProgram = 'aux_pgm',
-	AuxClean = 'aux_clean',
-	AuxMixEffect3 = 'aux_mix_effect_3', // AUX set by Sofie, but the M/E is uncontrolled by Sofie
-	AuxWall = 'aux_wall',
-	AuxAR = 'aux_ar',
-	AuxVizOvlIn1 = 'aux_viz_ovl_in_1',
-	AuxVenue = 'aux_venue',
-	AuxLookahead = 'aux_lookahead',
-	AuxDve = 'aux_dve',
-	AuxVideoMixMinus = 'aux_video_mix_minus',
-	AuxScreen = 'aux_screen',
-	AuxServerLookahead = 'aux_server_lookahead'
+	PROGRAM = 'aux_pgm',
+	CLEAN = 'aux_clean',
+	MIX_EFFECT_3 = 'aux_mix_effect_3', // AUX set by Sofie, but the M/E is uncontrolled by Sofie
+	WALL = 'aux_wall',
+	AR = 'aux_ar',
+	VIZ_OVL_IN_1 = 'aux_viz_ovl_in_1',
+	VENUE = 'aux_venue',
+	LOOKAHEAD = 'aux_lookahead',
+	DVE = 'aux_dve',
+	VIDEO_MIX_MINUS = 'aux_video_mix_minus',
+	SCREEN = 'aux_screen',
+	SERVER_LOOKAHEAD = 'aux_server_lookahead'
 }
 
 export enum SwitcherDveLLayer {
-	Dve = 'dve',
-	DveBoxes = 'dve_boxes'
+	DVE = 'dve',
+	DVE_BOXES = 'dve_boxes'
 }
 
 export type SwitcherDskLLayer = `dsk_${number}`

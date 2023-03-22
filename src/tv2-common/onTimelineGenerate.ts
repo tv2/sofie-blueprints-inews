@@ -190,7 +190,7 @@ function processServerLookaheads(
 			return true
 		}
 
-		if (obj.layer === AbstractLLayer.ServerEnablePending && obj.isLookahead) {
+		if (obj.layer === AbstractLLayer.SERVER_ENABLE_PENDING && obj.isLookahead) {
 			return false
 		}
 

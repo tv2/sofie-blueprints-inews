@@ -74,6 +74,23 @@ export function getDskOnAirTimelineObjects(
 						}
 					})
 			  ]
+			: []),
+		...(dskRole === DskRole.FULLGFX && context.uniformConfig.switcherLLayers.fullUskMixEffect
+			? [
+					context.videoSwitcher.getMixEffectTimelineObject({
+						enable: { start: context.config.studio.VizPilotGraphics.CleanFeedPrerollDuration },
+						priority: 1,
+						layer: context.uniformConfig.switcherLLayers.fullUskMixEffect,
+						content: {
+							keyers: [
+								{
+									onAir: true,
+									config: dskConf
+								}
+							]
+						}
+					})
+			  ]
 			: [])
 	]
 }

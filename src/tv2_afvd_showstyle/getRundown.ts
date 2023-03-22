@@ -16,6 +16,7 @@ import {
 	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateLYDBaseline,
+	findDskFullGfx,
 	findDskJingle,
 	getGraphicBaseline,
 	getMixMinusTimelineObject,
@@ -208,7 +209,7 @@ class GlobalAdLibPiecesGenerator {
 					this.context.videoSwitcher.getAuxTimelineObject({
 						enable: { while: '1' },
 						priority: 1,
-						layer: SwitcherAuxLLayer.AuxAR,
+						layer: SwitcherAuxLLayer.AR,
 						content: {
 							input: info.port
 						}
@@ -233,7 +234,7 @@ class GlobalAdLibPiecesGenerator {
 					this.context.videoSwitcher.getAuxTimelineObject({
 						enable: { while: '1' },
 						priority: 1,
-						layer: SwitcherAuxLLayer.AuxVizOvlIn1,
+						layer: SwitcherAuxLLayer.VIZ_OVL_IN_1,
 						content: {
 							input: info.port
 						}
@@ -306,7 +307,7 @@ class GlobalAdLibPiecesGenerator {
 					this.context.videoSwitcher.getAuxTimelineObject({
 						enable: { while: '1' },
 						priority: 1,
-						layer: SwitcherAuxLLayer.AuxAR,
+						layer: SwitcherAuxLLayer.AR,
 						content: {
 							input: info.port
 						}
@@ -501,7 +502,8 @@ class GlobalAdLibPiecesGenerator {
 }
 
 function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): BlueprintResultBaseline {
-	const jingleDSK = findDskJingle(context.config)
+	const jingleDsk = findDskJingle(context.config)
+	const fullGfxDsk = findDskFullGfx(context.config)
 
 	return {
 		timelineObjects: _.compact([
@@ -511,7 +513,7 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 
 			context.videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxLookahead,
+				layer: SwitcherAuxLLayer.LOOKAHEAD,
 				content: {
 					input: context.config.studio.SwitcherSource.Default
 				}
@@ -520,7 +522,7 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 				? [
 						context.videoSwitcher.getAuxTimelineObject({
 							enable: { while: '1' },
-							layer: SwitcherAuxLLayer.AuxMixEffect3,
+							layer: SwitcherAuxLLayer.MIX_EFFECT_3,
 							content: {
 								input: SpecialInput.ME3_PROGRAM
 							}
@@ -529,7 +531,7 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 				: [
 						context.videoSwitcher.getAuxTimelineObject({
 							enable: { while: '1' },
-							layer: SwitcherAuxLLayer.AuxDve,
+							layer: SwitcherAuxLLayer.DVE,
 							content: {
 								input: SpecialInput.DVE
 							}
@@ -537,7 +539,7 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 				  ]),
 			context.videoSwitcher.getAuxTimelineObject({
 				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
+				layer: SwitcherAuxLLayer.VIDEO_MIX_MINUS,
 				content: {
 					input: context.uniformConfig.mixEffects.program.input
 				}
@@ -573,7 +575,21 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 							keyers: [
 								{
 									onAir: false,
-									config: jingleDSK
+									config: jingleDsk
+								}
+							]
+						}
+				  })
+				: undefined,
+			context.uniformConfig.switcherLLayers.fullUskMixEffect
+				? context.videoSwitcher.getMixEffectTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.switcherLLayers.fullUskMixEffect,
+						content: {
+							keyers: [
+								{
+									onAir: false,
+									config: fullGfxDsk
 								}
 							]
 						}

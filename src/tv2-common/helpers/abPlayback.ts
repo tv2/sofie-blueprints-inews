@@ -313,7 +313,7 @@ function updateObjectsToMediaPlayer<
 				// context.notifyUserWarning(obj)
 			}
 		} else if (obj.content.deviceType === TSR.DeviceType.ABSTRACT) {
-			if (obj.layer === AbstractLLayer.ServerEnablePending) {
+			if (obj.layer === AbstractLLayer.SERVER_ENABLE_PENDING) {
 				obj.layer = AbstractLLayerServerEnable(playerId)
 			}
 		} else {

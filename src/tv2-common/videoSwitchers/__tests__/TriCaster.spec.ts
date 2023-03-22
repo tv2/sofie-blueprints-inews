@@ -32,7 +32,7 @@ function createTestee(mocks?: {
 describe('TriCaster', () => {
 	describe('Mix Effect', () => {
 		const DEFAULT_ME: MixEffectProps = {
-			layer: SwitcherMixEffectLLayer.Program,
+			layer: SwitcherMixEffectLLayer.PROGRAM,
 			content: {
 				input: 5
 			}
@@ -77,7 +77,7 @@ describe('TriCaster', () => {
 			const testee: TriCaster = createTestee()
 			const timelineObject = testee.getMixEffectTimelineObject(DEFAULT_ME)
 			expect(timelineObject).toMatchObject({
-				layer: prefixLayer(SwitcherMixEffectLLayer.Program)
+				layer: prefixLayer(SwitcherMixEffectLLayer.PROGRAM)
 			})
 		})
 
@@ -96,7 +96,7 @@ describe('TriCaster', () => {
 		test('sets previewInput', () => {
 			const testee: TriCaster = createTestee()
 			const timelineObject = testee.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					previewInput: 5
 				}
@@ -113,7 +113,7 @@ describe('TriCaster', () => {
 		test('supports MIX', () => {
 			const testee: TriCaster = createTestee()
 			const timelineObject = testee.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.MIX,
@@ -136,7 +136,7 @@ describe('TriCaster', () => {
 		test('supports WIPE', () => {
 			const testee: TriCaster = createTestee()
 			const timelineObject = testee.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 3,
 					transition: TransitionStyle.WIPE,
@@ -168,7 +168,7 @@ describe('TriCaster', () => {
 			} as any as TV2StudioConfigBase)
 			const testee: TriCaster = createTestee({ config: instance(config) })
 			const timelineObject = testee.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.WIPE_FOR_GFX
@@ -190,7 +190,7 @@ describe('TriCaster', () => {
 		test('supports DIP', () => {
 			const testee: TriCaster = createTestee()
 			const timelineObject = testee.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					input: 5,
 					transition: TransitionStyle.DIP,
@@ -213,7 +213,7 @@ describe('TriCaster', () => {
 		test('supports keyers', () => {
 			const testee: TriCaster = createTestee()
 			const timelineObject = testee.getMixEffectTimelineObject({
-				layer: SwitcherMixEffectLLayer.Program,
+				layer: SwitcherMixEffectLLayer.PROGRAM,
 				content: {
 					keyers: [
 						{
@@ -248,7 +248,7 @@ describe('TriCaster', () => {
 
 	describe('Aux', () => {
 		const DEFAULT_AUX: AuxProps = {
-			layer: SwitcherAuxLLayer.AuxClean,
+			layer: SwitcherAuxLLayer.CLEAN,
 			content: {
 				input: 5
 			}
@@ -293,7 +293,7 @@ describe('TriCaster', () => {
 			const testee: TriCaster = createTestee()
 			const timelineObject = testee.getAuxTimelineObject(DEFAULT_AUX)
 			expect(timelineObject).toMatchObject({
-				layer: prefixLayer(SwitcherAuxLLayer.AuxClean)
+				layer: prefixLayer(SwitcherAuxLLayer.CLEAN)
 			})
 		})
 
@@ -356,14 +356,14 @@ describe('TriCaster', () => {
 			const context = mock<IStudioContext>()
 			when(context.getStudioMappings).thenReturn(() => {
 				return {
-					[prefixLayer(SwitcherAuxLLayer.AuxClean)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+					[prefixLayer(SwitcherAuxLLayer.CLEAN)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
 						device: TSR.DeviceType.TRICASTER,
 						deviceId: TRICASTER_DEVICE_ID,
 						lookahead: LookaheadMode.WHEN_CLEAR,
 						mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
 						name: 'mix5'
 					}),
-					[prefixLayer(SwitcherAuxLLayer.AuxVideoMixMinus)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
+					[prefixLayer(SwitcherAuxLLayer.VIDEO_MIX_MINUS)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
 						device: TSR.DeviceType.TRICASTER,
 						deviceId: TRICASTER_DEVICE_ID,
 						lookahead: LookaheadMode.WHEN_CLEAR,
@@ -375,14 +375,14 @@ describe('TriCaster', () => {
 
 			const uniformConfig = mock<UniformConfig>()
 			when(uniformConfig.specialInputAuxLLayers).thenReturn({
-				[SpecialInput.ME1_PROGRAM]: SwitcherAuxLLayer.AuxProgram,
-				[SpecialInput.ME3_PROGRAM]: SwitcherAuxLLayer.AuxClean
+				[SpecialInput.ME1_PROGRAM]: SwitcherAuxLLayer.PROGRAM,
+				[SpecialInput.ME3_PROGRAM]: SwitcherAuxLLayer.CLEAN
 			})
 
 			const testee = createTestee({ context: instance(context), uniformConfig: instance(uniformConfig) })
 
 			const timelineObject = testee.getAuxTimelineObject({
-				layer: SwitcherAuxLLayer.AuxVideoMixMinus,
+				layer: SwitcherAuxLLayer.VIDEO_MIX_MINUS,
 				content: {
 					input: SpecialInput.ME3_PROGRAM
 				}
@@ -590,7 +590,7 @@ describe('TriCaster', () => {
 			const result: TSR.TSRTimelineObj[] = testee.getDveTimelineObjects(getBasicDveProps())
 
 			expect(result).toHaveLength(1)
-			expect(result[0].layer).toBe(prefixLayer(SwitcherDveLLayer.DveBoxes))
+			expect(result[0].layer).toBe(prefixLayer(SwitcherDveLLayer.DVE_BOXES))
 		})
 
 		// TODO: Replace with interface

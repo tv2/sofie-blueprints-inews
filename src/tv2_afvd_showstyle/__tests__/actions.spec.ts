@@ -139,7 +139,7 @@ const kamPieceInstance_Cut: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
+					layer: prefixLayer(SwitcherMixEffectLLayer.PROGRAM),
 					enable: {
 						start: 0
 					},
@@ -175,7 +175,7 @@ const kamPieceInstance_Mix: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
+					layer: prefixLayer(SwitcherMixEffectLLayer.PROGRAM),
 					enable: {
 						start: 0
 					},
@@ -216,7 +216,7 @@ const kamPieceInstance_Effekt: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
+					layer: prefixLayer(SwitcherMixEffectLLayer.PROGRAM),
 					enable: {
 						start: 0
 					},
@@ -273,7 +273,7 @@ const evsPieceInstance_Cut: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
+					layer: prefixLayer(SwitcherMixEffectLLayer.PROGRAM),
 					enable: {
 						start: 0
 					},
@@ -309,7 +309,7 @@ const evsPieceInstance_Mix: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
+					layer: prefixLayer(SwitcherMixEffectLLayer.PROGRAM),
 					enable: {
 						start: 0
 					},
@@ -350,7 +350,7 @@ const evsPieceInstance_Effekt: IBlueprintPieceInstance = {
 			timelineObjects: [
 				literal<TSR.TimelineObjAtemME>({
 					id: '',
-					layer: prefixLayer(SwitcherMixEffectLLayer.Program),
+					layer: prefixLayer(SwitcherMixEffectLLayer.PROGRAM),
 					enable: {
 						start: 0
 					},
@@ -408,7 +408,7 @@ async function getTransitionPiece(
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 		(obj) =>
-			obj.layer === prefixLayer(SwitcherMixEffectLLayer.Program) &&
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.PROGRAM) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME | undefined
