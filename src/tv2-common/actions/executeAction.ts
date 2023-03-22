@@ -727,6 +727,7 @@ async function executeActionSelectDVELayout<
 	if (
 		!nextPart ||
 		!nextDVE ||
+		!nextDVE.dynamicallyInserted ||
 		!meta ||
 		nextPart.segmentId !== (await context.core.getPartInstance('current'))?.segmentId
 	) {
