@@ -1,5 +1,12 @@
 import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import { GetSisyfosTimelineObjForServer, literal, PartDefinition, ShowStyleContext, TransitionStyle } from 'tv2-common'
+import {
+	GetSisyfosTimelineObjForServer,
+	literal,
+	PartDefinition,
+	ShowStyleContext,
+	SpecialInput,
+	TransitionStyle
+} from 'tv2-common'
 import { AbstractLLayer, GetEnableClassForServer } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
@@ -107,7 +114,7 @@ function GetServerTimeline(
 					context.videoSwitcher.getAuxTimelineObject({
 						layer: context.uniformConfig.switcherLLayers.nextServerAux,
 						content: {
-							input: -1
+							input: SpecialInput.AB_PLACEHOLDER
 						},
 						metaData: {
 							mediaPlayerSession: contentProps.mediaPlayerSession
@@ -131,7 +138,7 @@ export function CutToServer(
 			},
 			priority: 1,
 			content: {
-				input: -1,
+				input: SpecialInput.AB_PLACEHOLDER,
 				transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
 				transitionDuration: partDefinition.transition?.duration
 			},
