@@ -599,7 +599,7 @@ describe('TriCaster', () => {
 				content: {
 					boxes: boxes ?? [{ enabled: false }, { enabled: false }, { enabled: false }, { enabled: false }],
 					template: {},
-					artFillSource: 0,
+					artFillSource: 5,
 					artCutSource: 0
 				}
 			}

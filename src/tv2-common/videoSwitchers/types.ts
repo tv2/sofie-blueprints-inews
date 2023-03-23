@@ -10,6 +10,7 @@ export enum SwitcherType {
 
 /** Using Atem values for compatibility */
 export enum SpecialInput {
+	BLACK = AtemSourceIndex.Blk,
 	ME1_PROGRAM = AtemSourceIndex.Prg1,
 	ME2_PROGRAM = AtemSourceIndex.Prg2,
 	ME3_PROGRAM = AtemSourceIndex.Prg3,

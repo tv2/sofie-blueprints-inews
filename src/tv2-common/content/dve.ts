@@ -30,7 +30,6 @@ import {
 } from 'tv2-common'
 import { ControlClasses, MEDIA_PLAYER_AUTO, SharedGraphicLLayer, SourceType } from 'tv2-constants'
 import * as _ from 'underscore'
-import { AtemSourceIndex } from '../../types/atem'
 import { ActionSelectDVE } from '../actions'
 import {
 	CreateHTMLRendererContent,
@@ -399,7 +398,7 @@ const setBoxSource = (
 
 const setBoxToBlack = (boxConfig: BoxConfig, boxSources: BoxSources) => {
 	setBoxSource(boxConfig, boxSources, {
-		port: AtemSourceIndex.Blk,
+		port: SpecialInput.BLACK,
 		sourceLayerType: SourceLayerType.UNKNOWN
 	})
 }
