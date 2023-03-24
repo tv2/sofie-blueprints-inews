@@ -39,13 +39,8 @@ export class GlobalAdlibActionsGenerator {
 		this.config.sources.cameras
 			.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 			.forEach((camera) => {
-				blueprintActions.push(this.makeCutCameraAction(camera, false, globalRank++))
-			})
-
-		this.config.sources.cameras
-			.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-			.forEach((camera) => {
-				blueprintActions.push(this.makeCutCameraAction(camera, true, globalRank++))
+				blueprintActions.push(this.makeCutDirectlyCameraAction(camera, globalRank++))
+				blueprintActions.push(this.makeQueueAsNextCameraAction(camera, globalRank++))
 			})
 
 		this.config.sources.cameras
@@ -93,11 +88,23 @@ export class GlobalAdlibActionsGenerator {
 		return blueprintActions
 	}
 
-	private makeCutCameraAction(info: SourceInfo, queue: boolean, rank: number): IBlueprintActionManifest {
-		const sourceDefinition = SourceInfoToSourceDefinition(info) as SourceDefinitionKam
+	private makeCutDirectlyCameraAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+		return this.makeCutCameraAction(cameraSourceInfo, true, rank)
+	}
+
+	private makeQueueAsNextCameraAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+		return this.makeCutCameraAction(cameraSourceInfo, false, rank)
+	}
+
+	private makeCutCameraAction(
+		cameraSourceInfo: SourceInfo,
+		cutDirectly: boolean,
+		rank: number
+	): IBlueprintActionManifest {
+		const sourceDefinition = SourceInfoToSourceDefinition(cameraSourceInfo) as SourceDefinitionKam
 		const userData: ActionCutToCamera = {
 			type: AdlibActionType.CUT_TO_CAMERA,
-			queue,
+			cutDirectly,
 			sourceDefinition
 		}
 		return {
@@ -111,7 +118,7 @@ export class GlobalAdlibActionsGenerator {
 				sourceLayerId: SourceLayer.PgmCam,
 				outputLayerId: SharedOutputLayer.PGM,
 				content: {},
-				tags: queue ? [AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT]
+				tags: cutDirectly ? [AdlibTags.ADLIB_CUT_DIRECT] : [AdlibTags.ADLIB_QUEUE_NEXT]
 			}
 		}
 	}

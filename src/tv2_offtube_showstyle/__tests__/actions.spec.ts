@@ -234,7 +234,7 @@ const commentatorSelectDVE = literal<ActionCommentatorSelectDVE>({
 const selectCameraAction = literal<ActionCutToCamera>({
 	type: AdlibActionType.CUT_TO_CAMERA,
 	sourceDefinition: SOURCE_DEFINITION_KAM_1,
-	queue: true
+	cutDirectly: false
 })
 
 const selectLiveAction = literal<ActionCutToRemote>({

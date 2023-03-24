@@ -1045,7 +1045,7 @@ async function executeActionCutToCamera<
 		}
 	}
 
-	await executePiece(context, settings, kamPiece, userData.queue, part)
+	await executePiece(context, settings, kamPiece, !userData.cutDirectly, part)
 }
 
 async function executePiece<
