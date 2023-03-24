@@ -1059,7 +1059,7 @@ async function executePiece<
 	partToQueue: IBlueprintPart
 ) {
 	const currentPieceInstances = await context.core.getPieceInstances('current')
-	const serverInCurrentPart = currentPieceInstances.some(
+	const isServerInCurrentPart = currentPieceInstances.some(
 		(p) => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
 	)
 
@@ -1068,7 +1068,7 @@ async function executePiece<
 		layersWithCutDirect.includes(p.piece.sourceLayerId)
 	)
 
-	if (shouldBeQueued || serverInCurrentPart) {
+	if (shouldBeQueued || isServerInCurrentPart) {
 		await context.core.queuePart(partToQueue, [
 			pieceToExecute,
 			...(settings.SelectedAdlibs
@@ -1076,7 +1076,7 @@ async function executePiece<
 				: [])
 		])
 
-		if (serverInCurrentPart && !shouldBeQueued) {
+		if (isServerInCurrentPart && !shouldBeQueued) {
 			await context.core.takeAfterExecuteAction(true)
 		}
 	} else if (currentPiece) {
