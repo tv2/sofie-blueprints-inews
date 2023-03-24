@@ -22,6 +22,7 @@ import { VideoSwitcherBase } from './VideoSwitcher'
 const MAX_REGULAR_INPUT_NUMBER = 1000 // everything >= is assumed a special input
 
 const SPECIAL_INPUT_MAP: Record<SpecialInput, TSR.TriCasterSourceName | TSR.TriCasterMixEffectName> = {
+	[SpecialInput.BLACK]: 'black',
 	[SpecialInput.ME1_PROGRAM]: 'v1',
 	[SpecialInput.ME2_PROGRAM]: 'v2',
 	[SpecialInput.ME3_PROGRAM]: 'v3',
@@ -327,10 +328,14 @@ export class TriCaster extends VideoSwitcherBase {
 		if (typeof input === 'undefined') {
 			return undefined
 		}
+		const specialSourceName = SPECIAL_INPUT_MAP[input]
+		if (specialSourceName) {
+			return specialSourceName
+		}
 		if (input < MAX_REGULAR_INPUT_NUMBER) {
 			return `input${input as number}`
 		}
-		return SPECIAL_INPUT_MAP[input] ?? 'black'
+		return 'black'
 	}
 
 	private getInputNameForMatrix(input: number | SpecialInput): TSR.TriCasterSourceName | TSR.TriCasterMixOutputName {
