@@ -1167,7 +1167,8 @@ async function executeActionCutToRemote<
 			? {
 					sisyfosLayers: sourceInfo.sisyfosLayers ?? [],
 					wantsToPersistAudio: sourceInfo.wantsToPersistAudio,
-					acceptPersistAudio: sourceInfo.acceptPersistAudio
+					acceptPersistAudio: sourceInfo.acceptPersistAudio,
+					isPieceInjectedInPart: userData.cutDirectly
 			  }
 			: { sisyfosLayers: [] }
 
