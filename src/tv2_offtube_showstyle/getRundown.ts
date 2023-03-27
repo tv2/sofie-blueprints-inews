@@ -234,14 +234,26 @@ function getGlobalAdlibActionsOfftube(
 
 	let globalRank = 2000
 
-	function makeCutCameraActions(info: SourceInfo, queue: boolean, rank: number) {
-		const sourceDefinition = SourceInfoToSourceDefinition(info) as SourceDefinitionKam
+	function makeCutDirectlyCameraAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+		return makeCutCameraAction(cameraSourceInfo, true, rank)
+	}
+
+	function makeQueueAsNextCameraAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+		return makeCutCameraAction(cameraSourceInfo, false, rank)
+	}
+
+	function makeCutCameraAction(
+		cameraSourceInfo: SourceInfo,
+		cutDirectly: boolean,
+		rank: number
+	): IBlueprintActionManifest {
+		const sourceDefinition = SourceInfoToSourceDefinition(cameraSourceInfo) as SourceDefinitionKam
 		const userData: ActionCutToCamera = {
 			type: AdlibActionType.CUT_TO_CAMERA,
-			queue,
+			cutDirectly,
 			sourceDefinition
 		}
-		blueprintActions.push({
+		return {
 			externalId: generateExternalId(context, userData),
 			actionId: AdlibActionType.CUT_TO_CAMERA,
 			userData,
@@ -252,17 +264,18 @@ function getGlobalAdlibActionsOfftube(
 				sourceLayerId: OfftubeSourceLayer.PgmCam,
 				outputLayerId: SharedOutputLayer.PGM,
 				content: {},
-				tags: queue ? [AdlibTags.OFFTUBE_SET_CAM_NEXT, AdlibTags.ADLIB_QUEUE_NEXT] : [AdlibTags.ADLIB_CUT_DIRECT],
+				tags: cutDirectly ? [AdlibTags.ADLIB_CUT_DIRECT] : [AdlibTags.OFFTUBE_SET_CAM_NEXT, AdlibTags.ADLIB_QUEUE_NEXT],
 				currentPieceTags: [GetTagForKam(sourceDefinition)],
 				nextPieceTags: [GetTagForKam(sourceDefinition)]
 			}
-		})
+		}
 	}
 
 	function makeRemoteAction(sourceInfo: SourceInfo, rank: number) {
 		const sourceDefinition = SourceInfoToSourceDefinition(sourceInfo) as SourceDefinitionRemote
 		const userData: ActionCutToRemote = {
 			type: AdlibActionType.CUT_TO_REMOTE,
+			cutDirectly: false,
 			sourceDefinition
 		}
 		blueprintActions.push({
@@ -482,14 +495,9 @@ function getGlobalAdlibActionsOfftube(
 
 	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach((o) => {
-			makeCutCameraActions(o, false, globalRank++)
-		})
-
-	config.sources.cameras
-		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach((o) => {
-			makeCutCameraActions(o, true, globalRank++)
+		.forEach((cameraSourceInfo) => {
+			blueprintActions.push(makeCutDirectlyCameraAction(cameraSourceInfo, globalRank++))
+			blueprintActions.push(makeQueueAsNextCameraAction(cameraSourceInfo, globalRank++))
 		})
 
 	config.sources.cameras
