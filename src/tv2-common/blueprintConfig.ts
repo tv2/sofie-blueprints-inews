@@ -166,7 +166,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	LYDConfig: TableConfigItemValue
 	GfxSchemaTemplates: TableConfigGfxSchema[]
 	GfxSetups: TableConfigGfxSetup[]
-	SelectedGfxSetupName: string
+	GfxDefaults: TableConfigItemGfxDefaults[]
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

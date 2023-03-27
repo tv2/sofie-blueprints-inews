@@ -7,7 +7,11 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue
 } from 'blueprints-integration'
-import { TableConfigItemGfxDesignTemplate, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
+import {
+	TableConfigItemGfxDefaults,
+	TableConfigItemGfxDesignTemplate,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'
 import { TableConfigItemGfxTemplateWithDesign } from './graphic-defaults'
@@ -169,6 +173,37 @@ export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 
 			context.setBaseConfig(from, (newGfxTemplates as unknown) as ConfigItemValue)
 			context.setBaseConfig(to, (designTemplates as unknown) as ConfigItemValue)
+		}
+	})
+}
+
+export function moveSelectedGfxSetupNameToGfxDefaults(
+	versionStr: string,
+	standaloneValue: string,
+	targetTable: string
+) {
+	return literal<MigrationStepShowStyle>({
+		id: `${versionStr}.moveStandaloneValueToTableValue.${standaloneValue}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const singleValue = (context.getBaseConfig(standaloneValue) as unknown) as string | undefined
+			const designatedTable = (context.getBaseConfig(targetTable) as unknown) as TableConfigItemGfxDefaults | undefined
+
+			if (!singleValue || !designatedTable) {
+				return false
+			}
+
+			return singleValue && !designatedTable.GfxSetup
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const singleValue = (context.getBaseConfig(standaloneValue) as unknown) as string
+			const designatedTable = (context.getBaseConfig(targetTable) as unknown) as TableConfigItemGfxDefaults
+
+			const table = designatedTable
+			table.GfxSetup = singleValue
+
+			context.setBaseConfig(targetTable, (table as unknown) as ConfigItemValue)
 		}
 	})
 }

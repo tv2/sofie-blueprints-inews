@@ -21,7 +21,6 @@ export interface BlueprintConfig extends BlueprintConfigBase {
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	SelectedGfxSetupName: string
 	GfxSetups: GalleryTableConfigGfxSetup[]
 	GfxShowMapping: TableConfigItemGfxShowMapping[]
 	GfxDefaults: TableConfigItemGfxDefaults[]

@@ -14,7 +14,6 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	CasparCGLoadingClip: '',
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	SelectedGfxSetupName: '',
 	GfxSetups: [],
 	GfxSchemaTemplates: [],
 	GfxShowMapping: [],

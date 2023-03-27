@@ -267,7 +267,6 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 			FadeOut: 0
 		}
 	],
-	SelectedGfxSetupName: 'SomeProfile',
 	GfxSetups: [DEFAULT_GFX_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
