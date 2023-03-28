@@ -268,31 +268,22 @@ export class Atem extends VideoSwitcherBase {
 				}
 		}
 	}
-	private getUpstreamKeyers(keyers: Keyer[]): TSR.TimelineObjAtemME['content']['me']['upstreamKeyers'] {
+	private getUpstreamKeyers(keyers: Keyer[]) {
 		if (!keyers?.length) {
 			return
 		}
-		const result: TSR.TimelineObjAtemME['content']['me']['upstreamKeyers'] = []
-		for (const keyer of keyers) {
-			result[keyer.config.Number] = {
-				upstreamKeyerId: keyer.config.Number,
-				onAir: keyer.onAir,
-				mixEffectKeyType: 0,
-				flyEnabled: false,
-				fillSource: keyer.config.Fill,
-				cutSource: keyer.config.Key,
-				maskEnabled: false,
-				lumaSettings: {
-					clip: keyer.config.Clip * 10, // input is percents (0-100), atem uses 1-000
-					gain: keyer.config.Gain * 10 // input is percents (0-100), atem uses 1-000
-				}
+		return keyers.map((keyer) => ({
+			upstreamKeyerId: keyer.config.Number,
+			onAir: keyer.onAir,
+			mixEffectKeyType: 0,
+			flyEnabled: false,
+			fillSource: keyer.config.Fill,
+			cutSource: keyer.config.Key,
+			maskEnabled: false,
+			lumaSettings: {
+				clip: keyer.config.Clip * 10, // input is percents (0-100), atem uses 1-000
+				gain: keyer.config.Gain * 10 // input is percents (0-100), atem uses 1-000
 			}
-		}
-		for (let i = 0; i < keyers.length; ++i) {
-			result[i] = result[i] ?? {
-				upstreamKeyerId: i
-			}
-		}
-		return result
+		}))
 	}
 }
