@@ -5,7 +5,7 @@ export enum CommonConfigId {
 	GRAPHICS_SETUPS_TABLE_ID = 'GfxSetups',
 	GRAPHICS_SETUPS_NAME_COLUMN_ID = 'Name',
 	GFX_DEFAULTS_TABLE_ID = 'GfxDefaults',
-	DEFAULTS_SELECTED_GFX_SETUP_NAME_COLUMN_ID = 'SelectedGfxSetupName',
+	DEFAULTS_SELECTED_GFX_SETUP_NAME_COLUMN_ID = 'DefaultSetupName',
 	DEFAULTS_SCHEMA_COLUMN_ID = 'DefaultSchema',
 	DEFAULTS_DESIGN_COLUMN_ID = 'DefaultDesign',
 	GFX_SHOW_MAPPING_TABLE_ID = 'GfxShowMapping',
@@ -48,7 +48,7 @@ export const getGfxSetupsEntries = (columns: ConfigManifestEntryTable['columns']
 	}
 ]
 
-const GFX_DEFAULT_VALUES: TableConfigItemGfxDefaults[] = [
+export const GFX_DEFAULT_VALUES: TableConfigItemGfxDefaults[] = [
 	{
 		GfxSetup: '',
 		DefaultSchema: [''],

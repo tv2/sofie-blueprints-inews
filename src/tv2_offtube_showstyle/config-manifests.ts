@@ -1,5 +1,5 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
-import { DEFAULT_GRAPHICS, getGfxSetupsEntries } from 'tv2-common'
+import { DEFAULT_GRAPHICS, getGfxDefaults, getGfxSetupsEntries } from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -583,5 +583,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		]
 	},
 	...gfxSchemaTemplates,
-	...getGfxSetupsEntries([])
+	...getGfxSetupsEntries([]),
+	getGfxDefaults
 ]

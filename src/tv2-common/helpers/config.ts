@@ -1,5 +1,5 @@
 import { ICommonContext } from 'blueprints-integration'
-import { TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase} from 'tv2-common'
+import { TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 
 export interface DVEConfigInput {
 	// _id: string

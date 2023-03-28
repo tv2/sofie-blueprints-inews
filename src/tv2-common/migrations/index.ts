@@ -1,3 +1,4 @@
+import { BasicConfigItemValue, IBlueprintShowStyleVariant } from '@sofie-automation/blueprints-integration'
 import {
 	BlueprintMappings,
 	ConfigItemValue,
@@ -7,11 +8,7 @@ import {
 	MigrationStepStudio,
 	TableConfigItemValue
 } from 'blueprints-integration'
-import {
-	TableConfigItemGfxDefaults,
-	TableConfigItemGfxDesignTemplate,
-	TableConfigItemSourceMappingWithSisyfos
-} from 'tv2-common'
+import { TableConfigItemGfxDesignTemplate, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
 import _ = require('underscore')
 import { literal } from '../util'
 import { TableConfigItemGfxTemplateWithDesign } from './graphic-defaults'
@@ -177,33 +174,68 @@ export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 	})
 }
 
-export function moveSelectedGfxSetupNameToGfxDefaults(
+export function moveSelectedGfxSetupNameToGfxDefaults(versionStr: string, fromValue: string, targetTable: string) {
+	return literal<MigrationStepShowStyle>({
+		id: `${versionStr}.moveSelectedGfxSetupName.${fromValue}.ToTable.${targetTable}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const singleValue = (context.getBaseConfig(fromValue) as unknown) as string
+			const designatedTable = (context.getBaseConfig(targetTable) as unknown) as TableConfigItemValue | undefined
+
+			if (!singleValue || !Array.isArray(designatedTable)) {
+				return false
+			}
+
+			return singleValue
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const singleValue = context.getBaseConfig(fromValue) as BasicConfigItemValue
+			const designatedTable = (context.getBaseConfig(targetTable) as unknown) as TableConfigItemValue
+			const setupName = 'DefaultSetupName'
+
+			designatedTable[0][setupName] = singleValue
+
+			context.setBaseConfig(targetTable, (designatedTable as unknown) as ConfigItemValue)
+			context.removeBaseConfig(fromValue)
+		}
+	})
+}
+
+export function moveSelectedGfxSetupNameToGfxDefaultsInVariants(
 	versionStr: string,
 	standaloneValue: string,
 	targetTable: string
 ) {
 	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.moveStandaloneValueToTableValue.${standaloneValue}`,
+		id: `${versionStr}.moveSelectedGfxSetupNameToGfxDefaultsInVariants.${standaloneValue}.ToTable.${targetTable}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const singleValue = (context.getBaseConfig(standaloneValue) as unknown) as string | undefined
-			const designatedTable = (context.getBaseConfig(targetTable) as unknown) as TableConfigItemGfxDefaults | undefined
+			const allVariants = context.getAllVariants()
+			const checkVariants = allVariants.some((variant: IBlueprintShowStyleVariant) => {
+				return context.getVariantConfig(variant._id, targetTable) as TableConfigItemValue
+			})
 
-			if (!singleValue || !designatedTable) {
-				return false
-			}
-
-			return singleValue && !designatedTable.GfxSetup
+			return checkVariants
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const singleValue = (context.getBaseConfig(standaloneValue) as unknown) as string
-			const designatedTable = (context.getBaseConfig(targetTable) as unknown) as TableConfigItemGfxDefaults
+			const allVariants = context.getAllVariants()
+			allVariants.forEach((variant: IBlueprintShowStyleVariant) => {
+				const singleValue = context.getVariantConfig(variant._id, standaloneValue) as BasicConfigItemValue
+				let designatedTable = context.getVariantConfig(variant._id, targetTable) as TableConfigItemValue
+				const setupName = 'DefaultSetupName'
 
-			const table = designatedTable
-			table.GfxSetup = singleValue
+				if (designatedTable === undefined) {
+					designatedTable = [{ ['']: singleValue, _id: '' }]
+				}
 
-			context.setBaseConfig(targetTable, (table as unknown) as ConfigItemValue)
+				designatedTable[0][setupName] = singleValue
+				const updatedVariant = variant
+
+				updatedVariant.blueprintConfig[targetTable] = designatedTable
+				context.updateVariant(variant._id, updatedVariant)
+			})
 		}
 	})
 }

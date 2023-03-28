@@ -272,7 +272,7 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	ShowstyleTransition: 'CUT',
 	GfxSchemaTemplates: [],
 	GfxShowMapping: [],
-	GfxDefaults: []
+	GfxDefaults: [{ GfxSetup: 'SomeProfile', DefaultDesign: [], DefaultSchema: [] }]
 }
 
 export const EMPTY_SOURCE_CONFIG = {
