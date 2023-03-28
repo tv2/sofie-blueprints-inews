@@ -10,6 +10,9 @@ export enum SwitcherType {
 
 /** Using Atem values for compatibility */
 export enum SpecialInput {
+	/** AB input awaiting assignment in onTimelineGenerate */
+	AB_PLACEHOLDER = -1,
+
 	BLACK = AtemSourceIndex.Blk,
 	ME1_PROGRAM = AtemSourceIndex.Prg1,
 	ME2_PROGRAM = AtemSourceIndex.Prg2,
@@ -36,8 +39,6 @@ export enum TemporalPriority {
 	DEFAULT = 0, // the default (does not have to be explicitly set)
 	DVE = 1 // to place DVE commands afer regular M/E and AUX commands (ATEM integration does that by default)
 }
-
-export enum SwitcherLLayer {}
 
 export const TIMELINE_OBJECT_DEFAULTS = {
 	id: '',
