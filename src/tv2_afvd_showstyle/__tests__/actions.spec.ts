@@ -822,7 +822,7 @@ describe('Camera shortcuts on server', () => {
 			AdlibActionType.CUT_TO_CAMERA,
 			literal<ActionCutToCamera>({
 				type: AdlibActionType.CUT_TO_CAMERA,
-				queue: false,
+				cutDirectly: true,
 				sourceDefinition: SOURCE_DEFINITION_KAM_1
 			})
 		)
@@ -865,7 +865,7 @@ describe('Camera shortcuts on server', () => {
 			AdlibActionType.CUT_TO_CAMERA,
 			literal<ActionCutToCamera>({
 				type: AdlibActionType.CUT_TO_CAMERA,
-				queue: true,
+				cutDirectly: false,
 				sourceDefinition: SOURCE_DEFINITION_KAM_1
 			})
 		)
@@ -910,7 +910,7 @@ describe('Camera shortcuts on VO', () => {
 			AdlibActionType.CUT_TO_CAMERA,
 			literal<ActionCutToCamera>({
 				type: AdlibActionType.CUT_TO_CAMERA,
-				queue: false,
+				cutDirectly: true,
 				sourceDefinition: SOURCE_DEFINITION_KAM_1
 			})
 		)
@@ -953,7 +953,7 @@ describe('Camera shortcuts on VO', () => {
 			AdlibActionType.CUT_TO_CAMERA,
 			literal<ActionCutToCamera>({
 				type: AdlibActionType.CUT_TO_CAMERA,
-				queue: true,
+				cutDirectly: false,
 				sourceDefinition: SOURCE_DEFINITION_KAM_1
 			})
 		)

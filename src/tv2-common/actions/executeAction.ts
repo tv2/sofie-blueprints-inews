@@ -1008,14 +1008,6 @@ async function executeActionCutToCamera<
 		return
 	}
 
-	const currentPieceInstances = await context.core.getPieceInstances('current')
-
-	const serverInCurrentPart = currentPieceInstances.some(
-		(p) => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
-	)
-
-	const currentKam = currentPieceInstances.find((p) => p.piece.sourceLayerId === settings.SourceLayers.Cam)
-
 	const camSisyfos = GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, false)
 
 	const kamPiece: IBlueprintPiece<PieceMetaData> = {
@@ -1047,34 +1039,57 @@ async function executeActionCutToCamera<
 		}
 	}
 
-	if (userData.queue || serverInCurrentPart) {
-		await context.core.queuePart(part, [
-			kamPiece,
+	await executePiece(context, settings, kamPiece, !userData.cutDirectly, part)
+}
+
+async function executePiece<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ActionExecutionContext<ShowStyleConfig>,
+	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	pieceToExecute: IBlueprintPiece<PieceMetaData>,
+	shouldBeQueued: boolean,
+	partToQueue: IBlueprintPart
+) {
+	const currentPieceInstances = await context.core.getPieceInstances('current')
+	const isServerInCurrentPart = currentPieceInstances.some(
+		(p) => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
+	)
+
+	const layersWithCutDirect: string[] = [settings.SourceLayers.Live, settings.SourceLayers.Cam]
+	const currentPiece: IBlueprintPieceInstance<PieceMetaData> | undefined = currentPieceInstances.find((p) =>
+		layersWithCutDirect.includes(p.piece.sourceLayerId)
+	)
+
+	if (shouldBeQueued || isServerInCurrentPart) {
+		await context.core.queuePart(partToQueue, [
+			pieceToExecute,
 			...(settings.SelectedAdlibs
 				? await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [])
 				: [])
 		])
 
-		if (serverInCurrentPart && !userData.queue) {
+		if (isServerInCurrentPart && !shouldBeQueued) {
 			await context.core.takeAfterExecuteAction(true)
 		}
-	} else if (currentKam) {
-		kamPiece.externalId = currentKam.piece.externalId
-		kamPiece.enable = currentKam.piece.enable
-		const currentMetaData = currentKam.piece.metaData!
-		const metaData = kamPiece.metaData!
+	} else if (currentPiece) {
+		pieceToExecute.externalId = currentPiece.piece.externalId
+		pieceToExecute.enable = currentPiece.piece.enable
+		const currentMetaData = currentPiece.piece.metaData!
+		const metaData = pieceToExecute.metaData!
 		metaData.sisyfosPersistMetaData!.previousPersistMetaDataForCurrentPiece = currentMetaData.sisyfosPersistMetaData
 
 		await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
 
-		await context.core.updatePieceInstance(currentKam._id, kamPiece)
+		await context.core.updatePieceInstance(currentPiece._id, pieceToExecute)
 	} else {
 		const currentExternalId = await context.core
 			.getPartInstance('current')
 			.then((currentPartInstance) => currentPartInstance?.part.externalId)
 
 		if (currentExternalId) {
-			kamPiece.externalId = currentExternalId
+			pieceToExecute.externalId = currentExternalId
 		}
 
 		await context.core.stopPiecesOnLayers([
@@ -1089,8 +1104,8 @@ async function executeActionCutToCamera<
 		])
 		await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
 
-		kamPiece.enable = { start: 'now' }
-		await context.core.insertPiece('current', kamPiece)
+		pieceToExecute.enable = { start: 'now' }
+		await context.core.insertPiece('current', pieceToExecute)
 	}
 }
 
@@ -1146,7 +1161,8 @@ async function executeActionCutToRemote<
 			? {
 					sisyfosLayers: sourceInfo.sisyfosLayers ?? [],
 					wantsToPersistAudio: sourceInfo.wantsToPersistAudio,
-					acceptPersistAudio: sourceInfo.acceptPersistAudio
+					acceptPersistAudio: sourceInfo.acceptPersistAudio,
+					isPieceInjectedInPart: userData.cutDirectly
 			  }
 			: { sisyfosLayers: [] }
 
@@ -1180,12 +1196,7 @@ async function executeActionCutToRemote<
 		}
 	}
 
-	await context.core.queuePart(part, [
-		remotePiece,
-		...(settings.SelectedAdlibs
-			? await getPiecesToPreserve(context, settings.SelectedAdlibs.SELECTED_ADLIB_LAYERS, [])
-			: [])
-	])
+	await executePiece(context, settings, remotePiece, !userData.cutDirectly, part)
 }
 
 async function executeActionCutSourceToBox<
