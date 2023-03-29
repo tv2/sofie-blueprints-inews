@@ -210,7 +210,7 @@ export class TriCaster extends VideoSwitcherBase {
 	}
 
 	public assignInputIfPlaceholder(layer: TSR.TriCasterLayer, input: number | SpecialInput): void {
-		const dveServerPlaceholder = 'input-1'
+		const dveServerPlaceholder = this.getInputName(SpecialInput.AB_PLACEHOLDER)
 		if (layer.input !== dveServerPlaceholder) {
 			return
 		}

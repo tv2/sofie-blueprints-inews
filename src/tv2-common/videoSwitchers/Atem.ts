@@ -1,4 +1,4 @@
-import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
+import { TSR } from 'blueprints-integration'
 import { literal } from 'tv2-common'
 import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
@@ -207,10 +207,19 @@ export class Atem extends VideoSwitcherBase {
 		)
 	}
 	public updateUnpopulatedDveBoxes(
-		_timelineObject: TimelineObjectCoreExt<unknown, unknown>,
-		_input: number | SpecialInput
+		timelineObject: TSR.TSRTimelineObj,
+		input: number | SpecialInput
 	): TSR.TSRTimelineObj {
-		throw new Error('Method not implemented.')
+		if (!this.isDveBoxes(timelineObject)) {
+			this.logWrongTimelineObjectType(timelineObject, this.updateUnpopulatedDveBoxes.name)
+			return timelineObject
+		}
+		for (const box of timelineObject.content.ssrc.boxes) {
+			if (box.source === SpecialInput.AB_PLACEHOLDER) {
+				box.source = this.getInputNumber(input)
+			}
+		}
+		return timelineObject
 	}
 
 	private getBaseProperties(

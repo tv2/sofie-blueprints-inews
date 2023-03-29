@@ -268,7 +268,7 @@ export function MakeContentDVE2<
 					hasServer = true
 					setBoxSource(box, boxSources, {
 						sourceLayerType: SourceLayerType.VT,
-						port: -1
+						port: SpecialInput.AB_PLACEHOLDER
 					})
 					break
 			}

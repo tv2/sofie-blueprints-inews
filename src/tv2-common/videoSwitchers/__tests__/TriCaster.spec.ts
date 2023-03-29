@@ -491,7 +491,7 @@ describe('TriCaster', () => {
 					me: {
 						layers: {
 							[layerName]: {
-								input: 'input-1'
+								input: `input${SpecialInput.AB_PLACEHOLDER}`
 							}
 						}
 					}
