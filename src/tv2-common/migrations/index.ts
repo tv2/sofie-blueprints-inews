@@ -204,25 +204,27 @@ export function moveSelectedGfxSetupNameToGfxDefaults(versionStr: string, fromVa
 
 export function moveSelectedGfxSetupNameToGfxDefaultsInVariants(
 	versionStr: string,
-	standaloneValue: string,
+	fromValue: string,
 	targetTable: string
 ) {
 	return literal<MigrationStepShowStyle>({
-		id: `${versionStr}.moveSelectedGfxSetupNameToGfxDefaultsInVariants.${standaloneValue}.ToTable.${targetTable}`,
+		id: `${versionStr}.moveSelectedGfxSetupNameToGfxDefaultsInVariants.${fromValue}.ToTable.${targetTable}`,
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
 			const allVariants = context.getAllVariants()
-			const checkVariants = allVariants.some((variant: IBlueprintShowStyleVariant) => {
-				return context.getVariantConfig(variant._id, targetTable) as TableConfigItemValue
+			const checkForDefaultsTransfer = allVariants.some((variant: IBlueprintShowStyleVariant) => {
+				const defaultsTable = context.getVariantConfig(variant._id, targetTable) as TableConfigItemValue
+				const setupNameTable = context.getVariantConfig(variant._id, fromValue) as ConfigItemValue
+				return setupNameTable && !defaultsTable
 			})
 
-			return checkVariants
+			return checkForDefaultsTransfer
 		},
 		migrate: (context: MigrationContextShowStyle) => {
 			const allVariants = context.getAllVariants()
 			allVariants.forEach((variant: IBlueprintShowStyleVariant) => {
-				const singleValue = context.getVariantConfig(variant._id, standaloneValue) as BasicConfigItemValue
+				const singleValue = context.getVariantConfig(variant._id, fromValue) as BasicConfigItemValue
 				let designatedTable = context.getVariantConfig(variant._id, targetTable) as TableConfigItemValue
 				const setupName = 'DefaultSetupName'
 
