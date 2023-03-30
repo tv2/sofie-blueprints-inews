@@ -270,8 +270,8 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	/**
 	 * 1.8.0 Move SelectedGfxSetupName to GFX Defaults
 	 */
-	moveSelectedGfxSetupNameToGfxDefaults('1.8.0', 'SelectedGfxSetupName', 'GfxDefaults'),
-	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.0', 'SelectedGfxSetupName', 'GfxDefaults'),
+	moveSelectedGfxSetupNameToGfxDefaults('1.8.2', 'SelectedGfxSetupName', 'GfxDefaults'),
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2', 'SelectedGfxSetupName', 'GfxDefaults'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

@@ -82,12 +82,15 @@ export const getGfxDefaults: ConfigManifestEntry = {
 			name: 'Default Skema',
 			rank: 1,
 			description: 'The Skema options based on the GFX Setup',
-			type: ConfigManifestEntryType.FILTER_DEFAULTS_FROM_SHOW_MAPPING,
-			targetTableId: CommonConfigId.GFX_DEFAULTS_TABLE_ID,
-			targetCompareColumnId: CommonConfigId.DEFAULTS_SELECTED_GFX_SETUP_NAME_COLUMN_ID,
+			type: ConfigManifestEntryType.SELECT_FROM_TABLE_ENTRY_WITH_COMPARISON_MAPPINGS,
+			comparisonMappings: [
+				{
+					targetColumnId: CommonConfigId.DEFAULTS_SELECTED_GFX_SETUP_NAME_COLUMN_ID,
+					sourceColumnId: CommonConfigId.GFX_SHOW_MAPPING_GFX_SETUP_COLUMN_ID
+				}
+			],
 			sourceTableId: CommonConfigId.GFX_SHOW_MAPPING_TABLE_ID,
-			sourceCompareColumnId: CommonConfigId.GFX_SHOW_MAPPING_GFX_SETUP_COLUMN_ID,
-			sourceCollectColumnId: CommonConfigId.GFX_SHOW_MAPPING_SCHEMA_COLUMN_ID,
+			sourceColumnIdWithValue: CommonConfigId.GFX_SHOW_MAPPING_SCHEMA_COLUMN_ID,
 			multiple: false,
 			required: false,
 			defaultVal: ''
@@ -97,12 +100,19 @@ export const getGfxDefaults: ConfigManifestEntry = {
 			name: 'Default Design',
 			rank: 2,
 			description: 'The Design options based on the Default Skema or GFX Setup',
-			type: ConfigManifestEntryType.FILTER_DEFAULTS_FROM_SHOW_MAPPING,
-			targetTableId: CommonConfigId.GFX_DEFAULTS_TABLE_ID,
-			targetCompareColumnId: CommonConfigId.DEFAULTS_SCHEMA_COLUMN_ID,
+			type: ConfigManifestEntryType.SELECT_FROM_TABLE_ENTRY_WITH_COMPARISON_MAPPINGS,
+			comparisonMappings: [
+				{
+					targetColumnId: CommonConfigId.DEFAULTS_SCHEMA_COLUMN_ID,
+					sourceColumnId: CommonConfigId.GFX_SHOW_MAPPING_SCHEMA_COLUMN_ID
+				},
+				{
+					targetColumnId: CommonConfigId.DEFAULTS_SELECTED_GFX_SETUP_NAME_COLUMN_ID,
+					sourceColumnId: CommonConfigId.GFX_SHOW_MAPPING_GFX_SETUP_COLUMN_ID
+				}
+			],
 			sourceTableId: CommonConfigId.GFX_SHOW_MAPPING_TABLE_ID,
-			sourceCompareColumnId: CommonConfigId.GFX_SHOW_MAPPING_SCHEMA_COLUMN_ID,
-			sourceCollectColumnId: CommonConfigId.GFX_SHOW_MAPPING_DESIGN_COLUMN_ID,
+			sourceColumnIdWithValue: CommonConfigId.GFX_SHOW_MAPPING_DESIGN_COLUMN_ID,
 			multiple: false,
 			required: false,
 			defaultVal: ''

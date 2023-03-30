@@ -229,7 +229,7 @@ export function moveSelectedGfxSetupNameToGfxDefaultsInVariants(
 				const setupName = 'DefaultSetupName'
 
 				if (designatedTable === undefined) {
-					designatedTable = [{ ['']: singleValue, _id: '' }]
+					designatedTable = [{ [setupName]: singleValue, _id: '' }]
 				}
 
 				designatedTable[0][setupName] = singleValue
