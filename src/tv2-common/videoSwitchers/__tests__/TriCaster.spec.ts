@@ -159,13 +159,13 @@ describe('TriCaster', () => {
 		test('supports WIPE for GFX', () => {
 			const wipeRate = 22
 			const config = mock<TV2StudioConfig>()
-			when(config.studio).thenReturn(({
+			when(config.studio).thenReturn({
 				HTMLGraphics: {
 					GraphicURL: 'donotcare',
 					TransitionSettings: { wipeRate, borderSoftness: 20, loopOutTransitionDuration: 15 },
 					KeepAliveDuration: 120
 				}
-			} as any) as TV2StudioConfigBase)
+			} as any as TV2StudioConfigBase)
 			const testee: TriCaster = createTestee({ config: instance(config) })
 			const timelineObject = testee.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.PROGRAM,
@@ -299,7 +299,7 @@ describe('TriCaster', () => {
 
 		test('sets Mix Output when layer mapping is MIX_OUTPUT', () => {
 			const config = mock<TV2StudioConfig>()
-			when(config.studio).thenReturn(({
+			when(config.studio).thenReturn({
 				studioConfig: {
 					mappingDefaults: {
 						[prefixLayer(DEFAULT_AUX.layer)]: literal<TSR.MappingTriCaster & BlueprintMapping>({
@@ -311,7 +311,7 @@ describe('TriCaster', () => {
 						})
 					}
 				}
-			} as any) as TV2StudioConfigBase)
+			} as any as TV2StudioConfigBase)
 			const testee: TriCaster = createTestee({ config: instance(config) })
 
 			const timelineObject = testee.getAuxTimelineObject(DEFAULT_AUX)
@@ -484,7 +484,7 @@ describe('TriCaster', () => {
 
 		function assertPopulateUnpopulatedBox(inputToUpdate: number, layerName: TSR.TriCasterLayerName): void {
 			const testee: TriCaster = createTestee()
-			const timelineObject: TSR.TimelineObjTriCasterME = ({
+			const timelineObject: TSR.TimelineObjTriCasterME = {
 				content: {
 					deviceType: TSR.DeviceType.TRICASTER,
 					type: TSR.TimelineContentTypeTriCaster.ME,
@@ -496,7 +496,7 @@ describe('TriCaster', () => {
 						}
 					}
 				}
-			} as any) as TSR.TimelineObjTriCasterME
+			} as any as TSR.TimelineObjTriCasterME
 
 			const timelineObjTriCasterME: TSR.TimelineObjTriCasterME = testee.updateUnpopulatedDveBoxes(
 				timelineObject,
@@ -522,7 +522,7 @@ describe('TriCaster', () => {
 			otherInputSource: number
 		): void {
 			const testee: TriCaster = createTestee()
-			const timelineObject: TSR.TimelineObjTriCasterME = ({
+			const timelineObject: TSR.TimelineObjTriCasterME = {
 				content: {
 					deviceType: TSR.DeviceType.TRICASTER,
 					type: TSR.TimelineContentTypeTriCaster.ME,
@@ -534,7 +534,7 @@ describe('TriCaster', () => {
 						}
 					}
 				}
-			} as any) as TSR.TimelineObjTriCasterME
+			} as any as TSR.TimelineObjTriCasterME
 
 			const timelineObjTriCasterME: TSR.TimelineObjTriCasterME = testee.updateUnpopulatedDveBoxes(
 				timelineObject,
@@ -618,11 +618,11 @@ describe('TriCaster', () => {
 		it('generate overlay keyer', () => {
 			const config = mock<TV2StudioConfig>()
 			const artFillSource = 10
-			when(config.studio).thenReturn(({
+			when(config.studio).thenReturn({
 				SwitcherSource: {
 					SplitArtFill: artFillSource
 				}
-			} as any) as TV2StudioConfigBase)
+			} as any as TV2StudioConfigBase)
 			const testee: TriCaster = createTestee({ config: instance(config) })
 			const basicDveProps = getBasicDveProps()
 			const content: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(basicDveProps)[0]
@@ -641,10 +641,9 @@ describe('TriCaster', () => {
 			const emptyBoxes = [{ enabled: false }, { enabled: false }, { enabled: false }, { enabled: false }]
 			const content = testee.getDveTimelineObjects(getBasicDveProps(emptyBoxes))[0]
 				.content as TSR.TimelineObjTriCasterME['content']
-			const result: Partial<Record<
-				TSR.TriCasterLayerName,
-				TSR.TriCasterLayer
-			>> = (content.me as TSR.TriCasterMixEffectInEffectMode).layers!
+			const result: Partial<Record<TSR.TriCasterLayerName, TSR.TriCasterLayer>> = (
+				content.me as TSR.TriCasterMixEffectInEffectMode
+			).layers!
 
 			expect(result.a).toMatchObject(invisibleBox())
 			expect(result.b).toMatchObject(invisibleBox())

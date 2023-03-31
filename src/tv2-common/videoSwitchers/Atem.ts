@@ -272,7 +272,7 @@ export class Atem extends VideoSwitcherBase {
 		if (!keyers?.length) {
 			return
 		}
-		return keyers.map(keyer => ({
+		return keyers.map((keyer) => ({
 			upstreamKeyerId: keyer.config.Number,
 			onAir: keyer.onAir,
 			mixEffectKeyType: 0,

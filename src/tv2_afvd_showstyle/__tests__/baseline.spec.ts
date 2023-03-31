@@ -54,7 +54,7 @@ describe.each([SwitcherType.ATEM, SwitcherType.TRICASTER])('Baseline', (switcher
 		}
 
 		const result = rundown.baseline.timelineObjects.filter(
-			timelineObject =>
+			(timelineObject) =>
 				timelineObject.layer === SharedGraphicLLayer.GraphicLLayerConcept &&
 				timelineObject.content.deviceType === TSR.DeviceType.VIZMSE
 		)

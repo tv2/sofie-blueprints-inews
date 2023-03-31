@@ -20,7 +20,7 @@ function filterMappings(
 ): BlueprintMappings {
 	const result: BlueprintMappings = {}
 
-	_.each(_.keys(input), k => {
+	_.each(_.keys(input), (k) => {
 		const v = input[k]
 		if (filter(k, v)) {
 			result[k] = v
@@ -129,7 +129,7 @@ export function getMixEffectBaseline(
 	context: StudioContext | ShowStyleContext,
 	input: number | SpecialInput
 ): TSR.TSRTimelineObj[] {
-	return Object.values(context.uniformConfig.mixEffects).flatMap(mixEffect =>
+	return Object.values(context.uniformConfig.mixEffects).flatMap((mixEffect) =>
 		_.compact([
 			context.videoSwitcher.getMixEffectTimelineObject({
 				enable: { while: '1' },

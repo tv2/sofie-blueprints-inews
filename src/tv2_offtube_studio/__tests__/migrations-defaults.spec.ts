@@ -15,7 +15,7 @@ import { QBOX_UNIFORM_CONFIG } from '../uniformConfig'
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
 export function getRealLLayers(): string[] {
 	return getUsedLayers(QBOX_UNIFORM_CONFIG)
-		.flatMap(layer => [ATEM_LAYER_PREFIX + layer])
+		.flatMap((layer) => [ATEM_LAYER_PREFIX + layer])
 		.concat(_.values(OfftubeSisyfosLLayer))
 		.concat(_.values(OfftubeCasparLLayer))
 		.concat(_.values(AbstractLLayer))

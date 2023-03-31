@@ -375,7 +375,7 @@ async function getCameraPiece(
 ): Promise<IBlueprintPieceInstance> {
 	const piece = await context
 		.getPieceInstances(part)
-		.then(pieceInstance => pieceInstance.find(p => p.piece.sourceLayerId === SourceLayer.PgmCam))
+		.then((pieceInstance) => pieceInstance.find((p) => p.piece.sourceLayerId === SourceLayer.PgmCam))
 	expect(piece).toBeTruthy()
 
 	return piece!
@@ -387,7 +387,7 @@ async function getEVSPiece(
 ): Promise<IBlueprintPieceInstance> {
 	const piece = await context
 		.getPieceInstances(part)
-		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SourceLayer.PgmLocal))
+		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === SourceLayer.PgmLocal))
 	expect(piece).toBeTruthy()
 
 	return piece!
@@ -399,7 +399,7 @@ async function getTransitionPiece(
 ): Promise<IBlueprintPieceInstance> {
 	const piece = await context
 		.getPieceInstances(part)
-		.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SourceLayer.PgmJingle))
+		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === SourceLayer.PgmJingle))
 	expect(piece).toBeTruthy()
 
 	return piece!
@@ -407,7 +407,7 @@ async function getTransitionPiece(
 
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
-		obj =>
+		(obj) =>
 			obj.layer === prefixLayer(SwitcherMixEffectLLayer.PROGRAM) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
@@ -435,9 +435,11 @@ function expectTakeAfterExecute(context: ActionExecutionContextMock) {
 }
 
 function expectNoWarningsOrErrors(context: ActionExecutionContextMock) {
-	expect(context.getNotes().filter(n => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual([])
+	expect(context.getNotes().filter((n) => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual(
+		[]
+	)
 	expect(
-		context.getNotes().filter(n => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
+		context.getNotes().filter((n) => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
 	).toEqual([])
 }
 

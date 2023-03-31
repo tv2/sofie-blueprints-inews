@@ -102,7 +102,7 @@ function getTransitionProperties(effekt: GalleryShowStyleConfig['BreakerConfig']
 }
 
 function getPieceOnLayerFromPart(segment: BlueprintResultSegment, layer: SourceLayer): IBlueprintPiece {
-	const piece = segment.parts[0].pieces.find(p => p.sourceLayerId === layer)
+	const piece = segment.parts[0].pieces.find((p) => p.sourceLayerId === layer)
 	expect(piece).toBeTruthy()
 
 	return piece!
@@ -110,7 +110,7 @@ function getPieceOnLayerFromPart(segment: BlueprintResultSegment, layer: SourceL
 
 function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
 	const atemMEObj = (piece!.content!.timelineObjects as TSR.TSRTimelineObj[]).find(
-		obj =>
+		(obj) =>
 			obj.layer === prefixLayer(SwitcherMixEffectLLayer.PROGRAM) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME

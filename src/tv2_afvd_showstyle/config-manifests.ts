@@ -1,5 +1,5 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
-import { CommonConfigId, DEFAULT_GRAPHICS, getGfxDefaults, getGfxSetupsEntries } from 'tv2-common'
+import { DEFAULT_GRAPHICS, getGfxDefaults, getGfxSetupsEntries, ShowStyleConfigId } from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -187,7 +187,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 		description: '',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
-		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => template.IsDesign),
+		defaultVal: DEFAULT_GRAPHICS.map((val) => ({ _id: '', ...val })).filter((template) => template.IsDesign),
 		columns: [
 			{
 				id: DESIGN_NAME_COLUMN_ID,
@@ -273,7 +273,7 @@ export const gfxShowMapping: ConfigManifestEntry = {
 	defaultVal: [],
 	columns: [
 		{
-			id: CommonConfigId.GFX_SHOW_MAPPING_DESIGN_COLUMN_ID,
+			id: ShowStyleConfigId.GFX_SHOW_MAPPING_DESIGN_COLUMN_ID,
 			name: 'Design',
 			rank: 0,
 			description: 'Name of the Design from the GFX Design table',
@@ -285,19 +285,19 @@ export const gfxShowMapping: ConfigManifestEntry = {
 			defaultVal: ''
 		},
 		{
-			id: CommonConfigId.GFX_SHOW_MAPPING_GFX_SETUP_COLUMN_ID,
+			id: ShowStyleConfigId.GFX_SHOW_MAPPING_GFX_SETUP_COLUMN_ID,
 			name: 'GFX Setup',
 			rank: 1,
 			description: 'Names of the GFX Setups',
 			type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
-			tableId: CommonConfigId.GRAPHICS_SETUPS_TABLE_ID,
-			columnId: CommonConfigId.GRAPHICS_SETUPS_NAME_COLUMN_ID,
+			tableId: ShowStyleConfigId.GRAPHICS_SETUPS_TABLE_ID,
+			columnId: ShowStyleConfigId.GRAPHICS_SETUPS_NAME_COLUMN_ID,
 			multiple: true,
 			required: false,
 			defaultVal: []
 		},
 		{
-			id: CommonConfigId.GFX_SHOW_MAPPING_SCHEMA_COLUMN_ID,
+			id: ShowStyleConfigId.GFX_SHOW_MAPPING_SCHEMA_COLUMN_ID,
 			name: 'GFX Skema Templates',
 			rank: 2,
 			description: 'Names of the Skemas',
@@ -336,7 +336,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are also required. GFX Template Name is what the graphic is called in viz. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNews i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
-		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => !template.IsDesign),
+		defaultVal: DEFAULT_GRAPHICS.map((val) => ({ _id: '', ...val })).filter((template) => !template.IsDesign),
 		columns: [
 			{
 				id: 'INewsCode',

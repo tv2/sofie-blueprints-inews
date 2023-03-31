@@ -112,7 +112,7 @@ function insertSpecialPieces(
 	if (gfxSetupsToInitialize) {
 		const showsToInitialize = new Set<string>()
 		const allShows = new Set<string>()
-		config.showStyle.GfxSetups.forEach(gfxSetup => {
+		config.showStyle.GfxSetups.forEach((gfxSetup) => {
 			allShows.add(gfxSetup.FullShowName)
 			allShows.add(gfxSetup.OvlShowName)
 			if (gfxSetupsToInitialize.includes(gfxSetup.Name)) {
@@ -120,7 +120,7 @@ function insertSpecialPieces(
 				showsToInitialize.add(gfxSetup.OvlShowName)
 			}
 		})
-		const showsToCleanup = Array.from(allShows).filter(show => !showsToInitialize.has(show))
+		const showsToCleanup = Array.from(allShows).filter((show) => !showsToInitialize.has(show))
 		CreateShowLifecyclePieces(config, blueprintParts[0], Array.from(showsToInitialize), showsToCleanup)
 	}
 }

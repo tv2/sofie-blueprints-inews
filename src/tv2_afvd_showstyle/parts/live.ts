@@ -48,8 +48,8 @@ export async function CreatePartLive(
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
-	const liveCue = partDefinition.cues.find(c => c.type === CueType.Ekstern) as CueDefinitionEkstern
-	const livePiece = pieces.find(p => p.sourceLayerId === SourceLayer.PgmLive)
+	const liveCue = partDefinition.cues.find((c) => c.type === CueType.Ekstern) as CueDefinitionEkstern
+	const livePiece = pieces.find((p) => p.sourceLayerId === SourceLayer.PgmLive)
 
 	if (pieces.length === 0 || !liveCue || !livePiece) {
 		part.invalid = true

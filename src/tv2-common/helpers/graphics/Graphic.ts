@@ -47,7 +47,7 @@ export abstract class Graphic {
 	}
 
 	protected getSourceLayer(name: string): SharedSourceLayer {
-		const template = this.config.showStyle.GfxTemplates.find(gfx => gfx.VizTemplate.toString() === name)
+		const template = this.config.showStyle.GfxTemplates.find((gfx) => gfx.VizTemplate.toString() === name)
 
 		if (template && GFX_LAYERS.has(template.SourceLayer as SharedSourceLayer)) {
 			return this.getSubstituteLayer(template.SourceLayer as SharedSourceLayer)
@@ -99,7 +99,7 @@ export abstract class Graphic {
 	protected findGfxTemplate(): TableConfigItemGfxTemplate | undefined {
 		const templateId = this.getTemplateId()
 
-		return this.config.showStyle.GfxTemplates.find(templ =>
+		return this.config.showStyle.GfxTemplates.find((templ) =>
 			templ.INewsName ? templ.INewsName.toString().toUpperCase() === templateId?.toUpperCase() : false
 		)
 	}
@@ -123,7 +123,7 @@ export abstract class Graphic {
 	protected FindInfiniteModeFromConfig(): PieceLifespan {
 		const templateName = this.getTemplateName()
 		const iNewsName = GraphicIsInternal(this.cue) ? this.cue.graphic.template : undefined
-		const template = this.config.showStyle.GfxTemplates.find(gfx =>
+		const template = this.config.showStyle.GfxTemplates.find((gfx) =>
 			gfx.VizTemplate
 				? gfx.VizTemplate.toString().toUpperCase() === templateName.toUpperCase() &&
 				  (iNewsName ? gfx.INewsName.toUpperCase() === iNewsName.toUpperCase() : true)

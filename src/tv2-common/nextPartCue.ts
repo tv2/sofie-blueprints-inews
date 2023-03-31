@@ -10,7 +10,7 @@ export function GetNextPartCue(partdefinition: PartDefinition, currentCue: numbe
 	const index = partdefinition.cues
 		.slice(currentCue + 1)
 		.findIndex(
-			cue =>
+			(cue) =>
 				cue.type === CueType.DVE ||
 				cue.type === CueType.Ekstern ||
 				(cue.type === CueType.Graphic && cue.target === 'FULL' && partdefinition.type !== PartType.Grafik) ||

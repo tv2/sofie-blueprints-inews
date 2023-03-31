@@ -30,7 +30,7 @@ export function EvaluateClearGrafiks(
 		SourceLayer.PgmGraphicsHeadline,
 		SourceLayer.PgmGraphicsTema,
 		SourceLayer.PgmGraphicsOverlay
-	].forEach(sourceLayerId => {
+	].forEach((sourceLayerId) => {
 		pieces.push({
 			externalId: partId,
 			name: `CLEAR ${sourceLayerId}`,

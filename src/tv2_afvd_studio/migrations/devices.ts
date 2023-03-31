@@ -102,7 +102,7 @@ const devices: DeviceEntry[] = [
 		id: 'caspar01',
 		firstVersion: '0.1.0',
 		type: TSR.DeviceType.CASPARCG,
-		defaultValue: input => ({
+		defaultValue: (input) => ({
 			type: TSR.DeviceType.CASPARCG,
 			options: {
 				host: input.host,
@@ -120,7 +120,7 @@ const devices: DeviceEntry[] = [
 				defaultValue: undefined
 			}
 		],
-		validate: device => {
+		validate: (device) => {
 			if (!device.options) {
 				return 'Missing options'
 			}
@@ -159,7 +159,7 @@ const devices: DeviceEntry[] = [
 			}
 			return undefined
 		},
-		validate: device => {
+		validate: (device) => {
 			if (!device.options) {
 				return 'Missing options'
 			}
@@ -186,7 +186,7 @@ const devices: DeviceEntry[] = [
 		id: 'atem0',
 		firstVersion: '0.1.0',
 		type: TSR.DeviceType.ATEM,
-		defaultValue: input => ({
+		defaultValue: (input) => ({
 			type: TSR.DeviceType.ATEM,
 			options: {
 				host: input.host,
@@ -202,7 +202,7 @@ const devices: DeviceEntry[] = [
 				defaultValue: undefined
 			}
 		],
-		validate: device => {
+		validate: (device) => {
 			if (!device.options) {
 				return 'Missing options'
 			}

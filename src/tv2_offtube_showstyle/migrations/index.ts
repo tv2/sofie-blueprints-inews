@@ -149,7 +149,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.6.3
 	 * - Hide DSK toggle layers
 	 */
-	...GetDSKSourceLayerNames(ATEMModel.PRODUCTION_STUDIO_4K_2ME).map(layerName =>
+	...GetDSKSourceLayerNames(ATEMModel.PRODUCTION_STUDIO_4K_2ME).map((layerName) =>
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
 
@@ -294,8 +294,8 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	/**
 	 * 1.8.2 Move SelectedGfxSetupName to GFX Defaults
 	 */
-	moveSelectedGfxSetupNameToGfxDefaults('1.8.2', 'SelectedGfxSetupName', 'GfxDefaults'),
-	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2', 'SelectedGfxSetupName', 'GfxDefaults'),
+	moveSelectedGfxSetupNameToGfxDefaults('1.8.2'),
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),

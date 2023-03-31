@@ -99,7 +99,7 @@ function remapTableColumnValuesInner(
 ): { changed: number; table: TableConfigItemValue } {
 	let changed = 0
 
-	table.forEach(row => {
+	table.forEach((row) => {
 		const val = row[columnId]
 
 		if (val) {
@@ -265,7 +265,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 		'sisyfos_source_live_3',
 		'sisyfos_source_server_a',
 		'sisyfos_source_server_b'
-	].map(layer => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
+	].map((layer) => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosConfig),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', OfftubeSisyfosLLayer.SisyfosGroupStudioMics),
 	GetMappingDefaultMigrationStepForLayer('1.4.0', OfftubeCasparLLayer.CasparPlayerClipPending, true),
@@ -370,7 +370,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	/**
 	 * 1.8.0
 	 */
-	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map(tableName =>
+	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map((tableName) =>
 		renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')
 	),
 	renameStudioConfig('1.8.0', 'AFVD', 'AtemSource', 'SwitcherSource'),

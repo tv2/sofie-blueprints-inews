@@ -149,18 +149,18 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		if (
 			GetNextPartCue(part, -1) === -1 &&
 			part.type === PartType.Unknown &&
-			part.cues.filter(cue => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
+			part.cues.filter((cue) => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
 			blueprintParts.push(await showStyleOptions.CreatePartUnknown(context, part, totalWords, true))
 			continue
 		}
 
 		const unpairedTargets = part.cues.filter(
-			c => c.type === CueType.UNPAIRED_TARGET && IsTargetingFull(c.target)
+			(c) => c.type === CueType.UNPAIRED_TARGET && IsTargetingFull(c.target)
 		) as CueDefinitionUnpairedTarget[]
 		if (unpairedTargets.length) {
 			blueprintParts.push(CreatePartInvalid(part))
-			unpairedTargets.forEach(cue => {
+			unpairedTargets.forEach((cue) => {
 				context.core.notifyUserWarning(`No graphic found after ${cue.iNewsCommand} cue`)
 			})
 			continue
@@ -245,7 +245,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 				break
 		}
 
-		if (part.cues.filter(cue => cue.type === CueType.Jingle).length) {
+		if (part.cues.filter((cue) => cue.type === CueType.Jingle).length) {
 			if (blueprintParts[blueprintParts.length - 1]) {
 				const t = blueprintParts[blueprintParts.length - 1].part.expectedDuration
 				if (t) {
@@ -269,7 +269,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		0
 	)
 
-	blueprintParts.forEach(part => {
+	blueprintParts.forEach((part) => {
 		// part.part.displayDurationGroup = ingestSegment.externalId
 
 		if (!part.part.expectedDuration && totalTimeMs > 0) {
@@ -287,7 +287,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 
 	let extraTime = totalTimeMs
 
-	blueprintParts.forEach(part => {
+	blueprintParts.forEach((part) => {
 		if (part.part.expectedDuration === undefined || part.part.expectedDuration < 0) {
 			part.part.expectedDuration =
 				extraTime > config.studio.DefaultPartDuration
@@ -305,7 +305,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 	})
 
 	if (
-		blueprintParts.filter(part => part.pieces.length === 0 && (part.adLibPieces.length || part.actions?.length))
+		blueprintParts.filter((part) => part.pieces.length === 0 && (part.adLibPieces.length || part.actions?.length))
 			.length === blueprintParts.length
 	) {
 		segment.isHidden = true
@@ -314,7 +314,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		}
 	}
 
-	if (blueprintParts.find(part => part.adLibPieces.length || part.actions?.length)) {
+	if (blueprintParts.find((part) => part.adLibPieces.length || part.actions?.length)) {
 		segment.showShelf = true
 	}
 
@@ -323,29 +323,29 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		blueprintParts.length > 1 ||
 		(blueprintParts[blueprintParts.length - 1] &&
 			!blueprintParts[blueprintParts.length - 1].pieces.some(
-				piece => piece.sourceLayerId === SharedSourceLayer.PgmJingle
+				(piece) => piece.sourceLayerId === SharedSourceLayer.PgmJingle
 			))
 	) {
 		blueprintParts[0].part.budgetDuration = totalTimeMs
 	}
 
-	if (blueprintParts.every(part => part.part.invalid) && iNewsStory.cues.length === 0) {
+	if (blueprintParts.every((part) => part.part.invalid) && iNewsStory.cues.length === 0) {
 		segment.isHidden = true
 	}
 
-	blueprintParts.forEach(part => {
+	blueprintParts.forEach((part) => {
 		if (
 			part.part.expectedDuration! < config.studio.DefaultPartDuration &&
 			// Jingle-only part, do not modify duration
 			!part.pieces.some(
-				p => p.sourceLayerId === SharedSourceLayer.PgmJingle && p.tags?.some(tag => TallyTags.JINGLE === tag)
+				(p) => p.sourceLayerId === SharedSourceLayer.PgmJingle && p.tags?.some((tag) => TallyTags.JINGLE === tag)
 			)
 		) {
 			part.part.expectedDuration = config.studio.DefaultPartDuration
 		}
 	})
 
-	blueprintParts = blueprintParts.map(part => {
+	blueprintParts = blueprintParts.map((part) => {
 		const actualPart = part.part
 		actualPart.metaData = literal<PartMetaData>({
 			...(actualPart.metaData as any),

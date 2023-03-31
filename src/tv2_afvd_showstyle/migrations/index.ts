@@ -114,7 +114,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.6.3
 	 * - Hide DSK toggle layers
 	 */
-	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map(layerName =>
+	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map((layerName) =>
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
 
@@ -268,8 +268,8 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	/**
 	 * 1.8.2 Move SelectedGfxSetupName to GFX Defaults
 	 */
-	moveSelectedGfxSetupNameToGfxDefaults('1.8.2', 'SelectedGfxSetupName', 'GfxDefaults'),
-	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2', 'SelectedGfxSetupName', 'GfxDefaults'),
+	moveSelectedGfxSetupNameToGfxDefaults('1.8.2'),
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

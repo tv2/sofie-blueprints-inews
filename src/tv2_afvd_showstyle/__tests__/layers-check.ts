@@ -15,10 +15,10 @@ export function checkAllLayers(pieces: IBlueprintPieceGeneric[], otherObjs?: TSR
 	const wrongDeviceLayers: Array<string | number> = []
 
 	const allSourceLayers: string[] = _.values(SourceLayer)
-		.map(l => l.toString())
+		.map((l) => l.toString())
 		.concat(GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE))
 		.sort()
-	const allOutputLayers = _.map(OutputlayerDefaults, m => m._id)
+	const allOutputLayers = _.map(OutputlayerDefaults, (m) => m._id)
 
 	const allMappings: BlueprintMappings = {
 		...mappingsDefaults

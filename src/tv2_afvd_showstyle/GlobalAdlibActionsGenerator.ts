@@ -38,31 +38,31 @@ export class GlobalAdlibActionsGenerator {
 
 		this.config.sources.cameras
 			.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-			.forEach(camera => {
+			.forEach((camera) => {
 				blueprintActions.push(this.makeCutDirectlyCameraAction(camera, globalRank++))
 				blueprintActions.push(this.makeQueueAsNextCameraAction(camera, globalRank++))
 			})
 
 		this.config.sources.cameras
 			.slice(0, 5) // the first x cameras to dve actions from
-			.forEach(camera => {
+			.forEach((camera) => {
 				blueprintActions.push(...this.makeAdlibBoxesActions(camera, globalRank++))
 			})
 
 		this.config.sources.lives
 			.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
-			.forEach(live => {
+			.forEach((live) => {
 				blueprintActions.push(...this.makeAdlibBoxesActions(live, globalRank++))
 				blueprintActions.push(this.makeCutDirectLiveAction(live, globalRank++))
 			})
 
 		this.config.sources.feeds
 			.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
-			.forEach(feed => {
+			.forEach((feed) => {
 				blueprintActions.push(...this.makeAdlibBoxesActions(feed, globalRank++))
 			})
 
-		this.config.sources.replays.forEach(replay => {
+		this.config.sources.replays.forEach((replay) => {
 			if (!/EPSIO/i.test(replay.id)) {
 				blueprintActions.push(...this.makeAdlibBoxesActionsReplay(replay, globalRank++, false))
 			}

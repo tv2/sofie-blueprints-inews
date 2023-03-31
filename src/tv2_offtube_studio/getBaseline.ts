@@ -18,7 +18,7 @@ function filterMappings(
 ): BlueprintMappings {
 	const result: BlueprintMappings = {}
 
-	_.each(_.keys(input), k => {
+	_.each(_.keys(input), (k) => {
 		const v = input[k]
 		if (filter(k, v)) {
 			result[k] = v

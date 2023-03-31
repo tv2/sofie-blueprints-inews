@@ -38,7 +38,7 @@ export function EvaluateTelefon(
 
 function findTelefonPiece(result: EvaluateCueResult) {
 	return result.pieces.find(
-		p =>
+		(p) =>
 			p.outputLayerId === SharedOutputLayer.OVERLAY ||
 			p.outputLayerId === SharedOutputLayer.PGM ||
 			p.outputLayerId === SharedOutputLayer.SEC

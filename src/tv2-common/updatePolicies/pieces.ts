@@ -33,7 +33,7 @@ export function stopOrReplaceEditablePieces(
 	let pieceInstancesOnLayersInExistingPart = existingPartInstance.pieceInstances
 
 	if (allowedSourceLayers) {
-		pieceInstancesOnLayersInExistingPart = existingPartInstance.pieceInstances.filter(p =>
+		pieceInstancesOnLayersInExistingPart = existingPartInstance.pieceInstances.filter((p) =>
 			allowedSourceLayers.has(p.piece.sourceLayerId)
 		)
 	}
@@ -41,7 +41,9 @@ export function stopOrReplaceEditablePieces(
 
 	let pieceInstancesOnLayersInNewPart = newPart.pieceInstances
 	if (allowedSourceLayers) {
-		pieceInstancesOnLayersInNewPart = newPart.pieceInstances.filter(p => allowedSourceLayers.has(p.piece.sourceLayerId))
+		pieceInstancesOnLayersInNewPart = newPart.pieceInstances.filter((p) =>
+			allowedSourceLayers.has(p.piece.sourceLayerId)
+		)
 	}
 	const groupedPieceInstancesInNewPart = groupPieceInstances(pieceInstancesOnLayersInNewPart)
 

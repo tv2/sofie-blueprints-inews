@@ -31,7 +31,7 @@ function prepareConfig(
 	StudioMics: boolean
 	wantsToPersistAudio: boolean
 }> {
-	return parseMapStr(undefined, conf, true).map(c => {
+	return parseMapStr(undefined, conf, true).map((c) => {
 		return {
 			SourceName: c.id,
 			SwitcherSource: c.val,
@@ -274,5 +274,5 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	ShowstyleTransition: 'CUT',
 	GfxSchemaTemplates: [],
 	GfxShowMapping: [],
-	GfxDefaults: [{ GfxSetup: 'SomeProfile', DefaultDesign: [], DefaultSchema: [] }]
+	GfxDefaults: [{ GfxSetup: 'SomeProfile', DefaultDesign: '', DefaultSchema: '' }]
 }

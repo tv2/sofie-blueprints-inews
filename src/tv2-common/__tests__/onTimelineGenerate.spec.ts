@@ -22,7 +22,7 @@ describe('onTimelineGenerate', () => {
 			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
 
 			const indexOfLayerThatWantToBePersisted = result.content.channels.findIndex(
-				channel => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED
+				(channel) => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED
 			)
 			expect(indexOfLayerThatWantToBePersisted).toBeGreaterThanOrEqual(0)
 		})
@@ -108,13 +108,13 @@ describe('onTimelineGenerate', () => {
 			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, layersThatWantToBePersisted)
 
 			expect(
-				result.content.channels.some(channel => channel.mappedLayer === firstLayerThatWantToBePersisted)
+				result.content.channels.some((channel) => channel.mappedLayer === firstLayerThatWantToBePersisted)
 			).toBeTruthy()
 			expect(
-				result.content.channels.some(channel => channel.mappedLayer === secondLayerThatWantToBePersisted)
+				result.content.channels.some((channel) => channel.mappedLayer === secondLayerThatWantToBePersisted)
 			).toBeTruthy()
 			expect(
-				result.content.channels.some(channel => channel.mappedLayer === thirdLayerThatWantToBePersisted)
+				result.content.channels.some((channel) => channel.mappedLayer === thirdLayerThatWantToBePersisted)
 			).toBeTruthy()
 		})
 
@@ -138,9 +138,11 @@ describe('onTimelineGenerate', () => {
 			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
 
 			expect(
-				result.content.channels.some(channel => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED)
+				result.content.channels.some((channel) => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED)
 			).toBeTruthy()
-			expect(result.content.channels.some(channel => channel.mappedLayer === resolvedPieces[0].piece.name)).toBeTruthy()
+			expect(
+				result.content.channels.some((channel) => channel.mappedLayer === resolvedPieces[0].piece.name)
+			).toBeTruthy()
 		})
 
 		it('cuts to executionAction that accept from piece that dont accept, add persist timelineObject that only contain previous piece layers', () => {
@@ -152,7 +154,9 @@ describe('onTimelineGenerate', () => {
 			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
 
 			expect(result.content.channels).toHaveLength(1)
-			expect(result.content.channels.some(channel => channel.mappedLayer === resolvedPieces[0].piece.name)).toBeTruthy()
+			expect(
+				result.content.channels.some((channel) => channel.mappedLayer === resolvedPieces[0].piece.name)
+			).toBeTruthy()
 		})
 
 		it('cuts to executeAction that accept persist from piece that dont want to persist and dont accept persist, dont persist any layers', () => {
@@ -176,7 +180,7 @@ describe('onTimelineGenerate', () => {
 
 			expect(result.content.channels).toHaveLength(1)
 			expect(
-				result.content.channels.some(channel => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED)
+				result.content.channels.some((channel) => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED)
 			).toBeTruthy()
 		})
 
@@ -259,7 +263,7 @@ describe('onTimelineGenerate', () => {
 			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, [])
 
 			expect(result.content.channels).toHaveLength(1)
-			expect(result.content.channels.some(channel => channel.mappedLayer === 'firstPiece')).toBeTruthy()
+			expect(result.content.channels.some((channel) => channel.mappedLayer === 'firstPiece')).toBeTruthy()
 		})
 
 		it('cuts from piece that wants to persist to executeAction that do not accept to another executeAction that accepts, dont persist any layers', () => {

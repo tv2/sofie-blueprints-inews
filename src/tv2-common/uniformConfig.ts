@@ -50,15 +50,15 @@ export function getSpecialLayers(
 ): Partial<Record<SpecialInput, SwitcherAuxLLayer>> {
 	return Object.fromEntries(
 		Object.values(mixEffects)
-			.filter(mixEffect => mixEffect.auxLayer)
-			.map(mixEffect => [mixEffect.input, mixEffect.auxLayer])
+			.filter((mixEffect) => mixEffect.auxLayer)
+			.map((mixEffect) => [mixEffect.input, mixEffect.auxLayer])
 	)
 }
 
 export function getUsedLayers(uniformConfig: UniformConfig): Array<SwitcherMixEffectLLayer | SwitcherAuxLLayer> {
 	return _.uniq(
 		Object.values(uniformConfig.switcherLLayers).concat(
-			Object.values(uniformConfig.mixEffects).flatMap(mixeffect =>
+			Object.values(uniformConfig.mixEffects).flatMap((mixeffect) =>
 				_.compact([mixeffect.mixEffectLayer, mixeffect.auxLayer])
 			)
 		)

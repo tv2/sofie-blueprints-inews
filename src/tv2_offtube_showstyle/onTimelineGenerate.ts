@@ -48,7 +48,7 @@ export function disableFirstPilotGFXAnimation(
 	previousPartEndState: PartEndStateExt | undefined,
 	resolvedPieces: IBlueprintResolvedPieceInstance[]
 ) {
-	const isFull = resolvedPieces.find(p => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))
+	const isFull = resolvedPieces.find((p) => p.piece.tags?.includes(TallyTags.FULL_IS_LIVE))
 	for (const obj of timeline) {
 		if (
 			obj.layer === SharedGraphicLLayer.GraphicLLayerPilot &&

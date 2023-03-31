@@ -55,7 +55,7 @@ describe('Generate rundowns without error', () => {
 				expect(res.segment.name).toEqual(segment.name)
 
 				const allPieces: IBlueprintPieceGeneric[] = []
-				_.each(res.parts, part => {
+				_.each(res.parts, (part) => {
 					allPieces.push(...part.pieces)
 					allPieces.push(...part.adLibPieces)
 				})

@@ -38,11 +38,11 @@ function makeIngestSegment(cues: UnparsedCue[], body: string) {
 }
 
 function expectNotesToBe(context: SegmentUserContextMock, notes: string[]) {
-	expect(context.getNotes().map(msg => msg.message)).toEqual(notes)
+	expect(context.getNotes().map((msg) => msg.message)).toEqual(notes)
 }
 
 function expectAllPartsToBeValid(result: BlueprintResultSegment) {
-	const invalid = result.parts.filter(part => part.part.invalid === true)
+	const invalid = result.parts.filter((part) => part.part.invalid === true)
 	expect(invalid).toHaveLength(0)
 }
 
@@ -59,7 +59,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(1)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle])
 		expect(kamPart.pieces[0].name).toEqual('CS 3 (JINGLE)')
 	})
 
@@ -75,7 +75,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(1)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle])
 		expect(kamPart.pieces[0].name).toEqual('CS 3 (JINGLE)')
 	})
 
@@ -102,7 +102,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 	})
@@ -121,7 +121,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -154,14 +154,14 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
 		expect(fullPart.pieces).toHaveLength(2)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmPilot,
 			SharedSourceLayer.SelectedAdlibGraphicsFull
 		])
@@ -198,7 +198,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -239,7 +239,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -253,7 +253,7 @@ describe('AFVD Blueprint', () => {
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
 			SharedSourceLayer.PgmPilot
 		)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmPilot,
 			SharedSourceLayer.SelectedAdlibGraphicsFull
 		])
@@ -291,7 +291,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -305,7 +305,7 @@ describe('AFVD Blueprint', () => {
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
 			SharedSourceLayer.PgmPilot
 		)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmPilot,
 			SharedSourceLayer.SelectedAdlibGraphicsFull,
 			SharedSourceLayer.PgmPilotOverlay
@@ -337,14 +337,14 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
 		expect(fullPart.pieces).toHaveLength(2)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmPilot,
 			SharedSourceLayer.SelectedAdlibGraphicsFull
 		])
@@ -382,7 +382,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -418,7 +418,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -453,7 +453,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart1.adLibPieces).toHaveLength(0)
 		expect(kamPart1.actions).toHaveLength(0)
 
@@ -467,7 +467,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart2 = result.parts[2]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(1)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam])
+		expect(kamPart2.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam])
 		expect(kamPart2.adLibPieces).toHaveLength(0)
 		expect(kamPart2.actions).toHaveLength(0)
 	})
@@ -496,7 +496,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(3)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmCam,
 			SharedSourceLayer.PgmPilotOverlay,
 			SharedSourceLayer.PgmScript
@@ -529,7 +529,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(3)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmCam,
 			SharedSourceLayer.WallGraphics,
 			SharedSourceLayer.PgmScript
@@ -562,7 +562,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -576,7 +576,7 @@ describe('AFVD Blueprint', () => {
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
 			SharedSourceLayer.PgmPilot
 		)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmPilot,
 			SharedSourceLayer.SelectedAdlibGraphicsFull
 		])
@@ -607,7 +607,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(3)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmCam,
 			SharedSourceLayer.WallGraphics,
 			SharedSourceLayer.PgmScript
@@ -616,7 +616,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(kamPart2.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmCam,
 			SharedSourceLayer.WallGraphics
 		])
@@ -640,12 +640,12 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 	})
 
 	it('Shows warning for missing wall graphic with MOSART=L', async () => {
@@ -673,7 +673,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(3)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmCam,
 			SharedSourceLayer.PgmPilotOverlay,
 			SharedSourceLayer.PgmScript
@@ -682,7 +682,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(kamPart2.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmCam,
 			SharedSourceLayer.WallGraphics
 		])
@@ -713,12 +713,12 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(kamPart2.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmCam,
 			SharedSourceLayer.WallGraphics
 		])
@@ -743,7 +743,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(5)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([
 			SharedSourceLayer.PgmCam,
 			SharedSourceLayer.PgmDesign,
 			SourceLayer.PgmDVEBackground,
@@ -764,7 +764,7 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(1)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
+		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
 	})
 
 	it('Creates Live 1', async () => {
@@ -779,7 +779,7 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(1)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
+		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
 	})
 
 	it('Creates Feed1', async () => {
@@ -794,7 +794,7 @@ describe('AFVD Blueprint', () => {
 		const feedPart1 = result.parts[0]
 		expect(feedPart1).toBeTruthy()
 		expect(feedPart1.pieces).toHaveLength(1)
-		expect(feedPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
+		expect(feedPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
 	})
 
 	it('Creates Feed 1', async () => {
@@ -809,7 +809,7 @@ describe('AFVD Blueprint', () => {
 		const feedPart1 = result.parts[0]
 		expect(feedPart1).toBeTruthy()
 		expect(feedPart1.pieces).toHaveLength(1)
-		expect(feedPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
+		expect(feedPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
 	})
 
 	it('Creates invalid part for EKSTERN=LIVE', async () => {
@@ -838,7 +838,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmCam])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmCam])
 		expect(kamPart1.pieces[0].name).toBe('EFFEKT 1')
 	})
 
@@ -854,7 +854,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmCam])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmCam])
 		expect(kamPart1.pieces[0].name).toBe('MIX 5')
 	})
 
@@ -873,7 +873,10 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(2)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmLive])
+		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmJingle,
+			SharedSourceLayer.PgmLive
+		])
 		expect(livePart1.pieces[0].name).toBe('EFFEKT 1')
 	})
 
@@ -892,7 +895,10 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(2)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmLive])
+		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmJingle,
+			SharedSourceLayer.PgmLive
+		])
 		expect(livePart1.pieces[0].name).toBe('MIX 10')
 	})
 
@@ -915,7 +921,7 @@ describe('AFVD Blueprint', () => {
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeDefined()
 	})
@@ -939,7 +945,7 @@ describe('AFVD Blueprint', () => {
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeUndefined()
 	})
@@ -963,7 +969,7 @@ describe('AFVD Blueprint', () => {
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeDefined()
 	})
@@ -987,7 +993,7 @@ describe('AFVD Blueprint', () => {
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeUndefined()
 	})
@@ -1011,7 +1017,7 @@ describe('AFVD Blueprint', () => {
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeUndefined()
 	})

@@ -109,7 +109,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 		'viz_layer_pilot',
 		'viz_layer_pilot_overlay',
 		'viz_layer_wall'
-	].map(layer => renameMapping('0.2.0', layer, layer.replace(/^viz_layer_/, 'graphic_'))),
+	].map((layer) => renameMapping('0.2.0', layer, layer.replace(/^viz_layer_/, 'graphic_'))),
 	AddKeepAudio('0.2.0', 'SourcesRM'),
 	MoveClipSourcePath('0.2.0', 'AFVD'),
 	...[
@@ -143,7 +143,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 		'sisyfos_source_evs_1',
 		'sisyfos_source_evs_2',
 		'sisyfos_resync'
-	].map(layer => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
+	].map((layer) => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', SisyfosLLAyer.SisyfosGroupStudioMics),
 	GetMappingDefaultMigrationStepForLayer('1.3.2', CasparLLayer.CasparCGLYD, true),
 	GetMappingDefaultMigrationStepForLayer('1.4.0', CasparLLayer.CasparPlayerClipPending, true),
@@ -206,7 +206,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	/**
 	 * 1.8.0
 	 */
-	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map(tableName =>
+	...['SourcesCam', 'SourcesRM', 'SourcesReplay', 'SourcesFeed', 'ABMediaPlayers'].map((tableName) =>
 		renameStudioTableColumn('1.8.0', tableName, 'AtemSource', 'SwitcherSource')
 	),
 	renameStudioConfig('1.8.0', 'AFVD', 'AtemSource', 'SwitcherSource'),

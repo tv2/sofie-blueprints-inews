@@ -42,7 +42,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 }
 
 export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): any {
-	const studioConfig = (rawConfig as unknown) as StudioConfig
+	const studioConfig = rawConfig as unknown as StudioConfig
 	const config: GalleryStudioConfig = {
 		studio: studioConfig,
 		sources: parseSources(studioConfig),

@@ -94,10 +94,7 @@ export function CreateEffektForPartInner<
 	label: string
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | false {
 	const effektConfig = context.config.showStyle.BreakerConfig.find(
-		conf =>
-			conf.BreakerName.toString()
-				.trim()
-				.toUpperCase() === effekt.toUpperCase()
+		(conf) => conf.BreakerName.toString().trim().toUpperCase() === effekt.toUpperCase()
 	)
 	if (!effektConfig) {
 		context.core.notifyUserWarning(`Could not find effekt ${effekt}`)

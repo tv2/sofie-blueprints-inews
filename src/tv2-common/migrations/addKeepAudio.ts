@@ -22,7 +22,7 @@ export function AddKeepAudio(versionStr: string, configName: string): MigrationS
 		migrate: (context: MigrationContextStudio) => {
 			const configVal = context.getConfig(configName)
 			if (Array.isArray(configVal) && configVal.length) {
-				_.each(configVal as TableConfigItemValue, source => {
+				_.each(configVal as TableConfigItemValue, (source) => {
 					source.KeepAudioInStudio = source.KeepAudioInStudio !== undefined ? source.KeepAudioInStudio : true
 				})
 				context.setConfig(configName, configVal)

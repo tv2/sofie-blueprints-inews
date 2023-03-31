@@ -153,7 +153,7 @@ export class TriCaster extends VideoSwitcherBase {
 		const mapping = this.core.getStudioMappings()[layerName]
 		if (!mapping || mapping.device !== TSR.DeviceType.TRICASTER) {
 			this.core.logWarning(`Unable to find TriCaster mapping for layer ${layerName}`)
-		} else if (((mapping as unknown) as TSR.MappingTriCaster).mappingType === TSR.MappingTriCasterType.MATRIX_OUTPUT) {
+		} else if ((mapping as unknown as TSR.MappingTriCaster).mappingType === TSR.MappingTriCasterType.MATRIX_OUTPUT) {
 			if (props.content.input) {
 				return {
 					...this.getBaseProperties(props, props.layer),
@@ -205,7 +205,7 @@ export class TriCaster extends VideoSwitcherBase {
 
 		const dveMixEffect = timelineObject.content.me as TSR.TriCasterMixEffectInEffectMode
 		const layers = dveMixEffect.layers as NonNullable<TSR.TriCasterMixEffectInEffectMode['layers']>
-		Object.values(layers).forEach(layer => this.assignInputIfPlaceholder(layer, input))
+		Object.values(layers).forEach((layer) => this.assignInputIfPlaceholder(layer, input))
 		return timelineObject
 	}
 
@@ -354,8 +354,8 @@ export class TriCaster extends VideoSwitcherBase {
 			this.core.logWarning(`Unable to find TriCaster mapping for layer ${layerName}`)
 			return 'black'
 		}
-		if (((mapping as unknown) as TSR.MappingTriCaster).mappingType === TSR.MappingTriCasterType.MIX_OUTPUT) {
-			return ((mapping as unknown) as TSR.MappingTriCasterMixOutput).name
+		if ((mapping as unknown as TSR.MappingTriCaster).mappingType === TSR.MappingTriCasterType.MIX_OUTPUT) {
+			return (mapping as unknown as TSR.MappingTriCasterMixOutput).name
 		}
 		return 'black'
 	}

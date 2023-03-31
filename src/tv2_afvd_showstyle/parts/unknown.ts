@@ -45,8 +45,8 @@ export async function CreatePartUnknown(
 	part = { ...part, ...GetJinglePartProperties(context, partDefinition) }
 
 	if (
-		partDefinition.cues.some(cue => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
-		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
+		partDefinition.cues.some((cue) => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
+		!partDefinition.cues.filter((c) => c.type === CueType.Jingle).length
 	) {
 		applyFullGraphicPropertiesToPart(context.config, part)
 	}

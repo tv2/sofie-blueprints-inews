@@ -16,7 +16,7 @@ import { GALLERY_UNIFORM_CONFIG } from '../uniformConfig'
 /** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
 export function getRealLLayers(): string[] {
 	return getUsedLayers(GALLERY_UNIFORM_CONFIG)
-		.flatMap(layer => [TRICASTER_LAYER_PREFIX + layer, ATEM_LAYER_PREFIX + layer])
+		.flatMap((layer) => [TRICASTER_LAYER_PREFIX + layer, ATEM_LAYER_PREFIX + layer])
 		.concat(_.values(CasparLLayer))
 		.concat(_.values(SisyfosLLAyer))
 		.concat(_.values(AbstractLLayer))

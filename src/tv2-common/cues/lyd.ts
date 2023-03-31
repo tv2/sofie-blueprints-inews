@@ -38,7 +38,7 @@ export function EvaluateLYD(
 	adlib?: boolean,
 	rank?: number
 ) {
-	const conf = context.config.showStyle.LYDConfig.find(lyd =>
+	const conf = context.config.showStyle.LYDConfig.find((lyd) =>
 		lyd.INewsName ? lyd.INewsName.toString().toUpperCase() === parsedCue.variant.toUpperCase() : false
 	)
 	const stop = !!parsedCue.variant.match(/^[^_]*STOP[^_]*$/i) // TODO: STOP 1 / STOP 2 etc.

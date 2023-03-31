@@ -127,7 +127,7 @@ function getGlobalAdLibPiecesOfftube(context: ShowStyleContext<OfftubeBlueprintC
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						channels: context.config.studio.StudioMics.map(layer => ({
+						channels: context.config.studio.StudioMics.map((layer) => ({
 							mappedLayer: layer,
 							isPgm: 1
 						})),
@@ -157,7 +157,7 @@ function getGlobalAdLibPiecesOfftube(context: ShowStyleContext<OfftubeBlueprintC
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						channels: context.config.studio.StudioMics.map(layer => ({
+						channels: context.config.studio.StudioMics.map((layer) => ({
 							mappedLayer: layer,
 							isPgm: 0
 						})),
@@ -495,14 +495,14 @@ function getGlobalAdlibActionsOfftube(
 
 	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
-		.forEach(cameraSourceInfo => {
+		.forEach((cameraSourceInfo) => {
 			blueprintActions.push(makeCutDirectlyCameraAction(cameraSourceInfo, globalRank++))
 			blueprintActions.push(makeQueueAsNextCameraAction(cameraSourceInfo, globalRank++))
 		})
 
 	config.sources.cameras
 		.slice(0, 5) // the first x cameras to create preview cam-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeAdlibBoxesActions(o, SourceInfoType.KAM, globalRank++)
 		})
 
@@ -529,25 +529,25 @@ function getGlobalAdlibActionsOfftube(
 
 	config.sources.feeds
 		.slice(0, 10) // the first x sources to create feed-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeRemoteAction(o, globalRank++)
 		})
 
 	config.sources.lives
 		.slice(0, 10) // the first x sources to create live-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeRemoteAction(o, globalRank++)
 		})
 
 	config.sources.feeds
 		.slice(0, 10) // the first x remote to create INP1/2/3 feed-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeAdlibBoxesActions(o, SourceInfoType.FEED, globalRank++)
 		})
 
 	config.sources.lives
 		.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
-		.forEach(o => {
+		.forEach((o) => {
 			makeAdlibBoxesActions(o, SourceInfoType.LIVE, globalRank++)
 		})
 
@@ -748,7 +748,7 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 				content: {
 					deviceType: TSR.DeviceType.SISYFOS,
 					type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-					channels: Object.keys(sisyfosChannels).map(key => {
+					channels: Object.keys(sisyfosChannels).map((key) => {
 						const llayer = key as OfftubeSisyfosLLayer
 						const channel = sisyfosChannels[llayer] as SisyfosChannel
 						return literal<TSR.TimelineObjSisyfosChannels['content']['channels'][0]>({
@@ -773,7 +773,7 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 			...CreateLYDBaseline('offtube'),
 
 			...(context.config.showStyle.CasparCGLoadingClip && context.config.showStyle.CasparCGLoadingClip.length
-				? [...context.config.mediaPlayers.map(mp => CasparPlayerClipLoadingLoop(mp.id))].map(layer => {
+				? [...context.config.mediaPlayers.map((mp) => CasparPlayerClipLoadingLoop(mp.id))].map((layer) => {
 						return literal<TSR.TimelineObjCCGMedia>({
 							id: '',
 							enable: { while: '1' },

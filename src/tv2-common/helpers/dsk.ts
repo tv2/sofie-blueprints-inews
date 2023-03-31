@@ -25,7 +25,7 @@ export function findDskJingle(config: TV2ShowStyleConfig): TableConfigItemDSK {
 }
 
 function findDskWithRoles(config: TV2ShowStyleConfig, roles: DskRole[]): TableConfigItemDSK {
-	return config.dsk.find(dsk => dsk.Roles?.some(role => roles.includes(role))) ?? config.dsk[0]
+	return config.dsk.find((dsk) => dsk.Roles?.some((role) => roles.includes(role))) ?? config.dsk[0]
 }
 
 export function GetDSKCount(atemModel: ATEMModel) {
@@ -161,7 +161,7 @@ export function createDskBaseline(
 	config: TV2BlueprintConfigBase<TV2StudioConfigBase>,
 	videoSwitcher: VideoSwitcher
 ): TSR.TSRTimelineObj[] {
-	return config.dsk.map(dsk => {
+	return config.dsk.map((dsk) => {
 		return videoSwitcher.getDskTimelineObject({
 			id: '',
 			enable: { while: '1' },
@@ -183,7 +183,7 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: literal<Array<TableConfigItemDSK & TableConfigItemValue[0]>>(
-			defaultVal.map(dsk => ({ _id: '', ...dsk, Roles: dsk.Roles ?? [] }))
+			defaultVal.map((dsk) => ({ _id: '', ...dsk, Roles: dsk.Roles ?? [] }))
 		),
 		columns: [
 			{

@@ -304,8 +304,10 @@ export class SegmentUserContextMock extends RundownContextMock implements ISegme
 	}
 }
 
-export class SyncIngestUpdateToPartInstanceContextMock extends RundownUserContextMock
-	implements ISyncIngestUpdateToPartInstanceContext {
+export class SyncIngestUpdateToPartInstanceContextMock
+	extends RundownUserContextMock
+	implements ISyncIngestUpdateToPartInstanceContext
+{
 	public syncedPieceInstances: string[] = []
 	public removedPieceInstances: string[] = []
 	public updatedPieceInstances: string[] = []
@@ -553,7 +555,7 @@ export class ActionExecutionContextMock extends ShowStyleUserContextMock impleme
 		}
 
 		this.nextPart = instance
-		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance<PieceMetaData>>(p => ({
+		this.nextPieceInstances = pieces.map<IBlueprintPieceInstance<PieceMetaData>>((p) => ({
 			_id: (Date.now() * Math.random()).toString(),
 			piece: {
 				_id: '',
@@ -591,9 +593,9 @@ export class ActionExecutionContextMock extends ShowStyleUserContextMock impleme
 	/** Remove piecesInstances by id. Returns ids of piecesInstances that were removed */
 	public async removePieceInstances(part: 'current' | 'next', pieceInstanceIds: string[]): Promise<string[]> {
 		if (part === 'current') {
-			this.currentPieceInstances = this.currentPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
+			this.currentPieceInstances = this.currentPieceInstances.filter((p) => !pieceInstanceIds.includes(p._id))
 		} else if (this.nextPieceInstances) {
-			this.nextPieceInstances = this.nextPieceInstances.filter(p => !pieceInstanceIds.includes(p._id))
+			this.nextPieceInstances = this.nextPieceInstances.filter((p) => !pieceInstanceIds.includes(p._id))
 		}
 
 		return pieceInstanceIds

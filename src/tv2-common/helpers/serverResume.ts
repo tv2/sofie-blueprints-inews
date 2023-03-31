@@ -81,7 +81,7 @@ export function getServerPositionForPartInstance(
 	const previousPartEndState = partInstance.previousPartEndState as Partial<PartEndStateExt> | undefined
 	const previousServerPosition = previousPartEndState?.serverPosition
 
-	const currentPiecesWithServer = _.sortBy(pieceInstances.filter(shouldPreservePosition), p => p.resolvedStart)
+	const currentPiecesWithServer = _.sortBy(pieceInstances.filter(shouldPreservePosition), (p) => p.resolvedStart)
 
 	let currentServerPosition =
 		previousPartEndState?.segmentId === partInstance.segmentId ? previousServerPosition : undefined

@@ -28,7 +28,7 @@ function findExistingPieceForRobotCameraLayerAndStartTime(
 	startTime: number
 ): IBlueprintPiece | undefined {
 	return pieces.find(
-		piece =>
+		(piece) =>
 			piece.sourceLayerId === SharedSourceLayer.RobotCamera &&
 			piece.name.startsWith(ROBOT_CAMERA_NAME_PREFIX) &&
 			piece.enable.start === startTime

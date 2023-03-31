@@ -205,7 +205,7 @@ export async function EvaluateCuesBase(
 							context.config.studio.PreventOverlayWithFull &&
 							GraphicIsPilot(cue) &&
 							IsTargetingOVL(cue.target) &&
-							cues.some(c => c.type === CueType.Graphic && GraphicIsPilot(c) && IsTargetingFull(c.target))
+							cues.some((c) => c.type === CueType.Graphic && GraphicIsPilot(c) && IsTargetingFull(c.target))
 						) {
 							context.core.notifyUserWarning(`Cannot create overlay graphic with FULL`)
 							break
@@ -362,7 +362,7 @@ export async function EvaluateCuesBase(
 	pieces.push(...result.pieces)
 	adLibPieces.push(...result.adlibPieces)
 	actions.push(...result.actions)
-	;[...pieces, ...adLibPieces].forEach(piece => {
+	;[...pieces, ...adLibPieces].forEach((piece) => {
 		if (piece.content && piece.content.timelineObjects) {
 			piece.content.timelineObjects.forEach((obj: TSR.TSRTimelineObj) => {
 				if (obj.content.deviceType === TSR.DeviceType.VIZMSE) {

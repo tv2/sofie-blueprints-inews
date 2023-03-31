@@ -29,7 +29,7 @@ export function EvaluateJingle(
 ) {
 	let file = ''
 
-	const jingle = context.config.showStyle.BreakerConfig.find(brkr =>
+	const jingle = context.config.showStyle.BreakerConfig.find((brkr) =>
 		brkr.BreakerName ? brkr.BreakerName.toString().toUpperCase() === parsedCue.clip.toUpperCase() : false
 	)
 	if (!jingle) {

@@ -48,7 +48,7 @@ describe('Graphics', () => {
 
 		const result = await CreatePartGrafik(context, partDefintion, 0)
 
-		expect((context.core as SegmentUserContextMock).getNotes().map(msg => msg.message)).toEqual([
+		expect((context.core as SegmentUserContextMock).getNotes().map((msg) => msg.message)).toEqual([
 			`No graphic found after GRAFIK cue`
 		])
 		expect(result.pieces).toHaveLength(0)
@@ -84,7 +84,7 @@ describe('Graphics', () => {
 
 		CreatePartGrafik(context, partDefinition, 0)
 
-		expect((context.core as SegmentUserContextMock).getNotes().map(msg => msg.message)).toEqual([
+		expect((context.core as SegmentUserContextMock).getNotes().map((msg) => msg.message)).toEqual([
 			`Graphic found without target engine`
 		])
 	})
@@ -130,7 +130,7 @@ describe('Graphics', () => {
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(7) // @todo: this depends on unrelated configuration
 		const vizObj = timeline.find(
-			t =>
+			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ start: 0 })
@@ -193,7 +193,7 @@ describe('Graphics', () => {
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(1)
 		const vizObj = timeline.find(
-			t =>
+			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '!.full' })
@@ -249,7 +249,7 @@ describe('Graphics', () => {
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(1)
 		const vizObj = timeline.find(
-			t =>
+			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ while: '1' })
@@ -302,7 +302,7 @@ describe('Graphics', () => {
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(7)
 		const vizObj = timeline.find(
-			t =>
+			(t) =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
 		)! as TSR.TimelineObjVIZMSEElementPilot
 		expect(vizObj.enable).toEqual({ start: 0 })
@@ -355,12 +355,12 @@ describe('Graphics', () => {
 
 		const result = await CreatePartGrafik(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(3)
-		const auxPiece = result.pieces.find(p => p.outputLayerId === SharedOutputLayer.AUX)!
+		const auxPiece = result.pieces.find((p) => p.outputLayerId === SharedOutputLayer.AUX)!
 		expect(auxPiece.enable).toEqual({ start: 0 })
 		expect(auxPiece.sourceLayerId).toBe(SourceLayer.VizFullIn1)
 		expect(auxPiece.lifespan).toBe(PieceLifespan.WithinPart)
 		const auxObj = (auxPiece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj => obj.content.deviceType === TSR.DeviceType.ATEM && obj.content.type === TSR.TimelineContentTypeAtem.AUX
+			(obj) => obj.content.deviceType === TSR.DeviceType.ATEM && obj.content.type === TSR.TimelineContentTypeAtem.AUX
 		) as TSR.TimelineObjAtemAUX | undefined
 		expect(auxObj).toBeTruthy()
 		expect(auxObj?.enable).toEqual({ start: 0 })
@@ -434,7 +434,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj =>
+			(obj) =>
 				obj.content.deviceType === TSR.DeviceType.CASPARCG && obj.content.type === TSR.TimelineContentTypeCasparCg.MEDIA
 		) as TSR.TimelineObjCCGMedia | undefined
 		expect(tlObj).toBeTruthy()
@@ -484,7 +484,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsLower)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
-			obj =>
+			(obj) =>
 				obj.content.deviceType === TSR.DeviceType.VIZMSE &&
 				obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL
 		) as TSR.TimelineObjVIZMSEElementInternal | undefined
