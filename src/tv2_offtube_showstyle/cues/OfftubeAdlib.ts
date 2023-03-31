@@ -1,11 +1,4 @@
-import {
-	HackPartMediaObjectSubscription,
-	IBlueprintActionManifest,
-	ISegmentUserContext,
-	SplitsContent,
-	TimelineObjectCoreExt,
-	TSR
-} from 'blueprints-integration'
+import { HackPartMediaObjectSubscription, IBlueprintActionManifest, SplitsContent } from 'blueprints-integration'
 import {
 	ActionSelectDVE,
 	CreateAdlibServer,
@@ -16,19 +9,18 @@ import {
 	getUniquenessIdDVE,
 	literal,
 	PartDefinition,
+	SegmentContext,
 	t,
 	TemplateIsValid
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, CueType } from 'tv2-constants'
-import _ = require('underscore')
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export async function OfftubeEvaluateAdLib(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	actions: IBlueprintActionManifest[],
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	parsedCue: CueDefinitionAdLib,
@@ -46,7 +38,6 @@ export async function OfftubeEvaluateAdLib(
 		actions.push(
 			await CreateAdlibServer(
 				context,
-				config,
 				rank,
 				partDefinition,
 				file,
@@ -62,12 +53,6 @@ export async function OfftubeEvaluateAdLib(
 					},
 					Sisyfos: {
 						ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending
-					},
-					AtemLLayer: {
-						MEPgm: OfftubeAtemLLayer.AtemMEClean
-					},
-					ATEM: {
-						ServerLookaheadAux: OfftubeAtemLLayer.AtemAuxServerLookahead
 					}
 				},
 				true
@@ -81,14 +66,14 @@ export async function OfftubeEvaluateAdLib(
 			return
 		}
 
-		const rawTemplate = GetDVETemplate(config.showStyle.DVEStyles, parsedCue.variant)
+		const rawTemplate = GetDVETemplate(context.config.showStyle.DVEStyles, parsedCue.variant)
 		if (!rawTemplate) {
-			context.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
+			context.core.notifyUserWarning(`Could not find template ${parsedCue.variant}`)
 			return
 		}
 
 		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
-			context.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
+			context.core.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
 
@@ -100,7 +85,7 @@ export async function OfftubeEvaluateAdLib(
 			iNewsCommand: 'DVE'
 		}
 
-		const adlibContent = OfftubeMakeContentDVE(context, config, partDefinition, cueDVE, rawTemplate)
+		const adlibContent = OfftubeMakeContentDVE(context, partDefinition, cueDVE, rawTemplate)
 
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,
@@ -110,7 +95,7 @@ export async function OfftubeEvaluateAdLib(
 			segmentExternalId: partDefinition.segmentExternalId
 		}
 		actions.push({
-			externalId: generateExternalId(context, userData),
+			externalId: generateExternalId(context.core, userData),
 			actionId: AdlibActionType.SELECT_DVE,
 			userData,
 			userDataManifest: {},
@@ -126,34 +111,4 @@ export async function OfftubeEvaluateAdLib(
 			}
 		})
 	}
-}
-
-export function makeofftubeDVEIDsUniqueForFlow(timeline: TimelineObjectCoreExt[]): TimelineObjectCoreExt[] {
-	const startIdObj = timeline.find(tlObj => tlObj.layer === OfftubeAtemLLayer.AtemSSrcDefault)
-
-	if (!startIdObj) {
-		return timeline
-	}
-
-	const startId = startIdObj.id
-
-	if (!startId.length) {
-		return timeline
-	}
-
-	const newId = `${startId}_flow`
-
-	return timeline.map(tlObj => {
-		const enable = _.clone(tlObj.enable) as TSR.Timeline.TimelineEnable
-
-		if (enable.start && typeof enable.start === 'string') {
-			enable.start = enable.start.replace(startId, newId)
-		}
-
-		return {
-			...tlObj,
-			id: tlObj.id.replace(startId, newId),
-			enable
-		}
-	})
 }

@@ -4,22 +4,27 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, ApplyFullGraphicPropertiesToPart, GraphicIsPilot, PartDefinition, PartTime } from 'tv2-common'
+import {
+	AddScript,
+	applyFullGraphicPropertiesToPart,
+	GraphicIsPilot,
+	PartDefinition,
+	PartTime,
+	ShowStyleContext
+} from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { BlueprintConfig } from '../helpers/config'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 
 export async function CreatePartGrafik(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
@@ -32,12 +37,11 @@ export async function CreatePartGrafik(
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
 	if (partDefinition.cues.filter(c => c.type === CueType.Graphic && GraphicIsPilot(c) && c.target === 'FULL').length) {
-		ApplyFullGraphicPropertiesToPart(config, part)
+		applyFullGraphicPropertiesToPart(context.config, part)
 	}
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

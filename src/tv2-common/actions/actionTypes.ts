@@ -54,12 +54,13 @@ export interface ActionCallRobotPreset extends ActionBase {
 
 export interface ActionCutToCamera extends ActionBase {
 	type: AdlibActionType.CUT_TO_CAMERA
-	queue: boolean
+	cutDirectly: boolean
 	sourceDefinition: SourceDefinitionKam
 }
 
 export interface ActionCutToRemote extends ActionBase {
 	type: AdlibActionType.CUT_TO_REMOTE
+	cutDirectly: boolean
 	sourceDefinition: SourceDefinitionRemote
 }
 

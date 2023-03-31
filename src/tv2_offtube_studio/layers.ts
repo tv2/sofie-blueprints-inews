@@ -1,33 +1,5 @@
-import {
-	AbstractLLayer,
-	SharedATEMLLayer,
-	SharedCasparLLayer,
-	SharedGraphicLLayer,
-	SharedSisyfosLLayer
-} from 'tv2-constants'
+import { SharedCasparLLayer, SharedGraphicLLayer, SharedSisyfosLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
-
-/** Get all the Real LLayers (map to devices). Note: Does not include some which are dynamically generated */
-export function RealLLayers(): string[] {
-	return (
-		_.values(OfftubeAbstractLLayer)
-			// @ts-ignore
-			.concat(_.values(OfftubeSisyfosLLayer))
-			// @ts-ignore
-			.concat(_.values(OfftubeAtemLLayer))
-			// @ts-ignore
-			.concat(_.values(OfftubeCasparLLayer))
-			// @ts-ignore
-			.concat(_.values(AbstractLLayer))
-			// @ts-ignore
-			.concat(_.values(SharedGraphicLLayer))
-	)
-}
-
-export enum OfftubeAbstractLLayer {
-	/** Contains the classes to enable infinites */
-	OfftubeAbstractLLayerAbstractLookahead = 'offtube_abstract_layer_abstract_lookahead'
-}
 
 enum SisyfosLLayer {
 	SisyfosConfig = 'sisyfos_config',
@@ -49,30 +21,6 @@ enum SisyfosLLayer {
 	SisyfosSourceDisp1 = 'sisyfos_source_disp_1',
 	SisyfosSourceDisp2 = 'sisyfos_source_disp_2'
 }
-
-export enum AtemLLayer {
-	AtemMEClean = 'atem_me_clean',
-	AtemMEProgram = 'atem_me_program',
-	AtemMENext = 'atem_me_next',
-	AtemMENextJingle = 'atem_me_next_jingle',
-	AtemSSrcArt = 'atem_supersource_art',
-	AtemSSrcDefault = 'atem_supersource_default',
-	AtemAuxClean = 'atem_aux_clean',
-	AtemAuxScreen = 'atem_aux_screen',
-	AtemAuxServerLookahead = 'atem_aux_server_lookahead',
-	AtemSSrcBox1 = 'atem_supersource_z_box1',
-	AtemSSrcBox2 = 'atem_supersource_z_box2',
-	AtemSSrcBox3 = 'atem_supersource_z_box3',
-	AtemSSrcBox4 = 'atem_supersource_z_box4'
-}
-
-// tslint:disable-next-line: variable-name
-export const OfftubeAtemLLayer = {
-	...AtemLLayer,
-	...SharedATEMLLayer
-}
-
-export type OfftubeAtemLLayer = AtemLLayer | SharedATEMLLayer
 
 enum CasparLLayer {
 	/** Maps to the same Caspar layer as CasparPlayerJingle but its lookahead preloads the first frame */

@@ -1,16 +1,16 @@
-import { TSR } from 'blueprints-integration'
 import {
-	AtemTransitionStyleFromString,
 	CueDefinitionFromLayout,
+	parseTransitionStyle,
 	PostProcessDefinitions,
-	TV2BlueprintConfig,
+	TransitionStyle,
+	TV2ShowStyleConfig,
 	UnparsedCue
 } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
 import { CueDefinition, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
 export interface PartTransition {
-	style: TSR.AtemTransitionStyle
+	style: TransitionStyle
 	duration?: number
 }
 
@@ -181,7 +181,7 @@ const ENGINE_CUE = /ENGINE ?([^\s]+)/i
 const MAX_ALLOWED_TRANSITION_FRAMES = 250
 
 export function ParseBody(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	segmentId: string,
 	segmentName: string,
 	body: string,
@@ -429,7 +429,7 @@ function cueInLine(line: string) {
 }
 
 /** Returns all the cues in a given line as parsed cues. */
-function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2BlueprintConfig): CueDefinition[] {
+function getCuesInLine(line: string, cues: UnparsedCue[], config: TV2ShowStyleConfig): CueDefinition[] {
 	if (!cueInLine(line)) {
 		return []
 	}
@@ -567,7 +567,7 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 
 	if (transitionMatch) {
 		definition.transition = {
-			style: AtemTransitionStyleFromString(transitionMatch[1].toUpperCase()),
+			style: parseTransitionStyle(transitionMatch[1].toUpperCase()),
 			duration: transitionMatch[2] ? getTimeForTransition(transitionMatch[2]) : undefined
 		}
 	}

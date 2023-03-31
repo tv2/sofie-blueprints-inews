@@ -1,3 +1,4 @@
+import { SwitcherType } from 'tv2-common'
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { defaultDSKConfig, StudioConfig } from '../helpers/config'
@@ -5,6 +6,7 @@ import { defaultDSKConfig, StudioConfig } from '../helpers/config'
 const blankStudioConfig: StudioConfig = {
 	SofieHostURL: '',
 
+	SwitcherType: SwitcherType.ATEM,
 	ClipMediaFlowId: '',
 	GraphicMediaFlowId: '',
 	JingleMediaFlowId: '',
@@ -38,10 +40,10 @@ const blankStudioConfig: StudioConfig = {
 	StudioMics: [],
 	ABPlaybackDebugLogging: false,
 
-	AtemSource: {
+	SwitcherSource: {
 		DSK: defaultDSKConfig,
-		SplitArtF: 0,
-		SplitArtK: 0,
+		SplitArtFill: 0,
+		SplitArtKey: 0,
 		Default: 0,
 		MixMinusDefault: 0,
 		Continuity: 0,
@@ -70,7 +72,8 @@ const blankStudioConfig: StudioConfig = {
 		PrerollDuration: 1000,
 		OutTransitionDuration: 1000,
 		CutToMediaPlayer: 1000,
-		FullGraphicBackground: 36
+		FullGraphicBackground: 36,
+		CleanFeedPrerollDuration: 320
 	},
 	HTMLGraphics: {
 		GraphicURL: '',

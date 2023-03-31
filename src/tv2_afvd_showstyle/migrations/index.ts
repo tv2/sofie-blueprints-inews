@@ -34,7 +34,6 @@ import {
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps
 } from './util'
-import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
 
@@ -46,7 +45,6 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
  */
 
 export const showStyleMigrations: MigrationStepShowStyle[] = [
-	...getCreateVariantMigrationSteps(),
 	remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
 	remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
@@ -268,7 +266,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	renameTableId('1.7.9', 'OverlayShowMapping', 'GfxShowMapping'),
 
 	/**
-	 * 1.8.0 Move SelectedGfxSetupName to GFX Defaults
+	 * 1.8.2 Move SelectedGfxSetupName to GFX Defaults
 	 */
 	moveSelectedGfxSetupNameToGfxDefaults('1.8.2', 'SelectedGfxSetupName', 'GfxDefaults'),
 	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2', 'SelectedGfxSetupName', 'GfxDefaults'),

@@ -1,6 +1,6 @@
-import { ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig } from '../helpers/config'
 
-export const MOCK_EFFEKT_1: ShowStyleConfig['BreakerConfig'][0] = {
+export const MOCK_EFFEKT_1: GalleryShowStyleConfig['BreakerConfig'][0] = {
 	BreakerName: '1',
 	ClipName: 'EFFEKT_1',
 	Duration: 100,
@@ -10,7 +10,7 @@ export const MOCK_EFFEKT_1: ShowStyleConfig['BreakerConfig'][0] = {
 	LoadFirstFrame: false
 }
 
-export const MOCK_EFFEKT_2: ShowStyleConfig['BreakerConfig'][0] = {
+export const MOCK_EFFEKT_2: GalleryShowStyleConfig['BreakerConfig'][0] = {
 	BreakerName: '2',
 	ClipName: 'EFFEKT_2',
 	Duration: 200,
@@ -20,7 +20,7 @@ export const MOCK_EFFEKT_2: ShowStyleConfig['BreakerConfig'][0] = {
 	LoadFirstFrame: false
 }
 
-export function DefaultBreakerConfig(): ShowStyleConfig['BreakerConfig'] {
+export function DefaultBreakerConfig(): GalleryShowStyleConfig['BreakerConfig'] {
 	return [
 		{
 			BreakerName: 'WTA-OUTRO',

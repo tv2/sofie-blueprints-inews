@@ -1,4 +1,4 @@
-import { literal, TableConfigItemGfxDesignTemplate, TV2BlueprintConfig, UnparsedCue } from 'tv2-common'
+import { literal, TableConfigItemGfxDesignTemplate, TV2ShowStyleConfig, UnparsedCue } from 'tv2-common'
 import { CueType, GraphicEngine, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -198,7 +198,7 @@ export function GraphicIsPilot(
 	return o.graphic.type === 'pilot'
 }
 
-export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefinition | undefined {
+export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefinition | undefined {
 	if (!cue) {
 		return undefined
 	}
@@ -266,7 +266,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 
 function parsekg(
 	cue: string[],
-	config: TV2BlueprintConfig
+	config: TV2ShowStyleConfig
 ): CueDefinitionGraphic<GraphicInternalOrPilot> | CueDefinitionGraphicDesign | CueDefinitionUnpairedTarget {
 	let kgCue: CueDefinitionGraphic<GraphicInternalOrPilot> = {
 		type: CueType.Graphic,
@@ -496,7 +496,7 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 	return dvecue
 }
 
-function parseTelefon(cue: string[], config: TV2BlueprintConfig): CueDefinitionTelefon {
+function parseTelefon(cue: string[], config: TV2ShowStyleConfig): CueDefinitionTelefon {
 	const telefonCue: CueDefinitionTelefon = {
 		type: CueType.Telefon,
 		source: '',
@@ -663,7 +663,7 @@ function parseJingle(cue: string[]) {
 
 function parseTargetEngine(
 	cue: string[],
-	config: TV2BlueprintConfig
+	config: TV2ShowStyleConfig
 ): CueDefinitionUnpairedTarget | CueDefinitionGraphic<GraphicInternalOrPilot> | CueDefinitionGraphicDesign {
 	let engineCue: CueDefinitionUnpairedTarget = {
 		type: CueType.UNPAIRED_TARGET,
@@ -894,7 +894,7 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 	return retTime
 }
 
-function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefinitionGraphicDesign | undefined {
+function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefinitionGraphicDesign | undefined {
 	const array = cue[0].split('DESIGN_LAYOUT=')
 	const layout = array[1]
 
@@ -916,7 +916,7 @@ function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefini
 }
 
 function findGraphicDesignConfiguration(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	layout: string
 ): TableConfigItemGfxDesignTemplate | undefined {
 	return config.showStyle.GfxDesignTemplates.find(

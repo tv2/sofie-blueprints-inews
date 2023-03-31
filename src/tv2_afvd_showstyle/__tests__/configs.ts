@@ -1,6 +1,6 @@
-import { literal, parseMapStr } from 'tv2-common'
+import { literal, parseMapStr, SwitcherType } from 'tv2-common'
 import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
-import { GalleryTableConfigGfxSetup, ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig, GalleryTableConfigGfxSetup } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
 import { DefaultGrafikConfig } from './grafikConfigDefault'
 
@@ -26,7 +26,7 @@ function prepareConfig(
 	wantsToPersistAudio?: boolean
 ): Array<{
 	SourceName: string
-	AtemSource: number
+	SwitcherSource: number
 	SisyfosLayers: string[]
 	StudioMics: boolean
 	wantsToPersistAudio: boolean
@@ -34,7 +34,7 @@ function prepareConfig(
 	return parseMapStr(undefined, conf, true).map(c => {
 		return {
 			SourceName: c.id,
-			AtemSource: c.val,
+			SwitcherSource: c.val,
 			SisyfosLayers: getSisyfosLayers(configName, c.id),
 			StudioMics: studioMics,
 			wantsToPersistAudio: wantsToPersistAudio ?? false
@@ -54,6 +54,7 @@ export const DEFAULT_GFX_SETUP: GalleryTableConfigGfxSetup = {
 
 // in here will be some mock configs that can be referenced paired with ro's for the tests
 export const defaultStudioConfig: StudioConfig = {
+	SwitcherType: SwitcherType.ATEM,
 	ClipMediaFlowId: '',
 	GraphicMediaFlowId: '',
 	JingleMediaFlowId: '',
@@ -100,19 +101,19 @@ export const defaultStudioConfig: StudioConfig = {
 		'sisyfos_source_Guest_3_st_a',
 		'sisyfos_source_Guest_4_st_a'
 	],
-	AtemSource: {
+	SwitcherSource: {
 		MixMinusDefault: 2,
 		DSK: defaultDSKConfig,
-		SplitArtF: 30,
-		SplitArtK: 32,
+		SplitArtFill: 30,
+		SplitArtKey: 32,
 		Default: 2001,
 		Continuity: 2002,
 		Dip: 2002
 	},
 	SofieHostURL: '',
 	ABMediaPlayers: [
-		{ SourceName: '1', AtemSource: 1 },
-		{ SourceName: '2', AtemSource: 2 }
+		{ SourceName: '1', SwitcherSource: 1 },
+		{ SourceName: '2', SwitcherSource: 2 }
 	],
 	ABPlaybackDebugLogging: false,
 	AtemSettings: {
@@ -134,7 +135,8 @@ export const defaultStudioConfig: StudioConfig = {
 		PrerollDuration: 2000,
 		OutTransitionDuration: 280,
 		CutToMediaPlayer: 1500,
-		FullGraphicBackground: 36
+		FullGraphicBackground: 36,
+		CleanFeedPrerollDuration: 320
 	},
 	HTMLGraphics: {
 		GraphicURL: 'E:/somepath',
@@ -147,7 +149,7 @@ export const defaultStudioConfig: StudioConfig = {
 	}
 }
 
-export const defaultShowStyleConfig: ShowStyleConfig = {
+export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	...defaultStudioConfig,
 	DefaultTemplateDuration: 4,
 	CasparCGLoadingClip: 'LoadingLoop',
@@ -188,7 +190,7 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	GfxTemplates: [
 		...DefaultGrafikConfig(),
-		...literal<ShowStyleConfig['GfxTemplates']>([
+		...literal<GalleryShowStyleConfig['GfxTemplates']>([
 			{
 				INewsCode: 'GRAFIK',
 				INewsName: 'wall',
@@ -273,11 +275,4 @@ export const defaultShowStyleConfig: ShowStyleConfig = {
 	GfxSchemaTemplates: [],
 	GfxShowMapping: [],
 	GfxDefaults: [{ GfxSetup: 'SomeProfile', DefaultDesign: [], DefaultSchema: [] }]
-}
-
-export const EMPTY_SOURCE_CONFIG = {
-	cameras: [],
-	lives: [],
-	feeds: [],
-	replays: []
 }

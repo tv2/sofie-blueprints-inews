@@ -1,4 +1,4 @@
-import { IBlueprintRundownDB, PieceLifespan, PlaylistTimingType, TSR } from 'blueprints-integration'
+import { PieceLifespan, TSR } from 'blueprints-integration'
 import {
 	CueDefinition,
 	CueDefinitionBackgroundLoop,
@@ -12,47 +12,19 @@ import {
 	PartDefinition,
 	RemoteType
 } from 'tv2-common'
-import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
-import { SegmentUserContext } from '../../__mocks__/context'
-import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
-import { getConfig, parseConfig as parseShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType, SwitcherAuxLLayer } from 'tv2-constants'
+import { makeMockGalleryContext, SegmentUserContextMock } from '../../__mocks__/context'
+import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { SourceLayer } from '../../tv2_afvd_showstyle/layers'
 import { CreatePartGrafik } from '../../tv2_afvd_showstyle/parts/grafik'
 import { CreatePartUnknown } from '../../tv2_afvd_showstyle/parts/unknown'
-import { parseConfig as parseStudioConfig } from '../helpers/config'
-import { AtemLLayer, CasparLLayer } from '../layers'
-import mappingsDefaults from '../migrations/mappings-defaults'
+import { CasparLLayer } from '../layers'
 
-const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 const SEGMENT_EXTERNAL_ID = '00000000'
-
-function makeMockContext() {
-	const rundown = literal<IBlueprintRundownDB>({
-		externalId: RUNDOWN_EXTERNAL_ID,
-		name: RUNDOWN_EXTERNAL_ID,
-		_id: '',
-		showStyleVariantId: '',
-		timing: {
-			type: PlaylistTimingType.None
-		}
-	})
-	const mockContext = new SegmentUserContext(
-		'mock_context',
-		mappingsDefaults,
-		parseStudioConfig,
-		parseShowStyleConfig,
-		rundown._id
-	)
-	mockContext.studioConfig = defaultStudioConfig as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
-
-	return mockContext
-}
 
 describe('Graphics', () => {
 	it('Throws warning for unpaired target and creates invalid part', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionUnpairedTarget>({
@@ -74,9 +46,11 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartGrafik(context, config, partDefintion, 0)
+		const result = await CreatePartGrafik(context, partDefintion, 0)
 
-		expect(context.getNotes().map(msg => msg.message)).toEqual([`No graphic found after GRAFIK cue`])
+		expect((context.core as SegmentUserContextMock).getNotes().map(msg => msg.message)).toEqual([
+			`No graphic found after GRAFIK cue`
+		])
 		expect(result.pieces).toHaveLength(0)
 		expect(result.adLibPieces).toHaveLength(0)
 		expect(result.actions).toHaveLength(0)
@@ -84,8 +58,7 @@ describe('Graphics', () => {
 	})
 
 	it('Throws warning for unpaired pilot', () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionUnpairedPilot>({
@@ -109,14 +82,15 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		CreatePartGrafik(context, config, partDefinition, 0)
+		CreatePartGrafik(context, partDefinition, 0)
 
-		expect(context.getNotes().map(msg => msg.message)).toEqual([`Graphic found without target engine`])
+		expect((context.core as SegmentUserContextMock).getNotes().map(msg => msg.message)).toEqual([
+			`Graphic found without target engine`
+		])
 	})
 
 	it('Creates FULL graphic correctly', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -144,17 +118,17 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
 		// expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline).toHaveLength(5)
+		expect(timeline).toHaveLength(7) // @todo: this depends on unrelated configuration
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -167,14 +141,13 @@ describe('Graphics', () => {
 		expect(vizObj.content.delayTakeAfterOutTransition).toBe(true)
 		expect(vizObj.content.outTransition).toEqual({
 			type: TSR.VIZMSETransitionType.DELAY,
-			delay: config.studio.VizPilotGraphics.OutTransitionDuration
+			delay: context.config.studio.VizPilotGraphics.OutTransitionDuration
 		})
 		expect(vizObj.classes).toEqual(['full'])
 	})
 
 	it('Creates OVL pilot graphic correctly', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -208,13 +181,13 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.OVERLAY)
 		expect(piece.enable).toEqual({ start: 2000 })
-		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -230,14 +203,13 @@ describe('Graphics', () => {
 		expect(vizObj.content.continueStep).toBe(-1)
 		expect(vizObj.content.delayTakeAfterOutTransition).toBe(true)
 		expect(vizObj.content.outTransition).toEqual({
-			delay: config.studio.VizPilotGraphics.OutTransitionDuration,
+			delay: context.config.studio.VizPilotGraphics.OutTransitionDuration,
 			type: TSR.VIZMSETransitionType.DELAY
 		})
 	})
 
 	it('Creates WALL graphic correctly', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -265,13 +237,13 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
@@ -290,8 +262,7 @@ describe('Graphics', () => {
 	})
 
 	it('Creates TLF graphic correctly', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -319,17 +290,17 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.PGM)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.PGM)
 		expect(piece.enable).toEqual({ start: 0 })
-		expect(piece.prerollDuration).toBe(config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
-		expect(timeline).toHaveLength(5)
+		expect(timeline).toHaveLength(7)
 		const vizObj = timeline.find(
 			t =>
 				t.content.deviceType === TSR.DeviceType.VIZMSE && t.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
@@ -342,14 +313,13 @@ describe('Graphics', () => {
 		expect(vizObj.content.delayTakeAfterOutTransition).toBe(true)
 		expect(vizObj.content.outTransition).toEqual({
 			type: TSR.VIZMSETransitionType.DELAY,
-			delay: config.studio.VizPilotGraphics.OutTransitionDuration
+			delay: context.config.studio.VizPilotGraphics.OutTransitionDuration
 		})
 		expect(vizObj.classes).toEqual(['full'])
 	})
 
 	it('Routes source to engine', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicPilot>>({
@@ -383,9 +353,9 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartGrafik(context, config, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(3)
-		const auxPiece = result.pieces.find(p => p.outputLayerId === SharedOutputLayers.AUX)!
+		const auxPiece = result.pieces.find(p => p.outputLayerId === SharedOutputLayer.AUX)!
 		expect(auxPiece.enable).toEqual({ start: 0 })
 		expect(auxPiece.sourceLayerId).toBe(SourceLayer.VizFullIn1)
 		expect(auxPiece.lifespan).toBe(PieceLifespan.WithinPart)
@@ -394,13 +364,12 @@ describe('Graphics', () => {
 		) as TSR.TimelineObjAtemAUX | undefined
 		expect(auxObj).toBeTruthy()
 		expect(auxObj?.enable).toEqual({ start: 0 })
-		expect(auxObj?.layer).toBe(AtemLLayer.AtemAuxVizOvlIn1)
+		expect(auxObj?.layer).toBe(prefixLayer(SwitcherAuxLLayer.VIZ_OVL_IN_1))
 		expect(auxObj?.content.aux.input).toBe(1)
 	})
 
 	it('Creates design element', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphicDesign>({
@@ -422,19 +391,18 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDesign)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		expect(piece.enable).toEqual({ start: 0 })
 	})
 
 	it('Creates background loop', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionBackgroundLoop>({
@@ -457,12 +425,12 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.name).toBe('DESIGN_SC')
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.SEC)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
@@ -476,8 +444,7 @@ describe('Graphics', () => {
 	})
 
 	it('Creates overlay internal graphic', async () => {
-		const context = makeMockContext()
-		const config = getConfig(context)
+		const context = makeMockGalleryContext()
 
 		const cues: CueDefinition[] = [
 			literal<CueDefinitionGraphic<GraphicInternal>>({
@@ -508,12 +475,12 @@ describe('Graphics', () => {
 			storyName: ''
 		})
 
-		const result = await CreatePartUnknown(context, config, partDefinition, 0)
+		const result = await CreatePartUnknown(context, partDefinition, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
 		expect(piece.enable).toEqual({ start: 5000, duration: 4000 })
-		expect(piece.outputLayerId).toBe(SharedOutputLayers.OVERLAY)
+		expect(piece.outputLayerId).toBe(SharedOutputLayer.OVERLAY)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsLower)
 		expect(piece.lifespan).toBe(PieceLifespan.WithinPart)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(

@@ -20,15 +20,22 @@ import {
 	SourceDefinitionKam,
 	SourceDefinitionRemote
 } from 'tv2-common'
-import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers, SourceType } from 'tv2-constants'
-import { ActionExecutionContext } from '../../__mocks__/context'
+import {
+	AdlibActionType,
+	CueType,
+	NoteType,
+	PartType,
+	SharedSourceLayer,
+	SourceType,
+	SwitcherMixEffectLLayer
+} from 'tv2-constants'
+import { ActionExecutionContextMock } from '../../__mocks__/context'
+import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
-import { OfftubeStudioConfig, parseConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeStudioConfig, preprocessConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
 import mappingsDefaults from '../../tv2_offtube_studio/migrations/mappings-defaults'
 import { executeActionOfftube } from '../actions'
-import { parseConfig as parseShowStyleConfig } from '../helpers/config'
+import { preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 const RUNDOWN_ID = 'MOCK_ACTION_RUNDOWN'
@@ -86,7 +93,7 @@ const kamPieceInstance: IBlueprintPieceInstance<PieceMetaData> = {
 					enable: {
 						start: 0
 					},
-					layer: AtemLLayer.AtemMEClean,
+					layer: prefixLayer(SwitcherMixEffectLLayer.CLEAN),
 					content: {
 						deviceType: TSR.DeviceType.ATEM,
 						type: TSR.TimelineContentTypeAtem.ME,
@@ -227,11 +234,12 @@ const commentatorSelectDVE = literal<ActionCommentatorSelectDVE>({
 const selectCameraAction = literal<ActionCutToCamera>({
 	type: AdlibActionType.CUT_TO_CAMERA,
 	sourceDefinition: SOURCE_DEFINITION_KAM_1,
-	queue: true
+	cutDirectly: false
 })
 
 const selectLiveAction = literal<ActionCutToRemote>({
 	type: AdlibActionType.CUT_TO_REMOTE,
+	cutDirectly: false,
 	sourceDefinition: SOURCE_DEFINITION_LIVE_2
 })
 
@@ -257,7 +265,7 @@ interface ActivePiecesForSource {
 }
 
 async function getActiveServerPieces(
-	context: ActionExecutionContext,
+	context: ActionExecutionContextMock,
 	part: 'current' | 'next'
 ): Promise<ActivePiecesForSource> {
 	return {
@@ -270,7 +278,10 @@ async function getActiveServerPieces(
 	}
 }
 
-async function getVOPieces(context: ActionExecutionContext, part: 'current' | 'next'): Promise<ActivePiecesForSource> {
+async function getVOPieces(
+	context: ActionExecutionContextMock,
+	part: 'current' | 'next'
+): Promise<ActivePiecesForSource> {
 	return {
 		activePiece: await context
 			.getPieceInstances(part)
@@ -281,7 +292,10 @@ async function getVOPieces(context: ActionExecutionContext, part: 'current' | 'n
 	}
 }
 
-async function getDVEPieces(context: ActionExecutionContext, part: 'current' | 'next'): Promise<ActivePiecesForSource> {
+async function getDVEPieces(
+	context: ActionExecutionContextMock,
+	part: 'current' | 'next'
+): Promise<ActivePiecesForSource> {
 	return {
 		activePiece: await context
 			.getPieceInstances(part)
@@ -293,23 +307,23 @@ async function getDVEPieces(context: ActionExecutionContext, part: 'current' | '
 }
 
 async function getFullGrafikPieces(
-	context: ActionExecutionContext,
+	context: ActionExecutionContextMock,
 	part: 'current' | 'next'
 ): Promise<ActivePiecesForSource> {
 	return {
 		activePiece: await context
 			.getPieceInstances(part)
-			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SharedSourceLayers.PgmPilot)),
+			.then(pieceInstances => pieceInstances.find(p => p.piece.sourceLayerId === SharedSourceLayer.PgmPilot)),
 		dataStore: await context
 			.getPieceInstances(part)
 			.then(pieceInstances =>
-				pieceInstances.find(p => p.piece.sourceLayerId === SharedSourceLayers.SelectedAdlibGraphicsFull)
+				pieceInstances.find(p => p.piece.sourceLayerId === SharedSourceLayer.SelectedAdlibGraphicsFull)
 			)
 	}
 }
 
 async function getCameraPiece(
-	context: ActionExecutionContext,
+	context: ActionExecutionContextMock,
 	part: 'current' | 'next'
 ): Promise<IBlueprintPieceInstance | undefined> {
 	return context
@@ -318,7 +332,7 @@ async function getCameraPiece(
 }
 
 async function getRemotePiece(
-	context: ActionExecutionContext,
+	context: ActionExecutionContextMock,
 	part: 'current' | 'next'
 ): Promise<IBlueprintPieceInstance | undefined> {
 	return context
@@ -355,19 +369,22 @@ function validateRemotePiece(piece: IBlueprintPieceInstance | undefined) {
 	expect(piece).toBeTruthy()
 }
 
-function validateNoWarningsOrErrors(context: ActionExecutionContext) {
+function validateNoWarningsOrErrors(context: ActionExecutionContextMock) {
 	expect(
 		context.getNotes().filter(n => n.type === NoteType.WARNING || n.type === NoteType.NOTIFY_USER_WARNING)
 	).toEqual([])
 	expect(context.getNotes().filter(n => n.type === NoteType.ERROR || n.type === NoteType.NOTIFY_USER_ERROR)).toEqual([])
 }
 
-function validateNextPartExistsWithDuration(context: ActionExecutionContext, duration: number) {
+function validateNextPartExistsWithDuration(context: ActionExecutionContextMock, duration: number) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.expectedDuration).toEqual(duration)
 }
 
-function validateNextPartExistsWithPreviousPartKeepaliveDuration(context: ActionExecutionContext, duration: number) {
+function validateNextPartExistsWithPreviousPartKeepaliveDuration(
+	context: ActionExecutionContextMock,
+	duration: number
+) {
 	expect(context.nextPart).toBeTruthy()
 	expect(context.nextPart?.part.inTransition?.previousPartKeepaliveDuration).toEqual(duration)
 }
@@ -375,7 +392,7 @@ function validateNextPartExistsWithPreviousPartKeepaliveDuration(context: Action
 function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	const atemObj = (piece.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(
 		obj =>
-			obj.layer === OfftubeAtemLLayer.AtemMEClean &&
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.CLEAN) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME | undefined
@@ -399,7 +416,7 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 
 describe('Select Server Action', () => {
 	it('Inserts a new part when no next part is present', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -426,7 +443,7 @@ describe('Select Server Action', () => {
 	})
 
 	it('Leaves current part unaffected when a clip is currently playing', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -458,7 +475,7 @@ describe('Select Server Action', () => {
 
 describe('Combination Actions', () => {
 	it('Server -> DVE', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -491,7 +508,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> Full', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -525,7 +542,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> VO', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -559,7 +576,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> CAM', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -592,7 +609,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server -> LIVE', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -625,7 +642,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> Server', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -657,7 +674,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> Full', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -690,7 +707,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> VO', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -722,7 +739,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> CAM', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -754,7 +771,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('DVE -> LIVE', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -786,7 +803,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('Server (01234A) -> DVE (morbarn) -> VO (VOVOA) -> DVE (barnmor) -> CAM (1) -> LIVE (2) -> SERVER (01234A) -> Commentator Select DVE', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -910,7 +927,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> LIVE (2)', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -953,7 +970,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> SERVER', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -996,7 +1013,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> VO', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,
@@ -1039,7 +1056,7 @@ describe('Combination Actions', () => {
 	})
 
 	it('CAM -> MIX 20 (No Take) -> DVE', async () => {
-		const context = new ActionExecutionContext(
+		const context = new ActionExecutionContextMock(
 			'test',
 			mappingsDefaults,
 			parseStudioConfig,

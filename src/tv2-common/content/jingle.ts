@@ -1,7 +1,18 @@
 import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
-import { TimeFromFrames } from 'tv2-common'
-import { TV2BlueprintConfig, TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
-import { EnableDSK, FindDSKJingle } from '../helpers'
+import {
+	findDskJingle,
+	getDskOnAirTimelineObjects,
+	getTimeFromFrames,
+	ShowStyleContext,
+	TransitionStyle
+} from 'tv2-common'
+import { DskRole } from 'tv2-constants'
+import {
+	TableConfigItemBreaker,
+	TV2BlueprintConfigBase,
+	TV2ShowStyleConfig,
+	TV2StudioConfigBase
+} from '../blueprintConfig'
 import { TimelineBlueprintExt } from '../onTimelineGenerate'
 import { joinAssetToFolder, joinAssetToNetworkPath, literal } from '../util'
 
@@ -10,21 +21,15 @@ export interface JingleLayers {
 		PlayerJingle: string
 		PlayerJinglePreload?: string
 	}
-	ATEM: {
-		USKCleanEffekt?: string
-		USKJinglePreview?: string
-	}
 	Sisyfos: {
 		PlayerJingle: string
 	}
 }
 
-export function CreateJingleExpectedMedia(
-	config: TV2BlueprintConfig,
+export function createJingleExpectedMedia(
+	config: TV2ShowStyleConfig,
 	jingle: string,
-	alphaAtStart: number,
-	duration: number,
-	alphaAtEnd: number
+	breakerConfig: TableConfigItemBreaker
 ) {
 	const fileName = joinAssetToFolder(config.studio.JingleFolder, jingle)
 
@@ -37,12 +42,12 @@ export function CreateJingleExpectedMedia(
 			config.studio.JingleFileExtension
 		), // full path on the source network storage
 		mediaFlowIds: [config.studio.JingleMediaFlowId],
-		previewFrame: alphaAtStart,
+		previewFrame: breakerConfig.StartAlpha,
 		ignoreMediaObjectStatus: config.studio.JingleIgnoreStatus,
 		ignoreBlackFrames: true,
 		ignoreFreezeFrame: true,
-		sourceDuration: TimeFromFrames(Number(duration) - Number(alphaAtEnd)),
-		postrollDuration: TimeFromFrames(Number(alphaAtEnd)),
+		sourceDuration: getTimeFromFrames(breakerConfig.Duration - breakerConfig.EndAlpha),
+		postrollDuration: getTimeFromFrames(breakerConfig.EndAlpha),
 		timelineObjects: []
 	})
 }
@@ -51,24 +56,30 @@ export function CreateJingleContentBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	config: ShowStyleConfig,
+	context: ShowStyleContext<ShowStyleConfig>,
 	file: string,
-	alphaAtStart: number,
-	loadFirstFrame: boolean,
-	duration: number,
-	alphaAtEnd: number,
+	breakerConfig: TableConfigItemBreaker,
 	layers: JingleLayers
 ) {
+	const { config } = context
 	const fileName = joinAssetToFolder(config.studio.JingleFolder, file)
-	const jingleDSK = FindDSKJingle(config)
+	const jingleDsk = findDskJingle(config)
 	return literal<WithTimeline<VTContent>>({
-		...CreateJingleExpectedMedia(config, file, alphaAtStart, duration, alphaAtEnd),
+		...createJingleExpectedMedia(config, file, breakerConfig),
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
-			CreateJingleCasparTimelineObject(fileName, loadFirstFrame, layers),
+			CreateJingleCasparTimelineObject(fileName, breakerConfig.LoadFirstFrame, layers),
+			...context.videoSwitcher.getOnAirTimelineObjects({
+				enable: getBreakerMixEffectCutEnable(breakerConfig, config.studio.CasparPrerollDuration),
+				priority: 1,
+				content: {
+					input: jingleDsk.Fill,
+					transition: TransitionStyle.CUT
+				}
+			}),
+			...getDskOnAirTimelineObjects(context, DskRole.JINGLE, { start: config.studio.CasparPrerollDuration }),
 
-			...EnableDSK(config, 'JINGLE', { start: Number(config.studio.CasparPrerollDuration) }),
-
-			...(layers.ATEM.USKJinglePreview
+			// @todo: this is a Qbox-only feature, should be refactored at some point not to use ATEM object directly
+			...(context.uniformConfig.switcherLLayers.jingleNextMixEffect
 				? [
 						literal<TSR.TimelineObjAtemME>({
 							id: '',
@@ -77,7 +88,7 @@ export function CreateJingleContentBase<
 								duration: 1
 							},
 							priority: 1,
-							layer: layers.ATEM.USKJinglePreview,
+							layer: context.uniformConfig.switcherLLayers.jingleNextMixEffect,
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
@@ -91,13 +102,12 @@ export function CreateJingleContentBase<
 											onAir: false,
 											mixEffectKeyType: 0,
 											flyEnabled: false,
-											fillSource: jingleDSK.Fill,
-											cutSource: jingleDSK.Clip,
+											fillSource: jingleDsk.Fill,
+											cutSource: jingleDsk.Clip,
 											maskEnabled: false,
 											lumaSettings: {
-												preMultiplied: false,
-												clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
-												gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
+												clip: jingleDsk.Clip * 10, // input is percents (0-100), atem uses 1-000
+												gain: jingleDsk.Gain * 10 // input is percents (0-100), atem uses 1-000
 											}
 										}
 									]
@@ -111,46 +121,11 @@ export function CreateJingleContentBase<
 								start: 1
 							},
 							priority: 1,
-							layer: layers.ATEM.USKJinglePreview,
+							layer: context.uniformConfig.switcherLLayers.jingleNextMixEffect,
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.ME,
 								me: {}
-							}
-						})
-				  ]
-				: []),
-
-			...(layers.ATEM.USKCleanEffekt
-				? [
-						literal<TSR.TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: Number(config.studio.CasparPrerollDuration)
-							},
-							priority: 1,
-							layer: layers.ATEM.USKCleanEffekt,
-							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									upstreamKeyers: [
-										{
-											upstreamKeyerId: 0,
-											onAir: true,
-											mixEffectKeyType: 0,
-											flyEnabled: false,
-											fillSource: jingleDSK.Fill,
-											cutSource: jingleDSK.Key,
-											maskEnabled: false,
-											lumaSettings: {
-												preMultiplied: false,
-												clip: Number(jingleDSK.Clip) * 10, // input is percents (0-100), atem uses 1-000
-												gain: Number(jingleDSK.Gain) * 10 // input is percents (0-100), atem uses 1-000
-											}
-										}
-									]
-								}
 							}
 						})
 				  ]
@@ -191,5 +166,17 @@ function CreateJingleCasparTimelineObject(
 			type: TSR.TimelineContentTypeCasparCg.MEDIA,
 			file: fileName
 		}
+	}
+}
+
+export function getBreakerMixEffectCutEnable(
+	breakerConfig: TableConfigItemBreaker,
+	casparPrerollDuration: number
+): TSR.TSRTimelineObj['enable'] {
+	return {
+		start: getTimeFromFrames(breakerConfig.StartAlpha) + casparPrerollDuration,
+		duration:
+			getTimeFromFrames(breakerConfig.Duration - breakerConfig.StartAlpha - breakerConfig.EndAlpha) +
+			casparPrerollDuration
 	}
 }

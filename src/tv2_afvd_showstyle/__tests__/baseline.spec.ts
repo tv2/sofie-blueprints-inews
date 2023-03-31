@@ -8,11 +8,12 @@ global.VERSION_TSR = 'test'
 global.VERSION_INTEGRATION = 'test'
 
 import { ExtendedIngestRundown, IGetRundownContext, TSR } from 'blueprints-integration'
-import { GetRundownContext } from '../../__mocks__/context'
+import { SwitcherType } from 'tv2-common'
+import { GetRundownContextMock } from '../../__mocks__/context'
 import { SharedGraphicLLayer } from '../../tv2-constants'
-import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import { preprocessConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
-import { parseConfig as parseShowStyleConfig } from '../helpers/config'
+import { preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import Blueprints from '../index'
 import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
 
@@ -21,13 +22,13 @@ const configSpec = { id: 'default', studioConfig: defaultStudioConfig, showStyle
 const RUNDOWN_ID = 'test_rundown'
 const SEGMENT_ID = 'test_segment'
 const PART_ID = 'test_part'
-describe('Baseline', () => {
+describe.each([SwitcherType.ATEM, SwitcherType.TRICASTER])('Baseline', (switcherType: SwitcherType) => {
 	test('Config: ' + configSpec.id, async () => {
 		expect(configSpec.studioConfig).toBeTruthy()
 		expect(configSpec.showStyleConfig).toBeTruthy()
 
 		const mockRundown: ExtendedIngestRundown = createMockRundown()
-		const mockContext: GetRundownContext = createMockContext(mockRundown.name)
+		const mockContext: GetRundownContextMock = createMockContext(mockRundown.name, switcherType)
 
 		const result = await Blueprints.getRundown(mockContext, mockRundown)
 		if (result === null) {
@@ -37,7 +38,7 @@ describe('Baseline', () => {
 		expect(result.baseline.timelineObjects).not.toHaveLength(0)
 		expect(result.globalAdLibPieces).not.toHaveLength(0)
 
-		checkAllLayers(mockContext, result.globalAdLibPieces, result.baseline.timelineObjects)
+		checkAllLayers(result.globalAdLibPieces, result.baseline.timelineObjects)
 
 		// ensure there were no warnings
 		expect(mockContext.getNotes()).toEqual([])
@@ -45,7 +46,7 @@ describe('Baseline', () => {
 
 	test('SetConcept timeline object is created in base rundown', async () => {
 		const mockRundown: ExtendedIngestRundown = createMockRundown()
-		const mockContext: IGetRundownContext = createMockContext(mockRundown.name)
+		const mockContext: IGetRundownContext = createMockContext(mockRundown.name, switcherType)
 
 		const rundown = await Blueprints.getRundown(mockContext, mockRundown)
 		if (rundown === null) {
@@ -73,8 +74,8 @@ function createMockRundown(): ExtendedIngestRundown {
 	}
 }
 
-function createMockContext(rundownName: string): GetRundownContext {
-	const mockContext = new GetRundownContext(
+function createMockContext(rundownName: string, switcherType: SwitcherType): GetRundownContextMock {
+	const mockContext = new GetRundownContextMock(
 		rundownName,
 		mappingsDefaults,
 		parseStudioConfig,
@@ -83,7 +84,7 @@ function createMockContext(rundownName: string): GetRundownContext {
 		SEGMENT_ID,
 		PART_ID
 	)
-	mockContext.studioConfig = configSpec.studioConfig as any
+	mockContext.studioConfig = { ...configSpec.studioConfig, SwitcherType: switcherType } as any
 	mockContext.showStyleConfig = configSpec.showStyleConfig as any
 
 	return mockContext

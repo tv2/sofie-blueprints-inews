@@ -29,12 +29,24 @@ import {
 	PlaylistTimingType,
 	Time
 } from 'blueprints-integration'
-import { ITV2ActionExecutionContext, PieceMetaData } from 'tv2-common'
+import {
+	ITV2ActionExecutionContext,
+	PieceMetaData,
+	SegmentContext,
+	TV2StudioConfigBase,
+	UniformConfig,
+	VideoSwitcherBase
+} from 'tv2-common'
 import { NoteType } from 'tv2-constants'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../tv2_afvd_showstyle/__tests__/configs'
-import { parseConfig as parseShowStyleConfigAFVD } from '../tv2_afvd_showstyle/helpers/config'
-import { parseConfig as parseStudioConfigAFVD, StudioConfig } from '../tv2_afvd_studio/helpers/config'
+import {
+	GalleryBlueprintConfig,
+	GalleryShowStyleConfig,
+	preprocessConfig as parseShowStyleConfigAFVD
+} from '../tv2_afvd_showstyle/helpers/config'
+import { preprocessConfig as parseStudioConfigAFVD } from '../tv2_afvd_studio/helpers/config'
 import mappingsDefaultsAFVD from '../tv2_afvd_studio/migrations/mappings-defaults'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 
 export function getHash(str: string): string {
 	const hash = crypto.createHash('sha1')
@@ -44,7 +56,7 @@ export function getHash(str: string): string {
 		.replace(/[\+\/\=]/gi, '_') // remove +/= from strings, because they cause troubles
 }
 
-// tslint:disable-next-line: max-classes-per-file
+// tslint:disable: max-classes-per-file
 export class CommonContext implements ICommonContext {
 	protected savedNotes: PartNote[] = []
 	protected notesRundownId?: string
@@ -104,7 +116,6 @@ export class CommonContext implements ICommonContext {
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class UserNotesContext extends CommonContext implements IUserNotesContext {
 	constructor(contextName: string, rundownId?: string, segmentId?: string, partId?: string) {
 		super(contextName, rundownId, segmentId, partId)
@@ -122,7 +133,6 @@ export class UserNotesContext extends CommonContext implements IUserNotesContext
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class StudioContext extends CommonContext implements IStudioContext {
 	public studioId: string = 'studio0'
 	public studioConfig: { [key: string]: ConfigItemValue } = {}
@@ -155,8 +165,7 @@ export class StudioContext extends CommonContext implements IStudioContext {
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
-export class ShowStyleContext extends StudioContext implements IShowStyleContext, IPackageInfoContext {
+export class ShowStyleContextMock extends StudioContext implements IShowStyleContext, IPackageInfoContext {
 	public studioConfig: { [key: string]: ConfigItemValue } = {}
 	public showStyleConfig: { [key: string]: ConfigItemValue } = {}
 
@@ -189,8 +198,7 @@ export class ShowStyleContext extends StudioContext implements IShowStyleContext
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
-export class ShowStyleUserContext extends ShowStyleContext implements IUserNotesContext {
+export class ShowStyleUserContextMock extends ShowStyleContextMock implements IUserNotesContext {
 	public notifyUserError(message: string, _params?: { [key: string]: any }): void {
 		this.pushNote(NoteType.NOTIFY_USER_ERROR, message)
 	}
@@ -203,8 +211,7 @@ export class ShowStyleUserContext extends ShowStyleContext implements IUserNotes
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
-export class GetRundownContext extends ShowStyleUserContext implements IGetRundownContext {
+export class GetRundownContextMock extends ShowStyleUserContextMock implements IGetRundownContext {
 	public async getCurrentPlaylist(): Promise<Readonly<IBlueprintRundownPlaylist> | undefined> {
 		return undefined
 	}
@@ -218,8 +225,7 @@ export class GetRundownContext extends ShowStyleUserContext implements IGetRundo
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
-export class RundownContext extends ShowStyleContext implements IRundownContext {
+export class RundownContextMock extends ShowStyleContextMock implements IRundownContext {
 	public readonly rundownId: string = 'rundown0'
 	public readonly rundown: Readonly<IBlueprintRundownDB>
 
@@ -246,8 +252,7 @@ export class RundownContext extends ShowStyleContext implements IRundownContext 
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
-export class RundownUserContext extends RundownContext implements IRundownUserContext {
+export class RundownUserContextMock extends RundownContextMock implements IRundownUserContext {
 	public notifyUserError(message: string, _params?: { [key: string]: any }): void {
 		this.pushNote(NoteType.NOTIFY_USER_ERROR, message)
 	}
@@ -260,8 +265,7 @@ export class RundownUserContext extends RundownContext implements IRundownUserCo
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
-export class SegmentUserContext extends RundownContext implements ISegmentUserContext {
+export class SegmentUserContextMock extends RundownContextMock implements ISegmentUserContext {
 	constructor(
 		contextName: string,
 		mappingsDefaults: BlueprintMappings,
@@ -300,8 +304,7 @@ export class SegmentUserContext extends RundownContext implements ISegmentUserCo
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
-export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
+export class SyncIngestUpdateToPartInstanceContextMock extends RundownUserContextMock
 	implements ISyncIngestUpdateToPartInstanceContext {
 	public syncedPieceInstances: string[] = []
 	public removedPieceInstances: string[] = []
@@ -405,15 +408,13 @@ export class SyncIngestUpdateToPartInstanceContext extends RundownUserContext
 	}
 }
 
-// tslint:disable-next-line: max-classes-per-file
-export class ActionExecutionContext extends ShowStyleUserContext implements ITV2ActionExecutionContext {
+export class ActionExecutionContextMock extends ShowStyleUserContextMock implements ITV2ActionExecutionContext {
 	public currentPart: IBlueprintPartInstance
 	public currentPieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>>
 	public nextPart: IBlueprintPartInstance | undefined
 	public nextPieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>> | undefined
 
 	public takeAfterExecute: boolean = false
-	public isTV2Context: true = true
 
 	constructor(
 		contextName: string,
@@ -637,15 +638,34 @@ export interface PartNote {
 	message: string
 }
 
-export function makeMockAFVDContext(studioConfigOverrides?: Partial<StudioConfig>) {
-	const mockContext = new SegmentUserContext(
+export interface MockConfigOverrides {
+	studioConfig?: Partial<TV2StudioConfigBase>
+	showStyleConfig?: Partial<GalleryShowStyleConfig>
+	mappingDefaults?: BlueprintMappings
+	uniformConfig?: Partial<UniformConfig>
+}
+
+export function makeMockCoreGalleryContext(overrides?: MockConfigOverrides) {
+	const mockCoreContext = new SegmentUserContextMock(
 		'test',
-		mappingsDefaultsAFVD,
+		{ ...mappingsDefaultsAFVD, ...overrides?.mappingDefaults },
 		parseStudioConfigAFVD,
 		parseShowStyleConfigAFVD
 	)
-	mockContext.studioConfig = { ...defaultStudioConfig, ...studioConfigOverrides } as any
-	mockContext.showStyleConfig = defaultShowStyleConfig as any
+	mockCoreContext.studioConfig = { ...defaultStudioConfig, ...overrides?.studioConfig } as any
+	mockCoreContext.showStyleConfig = { ...defaultShowStyleConfig, ...overrides?.showStyleConfig } as any
+	return mockCoreContext
+}
 
+export function makeMockGalleryContext(overrides?: MockConfigOverrides) {
+	const mockCoreContext = makeMockCoreGalleryContext(overrides)
+	// @todo: this is not great, but it works
+	const config = { ...mockCoreContext.getStudioConfig(), ...(mockCoreContext.getShowStyleConfig() as any) }
+	const mockContext: SegmentContext<GalleryBlueprintConfig> = {
+		core: mockCoreContext,
+		config,
+		uniformConfig: { ...GALLERY_UNIFORM_CONFIG, ...overrides?.uniformConfig },
+		videoSwitcher: VideoSwitcherBase.getVideoSwitcher(mockCoreContext, config, GALLERY_UNIFORM_CONFIG) // new MockVideoSwitcher()
+	}
 	return mockContext
 }

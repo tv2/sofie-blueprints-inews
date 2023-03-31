@@ -7,13 +7,13 @@ import {
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { CalculateTime, CueDefinitionBackgroundLoop, literal, TV2BlueprintConfig } from 'tv2-common'
-import { SharedGraphicLLayer, SharedOutputLayers } from 'tv2-constants'
+import { calculateTime, CueDefinitionBackgroundLoop, literal, ShowStyleContext, TV2ShowStyleConfig } from 'tv2-common'
+import { SharedGraphicLLayer, SharedOutputLayer } from 'tv2-constants'
 import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueBackgroundLoop(
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -22,7 +22,7 @@ export function EvaluateCueBackgroundLoop(
 	adlib?: boolean,
 	rank?: number
 ) {
-	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
+	const start = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 
 	if (parsedCue.target === 'DVE') {
 		const fileName = parsedCue.backgroundLoop
@@ -32,7 +32,7 @@ export function EvaluateCueBackgroundLoop(
 				_rank: rank || 0,
 				externalId: partId,
 				name: fileName,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmDVEBackground,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -49,7 +49,7 @@ export function EvaluateCueBackgroundLoop(
 				enable: {
 					start
 				},
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmDVEBackground,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
@@ -67,14 +67,14 @@ export function EvaluateCueBackgroundLoop(
 				_rank: rank || 0,
 				externalId: partId,
 				name: parsedCue.backgroundLoop,
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmFullBackground,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: parsedCue.backgroundLoop,
 					path: parsedCue.backgroundLoop,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: fullLoopTimeline(config, parsedCue)
+					timelineObjects: fullLoopTimeline(context.config, parsedCue)
 				})
 			})
 		} else {
@@ -84,14 +84,14 @@ export function EvaluateCueBackgroundLoop(
 				enable: {
 					start
 				},
-				outputLayerId: SharedOutputLayers.SEC,
+				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmFullBackground,
 				lifespan: PieceLifespan.OutOnShowStyleEnd,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: parsedCue.backgroundLoop,
 					path: parsedCue.backgroundLoop,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: fullLoopTimeline(config, parsedCue)
+					timelineObjects: fullLoopTimeline(context.config, parsedCue)
 				})
 			})
 		}
@@ -115,7 +115,7 @@ function dveLoopTimeline(path: string): TSR.TSRTimelineObj[] {
 	]
 }
 
-function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
+function fullLoopTimeline(config: TV2ShowStyleConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {
 	if (!config.selectedGfxSetup.FullShowName) {
 		return []
 	}

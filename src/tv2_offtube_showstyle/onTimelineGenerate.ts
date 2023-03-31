@@ -12,14 +12,15 @@ import {
 	onTimelineGenerate,
 	PartEndStateExt,
 	PieceMetaData,
-	TimelineBlueprintExt
+	TimelineBlueprintExt,
+	TimelineContext
 } from 'tv2-common'
 import { SharedGraphicLLayer, TallyTags } from 'tv2-constants'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
-import { getConfig } from './helpers/config'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
+import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 
 export function onTimelineGenerateOfftube(
-	context: ITimelineEventContext,
+	coreContext: ITimelineEventContext,
 	timeline: OnGenerateTimelineObj[],
 	previousPersistentState: TimelinePersistentState | undefined,
 	previousPartEndState: PartEndState | undefined,
@@ -27,28 +28,18 @@ export function onTimelineGenerateOfftube(
 ): Promise<BlueprintResultTimeline> {
 	const previousPartEndState2 = previousPartEndState as PartEndStateExt | undefined
 	disablePilotWipeAfterJingle(timeline, previousPartEndState2, resolvedPieces)
-	disableFirstPilotGFXAnimation(context, timeline, previousPartEndState2, resolvedPieces)
-
-	return onTimelineGenerate(
-		context,
-		timeline,
-		previousPersistentState,
-		previousPartEndState,
-		resolvedPieces,
-		getConfig,
-		{
-			Caspar: {
-				ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
-			},
-			Sisyfos: {
-				ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
-				PlayerA: OfftubeSisyfosLLayer.SisyfosSourceServerA,
-				PlayerB: OfftubeSisyfosLLayer.SisyfosSourceServerB
-			}
+	disableFirstPilotGFXAnimation(coreContext, timeline, previousPartEndState2, resolvedPieces)
+	const context = new TimelineContext(coreContext, QBOX_UNIFORM_CONFIG)
+	return onTimelineGenerate(context, timeline, previousPersistentState, previousPartEndState, resolvedPieces, {
+		Caspar: {
+			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 		},
-		OfftubeCasparLLayer.CasparPlayerClipPending,
-		OfftubeAtemLLayer.AtemMENext
-	)
+		Sisyfos: {
+			ClipPending: OfftubeSisyfosLLayer.SisyfosSourceClipPending,
+			PlayerA: OfftubeSisyfosLLayer.SisyfosSourceServerA,
+			PlayerB: OfftubeSisyfosLLayer.SisyfosSourceServerB
+		}
+	})
 }
 
 export function disableFirstPilotGFXAnimation(

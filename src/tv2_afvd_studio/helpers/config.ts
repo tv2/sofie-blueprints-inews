@@ -1,22 +1,16 @@
-import { IBlueprintConfig, ICommonContext, IStudioContext } from 'blueprints-integration'
+import { IBlueprintConfig, ICommonContext } from 'blueprints-integration'
 import {
-	MediaPlayerConfig,
-	SourceMapping,
+	ProcessedStudioConfig,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TableConfigItemSourceMappingWithSisyfos,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { DSKRoles } from 'tv2-constants'
-import { ShowStyleConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { DskRole } from 'tv2-constants'
 import { parseMediaPlayers, parseSources } from './sources'
 
-export interface BlueprintConfig {
+export interface GalleryStudioConfig extends ProcessedStudioConfig {
 	studio: StudioConfig
-	sources: SourceMapping
-	showStyle: ShowStyleConfig
-	mediaPlayers: MediaPlayerConfig // Atem Input Ids
-	dsk: TableConfigItemDSK[]
 }
 
 export interface StudioConfig extends TV2StudioConfigBase {
@@ -27,9 +21,9 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	StudioMics: string[]
-	AtemSource: {
-		SplitArtF: number // Atem MP1 Fill
-		SplitArtK: number // Atem MP1 Key
+	SwitcherSource: {
+		SplitArtFill: number // Atem MP1 Fill
+		SplitArtKey: number // Atem MP1 Key
 		DSK: TableConfigItemDSK[]
 
 		Default: number
@@ -47,21 +41,16 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	}
 }
 
-export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): any {
+export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const studioConfig = (rawConfig as unknown) as StudioConfig
-	const config: BlueprintConfig = {
+	const config: GalleryStudioConfig = {
 		studio: studioConfig,
-		showStyle: {} as any,
 		sources: parseSources(studioConfig),
 		mediaPlayers: parseMediaPlayers(studioConfig),
-		dsk: studioConfig.AtemSource.DSK
+		dsk: studioConfig.SwitcherSource.DSK
 	}
 
 	return config
-}
-
-export function getStudioConfig(context: IStudioContext): BlueprintConfig {
-	return context.getStudioConfig() as BlueprintConfig
 }
 
 export const defaultDSKConfig: TableConfigItemDSK[] = [
@@ -71,9 +60,9 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Fill: 21,
 		Toggle: true,
 		DefaultOn: true,
-		Roles: [DSKRoles.FULLGFX, DSKRoles.OVERLAYGFX],
-		Clip: '50',
-		Gain: '12.5'
+		Roles: [DskRole.FULLGFX, DskRole.OVERLAYGFX],
+		Clip: 50,
+		Gain: 12.5
 	},
-	{ Number: 1, Key: 31, Fill: 29, Toggle: true, DefaultOn: false, Roles: [DSKRoles.JINGLE], Clip: '50', Gain: '12.5' }
+	{ Number: 1, Key: 31, Fill: 29, Toggle: true, DefaultOn: false, Roles: [DskRole.JINGLE], Clip: 50, Gain: 12.5 }
 ]

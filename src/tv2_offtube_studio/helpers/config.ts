@@ -6,7 +6,7 @@ import {
 	TableConfigItemSourceMapping,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { DSKRoles } from 'tv2-constants'
+import { DskRole } from 'tv2-constants'
 import * as _ from 'underscore'
 import { parseMediaPlayers, parseSources } from './sources'
 
@@ -23,9 +23,9 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
-	AtemSource: {
-		SplitArtF: number // Atem MP1 Fill
-		SplitArtK: number // Atem MP1 Key
+	SwitcherSource: {
+		SplitArtFill: number
+		SplitArtKey: number
 		SplitBackground: number
 		Loop: number
 		DSK: TableConfigItemDSK[]
@@ -48,14 +48,14 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	IdleSisyfosLayers: string[]
 }
 
-export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
+export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
 	const studioConfig = (rawConfig as unknown) as OfftubeStudioConfig
 	const config: OfftubeStudioBlueprintConfig = {
 		studio: rawConfig as any,
 		// showStyle: {} as any,
 		sources: parseSources(studioConfig),
 		mediaPlayers: parseMediaPlayers(studioConfig),
-		dsk: studioConfig.AtemSource.DSK
+		dsk: studioConfig.SwitcherSource.DSK
 	}
 	return config
 }
@@ -67,9 +67,9 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Fill: 7,
 		Toggle: true,
 		DefaultOn: true,
-		Roles: [DSKRoles.JINGLE, DSKRoles.OVERLAYGFX],
-		Clip: '50.0',
-		Gain: '12.5'
+		Roles: [DskRole.JINGLE, DskRole.OVERLAYGFX],
+		Clip: 50.0,
+		Gain: 12.5
 	},
 	// Offtube doesn't use DSK for fulls, but this prevents duplicate studio configs + easy switchover to Viz engine
 	{
@@ -78,8 +78,8 @@ export const defaultDSKConfig: TableConfigItemDSK[] = [
 		Fill: 12,
 		Toggle: false,
 		DefaultOn: false,
-		Roles: [DSKRoles.FULLGFX],
-		Clip: '50.0',
-		Gain: '12.5'
+		Roles: [DskRole.FULLGFX],
+		Clip: 50.0,
+		Gain: 12.5
 	}
 ]
