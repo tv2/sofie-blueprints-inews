@@ -59,7 +59,7 @@ export const GFX_DEFAULT_VALUES: TableConfigItemGfxDefaults[] = [
 export const getGfxDefaults: ConfigManifestEntry = {
 	id: ShowStyleConfigId.GFX_DEFAULTS_TABLE_ID,
 	name: 'GFX Defaults',
-	description: 'The possible defaults available for the GFX setup',
+	description: 'The default values available for the GFX setup',
 	type: ConfigManifestEntryType.TABLE,
 	required: false,
 	defaultVal: GFX_DEFAULT_VALUES.map((gfxDefaultValue) => ({ _id: '', ...gfxDefaultValue })),
