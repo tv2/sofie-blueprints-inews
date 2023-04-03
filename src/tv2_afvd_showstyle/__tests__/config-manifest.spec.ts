@@ -14,10 +14,10 @@ const blankShowStyleConfig: GalleryShowStyleConfig = {
 	CasparCGLoadingClip: '',
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	SelectedGfxSetupName: '',
 	GfxSetups: [],
 	GfxSchemaTemplates: [],
-	GfxShowMapping: []
+	GfxShowMapping: [],
+	GfxDefaults: [{ GfxSetup: '', DefaultSchema: '', DefaultDesign: '' }]
 }
 
 describe('Config Manifest', () => {

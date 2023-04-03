@@ -2,6 +2,7 @@ import { IBlueprintConfig, ICommonContext, TableConfigItemValue } from 'blueprin
 import {
 	findGfxSetup,
 	TableConfigGfxSetup,
+	TableConfigItemGfxDefaults,
 	TableConfigItemGfxShowMapping,
 	TV2ShowstyleBlueprintConfigBase
 } from 'tv2-common'
@@ -20,9 +21,9 @@ export interface GalleryBlueprintConfig extends GalleryStudioConfig {
 
 export interface GalleryShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	SelectedGfxSetupName: string
 	GfxSetups: GalleryTableConfigGfxSetup[]
 	GfxShowMapping: TableConfigItemGfxShowMapping[]
+	GfxDefaults: TableConfigItemGfxDefaults[]
 }
 
 export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
