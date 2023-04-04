@@ -5,6 +5,8 @@ import {
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
+	moveSelectedGfxSetupNameToGfxDefaults,
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameTableColumn,
@@ -262,6 +264,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	renameBlueprintsConfigurationForAllVariants('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
 	renameTableColumn('1.7.9', 'OverlayShowMapping', 'GraphicsSetup', 'GfxSetup'),
 	renameTableId('1.7.9', 'OverlayShowMapping', 'GfxShowMapping'),
+
+	/**
+	 * 1.8.2 Move SelectedGfxSetupName to GFX Defaults
+	 */
+	moveSelectedGfxSetupNameToGfxDefaults('1.8.2'),
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

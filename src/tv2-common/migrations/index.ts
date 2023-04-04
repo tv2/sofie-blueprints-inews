@@ -1,3 +1,4 @@
+import { BasicConfigItemValue, IBlueprintShowStyleVariant } from '@sofie-automation/blueprints-integration'
 import {
 	BlueprintMappings,
 	ConfigItemValue,
@@ -171,15 +172,71 @@ export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 	})
 }
 
+export function moveSelectedGfxSetupNameToGfxDefaults(versionStr: string) {
+	const fromValue = 'SelectedGfxSetupName'
+	const targetTable = 'GfxDefaults'
+	return literal<MigrationStepShowStyle>({
+		id: `${versionStr}.moveSelectedGfxSetupName.${fromValue}.toTable.${targetTable}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const singleValue = context.getBaseConfig(fromValue)
+			const designatedTable = context.getBaseConfig(targetTable)
+
+			return !!singleValue && Array.isArray(designatedTable)
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const singleValue = context.getBaseConfig(fromValue) as BasicConfigItemValue
+			const designatedTable = context.getBaseConfig(targetTable) as unknown as TableConfigItemValue
+			const setupName = 'DefaultSetupName'
+
+			designatedTable[0][setupName] = singleValue
+
+			context.setBaseConfig(targetTable, designatedTable)
+			context.removeBaseConfig(fromValue)
+		}
+	})
+}
+
+export function moveSelectedGfxSetupNameToGfxDefaultsInVariants(migrationVersion: string) {
+	const fromValue = 'SelectedGfxSetupName'
+	const targetTable = 'GfxDefaults'
+	return literal<MigrationStepShowStyle>({
+		id: `${migrationVersion}.moveSelectedGfxSetupNameToGfxDefaultsInVariants.${fromValue}.toTable.${targetTable}`,
+		version: migrationVersion,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const allVariants = context.getAllVariants()
+
+			return allVariants.some(
+				(variant: IBlueprintShowStyleVariant) =>
+					context.getVariantConfig(variant._id, fromValue) && !context.getVariantConfig(variant._id, targetTable)
+			)
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const allVariants = context.getAllVariants()
+			allVariants.forEach((variant: IBlueprintShowStyleVariant) => {
+				const setupName = 'DefaultSetupName'
+				const singleValue = context.getVariantConfig(variant._id, fromValue) as BasicConfigItemValue
+				const designatedTable = (context.getVariantConfig(variant._id, targetTable) as TableConfigItemValue) ?? [
+					{ [setupName]: singleValue, _id: '' }
+				]
+
+				context.setVariantConfig(variant._id, targetTable, designatedTable)
+			})
+		}
+	})
+}
+
 export function addSourceToSourcesConfig(
-	versionStr: string,
+	migrationVersion: string,
 	studio: string,
 	configId: string,
 	source: TableConfigItemSourceMappingWithSisyfos
 ): MigrationStepStudio {
 	return {
-		id: `${versionStr}.studioConfig.addReplaySource.${source.SourceName}.${studio}`,
-		version: versionStr,
+		id: `${migrationVersion}.studioConfig.addReplaySource.${source.SourceName}.${studio}`,
+		version: migrationVersion,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
 			const config = context.getConfig(configId) as unknown as TableConfigItemSourceMappingWithSisyfos[]

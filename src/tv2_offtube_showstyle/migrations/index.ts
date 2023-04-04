@@ -5,6 +5,8 @@ import {
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
+	moveSelectedGfxSetupNameToGfxDefaults,
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameSourceLayer,
@@ -288,6 +290,12 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	renameTableId('1.7.9', 'GraphicsSetups', 'GfxSetups'),
 	renameBlueprintConfiguration('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
 	renameBlueprintsConfigurationForAllVariants('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
+
+	/**
+	 * 1.8.2 Move SelectedGfxSetupName to GFX Defaults
+	 */
+	moveSelectedGfxSetupNameToGfxDefaults('1.8.2'),
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2'),
 
 	...getSourceLayerDefaultsMigrationSteps(VERSION),
 	...getOutputLayerDefaultsMigrationSteps(VERSION),

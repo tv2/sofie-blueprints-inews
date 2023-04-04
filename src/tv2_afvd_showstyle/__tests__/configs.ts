@@ -269,10 +269,10 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 			FadeOut: 0
 		}
 	],
-	SelectedGfxSetupName: 'SomeProfile',
 	GfxSetups: [DEFAULT_GFX_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
 	GfxSchemaTemplates: [],
-	GfxShowMapping: []
+	GfxShowMapping: [],
+	GfxDefaults: [{ GfxSetup: 'SomeProfile', DefaultDesign: '', DefaultSchema: '' }]
 }
