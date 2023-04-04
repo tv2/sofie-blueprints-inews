@@ -1073,7 +1073,7 @@ async function executePiece<
 		if (isServerInCurrentPart && !shouldBeQueued) {
 			await context.core.takeAfterExecuteAction(true)
 		}
-	} else if (currentPiece) {
+	} else if (currentPiece && currentPiece.piece.sourceLayerId !== settings.SourceLayers.Live) {
 		pieceToExecute.externalId = currentPiece.piece.externalId
 		pieceToExecute.enable = currentPiece.piece.enable
 		const currentMetaData = currentPiece.piece.metaData!

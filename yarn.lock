@@ -566,7 +566,7 @@
   integrity sha512-IjHlVaE0IuLp7R8mxIWz5AbnlC8EExtHHWt/F8tbbjSyKYeBahxS0asnbMFnDYMlOZznNrunT4nBy8vwGfTHhg==
   dependencies:
     "@sofie-automation/shared-lib" "npm:@tv2media/shared-lib@46.2.0"
-    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@3.4.0"
+    timeline-state-resolver-types "npm:@tv2media/timeline-state-resolver-types@3.5.0"
     tslib "^2.4.0"
     type-fest "^2.19.0"
 
