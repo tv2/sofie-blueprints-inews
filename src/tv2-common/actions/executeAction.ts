@@ -1039,7 +1039,7 @@ async function executeActionCutToCamera<
 		}
 	}
 
-	await executePiece(context, settings, kamPiece, !userData.cutDirectly, part)
+	await executePiece(context, settings, kamPiece, settings.SourceLayers.Cam, !userData.cutDirectly, part)
 }
 
 async function executePiece<
@@ -1049,6 +1049,7 @@ async function executePiece<
 	context: ActionExecutionContext<ShowStyleConfig>,
 	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
 	pieceToExecute: IBlueprintPiece<PieceMetaData>,
+	sourceLayerToFindCurrentPieceOn: string,
 	shouldBeQueued: boolean,
 	partToQueue: IBlueprintPart
 ) {
@@ -1057,9 +1058,8 @@ async function executePiece<
 		(p) => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
 	)
 
-	const layersWithCutDirect: string[] = [settings.SourceLayers.Live, settings.SourceLayers.Cam]
-	const currentPiece: IBlueprintPieceInstance<PieceMetaData> | undefined = currentPieceInstances.find((p) =>
-		layersWithCutDirect.includes(p.piece.sourceLayerId)
+	const currentPiece: IBlueprintPieceInstance<PieceMetaData> | undefined = currentPieceInstances.find(
+		(p) => sourceLayerToFindCurrentPieceOn === p.piece.sourceLayerId
 	)
 
 	if (shouldBeQueued || isServerInCurrentPart) {
@@ -1196,7 +1196,7 @@ async function executeActionCutToRemote<
 		}
 	}
 
-	await executePiece(context, settings, remotePiece, !userData.cutDirectly, part)
+	await executePiece(context, settings, remotePiece, settings.SourceLayers.Live, !userData.cutDirectly, part)
 }
 
 async function executeActionCutSourceToBox<
