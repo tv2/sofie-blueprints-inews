@@ -44,7 +44,7 @@ export interface TableConfigItemGfxShowMapping {
 }
 
 export interface TableConfigItemGfxDefaults {
-	GfxSetup: string
+	DefaultSetupName: { value: string; label: string }
 	DefaultSchema: string
 	DefaultDesign: string
 }

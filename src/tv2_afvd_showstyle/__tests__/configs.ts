@@ -274,5 +274,11 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	ShowstyleTransition: 'CUT',
 	GfxSchemaTemplates: [],
 	GfxShowMapping: [],
-	GfxDefaults: [{ GfxSetup: 'SomeProfile', DefaultDesign: '', DefaultSchema: '' }]
+	GfxDefaults: [
+		{
+			DefaultSetupName: { value: '', label: 'SomeProfile' },
+			DefaultDesign: '',
+			DefaultSchema: ''
+		}
+	]
 }

@@ -17,7 +17,13 @@ const blankShowStyleConfig: GalleryShowStyleConfig = {
 	GfxSetups: [],
 	GfxSchemaTemplates: [],
 	GfxShowMapping: [],
-	GfxDefaults: [{ GfxSetup: '', DefaultSchema: '', DefaultDesign: '' }]
+	GfxDefaults: [
+		{
+			DefaultSetupName: { value: '', label: '' },
+			DefaultDesign: '',
+			DefaultSchema: ''
+		}
+	]
 }
 
 describe('Config Manifest', () => {

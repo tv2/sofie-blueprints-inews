@@ -17,11 +17,12 @@ export function findGfxSetup<ShowStyleConfig extends TV2ShowstyleBlueprintConfig
 	config: ShowStyleConfig,
 	fallbackGfxSetup: ShowStyleConfig['GfxSetups'][0]
 ): ShowStyleConfig['GfxSetups'][0] {
+	const defaultSetupName = config.GfxDefaults[0].DefaultSetupName
 	const foundTableConfigGfxSetup: TableConfigGfxSetup | undefined = config.GfxSetups.find(
-		(tableConfigGfxSetup) => tableConfigGfxSetup.Name === config.GfxDefaults[0].GfxSetup
+		(tableConfigGfxSetup) => tableConfigGfxSetup.Name === defaultSetupName?.label
 	)
 	if (!foundTableConfigGfxSetup) {
-		context.logWarning(`No GFX setup found for profile: ${config.GfxDefaults[0].GfxSetup}`)
+		context.logWarning(`No GFX setup found for profile: ${defaultSetupName}`)
 		return fallbackGfxSetup
 	}
 	return foundTableConfigGfxSetup
