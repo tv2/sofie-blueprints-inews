@@ -22,7 +22,7 @@ export function findGfxSetup<ShowStyleConfig extends TV2ShowstyleBlueprintConfig
 		(tableConfigGfxSetup) => tableConfigGfxSetup.Name === defaultSetupName?.label
 	)
 	if (!foundTableConfigGfxSetup) {
-		context.logWarning(`No GFX setup found for profile: ${defaultSetupName}`)
+		context.logWarning(`No GFX setup found for profile: ${JSON.stringify(defaultSetupName)}`)
 		return fallbackGfxSetup
 	}
 	return foundTableConfigGfxSetup
