@@ -60,6 +60,7 @@ export interface TableConfigGfxSchema {
 }
 
 export interface TableConfigGfxSetup {
+	_id: string
 	Name: string
 	HtmlPackageFolder: string
 	OvlShowName?: string

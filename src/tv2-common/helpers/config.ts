@@ -19,7 +19,7 @@ export function findGfxSetup<ShowStyleConfig extends TV2ShowstyleBlueprintConfig
 ): ShowStyleConfig['GfxSetups'][0] {
 	const defaultSetupName = config.GfxDefaults[0].DefaultSetupName
 	const foundTableConfigGfxSetup: TableConfigGfxSetup | undefined = config.GfxSetups.find(
-		(tableConfigGfxSetup) => tableConfigGfxSetup.Name === defaultSetupName?.label
+		(tableConfigGfxSetup) => tableConfigGfxSetup._id === defaultSetupName?.value
 	)
 	if (!foundTableConfigGfxSetup) {
 		context.logWarning(`No GFX setup found for profile: ${JSON.stringify(defaultSetupName)}`)
