@@ -44,7 +44,7 @@ export interface TableConfigItemGfxShowMapping {
 }
 
 export interface TableConfigItemGfxDefaults {
-	GfxSetup: string
+	DefaultSetupName: { value: string; label: string }
 	DefaultSchema: string
 	DefaultDesign: string
 }
@@ -60,6 +60,7 @@ export interface TableConfigGfxSchema {
 }
 
 export interface TableConfigGfxSetup {
+	_id: string
 	Name: string
 	HtmlPackageFolder: string
 	OvlShowName?: string

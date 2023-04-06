@@ -45,6 +45,7 @@ function prepareConfig(
 export const OVL_SHOW_NAME = 'ovl-show-id'
 export const FULL_SHOW_NAME = 'full-show-id'
 export const DEFAULT_GFX_SETUP: GalleryTableConfigGfxSetup = {
+	_id: 'SomeId',
 	Name: 'SomeProfile',
 	VcpConcept: 'SomeConcept',
 	OvlShowName: OVL_SHOW_NAME,
@@ -274,5 +275,11 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	ShowstyleTransition: 'CUT',
 	GfxSchemaTemplates: [],
 	GfxShowMapping: [],
-	GfxDefaults: [{ GfxSetup: 'SomeProfile', DefaultDesign: '', DefaultSchema: '' }]
+	GfxDefaults: [
+		{
+			DefaultSetupName: { value: 'SomeId', label: 'SomeProfile' },
+			DefaultDesign: '',
+			DefaultSchema: ''
+		}
+	]
 }

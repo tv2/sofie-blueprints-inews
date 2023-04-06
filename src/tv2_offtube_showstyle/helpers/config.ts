@@ -42,6 +42,7 @@ export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
 	const showstyleConfig = rawConfig as unknown as OfftubeShowStyleConfig
 	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
+		_id: '',
 		Name: '',
 		HtmlPackageFolder: ''
 	})
