@@ -1058,8 +1058,9 @@ async function executePiece<
 	)
 
 	const layersWithCutDirect: string[] = [settings.SourceLayers.Live, settings.SourceLayers.Cam]
-	const currentPiece: IBlueprintPieceInstance<PieceMetaData> | undefined = currentPieceInstances.find((p) =>
-		layersWithCutDirect.includes(p.piece.sourceLayerId)
+	const currentPiece: IBlueprintPieceInstance<PieceMetaData> | undefined = findLastPlayingPieceInstance(
+		currentPieceInstances,
+		layersWithCutDirect
 	)
 
 	if (shouldBeQueued || isServerInCurrentPart) {
@@ -1073,7 +1074,7 @@ async function executePiece<
 		if (isServerInCurrentPart && !shouldBeQueued) {
 			await context.core.takeAfterExecuteAction(true)
 		}
-	} else if (currentPiece) {
+	} else if (currentPiece && !isPlannedPieceOnLayer(currentPiece, settings.SourceLayers.Live)) {
 		pieceToExecute.externalId = currentPiece.piece.externalId
 		pieceToExecute.enable = currentPiece.piece.enable
 		const currentMetaData = currentPiece.piece.metaData!
@@ -1107,6 +1108,32 @@ async function executePiece<
 		pieceToExecute.enable = { start: 'now' }
 		await context.core.insertPiece('current', pieceToExecute)
 	}
+}
+
+function isPlannedPieceOnLayer(currentPiece: IBlueprintPieceInstance<PieceMetaData>, sourceLayerId: string) {
+	return (
+		currentPiece.piece.sourceLayerId === sourceLayerId &&
+		!currentPiece.piece.metaData?.modifiedByAction &&
+		!currentPiece?.dynamicallyInserted
+	)
+}
+
+function findLastPlayingPieceInstance(
+	currentPieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>>,
+	sourceLayerIds: string[]
+): IBlueprintPieceInstance<PieceMetaData> | undefined {
+	const playingPiecesOnSelectedLayers = currentPieceInstances.filter(
+		(p) => !p.stoppedPlayback && sourceLayerIds.includes(p.piece.sourceLayerId)
+	)
+	if (playingPiecesOnSelectedLayers.length <= 1) {
+		return playingPiecesOnSelectedLayers[0]
+	}
+	return playingPiecesOnSelectedLayers.reduce((prev, current) => {
+		const prevStartedPlayback = prev.startedPlayback ?? prev.dynamicallyInserted?.time ?? Infinity
+		const currentStartedPlayback = current.startedPlayback ?? current.dynamicallyInserted?.time ?? Infinity
+
+		return prevStartedPlayback > currentStartedPlayback ? prev : current
+	})
 }
 
 async function stopGraphicPiecesThatShouldEndWithPart(
@@ -1649,7 +1676,10 @@ async function executeActionRecallLastLive<
 ) {
 	const lastLive = await context.core.findLastPieceOnLayer(settings.SourceLayers.Live, {
 		originalOnly: true,
-		excludeCurrentPart: false
+		excludeCurrentPart: false,
+		pieceMetaDataFilter: {
+			modifiedByAction: { $ne: true }
+		}
 	})
 
 	if (!lastLive) {
