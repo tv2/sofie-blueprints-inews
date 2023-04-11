@@ -1074,7 +1074,7 @@ async function executePiece<
 		if (isServerInCurrentPart && !shouldBeQueued) {
 			await context.core.takeAfterExecuteAction(true)
 		}
-	} else if (currentPiece && !isPlannedLivePiece(currentPiece, settings.SourceLayers.Live)) {
+	} else if (currentPiece && !isPlannedPieceOnLayer(currentPiece, settings.SourceLayers.Live)) {
 		pieceToExecute.externalId = currentPiece.piece.externalId
 		pieceToExecute.enable = currentPiece.piece.enable
 		const currentMetaData = currentPiece.piece.metaData!
@@ -1110,9 +1110,9 @@ async function executePiece<
 	}
 }
 
-function isPlannedLivePiece(currentPiece: IBlueprintPieceInstance<PieceMetaData>, liveSourceLayerId: string) {
+function isPlannedPieceOnLayer(currentPiece: IBlueprintPieceInstance<PieceMetaData>, sourceLayerId: string) {
 	return (
-		currentPiece.piece.sourceLayerId === liveSourceLayerId &&
+		currentPiece.piece.sourceLayerId === sourceLayerId &&
 		!currentPiece.piece.metaData?.modifiedByAction &&
 		!currentPiece?.dynamicallyInserted
 	)
@@ -1125,15 +1125,15 @@ function findLastPlayingPieceInstance(
 	const playingPiecesOnSelectedLayers = currentPieceInstances.filter(
 		(p) => !p.stoppedPlayback && sourceLayerIds.includes(p.piece.sourceLayerId)
 	)
-	if (playingPiecesOnSelectedLayers.length < 2) {
+	if (playingPiecesOnSelectedLayers.length <= 1) {
 		return playingPiecesOnSelectedLayers[0]
 	}
-	return playingPiecesOnSelectedLayers.reduce((prev, current) =>
-		(prev.startedPlayback ?? prev.dynamicallyInserted?.time ?? Infinity) >
-		(current.startedPlayback ?? current.dynamicallyInserted?.time ?? Infinity)
-			? prev
-			: current
-	)
+	return playingPiecesOnSelectedLayers.reduce((prev, current) => {
+		const prevStartedPlayback = prev.startedPlayback ?? prev.dynamicallyInserted?.time ?? Infinity
+		const currentStartedPlayback = current.startedPlayback ?? current.dynamicallyInserted?.time ?? Infinity
+
+		return prevStartedPlayback > currentStartedPlayback ? prev : current
+	})
 }
 
 async function stopGraphicPiecesThatShouldEndWithPart(
