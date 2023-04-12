@@ -198,6 +198,11 @@ export class CoreActionExecutionContext implements ITV2ActionExecutionContext {
 			}
 		}
 
+		piece.metaData = {
+			...piece.metaData,
+			modifiedByAction: true
+		}
+
 		// Regardless of above, let core handle errors
 		return this.core.updatePieceInstance(pieceInstanceId, piece) as Promise<IBlueprintPieceInstance<PieceMetaData>>
 	}
