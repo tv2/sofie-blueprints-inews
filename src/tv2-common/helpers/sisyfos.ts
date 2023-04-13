@@ -124,9 +124,9 @@ function getStudioMicsTimelineObj(
 	timelineEnable: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosChannels {
 	const studioMicsChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
-	config.studio.StudioMics.forEach((layer) => {
+	config.studio.StudioMics.forEach((studioMic) => {
 		studioMicsChannels.push({
-			mappedLayer: layer,
+			mappedLayer: studioMic.value,
 			isPgm: 1
 		})
 	})
