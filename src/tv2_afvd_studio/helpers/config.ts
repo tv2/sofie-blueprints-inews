@@ -1,6 +1,7 @@
 import { IBlueprintConfig, ICommonContext } from 'blueprints-integration'
 import {
 	ProcessedStudioConfig,
+	StudioMic,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TableConfigItemSourceMappingWithSisyfos,
@@ -20,7 +21,7 @@ export interface StudioConfig extends TV2StudioConfigBase {
 	SourcesReplay: TableConfigItemSourceMappingWithSisyfos[]
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
-	StudioMics: string[]
+	StudioMics: StudioMic[]
 	SwitcherSource: {
 		SplitArtFill: number // Atem MP1 Fill
 		SplitArtKey: number // Atem MP1 Key
