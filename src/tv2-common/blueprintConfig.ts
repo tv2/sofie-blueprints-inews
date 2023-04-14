@@ -73,6 +73,11 @@ export interface ProcessedStudioConfig {
 	dsk: TableConfigItemDSK[]
 }
 
+export interface StudioMic {
+	label: string
+	value: string
+}
+
 export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number
@@ -120,7 +125,7 @@ export interface TV2StudioConfigBase {
 		Dip: number
 	}
 	AtemSettings: {}
-	StudioMics: string[]
+	StudioMics: StudioMic[]
 	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesFeed: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
