@@ -127,8 +127,8 @@ function getGlobalAdLibPiecesOfftube(context: ShowStyleContext<OfftubeBlueprintC
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						channels: context.config.studio.StudioMics.map((studioMic) => ({
-							mappedLayer: studioMic.value,
+						channels: context.config.studio.StudioMics.map((layer) => ({
+							mappedLayer: layer,
 							isPgm: 1
 						})),
 						overridePriority: 10
@@ -157,8 +157,8 @@ function getGlobalAdLibPiecesOfftube(context: ShowStyleContext<OfftubeBlueprintC
 					content: {
 						deviceType: TSR.DeviceType.SISYFOS,
 						type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-						channels: context.config.studio.StudioMics.map((studioMic) => ({
-							mappedLayer: studioMic.value,
+						channels: context.config.studio.StudioMics.map((layer) => ({
+							mappedLayer: layer,
 							isPgm: 0
 						})),
 						overridePriority: 10

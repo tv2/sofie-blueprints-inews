@@ -95,12 +95,12 @@ export const defaultStudioConfig: StudioConfig = {
 	SourcesFeed: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesFeed', false, true),
 	SourcesReplay: prepareConfig('EVS 1:5,EVS 2:5,EPSIO:5', 'SourcesDelayedPlayback', false),
 	StudioMics: [
-		{ value: 'sisyfos_source_Host_1_st_a', label: 'Host1' },
-		{ value: 'sisyfos_source_Host_2_st_a', label: 'Host2' },
-		{ value: 'sisyfos_source_Guest_1_st_a', label: 'Guest1' },
-		{ value: 'sisyfos_source_Guest_2_st_a', label: 'Guest2' },
-		{ value: 'sisyfos_source_Guest_3_st_a', label: 'Guest3' },
-		{ value: 'sisyfos_source_Guest_4_st_a', label: 'Guest4' }
+		'sisyfos_source_Host_1_st_a',
+		'sisyfos_source_Host_2_st_a',
+		'sisyfos_source_Guest_1_st_a',
+		'sisyfos_source_Guest_2_st_a',
+		'sisyfos_source_Guest_3_st_a',
+		'sisyfos_source_Guest_4_st_a'
 	],
 	SwitcherSource: {
 		MixMinusDefault: 2,

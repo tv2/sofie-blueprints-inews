@@ -402,8 +402,8 @@ class GlobalAdLibPiecesGenerator {
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
 								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-								channels: this.config.studio.StudioMics.map((studioMic) => ({
-									mappedLayer: studioMic.value,
+								channels: this.config.studio.StudioMics.map((layer) => ({
+									mappedLayer: layer,
 									isPgm: 1
 								})),
 								overridePriority: 10
@@ -431,8 +431,8 @@ class GlobalAdLibPiecesGenerator {
 							content: {
 								deviceType: TSR.DeviceType.SISYFOS,
 								type: TSR.TimelineContentTypeSisyfos.CHANNELS,
-								channels: this.config.studio.StudioMics.map((studioMic) => ({
-									mappedLayer: studioMic.value,
+								channels: this.config.studio.StudioMics.map((layer) => ({
+									mappedLayer: layer,
 									isPgm: 0
 								})),
 								overridePriority: 10
