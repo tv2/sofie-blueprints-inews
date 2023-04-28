@@ -115,22 +115,22 @@ export interface CueDefinitionUnpairedPilot extends CueDefinitionBase {
 	engineNumber?: number
 }
 
-export interface CueDefinitionBackgroundLoop extends CueDefinitionBase, CueDefinitionFromLayout {
+export interface CueDefinitionBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.BackgroundLoop
 	target: 'FULL' | 'DVE'
 	backgroundLoop: string
 }
 
-export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromLayout {
+export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.GraphicDesign
 	design: string
 }
 
-export interface CueDefinitionFromLayout {
-	isFromLayout?: boolean
+export interface CueDefinitionFromField {
+	isFromField?: boolean
 }
 
-export interface CueDefinitionGraphicSchema extends CueDefinitionBase, CueDefinitionFromLayout {
+export interface CueDefinitionGraphicSchema extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.GraphicSchema
 	schema: string
 }
@@ -264,7 +264,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return parsePgmClean(cue)
 	} else if (/^MINUSKAM\s*=/i.test(cue[0])) {
 		return parseMixMinus(cue)
-	} else if (/^DESIGN_LAYOUT=/i.test(cue[0])) {
+	} else if (/^DESIGN_FIELD=/i.test(cue[0])) {
 		return parseDesignLayout(cue, config)
 	} else if (/^SCHEMA_FIELD=/i.test(cue[0])) {
 		return parseSchemaLayout(cue, config)
@@ -932,7 +932,7 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 }
 
 function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefinitionGraphicDesign | undefined {
-	const array = cue[0].split('DESIGN_LAYOUT=')
+	const array = cue[0].split('DESIGN_FIELD=')
 	const layout = array[1]
 
 	const designConfig = findGraphicDesignConfiguration(config, layout)
@@ -948,7 +948,7 @@ function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefini
 		start: {
 			frames: 1
 		},
-		isFromLayout: true
+		isFromField: true
 	})
 }
 
@@ -977,7 +977,7 @@ function parseSchemaLayout(cue: string[], config: TV2ShowStyleConfig): CueDefini
 		start: {
 			frames: 1
 		},
-		isFromLayout: true
+		isFromField: true
 	})
 }
 

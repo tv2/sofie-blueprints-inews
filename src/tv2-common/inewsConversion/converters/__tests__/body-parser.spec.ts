@@ -3511,21 +3511,21 @@ function createPartDefinition(cues?: CueDefinition[]): PartDefinition {
 	}
 }
 
-function createDesignCueDefinition(design: string, isFromLayout?: boolean): CueDefinition {
+function createDesignCueDefinition(design: string, isFromField?: boolean): CueDefinition {
 	return {
 		type: CueType.GraphicDesign,
 		design,
 		iNewsCommand: '',
-		isFromLayout
+		isFromField
 	}
 }
 
-function createBackgroundLoopCueDefinition(backgroundLoop: string, isFromLayout?: boolean): CueDefinition {
+function createBackgroundLoopCueDefinition(backgroundLoop: string, isFromField?: boolean): CueDefinition {
 	return {
 		type: CueType.BackgroundLoop,
 		target: 'DVE',
 		backgroundLoop,
-		isFromLayout,
+		isFromField,
 		iNewsCommand: ''
 	}
 }

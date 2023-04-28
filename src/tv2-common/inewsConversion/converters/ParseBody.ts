@@ -1,5 +1,5 @@
 import {
-	CueDefinitionFromLayout,
+	CueDefinitionFromField,
 	parseTransitionStyle,
 	PostProcessDefinitions,
 	TransitionStyle,
@@ -710,14 +710,14 @@ function stripRedundantCuesForSchema(partDefinitions: PartDefinition[]): PartDef
 }
 
 function stripRedundantCues(partDefinitions: PartDefinition[], cueTypesToCheck: CueType[]): PartDefinition[] {
-	const hasLayoutCue: boolean = partDefinitions.some((definition) =>
+	const hasFieldCue: boolean = partDefinitions.some((definition) =>
 		definition.cues.some((cue) => {
-			const cueFromLayout = cue as CueDefinitionFromLayout
-			return cueTypesToCheck.includes(cue.type) && cueFromLayout.isFromLayout
+			const cueFromField = cue as CueDefinitionFromField
+			return cueTypesToCheck.includes(cue.type) && cueFromField.isFromField
 		})
 	)
 
-	if (!hasLayoutCue) {
+	if (!hasFieldCue) {
 		return partDefinitions
 	}
 
@@ -726,7 +726,7 @@ function stripRedundantCues(partDefinitions: PartDefinition[], cueTypesToCheck: 
 			if (!cueTypesToCheck.includes(cue.type)) {
 				return true
 			}
-			return (cue as CueDefinitionFromLayout).isFromLayout
+			return (cue as CueDefinitionFromField).isFromField
 		})
 		return {
 			...definition,
