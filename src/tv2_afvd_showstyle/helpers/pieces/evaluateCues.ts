@@ -21,6 +21,7 @@ import { EvaluateClearGrafiks } from './clearGrafiks'
 import { EvaluateCueDesign } from './design'
 import { EvaluateDVE } from './dve'
 import { EvaluateEkstern } from './ekstern'
+import { EvaluateCueGraphicSchema } from './evaluate-cue-graphic-schema'
 import { EvaluateCueGraphic } from './graphic'
 import { EvaluateCueBackgroundLoop } from './graphicBackgroundLoop'
 import { EvaluateJingle } from './jingle'
@@ -50,6 +51,7 @@ export async function EvaluateCues(
 			EvaluateCueGraphic,
 			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
+			EvaluateCueGraphicSchema,
 			EvaluateCueRouting,
 			EvaluateCueMixMinus,
 			EvaluateCueRobotCamera

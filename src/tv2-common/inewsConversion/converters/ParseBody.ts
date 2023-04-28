@@ -698,10 +698,22 @@ export function isMinusMic(inputName: string): boolean {
 }
 
 export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {
+	return stripRedundantCuesForSchema(stripRedundantCuesForDesign(partDefinitions))
+}
+
+function stripRedundantCuesForDesign(partDefinitions: PartDefinition[]): PartDefinition[] {
+	return stripRedundantCues(partDefinitions, [CueType.GraphicDesign, CueType.BackgroundLoop])
+}
+
+function stripRedundantCuesForSchema(partDefinitions: PartDefinition[]): PartDefinition[] {
+	return stripRedundantCues(partDefinitions, [CueType.GraphicSchema])
+}
+
+function stripRedundantCues(partDefinitions: PartDefinition[], cueTypesToCheck: CueType[]): PartDefinition[] {
 	const hasLayoutCue: boolean = partDefinitions.some((definition) =>
 		definition.cues.some((cue) => {
 			const cueFromLayout = cue as CueDefinitionFromLayout
-			return cueFromLayout.isFromLayout
+			return cueTypesToCheck.includes(cue.type) && cueFromLayout.isFromLayout
 		})
 	)
 
@@ -711,7 +723,7 @@ export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDe
 
 	return partDefinitions.map((definition) => {
 		const cues = definition.cues.filter((cue) => {
-			if (cue.type !== CueType.GraphicDesign && cue.type !== CueType.BackgroundLoop) {
+			if (!cueTypesToCheck.includes(cue.type)) {
 				return true
 			}
 			return (cue as CueDefinitionFromLayout).isFromLayout

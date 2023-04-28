@@ -450,6 +450,14 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
+		_id: SourceLayer.PgmSchema,
+		_rank: 30,
+		name: 'Viz Schema',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		isHidden: true
+	},
+	{
 		_id: SourceLayer.PgmDVEBackground,
 		_rank: 40,
 		name: 'DVE Background',
