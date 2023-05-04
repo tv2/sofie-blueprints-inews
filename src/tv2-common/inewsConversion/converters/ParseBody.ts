@@ -1,5 +1,8 @@
 import {
+	createCueDefinitionGraphicDesign,
+	createCueDefinitionGraphicSchema,
 	CueDefinitionFromField,
+	INewsFields,
 	parseTransitionStyle,
 	PostProcessDefinitions,
 	TransitionStyle,
@@ -186,7 +189,7 @@ export function ParseBody(
 	segmentName: string,
 	body: string,
 	cues: UnparsedCue[],
-	fields: any,
+	fields: INewsFields,
 	modified: number
 ): PartDefinition[] {
 	let definitions: PartDefinition[] = []
@@ -361,9 +364,28 @@ export function ParseBody(
 		partDefinition.cues = partDefinition.cues.filter((c) => c.type !== CueType.UNKNOWN)
 	})
 
-	definitions = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+	definitions[0]?.cues.push(...parseFieldsToCueDefinitions(fields, config))
+	definitions = stripRedundantCuesWhenFieldCueIsPresent(definitions)
 
 	return PostProcessDefinitions(definitions, segmentId)
+}
+
+function parseFieldsToCueDefinitions(fields: INewsFields, config: TV2ShowStyleConfig): CueDefinition[] {
+	const cueDefinitions: CueDefinition[] = []
+	if (fields.layout) {
+		const cueDefinitionGraphicDesign = createCueDefinitionGraphicDesign(fields.layout, config)
+		if (cueDefinitionGraphicDesign) {
+			cueDefinitions.push(cueDefinitionGraphicDesign)
+		}
+	}
+
+	if (fields.skema) {
+		const cueDefinitionGraphicSchema = createCueDefinitionGraphicSchema(fields.skema, config)
+		if (cueDefinitionGraphicSchema) {
+			cueDefinitions.push(cueDefinitionGraphicSchema)
+		}
+	}
+	return cueDefinitions
 }
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
@@ -697,7 +719,7 @@ export function isMinusMic(inputName: string): boolean {
 	return /minus mic/i.test(inputName)
 }
 
-export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {
+export function stripRedundantCuesWhenFieldCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {
 	return stripRedundantCuesForSchema(stripRedundantCuesForDesign(partDefinitions))
 }
 

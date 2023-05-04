@@ -233,7 +233,7 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	GfxDesignTemplates: [
 		{
 			INewsName: 'DESIGN_FODBOLD_22',
-			INewsStyleColumn: '',
+			INewsStyleColumn: 'F_22',
 			VizTemplate: 'DESIGN_FODBOLD_22'
 		}
 	],
@@ -273,7 +273,7 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	GfxSetups: [DEFAULT_GFX_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	GfxSchemaTemplates: [],
+	GfxSchemaTemplates: [{ GfxSchemaTemplatesName: 'SKEMA_NEWS', VizTemplate: 'NE', INewsSkemaColumn: 'SKEMA_NEWS' }],
 	GfxShowMapping: [],
 	GfxDefaults: [
 		{

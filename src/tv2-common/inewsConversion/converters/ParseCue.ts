@@ -264,10 +264,6 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return parsePgmClean(cue)
 	} else if (/^MINUSKAM\s*=/i.test(cue[0])) {
 		return parseMixMinus(cue)
-	} else if (/^DESIGN_FIELD=/i.test(cue[0])) {
-		return parseDesignLayout(cue, config)
-	} else if (/^SCHEMA_FIELD=/i.test(cue[0])) {
-		return parseSchemaLayout(cue, config)
 	} else if (/^ROBOT\s*=/i.test(cue[0])) {
 		return parseRobotCue(cue)
 	}
@@ -931,10 +927,10 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 	return retTime
 }
 
-function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefinitionGraphicDesign | undefined {
-	const array = cue[0].split('DESIGN_FIELD=')
-	const layout = array[1]
-
+export function createCueDefinitionGraphicDesign(
+	layout: string,
+	config: TV2ShowStyleConfig
+): CueDefinitionGraphicDesign | undefined {
 	const designConfig = findGraphicDesignConfiguration(config, layout)
 
 	if (!designConfig) {
@@ -944,10 +940,10 @@ function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefini
 	return literal<CueDefinitionGraphicDesign>({
 		type: CueType.GraphicDesign,
 		design: designConfig.VizTemplate,
-		iNewsCommand: layout,
 		start: {
 			frames: 1
 		},
+		iNewsCommand: '',
 		isFromField: true
 	})
 }
@@ -961,10 +957,10 @@ function findGraphicDesignConfiguration(
 	)
 }
 
-function parseSchemaLayout(cue: string[], config: TV2ShowStyleConfig): CueDefinitionGraphicSchema | undefined {
-	const array = cue[0].split('SCHEMA_FIELD=')
-	const schema = array[1]
-
+export function createCueDefinitionGraphicSchema(
+	schema: string,
+	config: TV2ShowStyleConfig
+): CueDefinitionGraphicSchema | undefined {
 	const schemaConfiguration = findGraphicSchemaConfiguration(config, schema)
 	if (!schemaConfiguration) {
 		return undefined
