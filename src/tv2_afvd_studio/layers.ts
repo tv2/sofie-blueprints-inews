@@ -35,7 +35,6 @@ export type GraphicLLayer = AFVDGraphicLLayer | SharedGraphicLLayer
 
 enum AFVDSisyfosLLayer {
 	SisyfosConfig = 'sisyfos_config',
-	SisyfosPersistedLevels = 'sisyfos_persisted_levels',
 	SisyfosSourceClipPending = 'sisyfos_source_clip_pending',
 	SisyfosSourceJingle = 'sisyfos_source_jingle',
 	SisyfosSourceTLF = 'sisyfos_source_tlf_hybrid',

@@ -461,9 +461,21 @@ export class ActionExecutionContextMock extends ShowStyleUserContextMock impleme
 	}
 	/** Get the resolved PieceInstances for a modifiable PartInstance */
 	public async getResolvedPieceInstances(
-		_part: 'current' | 'next'
+		part: 'current' | 'next'
 	): Promise<Array<IBlueprintResolvedPieceInstance<PieceMetaData>>> {
-		return []
+		const pieces = part === 'current' ? this.currentPieceInstances : this.nextPieceInstances ?? []
+		const now = Date.now()
+		// this is nowhere near to what core does; we should reconsider the way we're mocking this context
+		return pieces.map((pieceInstance) => {
+			let pieceStart = pieceInstance.piece.enable.start
+			if (pieceStart === 'now') {
+				pieceStart = now
+			}
+			return {
+				...pieceInstance,
+				resolvedStart: pieceStart
+			}
+		})
 	}
 	/** Get the last active piece on given layer */
 	public async findLastPieceOnLayer(

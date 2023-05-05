@@ -21,10 +21,8 @@ import {
 	HtmlPilotGraphicGenerator,
 	IsTargetingFull,
 	IsTargetingWall,
-	literal,
 	PieceMetaData,
 	ShowStyleContext,
-	SisyfosPersistMetaData,
 	t,
 	TV2ShowStyleConfig,
 	VizPilotGraphicGenerator
@@ -124,11 +122,6 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			sourceLayerId: this.getSourceLayer(),
 			prerollDuration: this.getPrerollDuration(),
 			lifespan: this.getPieceLifespan(),
-			metaData: {
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				}
-			},
 			content: this.getContent(),
 			tags: IsTargetingFull(this.engine)
 				? [GetTagForFull(this.segmentExternalId, this.cue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
@@ -136,7 +129,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 		}
 	}
 
-	public createAdlibPiece(rank?: number): IBlueprintAdLibPiece {
+	public createAdlibPiece(rank?: number): IBlueprintAdLibPiece<PieceMetaData> {
 		const pilotPiece = this.createPiece()
 		pilotPiece.tags = [...(pilotPiece.tags ?? []), AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR]
 		return {
@@ -170,10 +163,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 					name: this.cue.graphic.name,
 					vcpid: this.cue.graphic.vcpid,
 					segmentExternalId: this.segmentExternalId
-				},
-				sisyfosPersistMetaData: literal<SisyfosPersistMetaData>({
-					sisyfosLayers: []
-				})
+				}
 			},
 			content,
 			tags: [GetTagForFullNext(this.segmentExternalId, this.cue.graphic.vcpid)]

@@ -20,18 +20,17 @@ import {
 	ServerPosition,
 	TimelineContext
 } from 'tv2-common'
-import { AbstractLLayer, PartType, TallyTags } from 'tv2-constants'
+import { AbstractLLayer, PartType, SharedSisyfosLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
-import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 
 export interface PartEndStateExt {
-	sisyfosPersistMetaData: SisyfosPersistMetaData
+	sisyfosPersistenceMetaData: SisyfosPersistenceMetaData
 	mediaPlayerSessions: { [layer: string]: string[] }
 	isJingle?: boolean
 	fullFileName?: string
 	serverPosition?: ServerPosition
-	segmentId?: string
+	segmentId: string
 	partInstanceId: string
 }
 
@@ -59,7 +58,7 @@ export type TimelineBlueprintExt = TSR.TSRTimelineObjBase & {
 }
 
 export interface PieceMetaData {
-	sisyfosPersistMetaData?: SisyfosPersistMetaData
+	sisyfosPersistMetaData?: SisyfosPersistenceMetaData
 	mediaPlayerSessions?: string[]
 	modifiedByAction?: boolean
 }
@@ -81,12 +80,27 @@ export interface ServerPieceMetaData extends PieceMetaData {
 	userData: ActionSelectServerClip
 }
 
-export interface SisyfosPersistMetaData {
+export interface SisyfosPersistenceMetaData {
+	/**
+	 * The layers this piece wants to persist into the next part
+	 */
 	sisyfosLayers: string[]
+	/**
+	 * The layers this piece gathered from previous pieces and wants to persist into the next part
+	 */
+	previousSisyfosLayers?: string[]
+	/**
+	 * Whether `sisyfosLayers` and `previousSisyfosLayers` may be persisted into the next part if accepted
+	 */
 	wantsToPersistAudio?: boolean
-	acceptPersistAudio?: boolean
-	previousPersistMetaDataForCurrentPiece?: SisyfosPersistMetaData
-	isPieceInjectedInPart?: boolean
+	/**
+	 * Whether `sisyfosLayers` and `previousSisyfosLayers` from the previous part may be persisted
+	 */
+	acceptsPersistedAudio?: boolean
+	/**
+	 * Whether the piece was inserted/updated by fast Camera/Live cutting within a part or fading down persisted levels
+	 */
+	isModifiedOrInsertedByAction?: boolean
 }
 
 export interface PartMetaData {
@@ -112,10 +126,16 @@ export function onTimelineGenerate<
 		isNewSegment: context.core.previousPartInstance?.segmentId !== context.core.currentPartInstance?.segmentId
 	}
 
-	if (!persistentState.isNewSegment || isAnyPieceInjectedIntoPart(context, resolvedPieces)) {
+	if (
+		(!persistentState.isNewSegment || isAnyPieceInjectedIntoPart(context, resolvedPieces)) &&
+		context.core.currentPartInstance
+	) {
 		const sisyfosPersistedLevelsTimelineObject = createSisyfosPersistedLevelsTimelineObject(
+			context.core.currentPartInstance._id,
 			resolvedPieces,
-			previousPartEndState2 ? previousPartEndState2.sisyfosPersistMetaData.sisyfosLayers : []
+			previousPartEndState2 && !persistentState.isNewSegment
+				? previousPartEndState2.sisyfosPersistenceMetaData.sisyfosLayers
+				: []
 		)
 		timeline.push(sisyfosPersistedLevelsTimelineObject)
 	}
@@ -211,26 +231,25 @@ function isAnyPieceInjectedIntoPart(
 	return resolvedPieces
 		.filter((piece) => piece.partInstanceId === context.core.currentPartInstance?._id)
 		.some((piece) => {
-			return piece.piece.metaData?.sisyfosPersistMetaData?.isPieceInjectedInPart
+			return piece.piece.metaData?.sisyfosPersistMetaData?.isModifiedOrInsertedByAction
 		})
 }
 
 export function getEndStateForPart(
 	_context: IRundownContext,
-	_previousPersistentState: TimelinePersistentState | undefined,
+	previousPersistentState: TimelinePersistentState | undefined,
 	partInstance: IBlueprintPartInstance,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
 	time: number
 ): PartEndState {
 	const endState: PartEndStateExt = {
-		sisyfosPersistMetaData: {
+		sisyfosPersistenceMetaData: {
 			sisyfosLayers: []
 		},
 		mediaPlayerSessions: {},
 		segmentId: partInstance.segmentId,
 		partInstanceId: partInstance._id
 	}
-	const previousPartEndState = partInstance?.previousPartEndState as Partial<PartEndStateExt>
 
 	const activePieces = resolvedPieces.filter(
 		(p) =>
@@ -240,11 +259,12 @@ export function getEndStateForPart(
 			(!p.piece.enable.duration || p.piece.enable.start + p.piece.enable.duration >= time)
 	)
 
-	const previousPersistentState: TimelinePersistentStateExt = _previousPersistentState as TimelinePersistentStateExt
-	endState.sisyfosPersistMetaData.sisyfosLayers = findLayersToPersist(
+	const previousPartEndState = partInstance?.previousPartEndState as Partial<PartEndStateExt>
+	const previousPersistentStateExt: TimelinePersistentStateExt = previousPersistentState as TimelinePersistentStateExt
+	endState.sisyfosPersistenceMetaData.sisyfosLayers = findLayersToPersistOnPartEnd(
 		activePieces,
-		!previousPersistentState.isNewSegment && previousPartEndState && previousPartEndState.sisyfosPersistMetaData
-			? previousPartEndState.sisyfosPersistMetaData.sisyfosLayers
+		!previousPersistentStateExt.isNewSegment && previousPartEndState && previousPartEndState.sisyfosPersistenceMetaData
+			? previousPartEndState.sisyfosPersistenceMetaData.sisyfosLayers
 			: []
 	)
 
@@ -271,16 +291,21 @@ export function getEndStateForPart(
 }
 
 export function createSisyfosPersistedLevelsTimelineObject(
+	currentPartInstanceId: string,
 	resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
-	previousSisyfosLayersThatWantsToBePersisted: SisyfosPersistMetaData['sisyfosLayers']
+	layersWantingToPersistFromPreviousPart: string[]
 ): TSR.TimelineObjSisyfosChannels {
-	const layersToPersist = findLayersToPersist(resolvedPieces, previousSisyfosLayersThatWantsToBePersisted)
+	const layersToPersist = findPersistedLayers(
+		currentPartInstanceId,
+		resolvedPieces,
+		layersWantingToPersistFromPreviousPart
+	)
 	return {
 		id: 'sisyfosPersistenceObject',
 		enable: {
 			start: 0
 		},
-		layer: SisyfosLLAyer.SisyfosPersistedLevels,
+		layer: SharedSisyfosLLayer.SisyfosPersistedLevels,
 		content: {
 			deviceType: TSR.DeviceType.SISYFOS,
 			type: TSR.TimelineContentTypeSisyfos.CHANNELS,
@@ -295,53 +320,72 @@ export function createSisyfosPersistedLevelsTimelineObject(
 	}
 }
 
-function findLayersToPersist(
-	pieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
-	sisyfosLayersThatWantsToBePersisted: string[]
+function findLayersToPersistOnPartEnd(
+	pieceInstances: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
+	layersWantingToPersistFromPreviousPart: string[] = []
 ): string[] {
-	const sortedPieces = pieces
-		.filter((piece) => piece.piece.metaData?.sisyfosPersistMetaData)
-		.sort((a, b) => b.resolvedStart - a.resolvedStart)
+	const latestPieceInstance = findLastPlayingPieceInstance(
+		pieceInstances,
+		(pieceInstance) => !!pieceInstance.piece.metaData?.sisyfosPersistMetaData
+	)
+	const latestPieceMetaData = latestPieceInstance?.piece.metaData?.sisyfosPersistMetaData
 
-	if (sortedPieces.length === 0) {
+	if (!latestPieceMetaData?.wantsToPersistAudio) {
 		return []
 	}
 
-	const firstPieceMetaData = sortedPieces[0].piece.metaData!
-	if (!firstPieceMetaData.sisyfosPersistMetaData!.acceptPersistAudio) {
-		return firstPieceMetaData.sisyfosPersistMetaData!.wantsToPersistAudio
-			? firstPieceMetaData.sisyfosPersistMetaData!.sisyfosLayers
-			: []
+	if (!latestPieceMetaData.acceptsPersistedAudio) {
+		return latestPieceMetaData.wantsToPersistAudio ? latestPieceMetaData.sisyfosLayers : []
 	}
 
 	const layersToPersist: string[] = []
-	for (let i = 0; i < sortedPieces.length; i++) {
-		const pieceMetaData = sortedPieces[i].piece.metaData!
-		const sisyfosPersistMetaData: SisyfosPersistMetaData = pieceMetaData.sisyfosPersistMetaData!
-		if (sisyfosPersistMetaData.wantsToPersistAudio) {
-			layersToPersist.push(...sisyfosPersistMetaData.sisyfosLayers)
-		}
+	if (!latestPieceMetaData?.isModifiedOrInsertedByAction) {
+		layersToPersist.push(...layersWantingToPersistFromPreviousPart)
+	} else if (latestPieceMetaData.previousSisyfosLayers) {
+		layersToPersist.push(...latestPieceMetaData.previousSisyfosLayers)
+	}
+	layersToPersist.push(...latestPieceMetaData.sisyfosLayers)
 
-		if (doesMetaDataNotAcceptPersistAudioDeep(sisyfosPersistMetaData)) {
-			break
-		}
+	return Array.from(new Set(layersToPersist))
+}
 
-		if (i === sortedPieces.length - 1) {
-			layersToPersist.push(...sisyfosLayersThatWantsToBePersisted)
-		}
+function findPersistedLayers(
+	currentPartInstanceId: string,
+	pieceInstances: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
+	layersWantingToPersistFromPreviousPart: string[]
+): string[] {
+	const latestPieceInstance = findLastPlayingPieceInstance(
+		pieceInstances,
+		(pieceInstance) =>
+			!!pieceInstance.piece.metaData?.sisyfosPersistMetaData && pieceInstance.partInstanceId === currentPartInstanceId
+	)
+
+	const latestPieceMetaData = latestPieceInstance?.piece.metaData
+	if (!latestPieceMetaData?.sisyfosPersistMetaData!.acceptsPersistedAudio) {
+		return []
+	}
+
+	const layersToPersist: string[] = []
+	if (!latestPieceMetaData.sisyfosPersistMetaData?.isModifiedOrInsertedByAction) {
+		layersToPersist.push(...layersWantingToPersistFromPreviousPart)
+	} else if (latestPieceMetaData.sisyfosPersistMetaData.previousSisyfosLayers) {
+		layersToPersist.push(...latestPieceMetaData.sisyfosPersistMetaData.previousSisyfosLayers)
 	}
 
 	return Array.from(new Set(layersToPersist))
 }
 
-function doesMetaDataNotAcceptPersistAudioDeep(metaData: SisyfosPersistMetaData): boolean {
-	if (!metaData.acceptPersistAudio) {
-		return true
+export function findLastPlayingPieceInstance(
+	currentPieceInstances: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
+	predicate?: (pieceInstance: IBlueprintResolvedPieceInstance<PieceMetaData>) => boolean
+): IBlueprintResolvedPieceInstance<PieceMetaData> | undefined {
+	const playingPieces = currentPieceInstances.filter((p) => !p.stoppedPlayback && (predicate ? predicate(p) : true))
+	if (playingPieces.length <= 1) {
+		return playingPieces[0]
 	}
-	if (metaData.previousPersistMetaDataForCurrentPiece) {
-		return doesMetaDataNotAcceptPersistAudioDeep(metaData.previousPersistMetaDataForCurrentPiece)
-	}
-	return false
+	return playingPieces.reduce((prev, current) => {
+		return prev.resolvedStart > current.resolvedStart ? prev : current
+	})
 }
 
 export function disablePilotWipeAfterJingle(

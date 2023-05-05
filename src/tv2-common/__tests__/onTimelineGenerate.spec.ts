@@ -3,23 +3,28 @@ import { SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import {
 	createSisyfosPersistedLevelsTimelineObject,
 	PieceMetaData,
-	SisyfosPersistMetaData
+	SisyfosPersistenceMetaData
 } from '../onTimelineGenerate'
 
 const LAYER_THAT_WANTS_TO_BE_PERSISTED = 'layerThatWantsToBePersisted'
-const LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY: SisyfosPersistMetaData['sisyfosLayers'] = [
+const LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY: SisyfosPersistenceMetaData['sisyfosLayers'] = [
 	LAYER_THAT_WANTS_TO_BE_PERSISTED
 ]
+const PART_INSTANCE_ID = 'part1'
 
 // tslint:disable:no-object-literal-type-assertion
 describe('onTimelineGenerate', () => {
 	describe('createSisyfosPersistedLevelsTimelineObject', () => {
-		it('has one layer to persist, piece accept persist - timelineObject with layer is added', () => {
+		it('has one layer to persist from the previous part, piece accepts persistence - timelineObject with layer is added', () => {
 			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
 				createPieceInstance('currentPiece', 10, undefined, true, true)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
 			const indexOfLayerThatWantToBePersisted = result.content.channels.findIndex(
 				(channel) => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED
@@ -27,12 +32,16 @@ describe('onTimelineGenerate', () => {
 			expect(indexOfLayerThatWantToBePersisted).toBeGreaterThanOrEqual(0)
 		})
 
-		it('has layer to persist, timelineObject with correct Sisyfos information is added', () => {
+		it('has one layer to persist from the previous part, timelineObject with correct Sisyfos information is added', () => {
 			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
 				createPieceInstance('currentPiece', 10, undefined, true, true)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
 			expect(result.layer).toEqual(SisyfosLLAyer.SisyfosPersistedLevels)
 			expect(result.content.deviceType).toEqual(TSR.DeviceType.SISYFOS)
@@ -45,41 +54,41 @@ describe('onTimelineGenerate', () => {
 				createPieceInstance('currentPiece', 10, undefined, true, true)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 			expect(result.content.channels[0].isPgm).toEqual(1)
 		})
 
-		it('should persist only current piece layer when piece wants to persist but dont accept', () => {
+		it('should not persist anything when no piece in current part accepts persistence', () => {
 			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('previousPiece', 0, 10, true, true),
-				createPieceInstance('currentPiece', 10, undefined, true, false)
+				createPieceInstance('previousPiece', 0, undefined, true, true, 'OTHER_PART')
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
-
-			expect(result.content.channels).toHaveLength(1)
-		})
-
-		it('should not persist anything when current piece dont accept and dont want to persist', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('previousPiece', 0, 10, true, true),
-				createPieceInstance('currentPiece', 10, undefined, false, false)
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
 			expect(result.content.channels).toHaveLength(0)
 		})
 
-		it('should persist when previous piece does not accept persist, but current does accept', () => {
+		it('should not persist anything when the current piece does not accept and does not want to persist', () => {
 			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('previousPiece', 0, 10, true, false),
-				createPieceInstance('currentPiece', 10, undefined, false, true)
+				createPieceInstance('previousPiece', 0, undefined, true, true),
+				createPieceInstance('currentPiece', 10, undefined, false, false)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
-			expect(result.content.channels).toHaveLength(1)
+			expect(result.content.channels).toHaveLength(0)
 		})
 
 		it('should persist when current piece accepts persist and duration is not undefined', () => {
@@ -87,7 +96,11 @@ describe('onTimelineGenerate', () => {
 				createPieceInstance('currentPiece', 0, 5, false, true)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
 			expect(result.content.channels).toHaveLength(1)
 		})
@@ -96,7 +109,7 @@ describe('onTimelineGenerate', () => {
 			const firstLayerThatWantToBePersisted: string = 'firstLayer'
 			const secondLayerThatWantToBePersisted: string = 'secondLayer'
 			const thirdLayerThatWantToBePersisted: string = 'thirdLayer'
-			const layersThatWantToBePersisted: SisyfosPersistMetaData['sisyfosLayers'] = [
+			const layersThatWantToBePersisted: SisyfosPersistenceMetaData['sisyfosLayers'] = [
 				firstLayerThatWantToBePersisted,
 				secondLayerThatWantToBePersisted,
 				thirdLayerThatWantToBePersisted
@@ -105,7 +118,11 @@ describe('onTimelineGenerate', () => {
 				createPieceInstance('currentPiece', 0, 5, true, true)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, layersThatWantToBePersisted)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				layersThatWantToBePersisted
+			)
 
 			expect(
 				result.content.channels.some((channel) => channel.mappedLayer === firstLayerThatWantToBePersisted)
@@ -124,39 +141,46 @@ describe('onTimelineGenerate', () => {
 				createExecuteActionPieceInstance('currentPieceIsExecuteAction', 10, undefined, false, false)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
 			expect(result.content.channels).toHaveLength(0)
 		})
 
-		it('cuts to executeAction that accept persist from piece that accept, add persist timelineObject containing all layers that want to be persisted plus previous piece layers', () => {
+		it('cuts to executeAction that accepts persistence, dont persist layers from previous part', () => {
 			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
 				createPieceInstance('previousPieceNotExecuteAction', 0, 10, true, true),
 				createExecuteActionPieceInstance('currentPieceIsExecuteAction', 10, undefined, false, true)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
-			expect(
-				result.content.channels.some((channel) => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED)
-			).toBeTruthy()
-			expect(
-				result.content.channels.some((channel) => channel.mappedLayer === resolvedPieces[0].piece.name)
-			).toBeTruthy()
+			expect(result.content.channels).toHaveLength(0)
 		})
 
-		it('cuts to executionAction that accept from piece that dont accept, add persist timelineObject that only contain previous piece layers', () => {
+		it('cuts to executeAction that accepts persistence, from piece that accepts, add persist timelineObject containing all layers that want to be persisted plus previous piece layers', () => {
 			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('previousPieceNotExecuteAction', 0, 10, true, false),
-				createExecuteActionPieceInstance('currentPieceIsExecuteAction', 10, undefined, false, true)
+				createPieceInstance('previousPieceNotExecuteAction', 0, 10, true, true),
+				createExecuteActionPieceInstance('currentPieceIsExecuteAction', 10, undefined, false, true, PART_INSTANCE_ID, [
+					'previousPieceLayer'
+				])
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
 			expect(result.content.channels).toHaveLength(1)
-			expect(
-				result.content.channels.some((channel) => channel.mappedLayer === resolvedPieces[0].piece.name)
-			).toBeTruthy()
+			expect(result.content.channels[0].mappedLayer).toBe('previousPieceLayer')
 		})
 
 		it('cuts to executeAction that accept persist from piece that dont want to persist and dont accept persist, dont persist any layers', () => {
@@ -165,132 +189,21 @@ describe('onTimelineGenerate', () => {
 				createExecuteActionPieceInstance('currentPieceIsExecuteAction', 10, undefined, false, true)
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
-
-			expect(result.content.channels).toHaveLength(0)
-		})
-
-		it('cuts to executeAction that accept persist from piece that dont want to persist and that accept persist, persist previous layers', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('previousPieceNotExecuteAction', 0, 10, false, true),
-				createExecuteActionPieceInstance('currentPieceIsExecuteAction', 10, undefined, false, true)
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
-
-			expect(result.content.channels).toHaveLength(1)
-			expect(
-				result.content.channels.some((channel) => channel.mappedLayer === LAYER_THAT_WANTS_TO_BE_PERSISTED)
-			).toBeTruthy()
-		})
-
-		it('cuts from executeAction that dont accept to piece that accepts, dont persist', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createExecuteActionPieceInstance('previousPieceIsExecuteAction', 0, 10, false, false),
-				createPieceInstance('currentPieceNotExecuteAction', 10, undefined, false, true)
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
-
-			expect(result.content.channels).toHaveLength(0)
-		})
-
-		it('cuts from executeAction that dont accept to piece that dont accepts, dont persist layers', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createExecuteActionPieceInstance('previousPieceIsExecuteAction', 0, 10, false, false),
-				createPieceInstance('currentPieceNotExecuteAction', 10, undefined, false, false)
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
-
-			expect(result.content.channels).toHaveLength(0)
-		})
-
-		it('cuts from executeAction that accept to piece that dont accepts, dont persist layers', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createExecuteActionPieceInstance('previousPieceIsExecuteAction', 0, 10, false, true),
-				createPieceInstance('currentPieceNotExecuteAction', 10, undefined, false, false)
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
-
-			expect(result.content.channels).toHaveLength(0)
-		})
-
-		it('cuts from executeAction that accept to piece that accepts, add persist timelineObject with previous layer before executeAction + new layer', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('firstPiece', 0, 5, true, true),
-				createExecuteActionPieceInstance('previousPieceIsExecuteAction', 5, 5, false, true, {
-					acceptPersistAudio: true,
-					sisyfosLayers: []
-				}),
-				createPieceInstance('currentPieceNotExecuteAction', 10, undefined, false, true)
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
-
-			expect(result.content.channels).toHaveLength(2)
-		})
-
-		it('cuts from piece that wants to persist to executeAction that do not accept to piece that accepts, do not persist', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('firstPiece', 0, 5, true, true),
-				createExecuteActionPieceInstance('previousPieceIsExecuteAction', 5, 5, false, true, {
-					acceptPersistAudio: false,
-					sisyfosLayers: []
-				}),
-				createPieceInstance('currentPieceNotExecuteAction', 10, undefined, false, true)
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
-
-			expect(result.content.channels).toHaveLength(0)
-		})
-
-		it('cuts from piece that wants to persist to executeAction that accepts to another executeAction that accepts, persist layer from first piece', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('firstPiece', 0, 5, true, true),
-				createExecuteActionPieceInstance('executeAction', 5, undefined, false, true, {
-					acceptPersistAudio: true,
-					sisyfosLayers: [],
-					previousPersistMetaDataForCurrentPiece: {
-						acceptPersistAudio: true,
-						sisyfosLayers: []
-					}
-				})
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, [])
-
-			expect(result.content.channels).toHaveLength(1)
-			expect(result.content.channels.some((channel) => channel.mappedLayer === 'firstPiece')).toBeTruthy()
-		})
-
-		it('cuts from piece that wants to persist to executeAction that do not accept to another executeAction that accepts, dont persist any layers', () => {
-			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('firstPiece', 0, 5, true, true),
-				createExecuteActionPieceInstance('executeAction', 5, undefined, false, true, {
-					acceptPersistAudio: true,
-					sisyfosLayers: [],
-					previousPersistMetaDataForCurrentPiece: {
-						acceptPersistAudio: false,
-						sisyfosLayers: []
-					}
-				})
-			]
-
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, [])
+			const result = createSisyfosPersistedLevelsTimelineObject(
+				PART_INSTANCE_ID,
+				resolvedPieces,
+				LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+			)
 
 			expect(result.content.channels).toHaveLength(0)
 		})
 
 		it('should not contain any duplicate layers to persist', () => {
 			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
-				createPieceInstance('piece', 0, 5, true, true),
-				createPieceInstance('piece', 5, undefined, true, true)
+				createExecuteActionPieceInstance('piece', 5, undefined, true, true, PART_INSTANCE_ID, ['piece'])
 			]
 
-			const result = createSisyfosPersistedLevelsTimelineObject(resolvedPieces, [])
+			const result = createSisyfosPersistedLevelsTimelineObject(PART_INSTANCE_ID, resolvedPieces, ['piece'])
 
 			expect(result.content.channels).toHaveLength(1)
 		})
@@ -302,18 +215,20 @@ function createPieceInstance(
 	start: number,
 	duration: number | undefined,
 	wantToPersistAudio: boolean,
-	acceptPersistAudio: boolean
+	acceptPersistAudio: boolean,
+	partInstanceId: string = PART_INSTANCE_ID
 ): IBlueprintResolvedPieceInstance<PieceMetaData> {
 	return {
 		resolvedStart: start,
 		resolvedDuration: duration,
+		partInstanceId,
 		piece: {
 			name,
 			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: [name],
 					wantsToPersistAudio: wantToPersistAudio,
-					acceptPersistAudio
+					acceptsPersistedAudio: acceptPersistAudio
 				}
 			}
 		} as IBlueprintPieceDB<PieceMetaData>
@@ -326,19 +241,22 @@ function createExecuteActionPieceInstance(
 	duration: number | undefined,
 	wantToPersistAudio: boolean,
 	acceptPersistAudio: boolean,
-	previousMetaData?: SisyfosPersistMetaData
+	partInstanceId: string = PART_INSTANCE_ID,
+	previousSisyfosLayers?: string[]
 ): IBlueprintResolvedPieceInstance<PieceMetaData> {
 	return {
 		resolvedStart: start,
 		resolvedDuration: duration,
+		partInstanceId,
 		piece: {
 			name,
 			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: [name],
 					wantsToPersistAudio: wantToPersistAudio,
-					acceptPersistAudio,
-					previousPersistMetaDataForCurrentPiece: previousMetaData
+					acceptsPersistedAudio: acceptPersistAudio,
+					isModifiedOrInsertedByAction: true,
+					previousSisyfosLayers
 				}
 			}
 		} as IBlueprintPieceDB<PieceMetaData>
