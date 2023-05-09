@@ -13,6 +13,7 @@ import {
 	CueDefinitionClearGrafiks,
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
+	CueDefinitionGraphicSchema,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionRobotCamera,
@@ -78,6 +79,12 @@ export interface EvaluateCuesShowstyleOptions {
 		parsedCue: CueDefinitionGraphicDesign,
 		adlib?: boolean,
 		rank?: number
+	) => void
+	EvaluateCueGraphicSchema?: (
+		context: ShowStyleContext<TV2ShowStyleConfig>,
+		pieces: IBlueprintPiece[],
+		partId: string,
+		parsedCue: CueDefinitionGraphicSchema
 	) => void
 	EvaluateCueRouting?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
@@ -289,6 +296,11 @@ export async function EvaluateCuesBase(
 							shouldAdlib,
 							adLibRank
 						)
+					}
+					break
+				case CueType.GraphicSchema:
+					if (showStyleOptions.EvaluateCueGraphicSchema) {
+						showStyleOptions.EvaluateCueGraphicSchema(context, pieces, partDefinition.externalId, cue)
 					}
 					break
 				case CueType.ClearGrafiks:

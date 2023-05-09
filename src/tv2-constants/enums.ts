@@ -33,7 +33,8 @@ export enum CueType {
 	Routing,
 	PgmClean,
 	MixMinus,
-	RobotCamera
+	RobotCamera,
+	GraphicSchema
 }
 
 export const enum PartType {

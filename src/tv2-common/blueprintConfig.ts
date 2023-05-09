@@ -54,7 +54,7 @@ export interface TableConfigItemAdLibTransitions {
 }
 
 export interface TableConfigGfxSchema {
-	SchemaName: string
+	GfxSchemaTemplatesName: string
 	INewsSkemaColumn: string
 	VizTemplate: string
 }

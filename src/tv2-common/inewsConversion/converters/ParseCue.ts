@@ -1,4 +1,10 @@
-import { literal, TableConfigItemGfxDesignTemplate, TV2ShowStyleConfig, UnparsedCue } from 'tv2-common'
+import {
+	literal,
+	TableConfigGfxSchema,
+	TableConfigItemGfxDesignTemplate,
+	TV2ShowStyleConfig,
+	UnparsedCue
+} from 'tv2-common'
 import { CueType, GraphicEngine, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -109,19 +115,24 @@ export interface CueDefinitionUnpairedPilot extends CueDefinitionBase {
 	engineNumber?: number
 }
 
-export interface CueDefinitionBackgroundLoop extends CueDefinitionBase, CueDefinitionFromLayout {
+export interface CueDefinitionBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.BackgroundLoop
 	target: 'FULL' | 'DVE'
 	backgroundLoop: string
 }
 
-export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromLayout {
+export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.GraphicDesign
 	design: string
 }
 
-export interface CueDefinitionFromLayout {
-	isFromLayout?: boolean
+export interface CueDefinitionFromField {
+	isFromField?: boolean
+}
+
+export interface CueDefinitionGraphicSchema extends CueDefinitionBase, CueDefinitionFromField {
+	type: CueType.GraphicSchema
+	schema: string
 }
 
 export interface GraphicInternal {
@@ -180,6 +191,7 @@ export type CueDefinition =
 	| CueDefinitionUnpairedPilot
 	| CueDefinitionBackgroundLoop
 	| CueDefinitionGraphicDesign
+	| CueDefinitionGraphicSchema
 	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
@@ -252,8 +264,6 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return parsePgmClean(cue)
 	} else if (/^MINUSKAM\s*=/i.test(cue[0])) {
 		return parseMixMinus(cue)
-	} else if (/^DESIGN_LAYOUT=/i.test(cue[0])) {
-		return parseDesignLayout(cue, config)
 	} else if (/^ROBOT\s*=/i.test(cue[0])) {
 		return parseRobotCue(cue)
 	}
@@ -267,7 +277,11 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 function parsekg(
 	cue: string[],
 	config: TV2ShowStyleConfig
-): CueDefinitionGraphic<GraphicInternalOrPilot> | CueDefinitionGraphicDesign | CueDefinitionUnpairedTarget {
+):
+	| CueDefinitionGraphic<GraphicInternalOrPilot>
+	| CueDefinitionGraphicDesign
+	| CueDefinitionGraphicSchema
+	| CueDefinitionUnpairedTarget {
 	let kgCue: CueDefinitionGraphic<GraphicInternalOrPilot> = {
 		type: CueType.Graphic,
 		target: 'OVL',
@@ -343,6 +357,23 @@ function parsekg(
 		return literal<CueDefinitionGraphicDesign>({
 			type: CueType.GraphicDesign,
 			design: graphicDesignConfig.VizTemplate,
+			iNewsCommand: kgCue.iNewsCommand,
+			start: kgCue.start,
+			end: kgCue.end,
+			adlib: kgCue.adlib
+		})
+	}
+
+	const graphicsSchemaConfig = code
+		? config.showStyle.GfxSchemaTemplates.find(
+				(template) => template.GfxSchemaTemplatesName.toUpperCase() === graphic.template.toUpperCase()
+		  )
+		: undefined
+
+	if (graphicsSchemaConfig) {
+		return literal<CueDefinitionGraphicSchema>({
+			type: CueType.GraphicSchema,
+			schema: graphicsSchemaConfig.VizTemplate,
 			iNewsCommand: kgCue.iNewsCommand,
 			start: kgCue.start,
 			end: kgCue.end,
@@ -896,10 +927,10 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 	return retTime
 }
 
-function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefinitionGraphicDesign | undefined {
-	const array = cue[0].split('DESIGN_LAYOUT=')
-	const layout = array[1]
-
+export function createCueDefinitionGraphicDesign(
+	layout: string,
+	config: TV2ShowStyleConfig
+): CueDefinitionGraphicDesign | undefined {
 	const designConfig = findGraphicDesignConfiguration(config, layout)
 
 	if (!designConfig) {
@@ -909,11 +940,8 @@ function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefini
 	return literal<CueDefinitionGraphicDesign>({
 		type: CueType.GraphicDesign,
 		design: designConfig.VizTemplate,
-		iNewsCommand: layout,
-		start: {
-			frames: 1
-		},
-		isFromLayout: true
+		iNewsCommand: '',
+		isFromField: true
 	})
 }
 
@@ -923,6 +951,29 @@ function findGraphicDesignConfiguration(
 ): TableConfigItemGfxDesignTemplate | undefined {
 	return config.showStyle.GfxDesignTemplates.find(
 		(template) => template.INewsStyleColumn && template.INewsStyleColumn.toUpperCase() === layout.toUpperCase()
+	)
+}
+
+export function createCueDefinitionGraphicSchema(
+	schema: string,
+	config: TV2ShowStyleConfig
+): CueDefinitionGraphicSchema | undefined {
+	const schemaConfiguration = findGraphicSchemaConfiguration(config, schema)
+	if (!schemaConfiguration) {
+		return undefined
+	}
+
+	return literal<CueDefinitionGraphicSchema>({
+		type: CueType.GraphicSchema,
+		schema: schemaConfiguration.VizTemplate,
+		iNewsCommand: '',
+		isFromField: true
+	})
+}
+
+function findGraphicSchemaConfiguration(config: TV2ShowStyleConfig, schema: string): TableConfigGfxSchema | undefined {
+	return config.showStyle.GfxSchemaTemplates.find(
+		(template) => template.INewsSkemaColumn && template.INewsSkemaColumn.toUpperCase() === schema.toUpperCase()
 	)
 }
 
