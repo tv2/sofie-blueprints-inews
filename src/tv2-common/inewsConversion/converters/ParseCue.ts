@@ -940,9 +940,6 @@ export function createCueDefinitionGraphicDesign(
 	return literal<CueDefinitionGraphicDesign>({
 		type: CueType.GraphicDesign,
 		design: designConfig.VizTemplate,
-		start: {
-			frames: 1
-		},
 		iNewsCommand: '',
 		isFromField: true
 	})
@@ -970,9 +967,6 @@ export function createCueDefinitionGraphicSchema(
 		type: CueType.GraphicSchema,
 		schema: schemaConfiguration.VizTemplate,
 		iNewsCommand: '',
-		start: {
-			frames: 1
-		},
 		isFromField: true
 	})
 }
