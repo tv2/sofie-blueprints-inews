@@ -234,7 +234,8 @@ export enum SharedCasparLLayer {
 export enum SharedSisyfosLLayer {
 	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',
 	SisyfosResync = 'sisyfos_resync',
-	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics'
+	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
+	SisyfosPersistedLevels = 'sisyfos_persisted_levels'
 }
 
 export enum RobotCameraLayer {

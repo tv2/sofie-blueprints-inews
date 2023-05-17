@@ -87,7 +87,7 @@ export async function OfftubeCreatePartKam(
 			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],
-					acceptPersistAudio: sourceInfoCam.acceptPersistAudio
+					acceptsPersistedAudio: sourceInfoCam.acceptPersistAudio
 				}
 			},
 			tags: [GetTagForKam(partDefinition.sourceDefinition)],

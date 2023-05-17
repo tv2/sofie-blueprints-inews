@@ -5956,10 +5956,10 @@ through@2, "through@>=2.2.7 <3":
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
-"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-3.4.0.tgz#179b66c64616fec2ec541fd9dd5a73517d8706fc"
-  integrity sha512-P174WyTAa6PVAotOJOEw8Dsqu1L3Cx/jEDmikLDLfFgRgmsYNSjtmgLzuzBY/O39iAxcqXs0ItM7QKcnX+ilwg==
+"timeline-state-resolver-types@npm:@tv2media/timeline-state-resolver-types@3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@tv2media/timeline-state-resolver-types/-/timeline-state-resolver-types-3.5.0.tgz#02ca12128cbc0df84e630d0da8c66a1d44e5f172"
+  integrity sha512-DdKXdQf+By8ssBKqd3qfAAhERehlKTorWb3tYK6G6z1vmADSJT+MVAvY0GpLx5/qKe0e3HbutQ2CMlh7b00QIA==
   dependencies:
     tslib "^2.3.1"
 
