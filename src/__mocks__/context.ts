@@ -467,13 +467,12 @@ export class ActionExecutionContextMock extends ShowStyleUserContextMock impleme
 		const now = Date.now()
 		// this is nowhere near to what core does; we should reconsider the way we're mocking this context
 		return pieces.map((pieceInstance) => {
-			let pieceStart = pieceInstance.piece.enable.start
-			if (pieceStart === 'now') {
-				pieceStart = now
-			}
+			const pieceStart = pieceInstance.piece.enable.start
+			const resolvedStart = pieceStart === 'now' ? now : pieceStart
+			
 			return {
 				...pieceInstance,
-				resolvedStart: pieceStart
+				resolvedStart
 			}
 		})
 	}
