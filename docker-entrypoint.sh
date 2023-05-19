@@ -21,3 +21,7 @@ if [[ -d "/opt/blueprints/nginx" ]]; then
     cp -r shelf-layouts/ nginx/
     cp -r external-frames/ nginx/
 fi
+
+cd shelf-layouts
+
+./upload.sh
