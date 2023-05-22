@@ -95,6 +95,13 @@ export function EvaluateLYD(
 	}
 }
 
+export function createFadeSoundContent(
+	config: TV2ShowStyleConfig,
+	fadeDurationFrames: number
+): WithTimeline<BaseContent> {
+	return LydContent(config, 'empty', 'fade', fadeDurationFrames, fadeDurationFrames)
+}
+
 function LydContent(
 	config: TV2ShowStyleConfig,
 	file: string,

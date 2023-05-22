@@ -6,6 +6,7 @@ import {
 	ActionCutToCamera,
 	ActionCutToRemote,
 	ActionFadeDownPersistedAudioLevels,
+	ActionFadeDownSoundPlayer,
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
@@ -84,6 +85,7 @@ export class GlobalAdlibActionsGenerator {
 		blueprintActions.push(this.makePersistedAudioLevelsAction())
 
 		blueprintActions.push(this.makeRobotPresetAction())
+		blueprintActions.push(this.makeFadeSoundPlayerAction())
 
 		return blueprintActions
 	}
@@ -336,6 +338,25 @@ export class GlobalAdlibActionsGenerator {
 				_rank: 400,
 				label: t(`Call Robot preset`),
 				sourceLayerId: SourceLayer.RobotCamera,
+				outputLayerId: SharedOutputLayer.SEC,
+				tags: []
+			}
+		}
+	}
+
+	private makeFadeSoundPlayerAction(): IBlueprintActionManifest {
+		const fadeDownSoundPlayer: ActionFadeDownSoundPlayer = {
+			type: AdlibActionType.FADE_DOWN_SOUND_PLAYER
+		}
+		return {
+			externalId: generateExternalId(this.context.core, fadeDownSoundPlayer),
+			actionId: AdlibActionType.FADE_DOWN_SOUND_PLAYER,
+			userData: fadeDownSoundPlayer,
+			userDataManifest: {},
+			display: {
+				_rank: 400,
+				label: t(`Fade down sound player`),
+				sourceLayerId: SourceLayer.PgmAudioBed,
 				outputLayerId: SharedOutputLayer.SEC,
 				tags: []
 			}

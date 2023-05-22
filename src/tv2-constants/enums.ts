@@ -142,7 +142,8 @@ export enum AdlibActionType {
 	RECALL_LAST_LIVE = 'recall_last_live',
 	RECALL_LAST_DVE = 'recall_last_dve',
 	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels',
-	CALL_ROBOT_PRESET = 'call_robot_preset'
+	CALL_ROBOT_PRESET = 'call_robot_preset',
+	FADE_DOWN_SOUND_PLAYER = 'fade_down_sound_player'
 }
 
 export enum TallyTags {

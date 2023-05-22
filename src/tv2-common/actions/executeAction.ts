@@ -27,6 +27,7 @@ import {
 	ActionSelectServerClip,
 	calculateTime,
 	createDipTransitionBlueprintPieceForPart,
+	createFadeSoundContent,
 	createInTransitionForTransitionStyle,
 	CreatePartServerBase,
 	CueDefinition,
@@ -247,6 +248,15 @@ export async function executeAction<
 					break
 				}
 				await executeActionCallRobotPreset(context, preset)
+				break
+			}
+			case AdlibActionType.FADE_DOWN_SOUND_PLAYER: {
+				const fadeDurationFrames: number = Number(triggerMode)
+				if (Number.isNaN(fadeDurationFrames)) {
+					context.core.notifyUserWarning(`Calling Fade Sound Player ignored. '${triggerMode}' is not a number`)
+					break
+				}
+				await fadeDownSoundPlayer(context, fadeDurationFrames)
 				break
 			}
 			default:
@@ -1803,6 +1813,22 @@ async function executeActionCallRobotPreset(context: ActionExecutionContext, pre
 		'now'
 	)
 	await context.core.insertPiece('current', robotCameraPiece)
+}
+
+async function fadeDownSoundPlayer(context: ActionExecutionContext, fadeDurationFrames: number): Promise<void> {
+	const fadeSoundPlayerPiece: IBlueprintPiece<PieceMetaData> = {
+		externalId: `fadeSoundPlayerIn${fadeDurationFrames}frames`,
+		name: 'Fade Sound Player',
+		enable: {
+			start: 'now',
+			duration: getTimeFromFrames(fadeDurationFrames)
+		},
+		outputLayerId: SharedOutputLayer.MUSIK,
+		sourceLayerId: SharedSourceLayer.PgmAudioBed,
+		lifespan: PieceLifespan.WithinPart,
+		content: createFadeSoundContent(context.config, fadeDurationFrames)
+	}
+	await context.core.insertPiece('current', fadeSoundPlayerPiece)
 }
 
 async function createFadeSisyfosLevelsMetaData(context: ActionExecutionContext) {
