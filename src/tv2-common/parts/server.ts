@@ -232,7 +232,7 @@ function getServerSelectionBlueprintPiece(
 			userData: userDataElement,
 			sisyfosPersistMetaData: {
 				sisyfosLayers: [],
-				acceptPersistAudio: partProps.adLibPix && partProps.voLevels
+				acceptsPersistedAudio: partProps.adLibPix && partProps.voLevels
 			}
 		},
 		content: contentServerElement,

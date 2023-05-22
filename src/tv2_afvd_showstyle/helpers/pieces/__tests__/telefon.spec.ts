@@ -71,9 +71,6 @@ describe('telefon', () => {
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
-					sisyfosPersistMetaData: {
-						sisyfosLayers: []
-					},
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},

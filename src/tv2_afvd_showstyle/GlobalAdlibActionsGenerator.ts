@@ -40,8 +40,8 @@ export class GlobalAdlibActionsGenerator {
 		this.config.sources.cameras
 			.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 			.forEach((camera) => {
-				blueprintActions.push(this.makeCutDirectlyCameraAction(camera, globalRank++))
-				blueprintActions.push(this.makeQueueAsNextCameraAction(camera, globalRank++))
+				blueprintActions.push(this.makeCutCameraDirectlyAction(camera, globalRank++))
+				blueprintActions.push(this.makeQueueCameraAsNextAction(camera, globalRank++))
 			})
 
 		this.config.sources.cameras
@@ -54,7 +54,8 @@ export class GlobalAdlibActionsGenerator {
 			.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 			.forEach((live) => {
 				blueprintActions.push(...this.makeAdlibBoxesActions(live, globalRank++))
-				blueprintActions.push(this.makeCutDirectLiveAction(live, globalRank++))
+				blueprintActions.push(this.makeCutDirectlyLiveAction(live, globalRank++))
+				blueprintActions.push(this.makeQueueAsNextLiveAction(live, globalRank++))
 			})
 
 		this.config.sources.feeds
@@ -90,12 +91,20 @@ export class GlobalAdlibActionsGenerator {
 		return blueprintActions
 	}
 
-	private makeCutDirectlyCameraAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+	private makeCutCameraDirectlyAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
 		return this.makeCutCameraAction(cameraSourceInfo, true, rank)
 	}
 
-	private makeQueueAsNextCameraAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+	private makeQueueCameraAsNextAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
 		return this.makeCutCameraAction(cameraSourceInfo, false, rank)
+	}
+
+	private makeCutDirectlyLiveAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+		return this.makeCutLiveAction(cameraSourceInfo, true, rank)
+	}
+
+	private makeQueueAsNextLiveAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+		return this.makeCutLiveAction(cameraSourceInfo, false, rank)
 	}
 
 	private makeCutCameraAction(
@@ -125,11 +134,11 @@ export class GlobalAdlibActionsGenerator {
 		}
 	}
 
-	private makeCutDirectLiveAction(info: SourceInfo, rank: number): IBlueprintActionManifest {
+	private makeCutLiveAction(info: SourceInfo, cutDirectly: boolean, rank: number): IBlueprintActionManifest {
 		const sourceDefinition = SourceInfoToSourceDefinition(info) as SourceDefinitionRemote
 		const userData: ActionCutToRemote = {
 			type: AdlibActionType.CUT_TO_REMOTE,
-			cutDirectly: true,
+			cutDirectly,
 			sourceDefinition
 		}
 		return {
@@ -143,7 +152,7 @@ export class GlobalAdlibActionsGenerator {
 				sourceLayerId: SourceLayer.PgmLive,
 				outputLayerId: SharedOutputLayer.PGM,
 				content: {},
-				tags: [AdlibTags.ADLIB_CUT_DIRECT]
+				tags: cutDirectly ? [AdlibTags.ADLIB_CUT_DIRECT] : [AdlibTags.ADLIB_QUEUE_NEXT]
 			}
 		}
 	}

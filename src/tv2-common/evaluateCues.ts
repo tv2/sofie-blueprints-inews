@@ -21,6 +21,7 @@ import {
 	IsTargetingFull,
 	IsTargetingOVL,
 	PartDefinition,
+	PieceMetaData,
 	ShowStyleContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
@@ -41,8 +42,8 @@ export interface Adlib {
 }
 
 export class EvaluateCueResult {
-	public readonly pieces: IBlueprintPiece[] = []
-	public readonly adlibPieces: IBlueprintAdLibPiece[] = []
+	public readonly pieces: Array<IBlueprintPiece<PieceMetaData>> = []
+	public readonly adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
 	public readonly actions: IBlueprintActionManifest[] = []
 
 	public push(source: EvaluateCueResult): EvaluateCueResult {

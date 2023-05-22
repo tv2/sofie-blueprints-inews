@@ -20,7 +20,6 @@ import {
 	findDskJingle,
 	getGraphicBaseline,
 	getMixMinusTimelineObject,
-	GetSisyfosTimelineObjForRemote,
 	GetSisyfosTimelineObjForReplay,
 	literal,
 	MixMinusPriority,
@@ -33,14 +32,7 @@ import {
 	SwitcherType,
 	TransitionStyle
 } from 'tv2-common'
-import {
-	AdlibTags,
-	CONSTANTS,
-	ControlClasses,
-	SharedGraphicLLayer,
-	SharedOutputLayer,
-	SwitcherAuxLLayer
-} from 'tv2-constants'
+import { AdlibTags, CONSTANTS, SharedGraphicLLayer, SharedOutputLayer, SwitcherAuxLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { getMixEffectBaseline } from '../tv2_afvd_studio/getBaseline'
 import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
@@ -76,12 +68,6 @@ class GlobalAdLibPiecesGenerator {
 	public generate(): IBlueprintAdLibPiece[] {
 		const adLibPieces: IBlueprintAdLibPiece[] = []
 		let globalRank = 1000
-
-		this.config.sources.lives
-			.slice(0, 10) // the first x lives to create live-adlibs from
-			.forEach((info) => {
-				adLibPieces.push(...this.makeRemoteAdLibs(info, globalRank++))
-			})
 
 		this.config.sources.lives
 			.slice(0, 10) // the first x lives to create AUX1 (studio) adlibs
@@ -173,7 +159,7 @@ class GlobalAdLibPiecesGenerator {
 			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
-					acceptPersistAudio: vo
+					acceptsPersistedAudio: vo
 				}
 			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
@@ -244,45 +230,6 @@ class GlobalAdLibPiecesGenerator {
 		}
 	}
 
-	private makeRemoteAdLibs(info: SourceInfo, rank: number): Array<IBlueprintAdLibPiece<PieceMetaData>> {
-		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
-		const eksternSisyfos = GetSisyfosTimelineObjForRemote(this.config, info)
-		res.push({
-			externalId: 'live',
-			name: `LIVE ${info.id}`,
-			_rank: rank,
-			sourceLayerId: SourceLayer.PgmLive,
-			outputLayerId: SharedOutputLayer.PGM,
-			expectedDuration: 0,
-			lifespan: PieceLifespan.WithinPart,
-			toBeQueued: true,
-			metaData: {
-				sisyfosPersistMetaData: {
-					sisyfosLayers: info.sisyfosLayers ?? [],
-					wantsToPersistAudio: info.wantsToPersistAudio,
-					acceptPersistAudio: info.acceptPersistAudio
-				}
-			},
-			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
-			content: {
-				timelineObjects: [
-					...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
-						enable: { while: '1' },
-						priority: 1,
-						content: {
-							input: info.port,
-							transition: TransitionStyle.CUT
-						},
-						classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
-					}),
-					...eksternSisyfos
-				]
-			}
-		})
-
-		return res
-	}
-
 	// aux adlibs
 	private makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): Array<IBlueprintAdLibPiece<PieceMetaData>> {
 		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
@@ -298,7 +245,7 @@ class GlobalAdLibPiecesGenerator {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
 					wantsToPersistAudio: info.wantsToPersistAudio,
-					acceptPersistAudio: info.acceptPersistAudio
+					acceptsPersistedAudio: info.acceptPersistAudio
 				}
 			},
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
