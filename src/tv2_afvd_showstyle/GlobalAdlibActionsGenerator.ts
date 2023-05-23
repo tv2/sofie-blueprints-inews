@@ -366,7 +366,7 @@ export class GlobalAdlibActionsGenerator {
 				_rank: 400,
 				label: t(`Fade down sound player`),
 				sourceLayerId: SourceLayer.PgmAudioBed,
-				outputLayerId: SharedOutputLayer.SEC,
+				outputLayerId: SharedOutputLayer.MUSIK,
 				tags: []
 			}
 		}
