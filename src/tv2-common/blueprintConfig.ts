@@ -57,6 +57,7 @@ export interface TableConfigGfxSchema {
 	GfxSchemaTemplatesName: string
 	INewsSkemaColumn: string
 	VizTemplate: string
+	CasparCgDesignValues: string
 }
 
 export interface TableConfigGfxSetup {
@@ -65,6 +66,18 @@ export interface TableConfigGfxSetup {
 	HtmlPackageFolder: string
 	OvlShowName?: string
 	FullShowName?: string
+}
+
+export interface CasparCgGfxDesignValues {
+	name: string
+	mainColor: string
+	bundColor: string
+	trompetColor: string
+	mainTextColor: string
+	trompetTextColor: string
+	panelColor: string
+	panelTextColor: string
+	backgroundLoop: string
 }
 
 export interface ProcessedStudioConfig {

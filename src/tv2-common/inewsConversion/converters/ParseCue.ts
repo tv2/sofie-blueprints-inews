@@ -1,4 +1,5 @@
 import {
+	CasparCgGfxDesignValues,
 	literal,
 	TableConfigGfxSchema,
 	TableConfigItemGfxDesignTemplate,
@@ -133,6 +134,7 @@ export interface CueDefinitionFromField {
 export interface CueDefinitionGraphicSchema extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.GraphicSchema
 	schema: string
+	CasparCgDesignValues?: CasparCgGfxDesignValues[]
 }
 
 export interface GraphicInternal {
@@ -377,7 +379,10 @@ function parsekg(
 			iNewsCommand: kgCue.iNewsCommand,
 			start: kgCue.start,
 			end: kgCue.end,
-			adlib: kgCue.adlib
+			adlib: kgCue.adlib,
+			CasparCgDesignValues: graphicsSchemaConfig.CasparCgDesignValues
+				? JSON.parse(graphicsSchemaConfig.CasparCgDesignValues)
+				: []
 		})
 	}
 
@@ -967,7 +972,10 @@ export function createCueDefinitionGraphicSchema(
 		type: CueType.GraphicSchema,
 		schema: schemaConfiguration.VizTemplate,
 		iNewsCommand: '',
-		isFromField: true
+		isFromField: true,
+		CasparCgDesignValues: schemaConfiguration.CasparCgDesignValues
+			? JSON.parse(schemaConfiguration.CasparCgDesignValues)
+			: []
 	})
 }
 

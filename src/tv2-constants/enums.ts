@@ -180,7 +180,8 @@ export enum SharedGraphicLLayer {
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
 	GraphicLLayerWall = 'graphic_wall', // <= viz_layer_wall
 	GraphicLLayerLocators = 'graphic_locators',
-	GraphicLLayerConcept = 'graphic_concept'
+	GraphicLLayerConcept = 'graphic_concept',
+	GraphicLLayerSchema = 'graphic_schema'
 }
 
 export enum AbstractLLayer {
@@ -276,6 +277,7 @@ export enum SharedSourceLayer {
 	PgmPilotOverlay = 'studio0_pilotOverlay',
 	// "Design" templates
 	PgmDesign = 'studio0_design',
+	PgmSchema = 'studio0_schema',
 
 	/** General, 'fallback', overlay layer */
 	PgmGraphicsOverlay = 'studio0_overlay',

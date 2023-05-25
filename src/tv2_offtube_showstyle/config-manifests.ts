@@ -223,6 +223,16 @@ export const gfxSchemaTemplates: ConfigManifestEntry[] = [
 				required: true,
 				defaultVal: '',
 				rank: 2
+			},
+			{
+				id: 'CasparCgDesignValues',
+				name: 'CasparCG Design Values',
+				description:
+					'A JSON array containing color values and background loops for the different Designs of the Schema used by CasparCG',
+				type: ConfigManifestEntryType.JSON,
+				required: false,
+				defaultVal: '',
+				rank: 3
 			}
 		]
 	}

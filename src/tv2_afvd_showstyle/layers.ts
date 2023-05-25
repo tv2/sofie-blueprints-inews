@@ -3,7 +3,6 @@ import { SharedSourceLayer } from 'tv2-constants'
 export enum AFVDSourceLayer {
 	// Pgm
 	PgmLocal = 'studio0_local',
-	PgmSchema = 'studio0_schema',
 
 	VizFullIn1 = 'studio0_aux_viz_full1',
 	AuxStudioScreen = 'studio0_aux_studio_screen',

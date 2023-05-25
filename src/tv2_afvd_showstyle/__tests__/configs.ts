@@ -273,7 +273,14 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	GfxSetups: [DEFAULT_GFX_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	GfxSchemaTemplates: [{ GfxSchemaTemplatesName: 'SKEMA_NEWS', VizTemplate: 'NE', INewsSkemaColumn: 'SKEMA_NEWS' }],
+	GfxSchemaTemplates: [
+		{
+			GfxSchemaTemplatesName: 'SKEMA_NEWS',
+			VizTemplate: 'NE',
+			INewsSkemaColumn: 'SKEMA_NEWS',
+			CasparCgDesignValues: ''
+		}
+	],
 	GfxShowMapping: [],
 	GfxDefaults: [
 		{

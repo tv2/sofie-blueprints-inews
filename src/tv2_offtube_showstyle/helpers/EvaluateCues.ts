@@ -13,6 +13,7 @@ import {
 	PartDefinition,
 	SegmentContext
 } from 'tv2-common'
+import { EvaluateCueGraphicSchema } from '../../tv2-common/cues/evaluate-cue-graphic-schema'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateEkstern } from '../cues/OfftubeEkstern'
@@ -44,7 +45,8 @@ export async function OfftubeEvaluateCues(
 			EvaluateCueBackgroundLoop: OfftubeEvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: OfftubeEvaluateGraphicDesign,
 			EvaluateCuePgmClean: OfftubeEvaluatePgmClean,
-			EvaluateCueLYD: EvaluateLYD
+			EvaluateCueLYD: EvaluateLYD,
+			EvaluateCueGraphicSchema
 		},
 		context,
 		part,

@@ -15,13 +15,13 @@ import {
 	PartDefinition,
 	ShowStyleContext
 } from 'tv2-common'
+import { EvaluateCueGraphicSchema } from '../../../tv2-common/cues/evaluate-cue-graphic-schema'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
 import { EvaluateCueDesign } from './design'
 import { EvaluateDVE } from './dve'
 import { EvaluateEkstern } from './ekstern'
-import { EvaluateCueGraphicSchema } from './evaluate-cue-graphic-schema'
 import { EvaluateCueGraphic } from './graphic'
 import { EvaluateCueBackgroundLoop } from './graphicBackgroundLoop'
 import { EvaluateJingle } from './jingle'

@@ -22,8 +22,7 @@ export type CasparLLayer = AFVDCasparLLayer | SharedCasparLLayer
 
 enum AFVDGraphicLLayer {
 	GraphicLLayerInitialize = 'graphic_initialize',
-	GraphicLLayerCleanup = 'graphic_cleanup',
-	GraphicLLayerSchema = 'graphic_schema'
+	GraphicLLayerCleanup = 'graphic_cleanup'
 }
 
 // tslint:disable-next-line: variable-name
