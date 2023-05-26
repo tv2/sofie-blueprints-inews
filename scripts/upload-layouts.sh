@@ -2,6 +2,8 @@
 
 echo "Upload Shelf Layouts"
 
+directory=$1
+
 upload_layouts_from_directory() {
   local directory="$1"
   local blueprint_id=$(basename "${directory}")
@@ -18,8 +20,8 @@ upload_layouts_from_directory() {
   done
 }
 
-for directory in *; do
-  if [[ -d "$directory" ]]; then
-    upload_layouts_from_directory "$directory"
+for subdirectory in "$directory"/*; do
+  if [[ -d "$subdirectory" ]]; then
+    upload_layouts_from_directory "$subdirectory"
   fi
 done
