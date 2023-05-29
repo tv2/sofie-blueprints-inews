@@ -127,7 +127,8 @@ export const defaultStudioConfig: StudioConfig = {
 	AudioBedSettings: {
 		fadeIn: 1000,
 		fadeOut: 1000,
-		volume: 80
+		volume: 80,
+		useAudioFilterSyntax: false
 	},
 	CasparPrerollDuration: 280,
 	GraphicsType: 'VIZ',
