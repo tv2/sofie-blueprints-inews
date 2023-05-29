@@ -12,7 +12,7 @@ import {
 	TSR
 } from 'blueprints-integration'
 import {
-	ActionClearGraphics,
+	ActionClearAllGraphics,
 	ActionCommentatorSelectDVE,
 	ActionCommentatorSelectFull,
 	ActionCommentatorSelectJingle,
@@ -425,14 +425,14 @@ function getGlobalAdlibActionsOfftube(
 	blueprintActions.push(makeCommentatorSelectFullAction())
 
 	function makeClearGraphicsAltudAction(): IBlueprintActionManifest {
-		const userData: ActionClearGraphics = {
-			type: AdlibActionType.CLEAR_GRAPHICS,
+		const userData: ActionClearAllGraphics = {
+			type: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			sendCommands: false,
 			label: 'GFX Altud'
 		}
 		return {
 			externalId: generateExternalId(context, userData),
-			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			actionId: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			userData,
 			userDataManifest: {},
 			display: {

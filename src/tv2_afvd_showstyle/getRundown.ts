@@ -451,6 +451,7 @@ class GlobalAdLibPiecesGenerator {
 function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): BlueprintResultBaseline {
 	const jingleDsk = findDskJingle(context.config)
 	const fullGfxDsk = findDskFullGfx(context.config)
+	const selectedGfxSetup = context.config.selectedGfxSetup
 
 	return {
 		timelineObjects: _.compact([
@@ -729,6 +730,26 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 					concept: context.config.selectedGfxSetup.VcpConcept
 				}
 			})
-		])
+		]),
+		expectedPlayoutItems: [
+			{
+				deviceSubType: TSR.DeviceType.VIZMSE,
+				content: {
+					templateName: 'OUT_TEMA_H',
+					channel: 'OVL1',
+					templateData: [],
+					showName: selectedGfxSetup.OvlShowName
+				}
+			},
+			{
+				deviceSubType: TSR.DeviceType.VIZMSE,
+				content: {
+					templateName: 'altud',
+					channel: 'OVL1',
+					templateData: [],
+					showName: selectedGfxSetup.OvlShowName
+				}
+			}
+		]
 	}
 }

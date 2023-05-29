@@ -1,7 +1,8 @@
 import { IBlueprintActionManifest } from 'blueprints-integration'
 import {
 	ActionCallRobotPreset,
-	ActionClearGraphics,
+	ActionClearAllGraphics,
+	ActionClearTemaGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
@@ -76,6 +77,7 @@ export class GlobalAdlibActionsGenerator {
 
 		blueprintActions.push(this.makeClearGraphicsAction())
 		blueprintActions.push(this.makeClearGraphicsAltudAction())
+		blueprintActions.push(this.makeClearGraphicsTemaudAction())
 
 		blueprintActions.push(...GetTransitionAdLibActions(this.config, 800))
 
@@ -266,14 +268,14 @@ export class GlobalAdlibActionsGenerator {
 	}
 
 	private makeClearGraphicsAction(): IBlueprintActionManifest {
-		const userData: ActionClearGraphics = {
-			type: AdlibActionType.CLEAR_GRAPHICS,
+		const userData: ActionClearAllGraphics = {
+			type: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			sendCommands: true,
 			label: 'GFX Clear'
 		}
 		return {
 			externalId: generateExternalId(this.context.core, userData),
-			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			actionId: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			userData,
 			userDataManifest: {},
 			display: {
@@ -290,14 +292,14 @@ export class GlobalAdlibActionsGenerator {
 	}
 
 	private makeClearGraphicsAltudAction(): IBlueprintActionManifest {
-		const userData: ActionClearGraphics = {
-			type: AdlibActionType.CLEAR_GRAPHICS,
+		const userData: ActionClearAllGraphics = {
+			type: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			sendCommands: false,
 			label: 'GFX Altud'
 		}
 		return {
 			externalId: generateExternalId(this.context.core, userData),
-			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			actionId: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			userData,
 			userDataManifest: {},
 			display: {
@@ -309,6 +311,28 @@ export class GlobalAdlibActionsGenerator {
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
 				nextPieceTags: [TallyTags.GFX_ALTUD]
+			}
+		}
+	}
+
+	private makeClearGraphicsTemaudAction(): IBlueprintActionManifest {
+		const userData: ActionClearTemaGraphics = {
+			type: AdlibActionType.CLEAR_TEMA_GRAPHICS
+		}
+		return {
+			externalId: generateExternalId(this.context.core, userData),
+			actionId: AdlibActionType.CLEAR_TEMA_GRAPHICS,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: 400,
+				label: t(`GFX Temaud`),
+				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
+				outputLayerId: SharedOutputLayer.SEC,
+				content: {},
+				tags: [AdlibTags.ADLIB_GFX_TEMAUD],
+				currentPieceTags: [TallyTags.GFX_TEMAUD],
+				nextPieceTags: [TallyTags.GFX_TEMAUD]
 			}
 		}
 	}

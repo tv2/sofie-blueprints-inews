@@ -17,7 +17,7 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	ActionClearGraphics,
+	ActionClearAllGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
@@ -204,8 +204,11 @@ export async function executeAction<
 			case AdlibActionType.SELECT_JINGLE:
 				await executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
 				break
-			case AdlibActionType.CLEAR_GRAPHICS:
-				await executeActionClearGraphics(context, userData as ActionClearGraphics)
+			case AdlibActionType.CLEAR_ALL_GRAPHICS:
+				await executeActionClearAllGraphics(context, userData as ActionClearAllGraphics)
+				break
+			case AdlibActionType.CLEAR_TEMA_GRAPHICS:
+				await executeActionClearTemaGraphics(context)
 				break
 			case AdlibActionType.CUT_TO_CAMERA:
 				await executeActionCutToCamera(context, settings, actionId, userData as ActionCutToCamera)
@@ -1901,10 +1904,10 @@ async function executeActionSelectFull<
 	await context.core.stopPiecesOnLayers([SharedSourceLayer.SelectedAdlibGraphicsFull])
 }
 
-async function executeActionClearGraphics<
+async function executeActionClearAllGraphics<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(context: ActionExecutionContext<ShowStyleConfig>, userData: ActionClearGraphics) {
+>(context: ActionExecutionContext<ShowStyleConfig>, userData: ActionClearAllGraphics) {
 	await context.core.stopPiecesOnLayers(STOPPABLE_GRAPHICS_LAYERS)
 	await context.core.insertPiece('current', {
 		enable: {
@@ -1952,6 +1955,58 @@ async function executeActionClearGraphics<
 						]
 				  },
 		tags: userData.sendCommands ? [TallyTags.GFX_CLEAR] : [TallyTags.GFX_ALTUD]
+	})
+}
+
+async function executeActionClearTemaGraphics(context: ActionExecutionContext) {
+	await context.core.stopPiecesOnLayers([SharedSourceLayer.PgmGraphicsTema])
+	await context.core.insertPiece('current', {
+		enable: {
+			start: 'now',
+			duration: 3000
+		},
+		externalId: 'clearTemaGFX',
+		name: 'GFX Temaud',
+		sourceLayerId: SharedSourceLayer.PgmAdlibGraphicCmd,
+		outputLayerId: SharedOutputLayer.SEC,
+		lifespan: PieceLifespan.WithinPart,
+		content:
+			context.config.studio.GraphicsType === 'HTML'
+				? {
+						timelineObjects: [
+							literal<TSR.TimelineObjAbstractAny>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 1,
+								layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
+								content: {
+									deviceType: TSR.DeviceType.ABSTRACT
+								}
+							})
+						]
+				  }
+				: {
+						timelineObjects: [
+							literal<TSR.TimelineObjVIZMSEElementInternal>({
+								id: '',
+								enable: {
+									start: 0
+								},
+								priority: 100,
+								layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
+								content: {
+									deviceType: TSR.DeviceType.VIZMSE,
+									type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+									templateName: 'OUT_TEMA_H',
+									templateData: [],
+									showName: context.config.selectedGfxSetup.OvlShowName ?? ''
+								}
+							})
+						]
+				  },
+		tags: [TallyTags.GFX_TEMAUD]
 	})
 }
 
