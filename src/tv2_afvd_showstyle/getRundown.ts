@@ -422,7 +422,7 @@ class GlobalAdLibPiecesGenerator {
 			name: 'Stop Soundplayer',
 			_rank: 700,
 			sourceLayerId: SourceLayer.PgmAudioBed,
-			outputLayerId: 'musik',
+			outputLayerId: SharedOutputLayer.MUSIK,
 			expectedDuration: 1000,
 			lifespan: PieceLifespan.WithinPart,
 			tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],

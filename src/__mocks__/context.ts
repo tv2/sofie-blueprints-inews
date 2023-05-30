@@ -469,7 +469,7 @@ export class ActionExecutionContextMock extends ShowStyleUserContextMock impleme
 		return pieces.map((pieceInstance) => {
 			const pieceStart = pieceInstance.piece.enable.start
 			const resolvedStart = pieceStart === 'now' ? now : pieceStart
-			
+
 			return {
 				...pieceInstance,
 				resolvedStart
