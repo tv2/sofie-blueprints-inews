@@ -2,6 +2,12 @@
 
 echo "Upload Shelf Layouts"
 
+if [ $# -eq 0 ]; then
+    echo "Error: Path to layouts directory not provided."
+    echo "Usage: $(basename "$0") LAYOUTS_PATH"
+    exit 1
+fi
+
 directory=$1
 
 upload_layouts_from_directory() {
