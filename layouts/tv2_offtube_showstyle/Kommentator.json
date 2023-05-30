@@ -11,7 +11,7 @@
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "url": "http://multiview.sofqbXX-od.tv2.local/",
+      "url": "http://multiview.{{studio.settings.sofieUrl}}/",
       "width": -1,
       "height": -1,
       "x": 0,
@@ -177,8 +177,6 @@
       "windowNumber": 1,
       "role": "take",
       "scale": 0,
-      "thumbnailPriorityNextPieces": true,
-      "hideThumbnailsForActivePieces": true,
       "thumbnailPriorityNextPieces": true,
       "hideThumbnailsForActivePieces": true,
       "thumbnailSourceLayerIds": [
