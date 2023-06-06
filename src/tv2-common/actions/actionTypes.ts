@@ -87,10 +87,14 @@ export interface ActionCommentatorSelectJingle extends ActionBase {
 	type: AdlibActionType.COMMENTATOR_SELECT_JINGLE
 }
 
-export interface ActionClearGraphics extends ActionBase {
-	type: AdlibActionType.CLEAR_GRAPHICS
+export interface ActionClearAllGraphics extends ActionBase {
+	type: AdlibActionType.CLEAR_ALL_GRAPHICS
 	sendCommands?: boolean
 	label: string
+}
+
+export interface ActionClearTemaGraphics extends ActionBase {
+	type: AdlibActionType.CLEAR_TEMA_GRAPHICS
 }
 
 export interface ActionTakeWithTransitionVariantBase {
@@ -158,7 +162,7 @@ export type TV2AdlibAction =
 	| ActionCommentatorSelectDVE
 	| ActionCommentatorSelectFull
 	| ActionCommentatorSelectJingle
-	| ActionClearGraphics
+	| ActionClearAllGraphics
 	| ActionTakeWithTransition
 	| ActionRecallLastLive
 	| ActionRecallLastDVE
