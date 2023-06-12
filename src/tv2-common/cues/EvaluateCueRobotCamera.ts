@@ -9,6 +9,10 @@ export function EvaluateCueRobotCamera(
 	pieces: IBlueprintPiece[],
 	externalId: string
 ): void {
+	if (cueDefinition.adlib) {
+		// robot adlibs from iNews cues are not supported
+		return
+	}
 	const startTime: number = cueDefinition.start ? calculateTime(cueDefinition.start) ?? 0 : 0
 
 	const existingPiece = findExistingPieceForRobotCameraLayerAndStartTime(pieces, startTime)
