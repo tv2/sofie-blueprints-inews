@@ -724,7 +724,7 @@ export function stripRedundantCuesWhenFieldCueIsPresent(partDefinitions: PartDef
 }
 
 function stripRedundantCuesForDesign(partDefinitions: PartDefinition[]): PartDefinition[] {
-	return stripRedundantCues(partDefinitions, [CueType.GraphicDesign, CueType.BackgroundLoop])
+	return stripRedundantCues(partDefinitions, [CueType.GraphicDesign])
 }
 
 function stripRedundantCuesForSchema(partDefinitions: PartDefinition[]): PartDefinition[] {

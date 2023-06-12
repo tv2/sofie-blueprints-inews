@@ -3,6 +3,7 @@ import {
 	getTimelineLayerForGraphic,
 	joinAssetToFolder,
 	layerToHTMLGraphicSlot,
+	NON_BASELINE_DESIGN_ID,
 	Slots,
 	TV2ShowStyleConfig
 } from 'tv2-common'
@@ -54,7 +55,7 @@ export function getHtmlTemplateContent(
 	}
 }
 
-export function getHtmlGraphicBaseline(config: TV2ShowStyleConfig) {
+export function getHtmlGraphicBaseline(config: TV2ShowStyleConfig): TSR.TSRTimelineObj[] {
 	const templateName = getHtmlTemplateName(config)
 	const partiallyUpdatableLayerMappings = [
 		SharedGraphicLLayer.GraphicLLayerOverlayIdent,
@@ -67,7 +68,7 @@ export function getHtmlGraphicBaseline(config: TV2ShowStyleConfig) {
 	return [
 		...getSlotBaselineTimelineObjects(templateName, partiallyUpdatableLayerMappings),
 		getCompoundSlotBaselineTimelineObject(templateName, partiallyUpdatableLayerMappings),
-		getDesignBaselineTimelineObject(templateName),
+		getDesignBaselineTimelineObject(config, templateName),
 		getFullPilotBaselineTimelineObject(templateName)
 	]
 }
@@ -140,13 +141,15 @@ function getCompoundSlotBaselineTimelineObject(
 	}
 }
 
-function getDesignBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
+function getDesignBaselineTimelineObject(config: TV2ShowStyleConfig, templateName: string): TSR.TimelineObjCCGTemplate {
+	const design: string = config.showStyle.GfxDefaults[0].DefaultDesign.label
 	return {
 		id: '',
 		enable: {
-			while: '1'
+			while: `!.${NON_BASELINE_DESIGN_ID}`
 		},
-		priority: 0,
+		priority: 10,
+		classes: [`${design}`],
 		layer: SharedGraphicLLayer.GraphicLLayerDesign,
 		content: {
 			deviceType: TSR.DeviceType.CASPARCG,
@@ -155,7 +158,7 @@ function getDesignBaselineTimelineObject(templateName: string): TSR.TimelineObjC
 			name: templateName,
 			data: {
 				display: 'program',
-				design: '',
+				design,
 				partialUpdate: true
 			},
 			useStopCommand: false

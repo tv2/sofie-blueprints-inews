@@ -45,8 +45,8 @@ export interface TableConfigItemGfxShowMapping {
 
 export interface TableConfigItemGfxDefaults {
 	DefaultSetupName: { value: string; label: string }
-	DefaultSchema: string
-	DefaultDesign: string
+	DefaultSchema: { value: string; label: string }
+	DefaultDesign: { value: string; label: string }
 }
 
 export interface TableConfigItemAdLibTransitions {
@@ -70,13 +70,7 @@ export interface TableConfigGfxSetup {
 
 export interface CasparCgGfxDesignValues {
 	name: string
-	mainColor: string
-	bundColor: string
-	trompetColor: string
-	mainTextColor: string
-	trompetTextColor: string
-	panelColor: string
-	panelTextColor: string
+	cssRules: string[]
 	backgroundLoop: string
 }
 

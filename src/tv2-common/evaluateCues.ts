@@ -13,7 +13,7 @@ import {
 	CueDefinitionClearGrafiks,
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
-	CueDefinitionGraphicSchema,
+	CueDefinitionGfxSchema,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionRobotCamera,
@@ -85,7 +85,7 @@ export interface EvaluateCuesShowstyleOptions {
 		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		partId: string,
-		parsedCue: CueDefinitionGraphicSchema
+		parsedCue: CueDefinitionGfxSchema
 	) => void
 	EvaluateCueRouting?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,

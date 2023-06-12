@@ -4,7 +4,6 @@ import * as _ from 'underscore'
 export enum VirtualAbstractLLayer {}
 
 enum AFVDCasparLLayer {
-	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGFullBg = 'casparcg_full_bg',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',

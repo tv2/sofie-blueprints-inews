@@ -227,6 +227,7 @@ export enum SwitcherMediaPlayerLLayer {
 }
 
 export enum SharedCasparLLayer {
+	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGLYD = 'casparcg_audio_lyd',
 	CasparPlayerClipPending = 'casparcg_player_clip_pending',
 	CasparPlayerJingle = 'casparcg_player_jingle'

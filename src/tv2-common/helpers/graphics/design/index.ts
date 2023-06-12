@@ -12,6 +12,7 @@ import {
 	CueDefinitionGraphicDesign,
 	getHtmlTemplateName,
 	literal,
+	NON_BASELINE_DESIGN_ID,
 	ShowStyleContext,
 	TV2ShowStyleConfig
 } from 'tv2-common'
@@ -78,6 +79,7 @@ function designTimeline(config: TV2ShowStyleConfig, parsedCue: CueDefinitionGrap
 						start: 0
 					},
 					priority: 1,
+					classes: [`${parsedCue.design}`, NON_BASELINE_DESIGN_ID],
 					layer: SharedGraphicLLayer.GraphicLLayerDesign,
 					content: {
 						deviceType: TSR.DeviceType.CASPARCG,
@@ -94,22 +96,36 @@ function designTimeline(config: TV2ShowStyleConfig, parsedCue: CueDefinitionGrap
 				})
 			]
 		case 'VIZ':
-			return [
-				literal<TSR.TimelineObjVIZMSEElementInternal>({
-					id: '',
-					enable: { start: 0 },
-					priority: 100,
-					layer: SharedGraphicLLayer.GraphicLLayerDesign,
-					content: {
-						deviceType: TSR.DeviceType.VIZMSE,
-						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-						templateName: parsedCue.design,
-						templateData: [],
-						showName: config.selectedGfxSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
-					}
-				})
-			]
+			return [getNonBaselineVizDesignTimelineObject(config, parsedCue.design)]
 		default:
 			return []
 	}
+}
+
+function getNonBaselineVizDesignTimelineObject(config: TV2ShowStyleConfig, design: string) {
+	const vizDesignTimelineObject = getVizDesignTimelineObject(config, design)
+	vizDesignTimelineObject.classes!.push(NON_BASELINE_DESIGN_ID)
+	return vizDesignTimelineObject
+}
+
+function getVizDesignTimelineObject(config: TV2ShowStyleConfig, design: string) {
+	return literal<TSR.TimelineObjVIZMSEElementInternal>({
+		id: '',
+		enable: { start: 0 },
+		priority: 100,
+		classes: [`${design}`],
+		layer: SharedGraphicLLayer.GraphicLLayerDesign,
+		content: {
+			deviceType: TSR.DeviceType.VIZMSE,
+			type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+			templateName: design,
+			templateData: [],
+			showName: config.selectedGfxSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
+		}
+	})
+}
+
+export function getVizBaselineDesignTimelineObject(config: TV2ShowStyleConfig) {
+	const design = config.showStyle.GfxDefaults[0].DefaultDesign.label
+	return getVizDesignTimelineObject(config, design)
 }

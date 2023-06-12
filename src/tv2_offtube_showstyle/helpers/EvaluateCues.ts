@@ -13,7 +13,7 @@ import {
 	PartDefinition,
 	SegmentContext
 } from 'tv2-common'
-import { EvaluateCueGraphicSchema } from '../../tv2-common/cues/evaluate-cue-graphic-schema'
+import { GfxSchemaGeneratorFacade } from '../../tv2-common/cues/gfx-schema-generator-facade'
 import { OfftubeEvaluateAdLib } from '../cues/OfftubeAdlib'
 import { OfftubeEvaluateDVE } from '../cues/OfftubeDVE'
 import { OfftubeEvaluateEkstern } from '../cues/OfftubeEkstern'
@@ -46,7 +46,8 @@ export async function OfftubeEvaluateCues(
 			EvaluateCueGraphicDesign: OfftubeEvaluateGraphicDesign,
 			EvaluateCuePgmClean: OfftubeEvaluatePgmClean,
 			EvaluateCueLYD: EvaluateLYD,
-			EvaluateCueGraphicSchema
+			EvaluateCueGraphicSchema: (c, p, partId, parsedCue) =>
+				GfxSchemaGeneratorFacade.create().createBlueprintPieceFromGfxSchemaCue(c, p, partId, parsedCue)
 		},
 		context,
 		part,

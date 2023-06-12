@@ -278,15 +278,15 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 			GfxSchemaTemplatesName: 'SKEMA_NEWS',
 			VizTemplate: 'NE',
 			INewsSkemaColumn: 'SKEMA_NEWS',
-			CasparCgDesignValues: ''
+			CasparCgDesignValues: '[{}]'
 		}
 	],
 	GfxShowMapping: [],
 	GfxDefaults: [
 		{
 			DefaultSetupName: { value: 'SomeId', label: 'SomeProfile' },
-			DefaultDesign: '',
-			DefaultSchema: ''
+			DefaultDesign: { value: '', label: '' },
+			DefaultSchema: { value: 'SKEMA_NEWS', label: 'SKEMA_NEWS' }
 		}
 	]
 }

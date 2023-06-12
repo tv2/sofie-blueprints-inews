@@ -1,5 +1,4 @@
 import {
-	CueDefinitionBackgroundLoop,
 	CueDefinitionGraphicDesign,
 	getTransitionProperties,
 	INewsFields,
@@ -3429,22 +3428,6 @@ describe('Body parser', () => {
 			expect(cues).toHaveLength(1)
 			const graphicCue = cues[0] as CueDefinitionGraphicDesign
 			expect(graphicCue.design).toBe(layoutDesign)
-		})
-
-		it('has layout background cue and regular background cue, remove regular background cue', () => {
-			const layoutBackground = 'layoutBackground'
-			const definitions: PartDefinition[] = [
-				createPartDefinition([
-					createBackgroundLoopCueDefinition(layoutBackground, true),
-					createBackgroundLoopCueDefinition('regularBackground')
-				])
-			]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			expect(result[0].cues).toHaveLength(1)
-			const backgroundCue: CueDefinitionBackgroundLoop = result[0].cues[0] as CueDefinitionBackgroundLoop
-			expect(backgroundCue.backgroundLoop).toBe(layoutBackground)
 		})
 
 		it('only have a regular background cue, does nothing', () => {
