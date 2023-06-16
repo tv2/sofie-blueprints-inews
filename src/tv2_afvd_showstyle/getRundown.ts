@@ -1,15 +1,12 @@
 import {
 	BlueprintResultBaseline,
 	BlueprintResultRundown,
-	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IngestRundown,
 	IShowStyleUserContext,
 	PieceLifespan,
 	PlaylistTimingType,
-	TimelineObjectCoreExt,
-	TSR,
-	WithTimeline
+	TSR
 } from 'blueprints-integration'
 import {
 	CasparPlayerClipLoadingLoop,
@@ -96,58 +93,6 @@ class GlobalAdLibPiecesGenerator {
 		adLibPieces.push(this.makeAudioBedAdLib())
 
 		return adLibPieces
-	}
-
-	// viz styles and dve backgrounds
-	public makeDesignAdLib(): IBlueprintAdLibPiece {
-		const timelineObjects: TimelineObjectCoreExt[] = [
-			literal<TSR.TimelineObjCCGMedia>({
-				id: '',
-				enable: { start: 0 },
-				priority: 110,
-				layer: CasparLLayer.CasparCGDVELoop,
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: 'dve/BG_LOADER_SC',
-					loop: true
-				}
-			})
-		]
-		// @todo: use GraphicsGenerator
-		if (this.config.studio.GraphicsType === 'VIZ') {
-			timelineObjects.push(
-				literal<TSR.TimelineObjVIZMSEElementInternal>({
-					id: '',
-					enable: { start: 0 },
-					priority: 110,
-					layer: SharedGraphicLLayer.GraphicLLayerDesign,
-					content: {
-						deviceType: TSR.DeviceType.VIZMSE,
-						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-						templateName: 'BG_LOADER_SC',
-						templateData: [],
-						showName: this.config.selectedGfxSetup.OvlShowName
-					}
-				})
-			)
-		}
-		const adLibPiece: IBlueprintAdLibPiece = {
-			_rank: 301,
-			externalId: 'dve-design-sc',
-			name: 'DVE Design SC',
-			outputLayerId: SharedOutputLayer.SEC,
-			sourceLayerId: SourceLayer.PgmDesign,
-			lifespan: PieceLifespan.OutOnShowStyleEnd,
-			tags: [AdlibTags.ADLIB_DESIGN_STYLE_SC],
-			content: literal<WithTimeline<GraphicsContent>>({
-				fileName: 'BG_LOADER_SC',
-				path: 'BG_LOADER_SC',
-				ignoreMediaObjectStatus: true,
-				timelineObjects
-			})
-		}
-		return adLibPiece
 	}
 
 	private makeEvsAdLib(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece<PieceMetaData> {

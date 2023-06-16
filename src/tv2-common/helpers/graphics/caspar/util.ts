@@ -1,9 +1,9 @@
 import { TSR } from 'blueprints-integration'
 import {
+	getCasparCgBaselineDesignTimelineObject,
 	getTimelineLayerForGraphic,
 	joinAssetToFolder,
 	layerToHTMLGraphicSlot,
-	NON_BASELINE_DESIGN_ID,
 	Slots,
 	TV2ShowStyleConfig
 } from 'tv2-common'
@@ -68,7 +68,7 @@ export function getHtmlGraphicBaseline(config: TV2ShowStyleConfig): TSR.TSRTimel
 	return [
 		...getSlotBaselineTimelineObjects(templateName, partiallyUpdatableLayerMappings),
 		getCompoundSlotBaselineTimelineObject(templateName, partiallyUpdatableLayerMappings),
-		getDesignBaselineTimelineObject(config, templateName),
+		getCasparCgBaselineDesignTimelineObject(config, templateName),
 		getFullPilotBaselineTimelineObject(templateName)
 	]
 }
@@ -134,31 +134,6 @@ function getCompoundSlotBaselineTimelineObject(
 			data: {
 				display: 'program',
 				slots,
-				partialUpdate: true
-			},
-			useStopCommand: false
-		}
-	}
-}
-
-function getDesignBaselineTimelineObject(config: TV2ShowStyleConfig, templateName: string): TSR.TimelineObjCCGTemplate {
-	const design: string = config.showStyle.GfxDefaults[0].DefaultDesign.label
-	return {
-		id: '',
-		enable: {
-			while: `!.${NON_BASELINE_DESIGN_ID}`
-		},
-		priority: 10,
-		classes: [`${design}`],
-		layer: SharedGraphicLLayer.GraphicLLayerDesign,
-		content: {
-			deviceType: TSR.DeviceType.CASPARCG,
-			type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-			templateType: 'html',
-			name: templateName,
-			data: {
-				display: 'program',
-				design,
 				partialUpdate: true
 			},
 			useStopCommand: false

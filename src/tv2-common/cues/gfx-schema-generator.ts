@@ -55,7 +55,7 @@ export class GfxSchemaGenerator {
 			},
 			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId: SharedSourceLayer.PgmSchema,
-			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			lifespan: PieceLifespan.OutOnRundownChange,
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: cue.schema,
 				path: cue.schema,
