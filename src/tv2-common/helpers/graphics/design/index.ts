@@ -1,15 +1,8 @@
-import {
-	GraphicsContent,
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	PieceLifespan,
-	TSR,
-	WithTimeline
-} from 'blueprints-integration'
+import { GraphicsContent, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	calculateTime,
 	CueDefinitionGraphicDesign,
+	EvaluateCueResult,
 	getHtmlTemplateName,
 	literal,
 	ShowStyleContext,
@@ -19,22 +12,20 @@ import { SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-c
 
 export function EvaluateDesignBase(
 	context: ShowStyleContext,
-	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionGraphicDesign,
 	adlib?: boolean,
 	rank?: number
 ) {
+	const result = new EvaluateCueResult()
 	const start = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 	if (!parsedCue.design || !parsedCue.design.length) {
 		context.core.notifyUserWarning(`No valid design found for ${parsedCue.design}`)
-		return
+		return result
 	}
 
 	if (adlib) {
-		adlibPieces.push({
+		result.adlibPieces.push({
 			_rank: rank || 0,
 			externalId: partId,
 			name: parsedCue.design,
@@ -49,7 +40,7 @@ export function EvaluateDesignBase(
 			})
 		})
 	} else {
-		pieces.push({
+		result.pieces.push({
 			externalId: partId,
 			name: parsedCue.design,
 			enable: {
@@ -57,15 +48,17 @@ export function EvaluateDesignBase(
 			},
 			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId: SharedSourceLayer.PgmDesign,
-			lifespan: PieceLifespan.OutOnShowStyleEnd,
+			lifespan: PieceLifespan.OutOnRundownChange, // PieceLifespan.OutOnShowStyleEnd,
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: parsedCue.design,
 				path: parsedCue.design,
 				ignoreMediaObjectStatus: true,
 				timelineObjects: designTimeline(context.config, parsedCue)
-			})
+			}),
+			tags: ['DESIGN_XXX']
 		})
 	}
+	return result
 }
 
 function designTimeline(config: TV2ShowStyleConfig, parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineObj[] {

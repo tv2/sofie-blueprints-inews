@@ -33,6 +33,7 @@ import {
 	CueDefinitionMixMinus,
 	CueDefinitionPgmClean,
 	CueDefinitionRouting,
+	CueDefinitionVariant,
 	GraphicInternalOrPilot,
 	GraphicIsPilot
 } from './inewsConversion'
@@ -73,20 +74,16 @@ export interface EvaluateCuesShowstyleOptions {
 	) => void
 	EvaluateCueGraphicDesign?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
-		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionGraphicDesign,
 		adlib?: boolean,
 		rank?: number
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueGraphicSchema?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
 		partId: string,
 		parsedCue: CueDefinitionGraphicSchema
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueRouting?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
 		partId: string,
@@ -166,8 +163,11 @@ export interface EvaluateCuesShowstyleOptions {
 		part: PartDefinition,
 		parsedCue: CueDefinitionMixMinus
 	) => void
-	/** TODO: Profile -> Change the profile as defined in VIZ device settings */
-	EvaluateCueProfile?: () => void
+	EvaluateCueVariant?: (
+		context: ShowStyleContext<TV2ShowStyleConfig>,
+		partId: string,
+		parsedCue: CueDefinitionVariant
+	) => EvaluateCueResult
 	/** TODO: Mic -> For the future */
 	EvaluateCueMic?: () => void
 	EvaluateCueRobotCamera?: (cueDefinition: CueDefinitionRobotCamera, pieces: IBlueprintPiece[], partId: string) => void
@@ -287,21 +287,14 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.GraphicDesign:
 					if (showStyleOptions.EvaluateCueGraphicDesign) {
-						showStyleOptions.EvaluateCueGraphicDesign(
-							context,
-							pieces,
-							adLibPieces,
-							actions,
-							partDefinition.externalId,
-							cue,
-							shouldAdlib,
-							adLibRank
+						result.push(
+							showStyleOptions.EvaluateCueGraphicDesign(context, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 						)
 					}
 					break
 				case CueType.GraphicSchema:
 					if (showStyleOptions.EvaluateCueGraphicSchema) {
-						showStyleOptions.EvaluateCueGraphicSchema(context, pieces, partDefinition.externalId, cue)
+						result.push(showStyleOptions.EvaluateCueGraphicSchema(context, partDefinition.externalId, cue))
 					}
 					break
 				case CueType.ClearGrafiks:
@@ -357,9 +350,13 @@ export async function EvaluateCuesBase(
 						showStyleOptions.EvaluateCueRobotCamera(cue, pieces, partDefinition.externalId)
 					}
 					break
+				case CueType.Variant:
+					if (showStyleOptions.EvaluateCueVariant) {
+						result.push(showStyleOptions.EvaluateCueVariant(context, partDefinition.externalId, cue))
+					}
+					break
 				default:
-					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
-						// TODO: Profile -> Change the profile as defined in VIZ device settings
+					if (cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
 						// TODO: Mic -> For the future
 						// context.notifyUserWarning(`Unimplemented cue type: ${CueType[cue.type]}`)
 						assertUnreachable(cue)
@@ -393,7 +390,7 @@ export async function EvaluateCuesBase(
 									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
 									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
 									channel: o.content.channelName,
-									showName: o.content.showName
+									showLayer: 'vizshow1'
 								}
 							})
 						}

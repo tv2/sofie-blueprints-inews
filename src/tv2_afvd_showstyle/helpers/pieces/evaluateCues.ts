@@ -9,6 +9,7 @@ import {
 	CueDefinition,
 	EvaluateCueMixMinus,
 	EvaluateCueRobotCamera,
+	EvaluateCueVariant,
 	EvaluateCuesBase,
 	EvaluateCuesOptions,
 	EvaluateLYD,
@@ -54,7 +55,8 @@ export async function EvaluateCues(
 			EvaluateCueGraphicSchema,
 			EvaluateCueRouting,
 			EvaluateCueMixMinus,
-			EvaluateCueRobotCamera
+			EvaluateCueRobotCamera,
+			EvaluateCueVariant
 		},
 		context,
 		part,

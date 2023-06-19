@@ -3,7 +3,8 @@ import {
 	ICommonContext,
 	IShowStyleContext,
 	IStudioContext,
-	TableConfigItemValue
+	TableConfigItemValue,
+	IBlueprintShowStyleVariant
 } from 'blueprints-integration'
 import { findGfxSetup, TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
@@ -23,6 +24,7 @@ export interface TableConfigItemGfxTemplates {
 export interface OfftubeBlueprintConfig extends OfftubeStudioBlueprintConfig {
 	showStyle: OfftubeShowStyleConfig
 	selectedGfxSetup: TableConfigGfxSetup
+	variants: IBlueprintShowStyleVariant[]
 }
 
 export interface DVEConfigInput {

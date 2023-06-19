@@ -1,23 +1,30 @@
 import { GraphicsContent, PieceLifespan, WithTimeline } from '@sofie-automation/blueprints-integration'
-import { IBlueprintPiece, TSR } from 'blueprints-integration'
-import { calculateTime, CueDefinitionGraphicSchema, literal, ShowStyleContext, TV2ShowStyleConfig } from 'tv2-common'
+import { TSR } from 'blueprints-integration'
+import {
+	calculateTime,
+	CueDefinitionGraphicSchema,
+	EvaluateCueResult,
+	literal,
+	ShowStyleContext,
+	TV2ShowStyleConfig
+} from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
 import { GraphicLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueGraphicSchema(
 	context: ShowStyleContext,
-	pieces: IBlueprintPiece[],
 	partId: string,
 	parsedCue: CueDefinitionGraphicSchema
 ) {
+	const result = new EvaluateCueResult()
 	if (!parsedCue.schema) {
 		context.core.notifyUserWarning(`No valid Schema found for ${parsedCue.schema}`)
-		return
+		return result
 	}
 
 	const start = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
-	pieces.push({
+	result.pieces.push({
 		externalId: partId,
 		name: parsedCue.schema,
 		enable: {
@@ -33,6 +40,8 @@ export function EvaluateCueGraphicSchema(
 			timelineObjects: createTimeline(context.config, parsedCue)
 		})
 	})
+
+	return result
 }
 
 function createTimeline(

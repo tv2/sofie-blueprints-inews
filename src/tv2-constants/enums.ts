@@ -23,7 +23,7 @@ export enum CueType {
 	AdLib,
 	LYD,
 	Jingle,
-	Profile,
+	Variant,
 	ClearGrafiks,
 	UNPAIRED_TARGET,
 	UNPAIRED_PILOT,

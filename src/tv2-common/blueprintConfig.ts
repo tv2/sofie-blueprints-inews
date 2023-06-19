@@ -1,4 +1,4 @@
-import { TableConfigItemValue } from 'blueprints-integration'
+import { IBlueprintShowStyleVariant, TableConfigItemValue } from 'blueprints-integration'
 import {
 	DVEConfigInput,
 	SourceInfo,
@@ -187,6 +187,7 @@ export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase
 	extends TV2StudioBlueprintConfigBase<StudioConfig> {
 	showStyle: TV2ShowstyleBlueprintConfigBase
 	selectedGfxSetup: TableConfigGfxSetup
+	variants: IBlueprintShowStyleVariant[]
 }
 
 export type TV2StudioConfig = TV2StudioBlueprintConfigBase<TV2StudioConfigBase>

@@ -1917,7 +1917,11 @@
                         "rate": "165"
                     },
                     "cues": [
-                        null,
+                        [
+                            "SOFIE=SHOWSTYLEVARIANT",
+                            "VAR_B",
+                            ";0.00"
+                        ],
                         null,
                         null,
                         null,
@@ -1936,7 +1940,7 @@
                         ]
                     ],
                     "id": "1a598229:0021e973:5e58ef29",
-                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p></p>\r\n<p><a idref=\"7\"><a idref=\"8\"></a></a></p>\r\n",
+                    "body": "\r\n<p></p>\r\n<p></p>\r\n<p><pi>KAM 2</pi></p>\r\n<p></p>\r\n<p><a idref=\"0\"><a idref=\"7\"><a idref=\"8\"></a></a></p>\r\n",
                     "fileId": "1A598229:0021E973:5E58EF29",
                     "identifier": "1A598229"
                 },
@@ -2057,8 +2061,8 @@
                     },
                     "cues": [
                         [
-                            "KOMMANDO=GRAPHICSPROFILE",
-                            "TV2 SPORT 2016",
+                            "SOFIE=SHOWSTYLEVARIANT",
+                            "VAR_A",
                             ";0.00"
                         ],
                         [
@@ -2088,7 +2092,7 @@
                             ";0.00"
                         ],
                         [
-                            "KG=DESIGN_FODBOLD_20",
+                            "KG=DESIGN_HANDBOLD",
                             ";0.00.01"
                         ],
                         [

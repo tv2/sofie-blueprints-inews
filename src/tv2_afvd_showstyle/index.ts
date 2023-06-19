@@ -22,6 +22,7 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 		blueprintVersion: VERSION,
 		integrationVersion: VERSION_INTEGRATION,
 		TSRVersion: VERSION_TSR,
+		// @ts-ignore
 		preprocessConfig,
 
 		getShowStyleVariantId,
@@ -32,6 +33,33 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 		getEndStateForPart,
 		executeAction: executeActionAFVD,
 		syncIngestUpdateToPartInstance,
+		// @ts-ignore
+		// setNext: (context, data) => {
+		// 	context.insertPieceInstance(literal<IBlueprintPiece>({
+		// 		enable: {
+		// 			start: 0,
+		// 			duration: 4000
+		// 		},
+		// 		externalId: 'Hiiii',
+		// 		lifespan: PieceLifespan.WithinPart,
+		// 		name: 'Hiii',
+		// 		outputLayerId: SharedOutputLayer.JINGLE,
+		// 		sourceLayerId: SharedSourceLayer.PgmJingle,
+		// 		pieceType: IBlueprintPieceType.InTransition,
+		// 		content: {
+		// 			timelineObjects: []
+		// 		}
+		// 	}))
+		// 	context.updatePartInstance(literal<Partial<IBlueprintMutatablePart>>({
+		// 		inTransition: {
+		// 			blockTakeDuration: 3000,
+		// 			partContentDelayDuration: 2000,
+		// 			previousPartKeepaliveDuration: 2000,
+		// 		}
+		// 	}))
+		// 	context.logWarning('dddddddd')
+		// 	context.logWarning(JSON.stringify(data.pieceInstances))
+		// },
 
 		showStyleConfigManifest,
 		showStyleMigrations

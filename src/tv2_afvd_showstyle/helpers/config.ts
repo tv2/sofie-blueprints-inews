@@ -1,4 +1,9 @@
-import { IBlueprintConfig, ICommonContext, TableConfigItemValue } from 'blueprints-integration'
+import {
+	IBlueprintConfig,
+	IBlueprintShowStyleVariant,
+	ICommonContext,
+	TableConfigItemValue
+} from 'blueprints-integration'
 import {
 	findGfxSetup,
 	TableConfigGfxSetup,
@@ -17,6 +22,7 @@ export interface GalleryTableConfigGfxSetup extends TableConfigGfxSetup {
 export interface GalleryBlueprintConfig extends GalleryStudioConfig {
 	showStyle: GalleryShowStyleConfig
 	selectedGfxSetup: GalleryTableConfigGfxSetup
+	variants: IBlueprintShowStyleVariant[]
 }
 
 export interface GalleryShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
@@ -26,8 +32,13 @@ export interface GalleryShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 	GfxDefaults: TableConfigItemGfxDefaults[]
 }
 
-export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
+export function preprocessConfig(
+	context: ICommonContext,
+	rawConfig: IBlueprintConfig,
+	test: Array<IBlueprintShowStyleVariant>
+): any {
 	const showstyleConfig = rawConfig as unknown as GalleryShowStyleConfig
+	context.logInfo('dddddddd' + JSON.stringify(test))
 	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
 		_id: '',
 		Name: '',
@@ -38,6 +49,7 @@ export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintC
 	})
 	return {
 		showStyle: showstyleConfig,
-		selectedGfxSetup
+		selectedGfxSetup,
+		variants: test
 	}
 }

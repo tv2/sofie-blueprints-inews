@@ -21,7 +21,7 @@ import {
 	CueDefinitionMic,
 	CueDefinitionMixMinus,
 	CueDefinitionPgmClean,
-	CueDefinitionProfile,
+	CueDefinitionVariant,
 	CueDefinitionTelefon,
 	CueDefinitionUnknown,
 	CueDefinitionUnpairedPilot,
@@ -1368,16 +1368,16 @@ describe('Cue parser', () => {
 	})
 
 	test('Kommando', () => {
-		const cueKommando = ['KOMMANDO=GRAPHICSPROFILE', 'TV2 SPORT 2016', ';0.00']
+		const cueKommando = ['SOFIE=SHOWSTYLEVARIANT', 'VARIANT_XX', ';0.00']
 		const result = ParseCue(cueKommando, config)
 		expect(result).toEqual(
-			literal<CueDefinitionProfile>({
-				type: CueType.Profile,
+			literal<CueDefinitionVariant>({
+				type: CueType.Variant,
 				start: {
 					seconds: 0
 				},
-				profile: 'TV2 SPORT 2016',
-				iNewsCommand: 'KOMMANDO'
+				variant: 'VARIANT_XX',
+				iNewsCommand: 'SOFIE'
 			})
 		)
 	})

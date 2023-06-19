@@ -85,9 +85,9 @@ export interface CueDefinitionJingle extends CueDefinitionBase {
 	clip: string
 }
 
-export interface CueDefinitionProfile extends CueDefinitionBase {
-	type: CueType.Profile
-	profile: string
+export interface CueDefinitionVariant extends CueDefinitionBase {
+	type: CueType.Variant
+	variant: string
 }
 
 export interface CueDefinitionClearGrafiks extends CueDefinitionBase {
@@ -185,7 +185,7 @@ export type CueDefinition =
 	| CueDefinitionAdLib
 	| CueDefinitionLYD
 	| CueDefinitionJingle
-	| CueDefinitionProfile
+	| CueDefinitionVariant
 	| CueDefinitionClearGrafiks
 	| CueDefinitionUnpairedTarget
 	| CueDefinitionUnpairedPilot
@@ -254,8 +254,6 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return parseMic(cue)
 	} else if (/^ADLIBPI?X=/i.test(cue[0])) {
 		return parseAdLib(cue)
-	} else if (/^KOMMANDO=/i.test(cue[0])) {
-		return parseKommando(cue)
 	} else if (/^LYD=/i.test(cue[0])) {
 		return parseLYD(cue)
 	} else if (/^JINGLE\d+=/i.test(cue[0])) {
@@ -266,6 +264,8 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return parseMixMinus(cue)
 	} else if (/^ROBOT\s*=/i.test(cue[0])) {
 		return parseRobotCue(cue)
+	} else if (/^SOFIE\s*=\s*SHOWSTYLEVARIANT/i.test(cue[0])) {
+		return parseShowStyleVariant(cue)
 	}
 
 	return literal<CueDefinitionUnknown>({
@@ -637,22 +637,22 @@ function parseAdLib(cue: string[]) {
 	return adlib
 }
 
-function parseKommando(cue: string[]) {
-	let kommandoCue: CueDefinitionProfile = {
-		type: CueType.Profile,
-		profile: '',
-		iNewsCommand: 'KOMMANDO'
+function parseShowStyleVariant(cue: string[]) {
+	let variantVue: CueDefinitionVariant = {
+		type: CueType.Variant,
+		variant: '',
+		iNewsCommand: 'SOFIE'
 	}
 
 	if (cue[1]) {
-		kommandoCue.profile = cue[1]
+		variantVue.variant = cue[1]
 	}
 
 	if (cue[2] && isTime(cue[2])) {
-		kommandoCue = { ...kommandoCue, ...parseTime(cue[2]) }
+		variantVue = { ...variantVue, ...parseTime(cue[2]) }
 	}
 
-	return kommandoCue
+	return variantVue
 }
 
 function parseLYD(cue: string[]) {

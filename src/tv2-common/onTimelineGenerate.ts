@@ -61,6 +61,7 @@ export interface PieceMetaData {
 	sisyfosPersistMetaData?: SisyfosPersistenceMetaData
 	mediaPlayerSessions?: string[]
 	modifiedByAction?: boolean
+	variant?: string
 }
 
 export interface GraphicPieceMetaData extends PieceMetaData {
