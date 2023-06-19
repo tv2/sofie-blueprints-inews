@@ -327,7 +327,7 @@ function parsekg(
 	let textFields = cue.length - 1
 	if (isTime(cue[cue.length - 1])) {
 		kgCue = { ...kgCue, ...parseTime(cue[cue.length - 1]) }
-	} else if (!cue[cue.length - 1].match(/;[x|\d+].[x|\d+]x/i)) {
+	} else if (!isAdLibTimecode(cue[cue.length - 1])) {
 		textFields += 1
 	} else {
 		kgCue.adlib = true
@@ -667,12 +667,10 @@ function parseLYD(cue: string[]) {
 		lydCue.variant = command[1]
 	}
 
-	if (cue[1]) {
-		if (isTime(cue[1])) {
-			lydCue = { ...lydCue, ...parseTime(cue[1]) }
-		} else if (cue[1].match(/;[x|\d+].[x|\d+]x/i)) {
-			lydCue.adlib = true
-		}
+	if (cue[1] && isTime(cue[1])) {
+		lydCue = { ...lydCue, ...parseTime(cue[1]) }
+	} else if (isAdLibTimecode(cue[1])) {
+		lydCue.adlib = true
 	}
 
 	return lydCue
@@ -979,11 +977,14 @@ function findGraphicSchemaConfiguration(config: TV2ShowStyleConfig, schema: stri
 
 function parseRobotCue(cue: string[]): CueDefinitionRobotCamera {
 	const presetIdentifier: number = Number(cue[0].match(/\d+/))
-	const time: Pick<CueDefinitionBase, 'start' | 'end'> = cue[1] ? parseTime(cue[1]) : { start: { seconds: 0 } }
+	const isAdLib = isAdLibTimecode(cue[1])
+	const time: Pick<CueDefinitionBase, 'start' | 'end'> =
+		cue[1] && !isAdLib ? parseTime(cue[1]) : { start: { seconds: 0 } }
 	return {
 		type: CueType.RobotCamera,
 		iNewsCommand: 'RobotCamera',
 		presetIdentifier,
+		adlib: isAdLib,
 		...time
 	}
 }
@@ -1009,4 +1010,8 @@ export function UnpairedPilotToGraphic(
 		engineNumber: pilotCue.engineNumber,
 		adlib: targetCue?.adlib ?? pilotCue.adlib
 	})
+}
+
+function isAdLibTimecode(timecode: string | undefined): boolean {
+	return !!timecode && /;[x|\d+].[x|\d+]x/i.test(timecode)
 }

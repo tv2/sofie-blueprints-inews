@@ -1918,5 +1918,11 @@ describe('Cue parser', () => {
 			expect(result!.start!.seconds).toBe(24)
 			expect(result!.start!.frames).toBe(10)
 		})
+
+		it('receives time code ;x.xx, it is an adlib', () => {
+			const cue = ['ROBOT=11', ';x.xx']
+			const result = ParseCue(cue, config) as CueDefinitionRobotCamera
+			expect(result.adlib).toBe(true)
+		})
 	})
 })
