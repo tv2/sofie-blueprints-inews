@@ -1,5 +1,6 @@
-import { BasicConfigItemValue, IBlueprintShowStyleVariant } from 'blueprints-integration'
 import {
+	BasicConfigItemValue,
+	IBlueprintShowStyleVariant,
 	BlueprintMappings,
 	ConfigItemValue,
 	MigrationContextShowStyle,
