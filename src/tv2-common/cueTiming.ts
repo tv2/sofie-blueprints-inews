@@ -48,7 +48,7 @@ export function getLifeSpan(mode: 'B' | 'S' | 'O'): PieceLifespan {
 		case 'S':
 			return PieceLifespan.OutOnSegmentEnd
 		case 'O':
-			return PieceLifespan.OutOnShowStyleEnd
+			return PieceLifespan.OutOnRundownChange
 	}
 }
 

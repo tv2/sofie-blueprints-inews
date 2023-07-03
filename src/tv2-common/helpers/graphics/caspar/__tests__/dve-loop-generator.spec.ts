@@ -1,4 +1,4 @@
-import { Timeline, TSR } from '@sofie-automation/blueprints-integration'
+import { Timeline, TSR } from 'blueprints-integration'
 import { mock } from 'ts-mockito'
 import { CueDefinitionGfxSchema, ShowStyleContext } from 'tv2-common'
 import { CueType, SharedCasparLLayer } from 'tv2-constants'

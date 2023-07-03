@@ -1,4 +1,4 @@
-import { TSR } from '@sofie-automation/blueprints-integration'
+import { TSR } from 'blueprints-integration'
 import { CasparCgGfxDesignValues, CueDefinitionGfxSchema, ShowStyleContext } from 'tv2-common'
 import { SharedCasparLLayer } from 'tv2-constants'
 
@@ -8,17 +8,17 @@ export class DveLoopGenerator {
 		cue: CueDefinitionGfxSchema,
 		priority?: number
 	): TSR.TimelineObjCCGMedia[] {
-		if (!cue.CasparCgDesignValues || !cue.CasparCgDesignValues.length || cue.CasparCgDesignValues.length === 0) {
+		if (!cue.CasparCgDesignValues || !cue.CasparCgDesignValues.length) {
 			const errorMessage = `No CasparCgDesignValues configured for Schema {${cue.schema}}`
 			context.core.notifyUserError(errorMessage)
-			throw new Error(errorMessage)
+			return []
 		}
 		return cue.CasparCgDesignValues.map((designValues) =>
-			this.createDveLoopTimelineObject(cue.schema, designValues, priority)
+			this.createDveLoopTimelineObjectForSchema(cue.schema, designValues, priority)
 		)
 	}
 
-	private createDveLoopTimelineObject(
+	private createDveLoopTimelineObjectForSchema(
 		schemaName: string,
 		design: CasparCgGfxDesignValues,
 		priority?: number
@@ -37,5 +37,22 @@ export class DveLoopGenerator {
 				loop: true
 			}
 		}
+	}
+
+	public createDveLoopTimelineObject(fileName: string): TSR.TimelineObjCCGMedia[] {
+		return [
+			{
+				id: '',
+				enable: { start: 0 },
+				priority: 100,
+				layer: SharedCasparLLayer.CasparCGDVELoop,
+				content: {
+					deviceType: TSR.DeviceType.CASPARCG,
+					type: TSR.TimelineContentTypeCasparCg.MEDIA,
+					file: `dve/${fileName}`,
+					loop: true
+				}
+			}
+		]
 	}
 }

@@ -403,7 +403,8 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 
 	return {
 		timelineObjects: _.compact([
-			...getGraphicBaseline(context.config),
+			...getGraphicBaseline(context),
+			...gfxSchemaGenerator.createBaselineTimelineObjectsFromGfxDefaults(context),
 			// Default timeline
 			...getMixEffectBaseline(context, context.config.studio.SwitcherSource.Default),
 
@@ -572,7 +573,6 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 					}
 				}
 			}),
-			...gfxSchemaGenerator.createTimelineObjectsFromGfxDefaults(context),
 			literal<TSR.TimelineObjCCGRoute>({
 				id: '',
 				enable: { while: 1 },

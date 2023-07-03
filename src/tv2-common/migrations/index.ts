@@ -1,4 +1,4 @@
-import { BasicConfigItemValue, IBlueprintShowStyleVariant } from '@sofie-automation/blueprints-integration'
+import { BasicConfigItemValue, IBlueprintShowStyleVariant } from 'blueprints-integration'
 import {
 	BlueprintMappings,
 	ConfigItemValue,
@@ -160,8 +160,8 @@ export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 
 			gfxTemplates
 				.filter((template) => template.IsDesign)
-				.map((template) => {
-					designTemplates.push({ ...template, INewsStyleColumn: '' })
+				.forEach((template, index) => {
+					designTemplates.push({ _id: `${index}`, ...template, INewsStyleColumn: '' })
 				})
 
 			const newGfxTemplates = gfxTemplates.filter((template) => !template.IsDesign)

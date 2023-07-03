@@ -11,19 +11,21 @@ import {
 import { CueType, SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 import { DveLoopGenerator } from '../helpers/graphics/caspar/dve-loop-generator'
 
+const NON_BASELINE_SCHEMA = 'NON_BASELINE_SCHEMA'
+
 export class GfxSchemaGenerator {
 	constructor(private dveLoopGenerator: DveLoopGenerator) {}
 
-	public createTimelineObjectsFromGfxDefaults(context: ShowStyleContext): TSR.TSRTimelineObjBase[] {
-		const schemaName = context.config.showStyle.GfxDefaults[0].DefaultSchema.label
+	public createBaselineTimelineObjectsFromGfxDefaults(context: ShowStyleContext): TSR.TSRTimelineObjBase[] {
+		const schemaId = context.config.showStyle.GfxDefaults[0].DefaultSchema.value
 		const schema: TableConfigGfxSchema | undefined = context.config.showStyle.GfxSchemaTemplates.find(
-			(s) => s.GfxSchemaTemplatesName === schemaName
+			(s) => s._id === schemaId
 		)
 		if (!schema || !schema.CasparCgDesignValues) {
 			context.core.notifyUserError(
 				`Unable to create baseline DVE loops for CasparCG. Check GfxDefaults Schema is configured.`
 			)
-			throw new Error(`Incorrectly configured GfxDefaults.schema`)
+			return []
 		}
 
 		const cue: CueDefinitionGfxSchema = {
@@ -32,7 +34,7 @@ export class GfxSchemaGenerator {
 			CasparCgDesignValues: schema.CasparCgDesignValues ? JSON.parse(schema.CasparCgDesignValues) : [],
 			iNewsCommand: ''
 		}
-		return this.createTimelineObjects(context, cue, 10)
+		return this.createBaselineTimelineObjects(context, cue, 10)
 	}
 
 	public createBlueprintPieceFromGfxSchemaCue(
@@ -55,7 +57,8 @@ export class GfxSchemaGenerator {
 			},
 			outputLayerId: SharedOutputLayer.SEC,
 			sourceLayerId: SharedSourceLayer.PgmSchema,
-			lifespan: PieceLifespan.OutOnRundownChange,
+			// @ts-ignore
+			lifespan: cue.isFromField ? 'rundown-change-segment-lookback' : PieceLifespan.OutOnRundownChange,
 			content: literal<WithTimeline<GraphicsContent>>({
 				fileName: cue.schema,
 				path: cue.schema,
@@ -89,13 +92,37 @@ export class GfxSchemaGenerator {
 		}
 	}
 
-	private createVizSchemaTimelineObject(
+	private createBaselineTimelineObjects(
+		context: ShowStyleContext,
+		cue: CueDefinitionGfxSchema,
+		priority?: number
+	): TSR.TSRTimelineObjBase[] {
+		switch (context.config.studio.GraphicsType) {
+			case 'VIZ': {
+				return [
+					this.createBaselineVizSchemaTimelineObject(context.config, cue),
+					...this.dveLoopGenerator.createCasparCgDveLoopsFromCue(context, cue, priority)
+				]
+			}
+			case 'HTML': {
+				return [
+					this.createBaselineCasparCgSchemaTimelineObject(context, cue),
+					...this.dveLoopGenerator.createCasparCgDveLoopsFromCue(context, cue, priority)
+				]
+			}
+			default: {
+				return []
+			}
+		}
+	}
+
+	private createBaselineVizSchemaTimelineObject(
 		config: TV2ShowStyleConfig,
 		cue: CueDefinitionGfxSchema
 	): TSR.TimelineObjVIZMSEElementInternal {
-		return literal<TSR.TimelineObjVIZMSEElementInternal>({
+		return {
 			id: '',
-			enable: { start: 0 },
+			enable: { while: `!.${NON_BASELINE_SCHEMA}` },
 			priority: 100,
 			classes: [cue.schema],
 			layer: SharedGraphicLLayer.GraphicLLayerSchema,
@@ -106,16 +133,27 @@ export class GfxSchemaGenerator {
 				templateData: [],
 				showName: config.selectedGfxSetup.OvlShowName ?? ''
 			}
-		})
+		}
 	}
 
-	private createCasparCgSchemaTimelineObject(
+	private createVizSchemaTimelineObject(
+		config: TV2ShowStyleConfig,
+		cue: CueDefinitionGfxSchema
+	): TSR.TimelineObjVIZMSEElementInternal {
+		return {
+			...this.createBaselineVizSchemaTimelineObject(config, cue),
+			enable: { start: 0 },
+			classes: [cue.schema, NON_BASELINE_SCHEMA]
+		}
+	}
+
+	private createBaselineCasparCgSchemaTimelineObject(
 		context: ShowStyleContext,
 		cue: CueDefinitionGfxSchema
-	): TSR.TimelineObjCasparCGBase {
-		return literal<TSR.TimelineObjCCGTemplate>({
+	): TSR.TimelineObjCCGTemplate {
+		return {
 			id: '',
-			enable: { start: 0 },
+			enable: { while: `!.${NON_BASELINE_SCHEMA}` },
 			priority: 100,
 			classes: [cue.schema],
 			layer: SharedGraphicLLayer.GraphicLLayerSchema,
@@ -127,6 +165,17 @@ export class GfxSchemaGenerator {
 				data: this.createCasparCgHtmlSchemaData(context, cue),
 				useStopCommand: false
 			}
+		}
+	}
+
+	private createCasparCgSchemaTimelineObject(
+		context: ShowStyleContext,
+		cue: CueDefinitionGfxSchema
+	): TSR.TimelineObjCasparCGBase {
+		return literal<TSR.TimelineObjCCGTemplate>({
+			...this.createBaselineCasparCgSchemaTimelineObject(context, cue),
+			enable: { start: 0 },
+			classes: [cue.schema, NON_BASELINE_SCHEMA]
 		})
 	}
 

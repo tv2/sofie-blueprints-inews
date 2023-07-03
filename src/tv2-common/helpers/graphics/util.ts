@@ -1,5 +1,10 @@
 import { IBlueprintPart, TSR } from 'blueprints-integration'
-import { getHtmlGraphicBaseline, getVizBaselineDesignTimelineObject, TV2ShowStyleConfig } from 'tv2-common'
+import {
+	getHtmlGraphicBaseline,
+	getVizBaselineDesignTimelineObject,
+	ShowStyleContext,
+	TV2ShowStyleConfig
+} from 'tv2-common'
 
 export function applyFullGraphicPropertiesToPart(config: TV2ShowStyleConfig, part: IBlueprintPart) {
 	const keepAliveDuration =
@@ -17,10 +22,10 @@ export function applyFullGraphicPropertiesToPart(config: TV2ShowStyleConfig, par
 	}
 }
 
-export function getGraphicBaseline(config: TV2ShowStyleConfig): TSR.TSRTimelineObj[] {
-	if (config.studio.GraphicsType === 'VIZ') {
-		return [getVizBaselineDesignTimelineObject(config)]
+export function getGraphicBaseline(context: ShowStyleContext): TSR.TSRTimelineObj[] {
+	if (context.config.studio.GraphicsType === 'VIZ') {
+		return getVizBaselineDesignTimelineObject(context)
 	} else {
-		return getHtmlGraphicBaseline(config)
+		return getHtmlGraphicBaseline(context)
 	}
 }

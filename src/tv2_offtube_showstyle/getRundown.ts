@@ -587,7 +587,7 @@ function getGlobalAdlibActionsOfftube(
 function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): BlueprintResultBaseline {
 	return {
 		timelineObjects: _.compact([
-			...getGraphicBaseline(context.config),
+			...getGraphicBaseline(context),
 			// Default timeline
 			context.videoSwitcher.getMixEffectTimelineObject({
 				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
@@ -713,7 +713,7 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 					}
 				}
 			}),
-			...gfxSchemaGenerator.createTimelineObjectsFromGfxDefaults(context),
+			...gfxSchemaGenerator.createBaselineTimelineObjectsFromGfxDefaults(context),
 
 			literal<TSR.TimelineObjCasparCGAny>({
 				id: '',

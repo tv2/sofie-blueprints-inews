@@ -1,9 +1,10 @@
 import { TSR } from 'blueprints-integration'
 import {
-	getCasparCgBaselineDesignTimelineObject,
+	getCasparCgBaselineDesignTimelineObjects,
 	getTimelineLayerForGraphic,
 	joinAssetToFolder,
 	layerToHTMLGraphicSlot,
+	ShowStyleContext,
 	Slots,
 	TV2ShowStyleConfig
 } from 'tv2-common'
@@ -55,8 +56,8 @@ export function getHtmlTemplateContent(
 	}
 }
 
-export function getHtmlGraphicBaseline(config: TV2ShowStyleConfig): TSR.TSRTimelineObj[] {
-	const templateName = getHtmlTemplateName(config)
+export function getHtmlGraphicBaseline(context: ShowStyleContext): TSR.TSRTimelineObj[] {
+	const templateName = getHtmlTemplateName(context.config)
 	const partiallyUpdatableLayerMappings = [
 		SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 		SharedGraphicLLayer.GraphicLLayerOverlayLower,
@@ -68,7 +69,7 @@ export function getHtmlGraphicBaseline(config: TV2ShowStyleConfig): TSR.TSRTimel
 	return [
 		...getSlotBaselineTimelineObjects(templateName, partiallyUpdatableLayerMappings),
 		getCompoundSlotBaselineTimelineObject(templateName, partiallyUpdatableLayerMappings),
-		getCasparCgBaselineDesignTimelineObject(config, templateName),
+		...getCasparCgBaselineDesignTimelineObjects(context, templateName),
 		getFullPilotBaselineTimelineObject(templateName)
 	]
 }

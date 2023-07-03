@@ -116,11 +116,19 @@ export interface CueDefinitionUnpairedPilot extends CueDefinitionBase {
 	engineNumber?: number
 }
 
-export interface CueDefinitionBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
+export interface CueDefinitionDveBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.BackgroundLoop
-	target: 'FULL' | 'DVE'
+	target: 'DVE'
 	backgroundLoop: string
 }
+
+export interface CueDefinitionFullBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
+	type: CueType.BackgroundLoop
+	target: 'FULL'
+	backgroundLoop: string
+}
+
+export type CueDefinitionBackgroundLoop = CueDefinitionDveBackgroundLoop | CueDefinitionFullBackgroundLoop
 
 export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.GraphicDesign

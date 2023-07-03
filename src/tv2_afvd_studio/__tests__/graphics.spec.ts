@@ -188,7 +188,7 @@ describe('Graphics', () => {
 		expect(piece.outputLayerId).toBe(SharedOutputLayer.OVERLAY)
 		expect(piece.enable).toEqual({ start: 2000 })
 		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
-		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownChange)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(1)
@@ -244,7 +244,7 @@ describe('Graphics', () => {
 		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.enable).toEqual({ start: 0 })
 		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
-		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownChange)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]
 		expect(timeline).toHaveLength(1)
@@ -397,8 +397,38 @@ describe('Graphics', () => {
 		expect(piece).toBeTruthy()
 		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDesign)
-		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownChange)
 		expect(piece.enable).toEqual({ start: 0 })
+	})
+
+	test('Design from field(column) has OutOnRundownChangeWithSegmentLookback lifespan', async () => {
+		const context = makeMockGalleryContext()
+
+		const cues: CueDefinition[] = [
+			literal<CueDefinitionGraphicDesign>({
+				type: CueType.GraphicDesign,
+				design: 'DESIGN_FODBOLD',
+				iNewsCommand: 'KG',
+				isFromField: true
+			})
+		]
+
+		const partDefinition: PartDefinition = literal<PartDefinition>({
+			type: PartType.Unknown,
+			externalId: '',
+			segmentExternalId: SEGMENT_EXTERNAL_ID,
+			rawType: '',
+			cues,
+			script: '',
+			fields: {},
+			modified: 0,
+			storyName: ''
+		})
+
+		const result = await CreatePartUnknown(context, partDefinition, 0)
+		expect(result.pieces).toHaveLength(1)
+		const piece = result.pieces[0]
+		expect(piece.lifespan).toBe('rundown-change-segment-lookback')
 	})
 
 	it('Creates background loop', async () => {
@@ -432,7 +462,7 @@ describe('Graphics', () => {
 		expect(piece.name).toBe('DESIGN_SC')
 		expect(piece.outputLayerId).toBe(SharedOutputLayer.SEC)
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmDVEBackground)
-		expect(piece.lifespan).toBe(PieceLifespan.OutOnShowStyleEnd)
+		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownChange)
 		const tlObj = (piece.content?.timelineObjects as TSR.TSRTimelineObj[]).find(
 			(obj) =>
 				obj.content.deviceType === TSR.DeviceType.CASPARCG && obj.content.type === TSR.TimelineContentTypeCasparCg.MEDIA

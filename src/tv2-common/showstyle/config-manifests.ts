@@ -137,7 +137,7 @@ export const gfxSchemaTemplates: ConfigManifestEntry[] = [
 					'A JSON array containing color values and background loops for the different Designs of the Schema used by CasparCG',
 				type: ConfigManifestEntryType.JSON,
 				required: false,
-				defaultVal: '',
+				defaultVal: '[]',
 				rank: 3
 			}
 		]

@@ -14,7 +14,7 @@ import { MockContextBuilder } from './mock-context-builder'
 // tslint:disable:no-object-literal-type-assertion
 describe('GfxSchemaGenerator', () => {
 	describe('createTimelineObjectsFromGfxDefaults', () => {
-		it('has no schema configured - throws error', () => {
+		it('has no schema configured - notifies about error', () => {
 			const context = new MockContextBuilder()
 				.setGfxDefaults({
 					DefaultSchema: { label: 'someSchema' }
@@ -26,9 +26,10 @@ describe('GfxSchemaGenerator', () => {
 
 			const testee = createTestee()
 
-			expect(() => {
-				testee.createTimelineObjectsFromGfxDefaults(instance(context))
-			}).toThrow()
+			const result = testee.createBaselineTimelineObjectsFromGfxDefaults(instance(context))
+			expect(result).toBeTruthy()
+
+			verify(core.notifyUserError(anything())).once()
 		})
 
 		function createTestee(dveLoopGenerator?: DveLoopGenerator) {
@@ -39,10 +40,10 @@ describe('GfxSchemaGenerator', () => {
 			return new GfxSchemaGenerator(instance(dveLoopGenerator))
 		}
 
-		it('has schema configured, but no match from default schema - throws error', () => {
+		it('has schema configured, but no match from default schema - notifies about error', () => {
 			const context = new MockContextBuilder()
 				.setGfxDefaults({
-					DefaultSchema: { label: 'someSchema' }
+					DefaultSchema: { value: 'someSchema' }
 				} as TableConfigItemGfxDefaults)
 				.setGfxSchemaTemplates([
 					{
@@ -55,20 +56,22 @@ describe('GfxSchemaGenerator', () => {
 			when(context.core).thenReturn(instance(core))
 
 			const testee = createTestee()
-			expect(() => {
-				testee.createTimelineObjectsFromGfxDefaults(instance(context))
-			}).toThrow()
+			const result = testee.createBaselineTimelineObjectsFromGfxDefaults(instance(context))
+			expect(result).toBeTruthy()
+
+			verify(core.notifyUserError(anything())).once()
 		})
 
-		it('has correctly configured schema - does not throw', () => {
-			const schemaName = 'someSchema'
+		it('has correctly configured schema - does not notify about error', () => {
+			const schemaId = 'someSchemaId'
 			const context = new MockContextBuilder()
 				.setGfxDefaults({
-					DefaultSchema: { label: schemaName }
+					DefaultSchema: { value: schemaId }
 				} as TableConfigItemGfxDefaults)
 				.setGfxSchemaTemplates([
 					{
-						GfxSchemaTemplatesName: schemaName,
+						_id: schemaId,
+						GfxSchemaTemplatesName: 'SomeSchema',
 						CasparCgDesignValues: '[{}]'
 					}
 				] as TableConfigGfxSchema[])
@@ -78,8 +81,10 @@ describe('GfxSchemaGenerator', () => {
 			when(context.core).thenReturn(instance(core))
 
 			const testee = createTestee()
-			const result = testee.createTimelineObjectsFromGfxDefaults(instance(context))
+			const result = testee.createBaselineTimelineObjectsFromGfxDefaults(instance(context))
 			expect(result).toBeTruthy()
+
+			verify(core.notifyUserError(anything())).never()
 		})
 
 		describe('graphicsType is "VIZ"', () => {
@@ -105,7 +110,7 @@ describe('GfxSchemaGenerator', () => {
 					.build()
 				const testee = createTestee()
 
-				const result = testee.createTimelineObjectsFromGfxDefaults(instance(context))
+				const result = testee.createBaselineTimelineObjectsFromGfxDefaults(instance(context))
 				const schemaTimelineObject = result.find(
 					(timelineObject) => timelineObject.layer === SharedGraphicLLayer.GraphicLLayerSchema
 				)
@@ -148,7 +153,7 @@ describe('GfxSchemaGenerator', () => {
 				)
 
 				const testee = createTestee(dveLoopGenerator)
-				const result = testee.createTimelineObjectsFromGfxDefaults(instance(context))
+				const result = testee.createBaselineTimelineObjectsFromGfxDefaults(instance(context))
 
 				verify(dveLoopGenerator.createCasparCgDveLoopsFromCue(anything(), anything(), anyNumber())).called()
 				expect(result.includes(casparCgDveLoopTimelineObjects[0])).toBeTruthy()
@@ -182,7 +187,7 @@ describe('GfxSchemaGenerator', () => {
 					.build()
 				const testee = createTestee()
 
-				const result = testee.createTimelineObjectsFromGfxDefaults(instance(context))
+				const result = testee.createBaselineTimelineObjectsFromGfxDefaults(instance(context))
 				const schemaTimelineObject = result.find(
 					(timelineObject) => timelineObject.layer === SharedGraphicLLayer.GraphicLLayerSchema
 				)
@@ -225,7 +230,7 @@ describe('GfxSchemaGenerator', () => {
 				)
 
 				const testee = createTestee(dveLoopGenerator)
-				const result = testee.createTimelineObjectsFromGfxDefaults(instance(context))
+				const result = testee.createBaselineTimelineObjectsFromGfxDefaults(instance(context))
 
 				verify(dveLoopGenerator.createCasparCgDveLoopsFromCue(anything(), anything(), anyNumber())).called()
 				expect(result.includes(casparCgDveLoopTimelineObjects[0])).toBeTruthy()

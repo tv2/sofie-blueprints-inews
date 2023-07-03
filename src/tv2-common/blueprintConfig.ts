@@ -31,6 +31,7 @@ export interface TableConfigItemGfxTemplate {
 }
 
 export interface TableConfigItemGfxDesignTemplate {
+	_id: string
 	INewsName: string
 	INewsStyleColumn: string
 	/** Name of the Viz template trigering design change. For HTML graphics it coresponds to a CSS class. */
@@ -54,6 +55,7 @@ export interface TableConfigItemAdLibTransitions {
 }
 
 export interface TableConfigGfxSchema {
+	_id: string
 	GfxSchemaTemplatesName: string
 	INewsSkemaColumn: string
 	VizTemplate: string
