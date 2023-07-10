@@ -1,8 +1,8 @@
 import {
 	BasicConfigItemValue,
-	IBlueprintShowStyleVariant,
 	BlueprintMappings,
 	ConfigItemValue,
+	IBlueprintShowStyleVariant,
 	MigrationContextShowStyle,
 	MigrationContextStudio,
 	MigrationStepShowStyle,

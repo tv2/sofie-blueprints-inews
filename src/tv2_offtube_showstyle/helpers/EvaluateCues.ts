@@ -46,8 +46,8 @@ export async function OfftubeEvaluateCues(
 			EvaluateCueGraphicDesign: OfftubeEvaluateGraphicDesign,
 			EvaluateCuePgmClean: OfftubeEvaluatePgmClean,
 			EvaluateCueLYD: EvaluateLYD,
-			EvaluateCueGraphicSchema: (c, p, partId, parsedCue) =>
-				GfxSchemaGeneratorFacade.create().createBlueprintPieceFromGfxSchemaCue(c, p, partId, parsedCue)
+			EvaluateCueGraphicSchema: (cue, piece, partId, parsedCue) =>
+				GfxSchemaGeneratorFacade.create().createBlueprintPieceFromGfxSchemaCue(cue, piece, partId, parsedCue)
 		},
 		context,
 		part,

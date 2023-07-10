@@ -51,8 +51,8 @@ export async function EvaluateCues(
 			EvaluateCueGraphic,
 			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
-			EvaluateCueGraphicSchema: (c, p, partId, parsedCue) =>
-				GfxSchemaGeneratorFacade.create().createBlueprintPieceFromGfxSchemaCue(c, p, partId, parsedCue),
+			EvaluateCueGraphicSchema: (cue, piece, partId, parsedCue) =>
+				GfxSchemaGeneratorFacade.create().createBlueprintPieceFromGfxSchemaCue(cue, piece, partId, parsedCue),
 			EvaluateCueRouting,
 			EvaluateCueMixMinus,
 			EvaluateCueRobotCamera
