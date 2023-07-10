@@ -179,6 +179,7 @@ export class GfxSchemaGenerator {
 		})
 	}
 
+	// TODO: Remove any from return type
 	private createCasparCgHtmlSchemaData(context: ShowStyleContext, cue: CueDefinitionGfxSchema): any {
 		if (!cue.CasparCgDesignValues || cue.CasparCgDesignValues.length === 0) {
 			context.core.notifyUserError(

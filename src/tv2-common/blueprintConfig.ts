@@ -34,7 +34,7 @@ export interface TableConfigItemGfxDesignTemplate {
 	_id: string
 	INewsName: string
 	INewsStyleColumn: string
-	/** Name of the Viz template trigering design change. For HTML graphics it coresponds to a CSS class. */
+	/** Name of the Viz template triggering design change. For HTML graphics it corresponds to a CSS class. */
 	VizTemplate: string
 }
 
@@ -72,7 +72,7 @@ export interface TableConfigGfxSetup {
 
 export interface CasparCgGfxDesignValues {
 	name: string
-	cssRules: string[]
+	properties: Record<string, string>
 	backgroundLoop: string
 }
 

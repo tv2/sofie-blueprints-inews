@@ -169,7 +169,11 @@ describe('GfxSchemaGenerator', () => {
 					{
 						name: 'designName',
 						backgroundLoop: 'someBackgroundLoop',
-						cssRules: ['rule1', 'rule2', 'rule3']
+						properties: {
+							attribute1: 'value1',
+							attribute2: 'value2',
+							attribute3: 'value3'
+						}
 					}
 				]
 				const context = new MockContextBuilder()

@@ -41,7 +41,9 @@ describe('DveLoopGenerator', () => {
 				type: CueType.GraphicSchema,
 				schema: 'randomSchema',
 				iNewsCommand: '',
-				CasparCgDesignValues: [{ name: 'someName', backgroundLoop: 'someLoop', cssRules: ['someRule'] }]
+				CasparCgDesignValues: [
+					{ name: 'someName', backgroundLoop: 'someLoop', properties: { someAttribute: 'someValue' } }
+				]
 			}
 
 			const testee: DveLoopGenerator = new DveLoopGenerator()
@@ -60,7 +62,7 @@ describe('DveLoopGenerator', () => {
 				CasparCgDesignValues: new Array(5).map(() => ({
 					name: 'someName',
 					backgroundLoop: 'someLoop',
-					cssRules: ['someRule']
+					properties: { someAttribute: 'someValue' }
 				}))
 			}
 
@@ -83,7 +85,7 @@ describe('DveLoopGenerator', () => {
 					{
 						name: designName,
 						backgroundLoop: 'someLoop',
-						cssRules: []
+						properties: {}
 					}
 				]
 			}
@@ -118,7 +120,7 @@ describe('DveLoopGenerator', () => {
 					{
 						name: 'someDesignName',
 						backgroundLoop: 'someLoop',
-						cssRules: []
+						properties: {}
 					}
 				]
 			}
