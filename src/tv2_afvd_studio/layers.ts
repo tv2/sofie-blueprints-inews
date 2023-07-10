@@ -4,7 +4,6 @@ import * as _ from 'underscore'
 export enum VirtualAbstractLLayer {}
 
 enum AFVDCasparLLayer {
-	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGFullBg = 'casparcg_full_bg',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame',
@@ -22,8 +21,7 @@ export type CasparLLayer = AFVDCasparLLayer | SharedCasparLLayer
 
 enum AFVDGraphicLLayer {
 	GraphicLLayerInitialize = 'graphic_initialize',
-	GraphicLLayerCleanup = 'graphic_cleanup',
-	GraphicLLayerSchema = 'graphic_schema'
+	GraphicLLayerCleanup = 'graphic_cleanup'
 }
 
 // tslint:disable-next-line: variable-name

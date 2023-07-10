@@ -1,4 +1,5 @@
 import {
+	CasparCgGfxDesignValues,
 	literal,
 	TableConfigGfxSchema,
 	TableConfigItemGfxDesignTemplate,
@@ -115,11 +116,19 @@ export interface CueDefinitionUnpairedPilot extends CueDefinitionBase {
 	engineNumber?: number
 }
 
-export interface CueDefinitionBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
+export interface CueDefinitionDveBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.BackgroundLoop
-	target: 'FULL' | 'DVE'
+	target: 'DVE'
 	backgroundLoop: string
 }
+
+export interface CueDefinitionFullBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
+	type: CueType.BackgroundLoop
+	target: 'FULL'
+	backgroundLoop: string
+}
+
+export type CueDefinitionBackgroundLoop = CueDefinitionDveBackgroundLoop | CueDefinitionFullBackgroundLoop
 
 export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.GraphicDesign
@@ -130,9 +139,10 @@ export interface CueDefinitionFromField {
 	isFromField?: boolean
 }
 
-export interface CueDefinitionGraphicSchema extends CueDefinitionBase, CueDefinitionFromField {
+export interface CueDefinitionGfxSchema extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.GraphicSchema
 	schema: string
+	CasparCgDesignValues?: CasparCgGfxDesignValues[]
 }
 
 export interface GraphicInternal {
@@ -191,7 +201,7 @@ export type CueDefinition =
 	| CueDefinitionUnpairedPilot
 	| CueDefinitionBackgroundLoop
 	| CueDefinitionGraphicDesign
-	| CueDefinitionGraphicSchema
+	| CueDefinitionGfxSchema
 	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
@@ -280,7 +290,7 @@ function parsekg(
 ):
 	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionGraphicDesign
-	| CueDefinitionGraphicSchema
+	| CueDefinitionGfxSchema
 	| CueDefinitionUnpairedTarget {
 	let kgCue: CueDefinitionGraphic<GraphicInternalOrPilot> = {
 		type: CueType.Graphic,
@@ -371,13 +381,16 @@ function parsekg(
 		: undefined
 
 	if (graphicsSchemaConfig) {
-		return literal<CueDefinitionGraphicSchema>({
+		return literal<CueDefinitionGfxSchema>({
 			type: CueType.GraphicSchema,
 			schema: graphicsSchemaConfig.VizTemplate,
 			iNewsCommand: kgCue.iNewsCommand,
 			start: kgCue.start,
 			end: kgCue.end,
-			adlib: kgCue.adlib
+			adlib: kgCue.adlib,
+			CasparCgDesignValues: graphicsSchemaConfig.CasparCgDesignValues
+				? JSON.parse(graphicsSchemaConfig.CasparCgDesignValues)
+				: []
 		})
 	}
 
@@ -955,17 +968,20 @@ function findGraphicDesignConfiguration(
 export function createCueDefinitionGraphicSchema(
 	schema: string,
 	config: TV2ShowStyleConfig
-): CueDefinitionGraphicSchema | undefined {
+): CueDefinitionGfxSchema | undefined {
 	const schemaConfiguration = findGraphicSchemaConfiguration(config, schema)
 	if (!schemaConfiguration) {
 		return undefined
 	}
 
-	return literal<CueDefinitionGraphicSchema>({
+	return literal<CueDefinitionGfxSchema>({
 		type: CueType.GraphicSchema,
 		schema: schemaConfiguration.VizTemplate,
 		iNewsCommand: '',
-		isFromField: true
+		isFromField: true,
+		CasparCgDesignValues: schemaConfiguration.CasparCgDesignValues
+			? JSON.parse(schemaConfiguration.CasparCgDesignValues)
+			: []
 	})
 }
 

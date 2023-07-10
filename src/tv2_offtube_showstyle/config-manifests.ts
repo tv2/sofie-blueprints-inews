@@ -1,5 +1,12 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
-import { DEFAULT_GRAPHICS, getGfxDefaults, getGfxSetupsEntries } from 'tv2-common'
+import {
+	DEFAULT_GRAPHICS,
+	getGfxDefaults,
+	getGfxSetupsEntries,
+	gfxDesignTemplates,
+	gfxSchemaTemplates,
+	gfxShowMapping
+} from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -141,92 +148,6 @@ export const dveStylesManifest: ConfigManifestEntry = {
 		}
 	]
 }
-
-const DESIGN_TABLE_ID = 'GfxDesignTemplates'
-const DESIGN_NAME_COLUMN_ID = 'INewsName'
-
-export const gfxDesignTemplates: ConfigManifestEntry[] = [
-	{
-		id: DESIGN_TABLE_ID,
-		name: 'GFX Design Templates',
-		description: '',
-		type: ConfigManifestEntryType.TABLE,
-		required: true,
-		defaultVal: DEFAULT_GRAPHICS.map((val) => ({ _id: '', ...val })).filter((template) => template.IsDesign),
-		columns: [
-			{
-				id: DESIGN_NAME_COLUMN_ID,
-				name: 'iNews Name',
-				description: 'The name of the design',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 0
-			},
-			{
-				id: 'INewsStyleColumn',
-				name: 'iNews Style Column',
-				description: 'The selected style',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 1
-			},
-			{
-				id: 'VizTemplate',
-				name: 'GFX Template Name',
-				description: 'The name of the design in the HTML package',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: '',
-				rank: 2
-			}
-		]
-	}
-]
-
-const GFX_SCHEMA_TABLE_ID = 'GfxSchemaTemplates'
-const GFX_SCHEMA_NAME_COLUMN_ID = 'GfxSchemaTemplatesName'
-
-export const gfxSchemaTemplates: ConfigManifestEntry[] = [
-	{
-		id: GFX_SCHEMA_TABLE_ID,
-		name: 'GFX Skema Templates',
-		description: 'The values for the Skema and Design combinations',
-		type: ConfigManifestEntryType.TABLE,
-		required: false,
-		defaultVal: [],
-		columns: [
-			{
-				id: GFX_SCHEMA_NAME_COLUMN_ID,
-				name: 'iNews Name',
-				description: 'The name of the design',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 0
-			},
-			{
-				id: 'INewsSkemaColumn',
-				name: 'iNews Skema Column',
-				description: 'The selected skema',
-				type: ConfigManifestEntryType.STRING,
-				required: false,
-				defaultVal: '',
-				rank: 1
-			},
-			{
-				id: 'VizTemplate',
-				name: 'GFX Template Name',
-				description: 'For future asset control',
-				type: ConfigManifestEntryType.STRING,
-				required: true,
-				defaultVal: '',
-				rank: 2
-			}
-		]
-	}
-]
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	{
@@ -583,6 +504,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		]
 	},
 	...gfxSchemaTemplates,
+	gfxShowMapping,
 	...getGfxSetupsEntries([]),
 	getGfxDefaults
 ]

@@ -9,6 +9,7 @@ import {
 	prefixLayers
 } from 'tv2-common'
 import { AbstractLLayer, SwitcherAuxLLayer, SwitcherDveLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
+import { GraphicLLayer } from '../../tv2_afvd_studio/layers'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeCasparLLayer, OfftubeGraphicLLayer, OfftubeSisyfosLLayer } from '../layers'
 
@@ -352,6 +353,14 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		layerName: 'GFX Design',
 		lookahead: LookaheadMode.NONE,
 		previewWhenNotOnAir: false,
+		channel: 3,
+		layer: 111
+	}),
+	[GraphicLLayer.GraphicLLayerSchema]: literal<TSR.MappingCasparCG & BlueprintMapping>({
+		device: TSR.DeviceType.CASPARCG,
+		deviceId: 'caspar01',
+		layerName: 'GFX Skema',
+		lookahead: LookaheadMode.NONE,
 		channel: 3,
 		layer: 111
 	}),

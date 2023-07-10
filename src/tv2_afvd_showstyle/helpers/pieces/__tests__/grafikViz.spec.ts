@@ -482,7 +482,7 @@ describe('grafik piece', () => {
 			enable: {
 				start: 10000
 			},
-			lifespan: PieceLifespan.OutOnShowStyleEnd
+			lifespan: PieceLifespan.OutOnRundownChange
 		})
 		expect(
 			result.pieces[0].content.timelineObjects.find((tlObject) => tlObject.content.deviceType === TSR.DeviceType.VIZMSE)

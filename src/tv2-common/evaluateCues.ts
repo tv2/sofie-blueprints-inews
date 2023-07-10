@@ -13,7 +13,7 @@ import {
 	CueDefinitionClearGrafiks,
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
-	CueDefinitionGraphicSchema,
+	CueDefinitionGfxSchema,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionRobotCamera,
@@ -63,29 +63,23 @@ export interface EvaluateCuesShowstyleOptions {
 	) => EvaluateCueResult
 	EvaluateCueBackgroundLoop?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
-		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionBackgroundLoop,
 		adlib?: boolean,
 		rank?: number
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueGraphicDesign?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
-		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionGraphicDesign,
 		adlib?: boolean,
 		rank?: number
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueGraphicSchema?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
 		pieces: IBlueprintPiece[],
 		partId: string,
-		parsedCue: CueDefinitionGraphicSchema
+		parsedCue: CueDefinitionGfxSchema
 	) => void
 	EvaluateCueRouting?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
@@ -287,15 +281,8 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.GraphicDesign:
 					if (showStyleOptions.EvaluateCueGraphicDesign) {
-						showStyleOptions.EvaluateCueGraphicDesign(
-							context,
-							pieces,
-							adLibPieces,
-							actions,
-							partDefinition.externalId,
-							cue,
-							shouldAdlib,
-							adLibRank
+						result.push(
+							showStyleOptions.EvaluateCueGraphicDesign(context, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 						)
 					}
 					break
@@ -319,15 +306,14 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.BackgroundLoop:
 					if (showStyleOptions.EvaluateCueBackgroundLoop) {
-						showStyleOptions.EvaluateCueBackgroundLoop(
-							context,
-							pieces,
-							adLibPieces,
-							actions,
-							partDefinition.externalId,
-							cue,
-							shouldAdlib,
-							adLibRank
+						result.push(
+							showStyleOptions.EvaluateCueBackgroundLoop(
+								context,
+								partDefinition.externalId,
+								cue,
+								shouldAdlib,
+								adLibRank
+							)
 						)
 					}
 					break

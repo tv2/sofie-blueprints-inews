@@ -233,6 +233,7 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	],
 	GfxDesignTemplates: [
 		{
+			_id: '',
 			INewsName: 'DESIGN_FODBOLD_22',
 			INewsStyleColumn: 'F_22',
 			VizTemplate: 'DESIGN_FODBOLD_22'
@@ -274,13 +275,21 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	GfxSetups: [DEFAULT_GFX_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	GfxSchemaTemplates: [{ GfxSchemaTemplatesName: 'SKEMA_NEWS', VizTemplate: 'NE', INewsSkemaColumn: 'SKEMA_NEWS' }],
+	GfxSchemaTemplates: [
+		{
+			_id: 'SkemaNewsId',
+			GfxSchemaTemplatesName: 'SKEMA_NEWS',
+			VizTemplate: 'NE',
+			INewsSkemaColumn: 'SKEMA_NEWS',
+			CasparCgDesignValues: '[{}]'
+		}
+	],
 	GfxShowMapping: [],
 	GfxDefaults: [
 		{
 			DefaultSetupName: { value: 'SomeId', label: 'SomeProfile' },
-			DefaultDesign: '',
-			DefaultSchema: ''
+			DefaultDesign: { value: '', label: '' },
+			DefaultSchema: { value: 'SkemaNewsId', label: 'SKEMA_NEWS' }
 		}
 	]
 }

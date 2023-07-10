@@ -106,7 +106,7 @@ export abstract class Graphic {
 
 	protected getPieceLifespan(): PieceLifespan {
 		if (IsTargetingWall(this.engine)) {
-			return PieceLifespan.OutOnShowStyleEnd
+			return PieceLifespan.OutOnRundownChange
 		}
 		if (IsTargetingTLF(this.engine)) {
 			return PieceLifespan.WithinPart
