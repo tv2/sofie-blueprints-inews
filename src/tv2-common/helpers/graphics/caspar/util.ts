@@ -1,8 +1,10 @@
 import { TSR } from 'blueprints-integration'
 import {
+	getCasparCgBaselineDesignTimelineObjects,
 	getTimelineLayerForGraphic,
 	joinAssetToFolder,
 	layerToHTMLGraphicSlot,
+	ShowStyleContext,
 	Slots,
 	TV2ShowStyleConfig
 } from 'tv2-common'
@@ -54,8 +56,8 @@ export function getHtmlTemplateContent(
 	}
 }
 
-export function getHtmlGraphicBaseline(config: TV2ShowStyleConfig) {
-	const templateName = getHtmlTemplateName(config)
+export function getHtmlGraphicBaseline(context: ShowStyleContext): TSR.TSRTimelineObj[] {
+	const templateName = getHtmlTemplateName(context.config)
 	const partiallyUpdatableLayerMappings = [
 		SharedGraphicLLayer.GraphicLLayerOverlayIdent,
 		SharedGraphicLLayer.GraphicLLayerOverlayLower,
@@ -67,7 +69,7 @@ export function getHtmlGraphicBaseline(config: TV2ShowStyleConfig) {
 	return [
 		...getSlotBaselineTimelineObjects(templateName, partiallyUpdatableLayerMappings),
 		getCompoundSlotBaselineTimelineObject(templateName, partiallyUpdatableLayerMappings),
-		getDesignBaselineTimelineObject(templateName),
+		...getCasparCgBaselineDesignTimelineObjects(context, templateName),
 		getFullPilotBaselineTimelineObject(templateName)
 	]
 }
@@ -133,29 +135,6 @@ function getCompoundSlotBaselineTimelineObject(
 			data: {
 				display: 'program',
 				slots,
-				partialUpdate: true
-			},
-			useStopCommand: false
-		}
-	}
-}
-
-function getDesignBaselineTimelineObject(templateName: string): TSR.TimelineObjCCGTemplate {
-	return {
-		id: '',
-		enable: {
-			while: '1'
-		},
-		priority: 0,
-		layer: SharedGraphicLLayer.GraphicLLayerDesign,
-		content: {
-			deviceType: TSR.DeviceType.CASPARCG,
-			type: TSR.TimelineContentTypeCasparCg.TEMPLATE,
-			templateType: 'html',
-			name: templateName,
-			data: {
-				display: 'program',
-				design: '',
 				partialUpdate: true
 			},
 			useStopCommand: false

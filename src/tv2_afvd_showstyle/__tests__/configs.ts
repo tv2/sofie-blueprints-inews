@@ -127,7 +127,8 @@ export const defaultStudioConfig: StudioConfig = {
 	AudioBedSettings: {
 		fadeIn: 1000,
 		fadeOut: 1000,
-		volume: 80
+		volume: 80,
+		useAudioFilterSyntax: false
 	},
 	CasparPrerollDuration: 280,
 	GraphicsType: 'VIZ',
@@ -232,8 +233,9 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	],
 	GfxDesignTemplates: [
 		{
+			_id: '',
 			INewsName: 'DESIGN_FODBOLD_22',
-			INewsStyleColumn: '',
+			INewsStyleColumn: 'F_22',
 			VizTemplate: 'DESIGN_FODBOLD_22'
 		}
 	],
@@ -273,13 +275,21 @@ export const defaultShowStyleConfig: GalleryShowStyleConfig = {
 	GfxSetups: [DEFAULT_GFX_SETUP],
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	GfxSchemaTemplates: [],
+	GfxSchemaTemplates: [
+		{
+			_id: 'SkemaNewsId',
+			GfxSchemaTemplatesName: 'SKEMA_NEWS',
+			VizTemplate: 'NE',
+			INewsSkemaColumn: 'SKEMA_NEWS',
+			CasparCgDesignValues: '[{}]'
+		}
+	],
 	GfxShowMapping: [],
 	GfxDefaults: [
 		{
 			DefaultSetupName: { value: 'SomeId', label: 'SomeProfile' },
-			DefaultDesign: '',
-			DefaultSchema: ''
+			DefaultDesign: { value: '', label: '' },
+			DefaultSchema: { value: 'SkemaNewsId', label: 'SKEMA_NEWS' }
 		}
 	]
 }

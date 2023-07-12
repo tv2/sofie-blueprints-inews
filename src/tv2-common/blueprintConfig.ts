@@ -31,9 +31,10 @@ export interface TableConfigItemGfxTemplate {
 }
 
 export interface TableConfigItemGfxDesignTemplate {
+	_id: string
 	INewsName: string
 	INewsStyleColumn: string
-	/** Name of the Viz template trigering design change. For HTML graphics it coresponds to a CSS class. */
+	/** Name of the Viz template triggering design change. For HTML graphics it corresponds to a CSS class. */
 	VizTemplate: string
 }
 
@@ -45,8 +46,8 @@ export interface TableConfigItemGfxShowMapping {
 
 export interface TableConfigItemGfxDefaults {
 	DefaultSetupName: { value: string; label: string }
-	DefaultSchema: string
-	DefaultDesign: string
+	DefaultSchema: { value: string; label: string }
+	DefaultDesign: { value: string; label: string }
 }
 
 export interface TableConfigItemAdLibTransitions {
@@ -54,9 +55,11 @@ export interface TableConfigItemAdLibTransitions {
 }
 
 export interface TableConfigGfxSchema {
-	SchemaName: string
+	_id: string
+	GfxSchemaTemplatesName: string
 	INewsSkemaColumn: string
 	VizTemplate: string
+	CasparCgDesignValues: string
 }
 
 export interface TableConfigGfxSetup {
@@ -65,6 +68,12 @@ export interface TableConfigGfxSetup {
 	HtmlPackageFolder: string
 	OvlShowName?: string
 	FullShowName?: string
+}
+
+export interface CasparCgGfxDesignValues {
+	name: string
+	properties: Record<string, string>
+	backgroundLoop: string
 }
 
 export interface ProcessedStudioConfig {
@@ -149,6 +158,7 @@ export interface TV2StudioConfigBase {
 		fadeIn: number
 		fadeOut: number
 		volume: number
+		useAudioFilterSyntax?: boolean
 	}
 }
 
@@ -179,6 +189,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	LYDConfig: TableConfigItemValue
 	GfxSchemaTemplates: TableConfigGfxSchema[]
 	GfxSetups: TableConfigGfxSetup[]
+	GfxShowMapping: TableConfigItemGfxShowMapping[]
 	GfxDefaults: TableConfigItemGfxDefaults[]
 }
 

@@ -1,49 +1,47 @@
+import { GraphicsContent, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
 import {
-	GraphicsContent,
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	PieceLifespan,
-	TSR,
-	WithTimeline
-} from 'blueprints-integration'
-import { calculateTime, CueDefinitionBackgroundLoop, literal, ShowStyleContext, TV2ShowStyleConfig } from 'tv2-common'
+	calculateTime,
+	CueDefinitionBackgroundLoop,
+	DveLoopGenerator,
+	EvaluateCueResult,
+	literal,
+	ShowStyleContext,
+	TV2ShowStyleConfig
+} from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayer } from 'tv2-constants'
-import { CasparLLayer } from '../../../tv2_afvd_studio/layers'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueBackgroundLoop(
 	context: ShowStyleContext,
-	pieces: IBlueprintPiece[],
-	adlibPieces: IBlueprintAdLibPiece[],
-	_actions: IBlueprintActionManifest[],
 	partId: string,
 	parsedCue: CueDefinitionBackgroundLoop,
 	adlib?: boolean,
 	rank?: number
-) {
+): EvaluateCueResult {
+	const result = new EvaluateCueResult()
 	const start = (parsedCue.start ? calculateTime(parsedCue.start) : 0) ?? 0
 
 	if (parsedCue.target === 'DVE') {
+		const dveLoopGenerator = new DveLoopGenerator() // todo: where to instantiate it?
 		const fileName = parsedCue.backgroundLoop
 		const path = `dve/${fileName}`
 		if (adlib) {
-			adlibPieces.push({
-				_rank: rank || 0,
+			result.adlibPieces.push({
+				_rank: rank ?? 0,
 				externalId: partId,
 				name: fileName,
 				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmDVEBackground,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				lifespan: PieceLifespan.OutOnRundownChange,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName,
 					path,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: dveLoopTimeline(path)
+					timelineObjects: dveLoopGenerator.createDveLoopTimelineObject(fileName)
 				})
 			})
 		} else {
-			pieces.push({
+			result.pieces.push({
 				externalId: partId,
 				name: fileName,
 				enable: {
@@ -51,25 +49,25 @@ export function EvaluateCueBackgroundLoop(
 				},
 				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmDVEBackground,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				lifespan: PieceLifespan.OutOnRundownChange,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName,
 					path,
 					ignoreMediaObjectStatus: true,
-					timelineObjects: dveLoopTimeline(path)
+					timelineObjects: dveLoopGenerator.createDveLoopTimelineObject(fileName)
 				})
 			})
 		}
 	} else {
 		// Full
 		if (adlib) {
-			adlibPieces.push({
-				_rank: rank || 0,
+			result.adlibPieces.push({
+				_rank: rank ?? 0,
 				externalId: partId,
 				name: parsedCue.backgroundLoop,
 				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmFullBackground,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				lifespan: PieceLifespan.OutOnRundownChange,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: parsedCue.backgroundLoop,
 					path: parsedCue.backgroundLoop,
@@ -78,7 +76,7 @@ export function EvaluateCueBackgroundLoop(
 				})
 			})
 		} else {
-			pieces.push({
+			result.pieces.push({
 				externalId: partId,
 				name: parsedCue.backgroundLoop,
 				enable: {
@@ -86,7 +84,7 @@ export function EvaluateCueBackgroundLoop(
 				},
 				outputLayerId: SharedOutputLayer.SEC,
 				sourceLayerId: SourceLayer.PgmFullBackground,
-				lifespan: PieceLifespan.OutOnShowStyleEnd,
+				lifespan: PieceLifespan.OutOnRundownChange,
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: parsedCue.backgroundLoop,
 					path: parsedCue.backgroundLoop,
@@ -96,23 +94,7 @@ export function EvaluateCueBackgroundLoop(
 			})
 		}
 	}
-}
-
-function dveLoopTimeline(path: string): TSR.TSRTimelineObj[] {
-	return [
-		literal<TSR.TimelineObjCCGMedia>({
-			id: '',
-			enable: { start: 0 },
-			priority: 100,
-			layer: CasparLLayer.CasparCGDVELoop,
-			content: {
-				deviceType: TSR.DeviceType.CASPARCG,
-				type: TSR.TimelineContentTypeCasparCg.MEDIA,
-				file: path,
-				loop: true
-			}
-		})
-	]
+	return result
 }
 
 function fullLoopTimeline(config: TV2ShowStyleConfig, parsedCue: CueDefinitionBackgroundLoop): TSR.TSRTimelineObj[] {

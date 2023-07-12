@@ -12,7 +12,7 @@ import {
 	TSR
 } from 'blueprints-integration'
 import {
-	ActionClearGraphics,
+	ActionClearAllGraphics,
 	ActionCommentatorSelectDVE,
 	ActionCommentatorSelectFull,
 	ActionCommentatorSelectJingle,
@@ -57,12 +57,16 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import * as _ from 'underscore'
+import { GfxSchemaGenerator } from '../tv2-common/cues/gfx-schema-generator'
+import { GfxSchemaGeneratorFacade } from '../tv2-common/cues/gfx-schema-generator-facade'
 import { OfftubeBlueprintConfig } from '../tv2_offtube_showstyle/helpers/config'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../tv2_offtube_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_offtube_studio/sisyfosChannels'
 import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { NUMBER_OF_DVE_BOXES } from './content/OfftubeDVEContent'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from './layers'
+
+const gfxSchemaGenerator: GfxSchemaGenerator = GfxSchemaGeneratorFacade.create()
 
 export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
 	const context = new ShowStyleContextImpl<OfftubeBlueprintConfig>(coreContext, QBOX_UNIFORM_CONFIG)
@@ -425,14 +429,14 @@ function getGlobalAdlibActionsOfftube(
 	blueprintActions.push(makeCommentatorSelectFullAction())
 
 	function makeClearGraphicsAltudAction(): IBlueprintActionManifest {
-		const userData: ActionClearGraphics = {
-			type: AdlibActionType.CLEAR_GRAPHICS,
+		const userData: ActionClearAllGraphics = {
+			type: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			sendCommands: false,
 			label: 'GFX Altud'
 		}
 		return {
 			externalId: generateExternalId(context, userData),
-			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			actionId: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			userData,
 			userDataManifest: {},
 			display: {
@@ -583,7 +587,7 @@ function getGlobalAdlibActionsOfftube(
 function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): BlueprintResultBaseline {
 	return {
 		timelineObjects: _.compact([
-			...getGraphicBaseline(context.config),
+			...getGraphicBaseline(context),
 			// Default timeline
 			context.videoSwitcher.getMixEffectTimelineObject({
 				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
@@ -709,23 +713,7 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGMedia>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: OfftubeCasparLLayer.CasparCGDVELoop,
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: 'empty',
-					transitions: {
-						inTransition: {
-							type: TSR.Transition.CUT,
-							duration: CONSTANTS.DefaultClipFadeOut
-						}
-					}
-				}
-			}),
+			...gfxSchemaGenerator.createBaselineTimelineObjectsFromGfxDefaults(context),
 
 			literal<TSR.TimelineObjCasparCGAny>({
 				id: '',

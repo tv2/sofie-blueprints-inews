@@ -1,4 +1,11 @@
-import { literal, TableConfigItemGfxDesignTemplate, TV2ShowStyleConfig, UnparsedCue } from 'tv2-common'
+import {
+	CasparCgGfxDesignValues,
+	literal,
+	TableConfigGfxSchema,
+	TableConfigItemGfxDesignTemplate,
+	TV2ShowStyleConfig,
+	UnparsedCue
+} from 'tv2-common'
 import { CueType, GraphicEngine, SourceType } from 'tv2-constants'
 import {
 	getSourceDefinition,
@@ -109,19 +116,33 @@ export interface CueDefinitionUnpairedPilot extends CueDefinitionBase {
 	engineNumber?: number
 }
 
-export interface CueDefinitionBackgroundLoop extends CueDefinitionBase, CueDefinitionFromLayout {
+export interface CueDefinitionDveBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.BackgroundLoop
-	target: 'FULL' | 'DVE'
+	target: 'DVE'
 	backgroundLoop: string
 }
 
-export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromLayout {
+export interface CueDefinitionFullBackgroundLoop extends CueDefinitionBase, CueDefinitionFromField {
+	type: CueType.BackgroundLoop
+	target: 'FULL'
+	backgroundLoop: string
+}
+
+export type CueDefinitionBackgroundLoop = CueDefinitionDveBackgroundLoop | CueDefinitionFullBackgroundLoop
+
+export interface CueDefinitionGraphicDesign extends CueDefinitionBase, CueDefinitionFromField {
 	type: CueType.GraphicDesign
 	design: string
 }
 
-export interface CueDefinitionFromLayout {
-	isFromLayout?: boolean
+export interface CueDefinitionFromField {
+	isFromField?: boolean
+}
+
+export interface CueDefinitionGfxSchema extends CueDefinitionBase, CueDefinitionFromField {
+	type: CueType.GraphicSchema
+	schema: string
+	CasparCgDesignValues?: CasparCgGfxDesignValues[]
 }
 
 export interface GraphicInternal {
@@ -180,6 +201,7 @@ export type CueDefinition =
 	| CueDefinitionUnpairedPilot
 	| CueDefinitionBackgroundLoop
 	| CueDefinitionGraphicDesign
+	| CueDefinitionGfxSchema
 	| CueDefinitionGraphic<GraphicInternalOrPilot>
 	| CueDefinitionRouting
 	| CueDefinitionPgmClean
@@ -252,8 +274,6 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return parsePgmClean(cue)
 	} else if (/^MINUSKAM\s*=/i.test(cue[0])) {
 		return parseMixMinus(cue)
-	} else if (/^DESIGN_LAYOUT=/i.test(cue[0])) {
-		return parseDesignLayout(cue, config)
 	} else if (/^ROBOT\s*=/i.test(cue[0])) {
 		return parseRobotCue(cue)
 	}
@@ -267,7 +287,11 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 function parsekg(
 	cue: string[],
 	config: TV2ShowStyleConfig
-): CueDefinitionGraphic<GraphicInternalOrPilot> | CueDefinitionGraphicDesign | CueDefinitionUnpairedTarget {
+):
+	| CueDefinitionGraphic<GraphicInternalOrPilot>
+	| CueDefinitionGraphicDesign
+	| CueDefinitionGfxSchema
+	| CueDefinitionUnpairedTarget {
 	let kgCue: CueDefinitionGraphic<GraphicInternalOrPilot> = {
 		type: CueType.Graphic,
 		target: 'OVL',
@@ -313,7 +337,7 @@ function parsekg(
 	let textFields = cue.length - 1
 	if (isTime(cue[cue.length - 1])) {
 		kgCue = { ...kgCue, ...parseTime(cue[cue.length - 1]) }
-	} else if (!cue[cue.length - 1].match(/;[x|\d+].[x|\d+]x/i)) {
+	} else if (!isAdLibTimecode(cue[cue.length - 1])) {
 		textFields += 1
 	} else {
 		kgCue.adlib = true
@@ -347,6 +371,26 @@ function parsekg(
 			start: kgCue.start,
 			end: kgCue.end,
 			adlib: kgCue.adlib
+		})
+	}
+
+	const graphicsSchemaConfig = code
+		? config.showStyle.GfxSchemaTemplates.find(
+				(template) => template.GfxSchemaTemplatesName.toUpperCase() === graphic.template.toUpperCase()
+		  )
+		: undefined
+
+	if (graphicsSchemaConfig) {
+		return literal<CueDefinitionGfxSchema>({
+			type: CueType.GraphicSchema,
+			schema: graphicsSchemaConfig.VizTemplate,
+			iNewsCommand: kgCue.iNewsCommand,
+			start: kgCue.start,
+			end: kgCue.end,
+			adlib: kgCue.adlib,
+			CasparCgDesignValues: graphicsSchemaConfig.CasparCgDesignValues
+				? JSON.parse(graphicsSchemaConfig.CasparCgDesignValues)
+				: []
 		})
 	}
 
@@ -636,12 +680,10 @@ function parseLYD(cue: string[]) {
 		lydCue.variant = command[1]
 	}
 
-	if (cue[1]) {
-		if (isTime(cue[1])) {
-			lydCue = { ...lydCue, ...parseTime(cue[1]) }
-		} else if (cue[1].match(/;[x|\d+].[x|\d+]x/i)) {
-			lydCue.adlib = true
-		}
+	if (cue[1] && isTime(cue[1])) {
+		lydCue = { ...lydCue, ...parseTime(cue[1]) }
+	} else if (isAdLibTimecode(cue[1])) {
+		lydCue.adlib = true
 	}
 
 	return lydCue
@@ -896,10 +938,10 @@ export function parseTime(line: string): Pick<CueDefinitionBase, 'start' | 'end'
 	return retTime
 }
 
-function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefinitionGraphicDesign | undefined {
-	const array = cue[0].split('DESIGN_LAYOUT=')
-	const layout = array[1]
-
+export function createCueDefinitionGraphicDesign(
+	layout: string,
+	config: TV2ShowStyleConfig
+): CueDefinitionGraphicDesign | undefined {
 	const designConfig = findGraphicDesignConfiguration(config, layout)
 
 	if (!designConfig) {
@@ -909,11 +951,8 @@ function parseDesignLayout(cue: string[], config: TV2ShowStyleConfig): CueDefini
 	return literal<CueDefinitionGraphicDesign>({
 		type: CueType.GraphicDesign,
 		design: designConfig.VizTemplate,
-		iNewsCommand: layout,
-		start: {
-			frames: 1
-		},
-		isFromLayout: true
+		iNewsCommand: '',
+		isFromField: true
 	})
 }
 
@@ -926,13 +965,42 @@ function findGraphicDesignConfiguration(
 	)
 }
 
+export function createCueDefinitionGraphicSchema(
+	schema: string,
+	config: TV2ShowStyleConfig
+): CueDefinitionGfxSchema | undefined {
+	const schemaConfiguration = findGraphicSchemaConfiguration(config, schema)
+	if (!schemaConfiguration) {
+		return undefined
+	}
+
+	return literal<CueDefinitionGfxSchema>({
+		type: CueType.GraphicSchema,
+		schema: schemaConfiguration.VizTemplate,
+		iNewsCommand: '',
+		isFromField: true,
+		CasparCgDesignValues: schemaConfiguration.CasparCgDesignValues
+			? JSON.parse(schemaConfiguration.CasparCgDesignValues)
+			: []
+	})
+}
+
+function findGraphicSchemaConfiguration(config: TV2ShowStyleConfig, schema: string): TableConfigGfxSchema | undefined {
+	return config.showStyle.GfxSchemaTemplates.find(
+		(template) => template.INewsSkemaColumn && template.INewsSkemaColumn.toUpperCase() === schema.toUpperCase()
+	)
+}
+
 function parseRobotCue(cue: string[]): CueDefinitionRobotCamera {
 	const presetIdentifier: number = Number(cue[0].match(/\d+/))
-	const time: Pick<CueDefinitionBase, 'start' | 'end'> = cue[1] ? parseTime(cue[1]) : { start: { seconds: 0 } }
+	const isAdLib = isAdLibTimecode(cue[1])
+	const time: Pick<CueDefinitionBase, 'start' | 'end'> =
+		cue[1] && !isAdLib ? parseTime(cue[1]) : { start: { seconds: 0 } }
 	return {
 		type: CueType.RobotCamera,
 		iNewsCommand: 'RobotCamera',
 		presetIdentifier,
+		adlib: isAdLib,
 		...time
 	}
 }
@@ -958,4 +1026,8 @@ export function UnpairedPilotToGraphic(
 		engineNumber: pilotCue.engineNumber,
 		adlib: targetCue?.adlib ?? pilotCue.adlib
 	})
+}
+
+function isAdLibTimecode(timecode: string | undefined): boolean {
+	return !!timecode && /;[x|\d+].[x|\d+]x/i.test(timecode)
 }

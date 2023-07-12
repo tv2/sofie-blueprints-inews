@@ -197,7 +197,7 @@ describe('CreateTiming', () => {
 				enable: {
 					start: 0
 				},
-				lifespan: PieceLifespan.OutOnShowStyleEnd
+				lifespan: PieceLifespan.OutOnRundownChange
 			})
 		)
 	})

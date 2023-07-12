@@ -13,8 +13,8 @@
       "rundownBaseline": false,
       "default": false,
       "x": 1,
-      "y": 7,
-      "width": -15.8,
+      "y": 6.9,
+      "width": -15.3,
       "height": 5,
       "overflowHorizontally": true,
       "showAsTimeline": true,
@@ -42,7 +42,11 @@
         "flow_producer"
       ],
       "toggleOnSingleClick": true,
-      "scale": 0
+      "scale": 1.05,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "s4KkTnsERPNcrkqeD",
@@ -53,12 +57,14 @@
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "url": "http://10.201.76.12:8005/keyboardmap",
-      "x": 1.2,
-      "y": 18,
-      "width": 54.8,
-      "height": 18,
-      "scale": 0.79
+      "x": 1,
+      "y": 21.3,
+      "width": 59.2,
+      "scale": 0.79,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "pyRvtqdtAbFE2gekk",
@@ -71,8 +77,8 @@
       "default": false,
       "x": -1,
       "y": 0,
-      "width": 15.7,
-      "height": 15,
+      "width": 13.5,
+      "height": 18.9,
       "includeClearInRundownBaseline": false,
       "assignHotKeys": false,
       "hide": false,
@@ -85,25 +91,11 @@
       "buttonWidthScale": 1.7,
       "buttonHeightScale": 1.7,
       "toggleOnSingleClick": true,
-      "scale": 0.6
-    },
-    {
-      "_id": "QZ6xdWdFmm5Mu7ZKJ",
-      "type": "filter",
-      "name": "",
-      "currentSegment": false,
-      "displayStyle": "list",
-      "rank": 0,
-      "rundownBaseline": "only",
-      "default": false,
-      "width": 0,
-      "height": 0,
-      "y": -1,
-      "x": -1,
-      "includeClearInRundownBaseline": true,
-      "assignHotKeys": true,
-      "hide": true,
-      "toggleOnSingleClick": true
+      "scale": 0.9,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "j54rMBuuTvufKJ8yp",
@@ -117,17 +109,22 @@
       "hideDuplicates": true,
       "default": false,
       "x": 1,
-      "y": 14,
+      "y": 13.9,
       "sourceLayerIds": [
         "studio0_dve"
       ],
-      "width": -15.8,
+      "width": -15.3,
       "height": 5,
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
       "showAsTimeline": true,
       "includeClearInRundownBaseline": true,
-      "toggleOnSingleClick": true
+      "toggleOnSingleClick": true,
+      "scale": 1.05,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "nmNfZ8azaAAHD7jjT",
@@ -135,7 +132,7 @@
       "name": "ADLIB PANEL: server",
       "currentSegment": false,
       "displayStyle": "buttons",
-      "rank": 0,
+      "rank": 0.3,
       "rundownBaseline": false,
       "showThumbnailsInList": false,
       "hideDuplicates": true,
@@ -147,11 +144,16 @@
       "buttonWidthScale": 1.5,
       "buttonHeightScale": 1.5,
       "y": 0,
-      "width": -15.8,
-      "height": 5,
+      "width": -15.3,
+      "height": 4.9,
       "showAsTimeline": true,
       "includeClearInRundownBaseline": true,
-      "toggleOnSingleClick": true
+      "toggleOnSingleClick": true,
+      "scale": 1.05,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     }
   ],
   "type": "dashboard_layout",

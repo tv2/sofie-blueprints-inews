@@ -1,11 +1,5 @@
 import { IBlueprintConfig, ICommonContext, TableConfigItemValue } from 'blueprints-integration'
-import {
-	findGfxSetup,
-	TableConfigGfxSetup,
-	TableConfigItemGfxDefaults,
-	TableConfigItemGfxShowMapping,
-	TV2ShowstyleBlueprintConfigBase
-} from 'tv2-common'
+import { findGfxSetup, TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import { GalleryStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 
 export interface GalleryTableConfigGfxSetup extends TableConfigGfxSetup {
@@ -22,8 +16,6 @@ export interface GalleryBlueprintConfig extends GalleryStudioConfig {
 export interface GalleryShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
 	GfxSetups: GalleryTableConfigGfxSetup[]
-	GfxShowMapping: TableConfigItemGfxShowMapping[]
-	GfxDefaults: TableConfigItemGfxDefaults[]
 }
 
 export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {

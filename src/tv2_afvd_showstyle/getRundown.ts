@@ -1,15 +1,12 @@
 import {
 	BlueprintResultBaseline,
 	BlueprintResultRundown,
-	GraphicsContent,
 	IBlueprintAdLibPiece,
 	IngestRundown,
 	IShowStyleUserContext,
 	PieceLifespan,
 	PlaylistTimingType,
-	TimelineObjectCoreExt,
-	TSR,
-	WithTimeline
+	TSR
 } from 'blueprints-integration'
 import {
 	CasparPlayerClipLoadingLoop,
@@ -20,7 +17,6 @@ import {
 	findDskJingle,
 	getGraphicBaseline,
 	getMixMinusTimelineObject,
-	GetSisyfosTimelineObjForRemote,
 	GetSisyfosTimelineObjForReplay,
 	literal,
 	MixMinusPriority,
@@ -33,15 +29,10 @@ import {
 	SwitcherType,
 	TransitionStyle
 } from 'tv2-common'
-import {
-	AdlibTags,
-	CONSTANTS,
-	ControlClasses,
-	SharedGraphicLLayer,
-	SharedOutputLayer,
-	SwitcherAuxLLayer
-} from 'tv2-constants'
+import { AdlibTags, CONSTANTS, SharedGraphicLLayer, SharedOutputLayer, SwitcherAuxLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
+import { GfxSchemaGenerator } from '../tv2-common/cues/gfx-schema-generator'
+import { GfxSchemaGeneratorFacade } from '../tv2-common/cues/gfx-schema-generator-facade'
 import { getMixEffectBaseline } from '../tv2_afvd_studio/getBaseline'
 import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
@@ -50,6 +41,8 @@ import { AtemSourceIndex } from '../types/atem'
 import { GlobalAdlibActionsGenerator } from './GlobalAdlibActionsGenerator'
 import { GalleryBlueprintConfig } from './helpers/config'
 import { SourceLayer } from './layers'
+
+const gfxSchemaGenerator: GfxSchemaGenerator = GfxSchemaGeneratorFacade.create()
 
 export function getRundown(coreContext: IShowStyleUserContext, ingestRundown: IngestRundown): BlueprintResultRundown {
 	const context = new ShowStyleContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
@@ -78,12 +71,6 @@ class GlobalAdLibPiecesGenerator {
 		let globalRank = 1000
 
 		this.config.sources.lives
-			.slice(0, 10) // the first x lives to create live-adlibs from
-			.forEach((info) => {
-				adLibPieces.push(...this.makeRemoteAdLibs(info, globalRank++))
-			})
-
-		this.config.sources.lives
 			.slice(0, 10) // the first x lives to create AUX1 (studio) adlibs
 			.forEach((info) => {
 				adLibPieces.push(...this.makeRemoteAuxStudioAdLibs(info, globalRank++))
@@ -108,58 +95,6 @@ class GlobalAdLibPiecesGenerator {
 		return adLibPieces
 	}
 
-	// viz styles and dve backgrounds
-	public makeDesignAdLib(): IBlueprintAdLibPiece {
-		const timelineObjects: TimelineObjectCoreExt[] = [
-			literal<TSR.TimelineObjCCGMedia>({
-				id: '',
-				enable: { start: 0 },
-				priority: 110,
-				layer: CasparLLayer.CasparCGDVELoop,
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: 'dve/BG_LOADER_SC',
-					loop: true
-				}
-			})
-		]
-		// @todo: use GraphicsGenerator
-		if (this.config.studio.GraphicsType === 'VIZ') {
-			timelineObjects.push(
-				literal<TSR.TimelineObjVIZMSEElementInternal>({
-					id: '',
-					enable: { start: 0 },
-					priority: 110,
-					layer: SharedGraphicLLayer.GraphicLLayerDesign,
-					content: {
-						deviceType: TSR.DeviceType.VIZMSE,
-						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
-						templateName: 'BG_LOADER_SC',
-						templateData: [],
-						showName: this.config.selectedGfxSetup.OvlShowName
-					}
-				})
-			)
-		}
-		const adLibPiece: IBlueprintAdLibPiece = {
-			_rank: 301,
-			externalId: 'dve-design-sc',
-			name: 'DVE Design SC',
-			outputLayerId: SharedOutputLayer.SEC,
-			sourceLayerId: SourceLayer.PgmDesign,
-			lifespan: PieceLifespan.OutOnShowStyleEnd,
-			tags: [AdlibTags.ADLIB_DESIGN_STYLE_SC],
-			content: literal<WithTimeline<GraphicsContent>>({
-				fileName: 'BG_LOADER_SC',
-				path: 'BG_LOADER_SC',
-				ignoreMediaObjectStatus: true,
-				timelineObjects
-			})
-		}
-		return adLibPiece
-	}
-
 	private makeEvsAdLib(info: SourceInfo, rank: number, vo: boolean): IBlueprintAdLibPiece<PieceMetaData> {
 		return {
 			externalId: 'delayed',
@@ -173,7 +108,7 @@ class GlobalAdLibPiecesGenerator {
 			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
-					acceptPersistAudio: vo
+					acceptsPersistedAudio: vo
 				}
 			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
@@ -244,45 +179,6 @@ class GlobalAdLibPiecesGenerator {
 		}
 	}
 
-	private makeRemoteAdLibs(info: SourceInfo, rank: number): Array<IBlueprintAdLibPiece<PieceMetaData>> {
-		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
-		const eksternSisyfos = GetSisyfosTimelineObjForRemote(this.config, info)
-		res.push({
-			externalId: 'live',
-			name: `LIVE ${info.id}`,
-			_rank: rank,
-			sourceLayerId: SourceLayer.PgmLive,
-			outputLayerId: SharedOutputLayer.PGM,
-			expectedDuration: 0,
-			lifespan: PieceLifespan.WithinPart,
-			toBeQueued: true,
-			metaData: {
-				sisyfosPersistMetaData: {
-					sisyfosLayers: info.sisyfosLayers ?? [],
-					wantsToPersistAudio: info.wantsToPersistAudio,
-					acceptPersistAudio: info.acceptPersistAudio
-				}
-			},
-			tags: [AdlibTags.ADLIB_QUEUE_NEXT],
-			content: {
-				timelineObjects: [
-					...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
-						enable: { while: '1' },
-						priority: 1,
-						content: {
-							input: info.port,
-							transition: TransitionStyle.CUT
-						},
-						classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
-					}),
-					...eksternSisyfos
-				]
-			}
-		})
-
-		return res
-	}
-
 	// aux adlibs
 	private makeRemoteAuxStudioAdLibs(info: SourceInfo, rank: number): Array<IBlueprintAdLibPiece<PieceMetaData>> {
 		const res: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
@@ -298,7 +194,7 @@ class GlobalAdLibPiecesGenerator {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
 					wantsToPersistAudio: info.wantsToPersistAudio,
-					acceptPersistAudio: info.acceptPersistAudio
+					acceptsPersistedAudio: info.acceptPersistAudio
 				}
 			},
 			tags: [AdlibTags.ADLIB_TO_STUDIO_SCREEN_AUX],
@@ -475,7 +371,7 @@ class GlobalAdLibPiecesGenerator {
 			name: 'Stop Soundplayer',
 			_rank: 700,
 			sourceLayerId: SourceLayer.PgmAudioBed,
-			outputLayerId: 'musik',
+			outputLayerId: SharedOutputLayer.MUSIK,
 			expectedDuration: 1000,
 			lifespan: PieceLifespan.WithinPart,
 			tags: [AdlibTags.ADLIB_STOP_AUDIO_BED],
@@ -504,10 +400,12 @@ class GlobalAdLibPiecesGenerator {
 function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): BlueprintResultBaseline {
 	const jingleDsk = findDskJingle(context.config)
 	const fullGfxDsk = findDskFullGfx(context.config)
+	const selectedGfxSetup = context.config.selectedGfxSetup
 
 	return {
 		timelineObjects: _.compact([
-			...getGraphicBaseline(context.config),
+			...getGraphicBaseline(context),
+			...gfxSchemaGenerator.createBaselineTimelineObjectsFromGfxDefaults(context),
 			// Default timeline
 			...getMixEffectBaseline(context, context.config.studio.SwitcherSource.Default),
 
@@ -676,23 +574,6 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 					}
 				}
 			}),
-			literal<TSR.TimelineObjCCGMedia>({
-				id: '',
-				enable: { while: '1' },
-				priority: 0,
-				layer: CasparLLayer.CasparCGDVELoop,
-				content: {
-					deviceType: TSR.DeviceType.CASPARCG,
-					type: TSR.TimelineContentTypeCasparCg.MEDIA,
-					file: 'empty',
-					transitions: {
-						inTransition: {
-							type: TSR.Transition.CUT,
-							duration: CONSTANTS.DefaultClipFadeOut
-						}
-					}
-				}
-			}),
 			literal<TSR.TimelineObjCCGRoute>({
 				id: '',
 				enable: { while: 1 },
@@ -782,6 +663,26 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 					concept: context.config.selectedGfxSetup.VcpConcept
 				}
 			})
-		])
+		]),
+		expectedPlayoutItems: [
+			{
+				deviceSubType: TSR.DeviceType.VIZMSE,
+				content: {
+					templateName: 'OUT_TEMA_H',
+					channel: 'OVL1',
+					templateData: [],
+					showName: selectedGfxSetup.OvlShowName
+				}
+			},
+			{
+				deviceSubType: TSR.DeviceType.VIZMSE,
+				content: {
+					templateName: 'altud',
+					channel: 'OVL1',
+					templateData: [],
+					showName: selectedGfxSetup.OvlShowName
+				}
+			}
+		]
 	}
 }

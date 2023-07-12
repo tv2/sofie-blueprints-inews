@@ -13,6 +13,7 @@ import {
 	CueDefinitionClearGrafiks,
 	CueDefinitionDVE,
 	CueDefinitionEkstern,
+	CueDefinitionGfxSchema,
 	CueDefinitionJingle,
 	CueDefinitionLYD,
 	CueDefinitionRobotCamera,
@@ -20,6 +21,7 @@ import {
 	IsTargetingFull,
 	IsTargetingOVL,
 	PartDefinition,
+	PieceMetaData,
 	ShowStyleContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
@@ -40,8 +42,8 @@ export interface Adlib {
 }
 
 export class EvaluateCueResult {
-	public readonly pieces: IBlueprintPiece[] = []
-	public readonly adlibPieces: IBlueprintAdLibPiece[] = []
+	public readonly pieces: Array<IBlueprintPiece<PieceMetaData>> = []
+	public readonly adlibPieces: Array<IBlueprintAdLibPiece<PieceMetaData>> = []
 	public readonly actions: IBlueprintActionManifest[] = []
 
 	public push(source: EvaluateCueResult): EvaluateCueResult {
@@ -61,23 +63,23 @@ export interface EvaluateCuesShowstyleOptions {
 	) => EvaluateCueResult
 	EvaluateCueBackgroundLoop?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
-		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionBackgroundLoop,
 		adlib?: boolean,
 		rank?: number
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueGraphicDesign?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
-		adlibPieces: IBlueprintAdLibPiece[],
-		actions: IBlueprintActionManifest[],
 		partId: string,
 		parsedCue: CueDefinitionGraphicDesign,
 		adlib?: boolean,
 		rank?: number
+	) => EvaluateCueResult
+	EvaluateCueGraphicSchema?: (
+		context: ShowStyleContext<TV2ShowStyleConfig>,
+		pieces: IBlueprintPiece[],
+		partId: string,
+		parsedCue: CueDefinitionGfxSchema
 	) => void
 	EvaluateCueRouting?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
@@ -279,16 +281,14 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.GraphicDesign:
 					if (showStyleOptions.EvaluateCueGraphicDesign) {
-						showStyleOptions.EvaluateCueGraphicDesign(
-							context,
-							pieces,
-							adLibPieces,
-							actions,
-							partDefinition.externalId,
-							cue,
-							shouldAdlib,
-							adLibRank
+						result.push(
+							showStyleOptions.EvaluateCueGraphicDesign(context, partDefinition.externalId, cue, shouldAdlib, adLibRank)
 						)
+					}
+					break
+				case CueType.GraphicSchema:
+					if (showStyleOptions.EvaluateCueGraphicSchema) {
+						showStyleOptions.EvaluateCueGraphicSchema(context, pieces, partDefinition.externalId, cue)
 					}
 					break
 				case CueType.ClearGrafiks:
@@ -306,15 +306,14 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.BackgroundLoop:
 					if (showStyleOptions.EvaluateCueBackgroundLoop) {
-						showStyleOptions.EvaluateCueBackgroundLoop(
-							context,
-							pieces,
-							adLibPieces,
-							actions,
-							partDefinition.externalId,
-							cue,
-							shouldAdlib,
-							adLibRank
+						result.push(
+							showStyleOptions.EvaluateCueBackgroundLoop(
+								context,
+								partDefinition.externalId,
+								cue,
+								shouldAdlib,
+								adLibRank
+							)
 						)
 					}
 					break
@@ -395,17 +394,6 @@ export async function EvaluateCuesBase(
 								}
 							})
 						}
-					} else if (obj.content.type === TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS) {
-						const o = obj as TSR.TimelineObjVIZMSEClearAllElements
-						piece.expectedPlayoutItems.push({
-							deviceSubType: TSR.DeviceType.VIZMSE,
-							content: {
-								templateName: 'altud',
-								channel: 'OVL1',
-								templateData: [],
-								showName: o.content.showName
-							}
-						})
 					}
 				}
 			})
