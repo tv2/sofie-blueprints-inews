@@ -3,34 +3,33 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	CreateTimingEnable,
 	CueDefinitionLYD,
+	getTimeFromFrames,
+	getTimingEnable,
 	joinAssetToFolder,
 	literal,
 	PartDefinition,
-	TimeFromFrames
+	ShowStyleContext
 } from 'tv2-common'
 import {
 	AbstractLLayer,
 	AdlibTags,
 	ControlClasses,
 	SharedCasparLLayer,
-	SharedOutputLayers,
+	SharedOutputLayer,
 	SharedSisyfosLLayer,
-	SharedSourceLayers
+	SharedSourceLayer
 } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { TV2ShowStyleConfig } from '../blueprintConfig'
 
 export function EvaluateLYD(
-	context: IShowStyleUserContext,
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -39,14 +38,14 @@ export function EvaluateLYD(
 	adlib?: boolean,
 	rank?: number
 ) {
-	const conf = config.showStyle.LYDConfig.find(lyd =>
+	const conf = context.config.showStyle.LYDConfig.find((lyd) =>
 		lyd.INewsName ? lyd.INewsName.toString().toUpperCase() === parsedCue.variant.toUpperCase() : false
 	)
 	const stop = !!parsedCue.variant.match(/^[^_]*STOP[^_]*$/i) // TODO: STOP 1 / STOP 2 etc.
 	const fade = parsedCue.variant.match(/FADE ?(\d+)/i)
 
 	if (!conf && !stop && !fade) {
-		context.notifyUserWarning(`LYD ${parsedCue.variant} not configured`)
+		context.core.notifyUserWarning(`LYD ${parsedCue.variant} not configured`)
 		return
 	}
 
@@ -63,15 +62,15 @@ export function EvaluateLYD(
 			_rank: rank || 0,
 			externalId: part.externalId,
 			name: parsedCue.variant,
-			outputLayerId: SharedOutputLayers.MUSIK,
-			sourceLayerId: SharedSourceLayers.PgmAudioBed,
+			outputLayerId: SharedOutputLayer.MUSIK,
+			sourceLayerId: SharedSourceLayer.PgmAudioBed,
 			lifespan,
 			expectedDuration: stop
 				? 2000
 				: fade
-				? Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
-				: CreateTimingEnable(parsedCue).enable.duration ?? undefined,
-			content: LydContent(config, file, lydType, fadeIn, fadeOut),
+				? Math.max(1000, fadeIn ? getTimeFromFrames(fadeIn) : 0)
+				: getTimingEnable(parsedCue).enable.duration ?? undefined,
+			content: LydContent(context.config, file, lydType, fadeIn, fadeOut),
 			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 		})
 	} else {
@@ -79,25 +78,25 @@ export function EvaluateLYD(
 			externalId: part.externalId,
 			name: parsedCue.variant,
 			...(stop
-				? { enable: { start: CreateTimingEnable(parsedCue).enable.start, duration: 2000 } }
+				? { enable: { start: getTimingEnable(parsedCue).enable.start, duration: 2000 } }
 				: fade
 				? {
 						enable: {
-							start: CreateTimingEnable(parsedCue).enable.start,
-							duration: Math.max(1000, fadeIn ? TimeFromFrames(fadeIn) : 0)
+							start: getTimingEnable(parsedCue).enable.start,
+							duration: Math.max(1000, fadeIn ? getTimeFromFrames(fadeIn) : 0)
 						}
 				  }
-				: CreateTimingEnable(parsedCue)),
-			outputLayerId: SharedOutputLayers.MUSIK,
-			sourceLayerId: SharedSourceLayers.PgmAudioBed,
+				: getTimingEnable(parsedCue)),
+			outputLayerId: SharedOutputLayer.MUSIK,
+			sourceLayerId: SharedSourceLayer.PgmAudioBed,
 			lifespan,
-			content: LydContent(config, file, lydType, fadeIn, fadeOut)
+			content: LydContent(context.config, file, lydType, fadeIn, fadeOut)
 		})
 	}
 }
 
 function LydContent(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	file: string,
 	lydType: 'bed' | 'stop' | 'fade',
 	fadeIn?: number,
@@ -149,17 +148,17 @@ function LydContent(
 							type: TSR.Transition.MIX,
 							easing: TSR.Ease.LINEAR,
 							direction: TSR.Direction.LEFT,
-							duration: TimeFromFrames(fadeIn ?? config.studio.AudioBedSettings.fadeIn ?? 0)
+							duration: getTimeFromFrames(fadeIn ?? config.studio.AudioBedSettings.fadeIn ?? 0)
 						},
 						outTransition: {
 							type: TSR.Transition.MIX,
 							easing: TSR.Ease.LINEAR,
 							direction: TSR.Direction.LEFT,
-							duration: TimeFromFrames(fadeOut ?? config.studio.AudioBedSettings.fadeOut ?? 0)
+							duration: getTimeFromFrames(fadeOut ?? config.studio.AudioBedSettings.fadeOut ?? 0)
 						}
 					}
 				},
-				classes: [ControlClasses.LYDOnAir]
+				classes: [ControlClasses.LYD_ON_AIR]
 			}),
 			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
@@ -183,10 +182,10 @@ export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {
 		literal<TSR.TimelineObjAbstractAny>({
 			id: `${studio}_lyd_baseline`,
 			enable: {
-				while: `!.${ControlClasses.LYDOnAir}`
+				while: `!.${ControlClasses.LYD_ON_AIR}`
 			},
 			priority: 0,
-			layer: AbstractLLayer.AudioBedBaseline,
+			layer: AbstractLLayer.AUDIO_BED_BASELINE,
 			content: {
 				deviceType: TSR.DeviceType.ABSTRACT
 			}
@@ -195,7 +194,7 @@ export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {
 		literal<TSR.TimelineObjCCGMedia>({
 			id: '',
 			// Q: Why start 10s? A: It needs to be longer than the longest fade out, a 10s fade out is probably more than we will ever use.
-			enable: { start: `#${studio}_lyd_baseline.start + 10000`, end: `.${ControlClasses.LYDOnAir}` },
+			enable: { start: `#${studio}_lyd_baseline.start + 10000`, end: `.${ControlClasses.LYD_ON_AIR}` },
 			priority: 0,
 			layer: SharedCasparLLayer.CasparCGLYD,
 			content: {

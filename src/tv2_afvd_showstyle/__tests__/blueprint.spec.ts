@@ -1,7 +1,7 @@
 import { BlueprintResultSegment, IBlueprintActionManifestDisplayContent, IngestSegment } from 'blueprints-integration'
 import { INewsStory, literal, UnparsedCue } from 'tv2-common'
-import { SharedSourceLayers } from 'tv2-constants'
-import { makeMockAFVDContext, SegmentUserContext } from '../../__mocks__/context'
+import { SharedSourceLayer } from 'tv2-constants'
+import { makeMockCoreGalleryContext, SegmentUserContextMock } from '../../__mocks__/context'
 import { SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { getSegment } from '../getSegment'
 import { SourceLayer } from '../layers'
@@ -37,19 +37,19 @@ function makeIngestSegment(cues: UnparsedCue[], body: string) {
 	})
 }
 
-function expectNotesToBe(context: SegmentUserContext, notes: string[]) {
-	expect(context.getNotes().map(msg => msg.message)).toEqual(notes)
+function expectNotesToBe(context: SegmentUserContextMock, notes: string[]) {
+	expect(context.getNotes().map((msg) => msg.message)).toEqual(notes)
 }
 
 function expectAllPartsToBeValid(result: BlueprintResultSegment) {
-	const invalid = result.parts.filter(part => part.part.invalid === true)
+	const invalid = result.parts.filter((part) => part.part.invalid === true)
 	expect(invalid).toHaveLength(0)
 }
 
 describe('AFVD Blueprint', () => {
 	it('Accepts KAM CS 3', async () => {
 		const ingestSegment = makeIngestSegment([], `\r\n<pi>Kam CS 3</pi>\r\n`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -59,13 +59,13 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(1)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmJingle])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle])
 		expect(kamPart.pieces[0].name).toEqual('CS 3 (JINGLE)')
 	})
 
 	it('Accepts KAM CS3', async () => {
 		const ingestSegment = makeIngestSegment([], `\r\n<pi>Kam CS3</pi>\r\n`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -75,7 +75,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(1)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmJingle])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle])
 		expect(kamPart.pieces[0].name).toEqual('CS 3 (JINGLE)')
 	})
 
@@ -92,7 +92,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -102,7 +102,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 	})
@@ -112,7 +112,7 @@ describe('AFVD Blueprint', () => {
 			[['GRAFIK=FULL']],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue'])
 		expect(result.segment.isHidden).toBe(false)
@@ -121,7 +121,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -144,7 +144,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -154,23 +154,23 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
 		expect(fullPart.pieces).toHaveLength(2)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmPilot,
-			SharedSourceLayers.SelectedAdlibGraphicsFull
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmPilot,
+			SharedSourceLayer.SelectedAdlibGraphicsFull
 		])
 		expect(fullPart.adLibPieces).toHaveLength(0)
 		expect(fullPart.actions).toHaveLength(1)
 		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
-			SharedSourceLayers.PgmPilot
+			SharedSourceLayer.PgmPilot
 		)
 	})
 
@@ -189,7 +189,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue'])
 		expect(result.segment.isHidden).toBe(false)
@@ -198,7 +198,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -229,7 +229,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['Cannot create overlay graphic with FULL'])
 		expect(result.segment.isHidden).toBe(false)
@@ -239,7 +239,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -251,11 +251,11 @@ describe('AFVD Blueprint', () => {
 		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
-			SharedSourceLayers.PgmPilot
+			SharedSourceLayer.PgmPilot
 		)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmPilot,
-			SharedSourceLayers.SelectedAdlibGraphicsFull
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmPilot,
+			SharedSourceLayer.SelectedAdlibGraphicsFull
 		])
 	})
 
@@ -281,7 +281,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext({ PreventOverlayWithFull: false })
+		const context = makeMockCoreGalleryContext({ studioConfig: { PreventOverlayWithFull: false } })
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -291,7 +291,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -303,12 +303,12 @@ describe('AFVD Blueprint', () => {
 		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
-			SharedSourceLayers.PgmPilot
+			SharedSourceLayer.PgmPilot
 		)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmPilot,
-			SharedSourceLayers.SelectedAdlibGraphicsFull,
-			SharedSourceLayers.PgmPilotOverlay
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmPilot,
+			SharedSourceLayer.SelectedAdlibGraphicsFull,
+			SharedSourceLayer.PgmPilotOverlay
 		])
 	})
 
@@ -327,7 +327,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -337,16 +337,16 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
 		const fullPart = result.parts[1]
 		expect(fullPart).toBeTruthy()
 		expect(fullPart.pieces).toHaveLength(2)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmPilot,
-			SharedSourceLayers.SelectedAdlibGraphicsFull
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmPilot,
+			SharedSourceLayer.SelectedAdlibGraphicsFull
 		])
 		expect(fullPart.adLibPieces).toHaveLength(0)
 		expect(fullPart.actions).toHaveLength(1)
@@ -354,7 +354,7 @@ describe('AFVD Blueprint', () => {
 		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
-			SharedSourceLayers.PgmPilot
+			SharedSourceLayer.PgmPilot
 		)
 	})
 
@@ -373,7 +373,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -382,7 +382,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -409,7 +409,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -418,7 +418,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -444,7 +444,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n<pi>Kam 2</pi>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after GRAFIK cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -453,7 +453,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart1.adLibPieces).toHaveLength(0)
 		expect(kamPart1.actions).toHaveLength(0)
 
@@ -467,7 +467,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart2 = result.parts[2]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(1)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam])
+		expect(kamPart2.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam])
 		expect(kamPart2.adLibPieces).toHaveLength(0)
 		expect(kamPart2.actions).toHaveLength(0)
 	})
@@ -486,7 +486,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -496,10 +496,10 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(3)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmCam,
-			SharedSourceLayers.PgmPilotOverlay,
-			SharedSourceLayers.PgmScript
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmCam,
+			SharedSourceLayer.PgmPilotOverlay,
+			SharedSourceLayer.PgmScript
 		])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
@@ -519,7 +519,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -529,10 +529,10 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(3)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmCam,
-			SharedSourceLayers.WallGraphics,
-			SharedSourceLayers.PgmScript
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmCam,
+			SharedSourceLayer.WallGraphics,
+			SharedSourceLayer.PgmScript
 		])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
@@ -552,7 +552,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<pi>Kam 1</pi>\r\n<p>Some script</p>\r\n<p><a idref="0"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -562,7 +562,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart = result.parts[0]
 		expect(kamPart).toBeTruthy()
 		expect(kamPart.pieces).toHaveLength(2)
-		expect(kamPart.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 		expect(kamPart.adLibPieces).toHaveLength(0)
 		expect(kamPart.actions).toHaveLength(0)
 
@@ -574,11 +574,11 @@ describe('AFVD Blueprint', () => {
 		const fullAdlibAction = fullPart.actions[0]
 		expect(fullAdlibAction).toBeTruthy()
 		expect((fullAdlibAction.display as IBlueprintActionManifestDisplayContent).sourceLayerId).toBe(
-			SharedSourceLayers.PgmPilot
+			SharedSourceLayer.PgmPilot
 		)
-		expect(fullPart.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmPilot,
-			SharedSourceLayers.SelectedAdlibGraphicsFull
+		expect(fullPart.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmPilot,
+			SharedSourceLayer.SelectedAdlibGraphicsFull
 		])
 	})
 
@@ -597,7 +597,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -607,18 +607,18 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(3)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmCam,
-			SharedSourceLayers.WallGraphics,
-			SharedSourceLayers.PgmScript
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmCam,
+			SharedSourceLayer.WallGraphics,
+			SharedSourceLayer.PgmScript
 		])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmCam,
-			SharedSourceLayers.WallGraphics
+		expect(kamPart2.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmCam,
+			SharedSourceLayer.WallGraphics
 		])
 	})
 
@@ -630,7 +630,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue'])
 		expect(result.segment.isHidden).toBe(false)
@@ -640,12 +640,12 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 	})
 
 	it('Shows warning for missing wall graphic with MOSART=L', async () => {
@@ -663,7 +663,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue'])
 		expect(result.segment.isHidden).toBe(false)
@@ -673,18 +673,18 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(3)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmCam,
-			SharedSourceLayers.PgmPilotOverlay,
-			SharedSourceLayers.PgmScript
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmCam,
+			SharedSourceLayer.PgmPilotOverlay,
+			SharedSourceLayer.PgmScript
 		])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmCam,
-			SharedSourceLayers.WallGraphics
+		expect(kamPart2.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmCam,
+			SharedSourceLayer.WallGraphics
 		])
 	})
 
@@ -703,7 +703,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>Kam 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p>Some script</p>\r\n<p><pi>Kam 2</pi></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, ['No graphic found after SS cue', 'Graphic found without target engine'])
 		expect(result.segment.isHidden).toBe(false)
@@ -713,14 +713,14 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmCam, SharedSourceLayers.PgmScript])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmCam, SharedSourceLayer.PgmScript])
 
 		const kamPart2 = result.parts[1]
 		expect(kamPart2).toBeTruthy()
 		expect(kamPart2.pieces).toHaveLength(2)
-		expect(kamPart2.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmCam,
-			SharedSourceLayers.WallGraphics
+		expect(kamPart2.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmCam,
+			SharedSourceLayer.WallGraphics
 		])
 	})
 
@@ -733,7 +733,7 @@ describe('AFVD Blueprint', () => {
 			],
 			`\r\n<p><pi>KAM 1</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n<p><a idref="2"></a></p>\r\n<p>Some script</p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -743,18 +743,18 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(5)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmCam,
-			SharedSourceLayers.PgmDesign,
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmCam,
+			SharedSourceLayer.PgmDesign,
 			SourceLayer.PgmDVEBackground,
 			SourceLayer.PgmFullBackground,
-			SharedSourceLayers.PgmScript
+			SharedSourceLayer.PgmScript
 		])
 	})
 
 	it('Creates Live1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -764,12 +764,12 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(1)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
+		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
 	})
 
 	it('Creates Live 1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -779,12 +779,12 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(1)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
+		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
 	})
 
 	it('Creates Feed1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=FEED1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -794,12 +794,12 @@ describe('AFVD Blueprint', () => {
 		const feedPart1 = result.parts[0]
 		expect(feedPart1).toBeTruthy()
 		expect(feedPart1.pieces).toHaveLength(1)
-		expect(feedPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
+		expect(feedPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
 	})
 
 	it('Creates Feed 1', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=FEED 1']], `\r\n<p><a idref="0"></a></p>\r\n<p>`)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expect(result.segment.isHidden).toBe(false)
@@ -809,7 +809,7 @@ describe('AFVD Blueprint', () => {
 		const feedPart1 = result.parts[0]
 		expect(feedPart1).toBeTruthy()
 		expect(feedPart1.pieces).toHaveLength(1)
-		expect(feedPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmLive])
+		expect(feedPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmLive])
 	})
 
 	it('Creates invalid part for EKSTERN=LIVE', async () => {
@@ -817,7 +817,7 @@ describe('AFVD Blueprint', () => {
 			[['EKSTERN=LIVE'], ['#kg direkte ODDER', ';0.00']],
 			`\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n<p><a idref="1"></a></p>\r\n`
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 
 		expectNotesToBe(context, ['EKSTERN source is not valid: "LIVE"'])
@@ -828,7 +828,7 @@ describe('AFVD Blueprint', () => {
 
 	it('Creates effekt for KAM 1 EFFEKT 1', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 EFFEKT 1</pi></p>\r\n')
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
@@ -838,13 +838,13 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmJingle, SharedSourceLayers.PgmCam])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmCam])
 		expect(kamPart1.pieces[0].name).toBe('EFFEKT 1')
 	})
 
 	it('Creates mix for KAM 1 MIX 5', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 MIX 5</pi></p>\r\n')
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
@@ -854,7 +854,7 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map(p => p.sourceLayerId)).toEqual([SharedSourceLayers.PgmJingle, SharedSourceLayers.PgmCam])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmCam])
 		expect(kamPart1.pieces[0].name).toBe('MIX 5')
 	})
 
@@ -863,7 +863,7 @@ describe('AFVD Blueprint', () => {
 			[['EKSTERN=LIVE 1 EFFEKT 1']],
 			'\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
@@ -873,9 +873,9 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(2)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmJingle,
-			SharedSourceLayers.PgmLive
+		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmJingle,
+			SharedSourceLayer.PgmLive
 		])
 		expect(livePart1.pieces[0].name).toBe('EFFEKT 1')
 	})
@@ -885,7 +885,7 @@ describe('AFVD Blueprint', () => {
 			[['EKSTERN=LIVE 1 MIX 10']],
 			'\r\n<p><pi>***LIVE***</pi></p>\r\n<p><a idref="0"></a></p>\r\n'
 		)
-		const context = makeMockAFVDContext()
+		const context = makeMockCoreGalleryContext()
 		const result = await getSegment(context, ingestSegment)
 		expectNotesToBe(context, [])
 		expectAllPartsToBeValid(result)
@@ -895,119 +895,129 @@ describe('AFVD Blueprint', () => {
 		const livePart1 = result.parts[0]
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(2)
-		expect(livePart1.pieces.map(p => p.sourceLayerId)).toEqual([
-			SharedSourceLayers.PgmJingle,
-			SharedSourceLayers.PgmLive
+		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmJingle,
+			SharedSourceLayer.PgmLive
 		])
 		expect(livePart1.pieces[0].name).toBe('MIX 10')
 	})
 
 	it('Enables studio mics for LIVE when useStudioMics is enabled', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1']], '\r\n<p><a idref="0"></a></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesRM: [
-				{
-					SourceName: '1',
-					AtemSource: 10,
-					SisyfosLayers: [],
-					StudioMics: true,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesRM: [
+					{
+						SourceName: '1',
+						SwitcherSource: 10,
+						SisyfosLayers: [],
+						StudioMics: true,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeDefined()
 	})
 
 	it('Does not enable studio mics for LIVE when useStudioMics is disabled', async () => {
 		const ingestSegment = makeIngestSegment([['EKSTERN=LIVE 1']], '\r\n<p><a idref="0"></a></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesRM: [
-				{
-					SourceName: '1',
-					AtemSource: 10,
-					SisyfosLayers: [],
-					StudioMics: false,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesRM: [
+					{
+						SourceName: '1',
+						SwitcherSource: 10,
+						SisyfosLayers: [],
+						StudioMics: false,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeUndefined()
 	})
 
 	it('Enables studio mics for KAM when useStudioMics is enabled', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1</pi></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesCam: [
-				{
-					SourceName: '1',
-					AtemSource: 1,
-					SisyfosLayers: [],
-					StudioMics: true,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesCam: [
+					{
+						SourceName: '1',
+						SwitcherSource: 1,
+						SisyfosLayers: [],
+						StudioMics: true,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeDefined()
 	})
 
 	it('Does not enable studio mics for KAM minus mic when useStudioMics is enabled', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1 minus mic</pi></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesCam: [
-				{
-					SourceName: '1',
-					AtemSource: 1,
-					SisyfosLayers: [],
-					StudioMics: true,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesCam: [
+					{
+						SourceName: '1',
+						SwitcherSource: 1,
+						SisyfosLayers: [],
+						StudioMics: true,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeUndefined()
 	})
 
 	it('Does not enable studio mics for KAM when useStudioMics is disabled', async () => {
 		const ingestSegment = makeIngestSegment([], '\r\n<p><pi>KAM 1</pi></p>\r\n')
-		const context = makeMockAFVDContext({
-			SourcesCam: [
-				{
-					SourceName: '1',
-					AtemSource: 1,
-					SisyfosLayers: [],
-					StudioMics: false,
-					WantsToPersistAudio: false
-				}
-			]
+		const context = makeMockCoreGalleryContext({
+			studioConfig: {
+				SourcesCam: [
+					{
+						SourceName: '1',
+						SwitcherSource: 1,
+						SisyfosLayers: [],
+						StudioMics: false,
+						WantsToPersistAudio: false
+					}
+				]
+			}
 		})
 		const result = await getSegment(context, ingestSegment)
 		const livePart = result.parts[0]
 		const livePiece = livePart.pieces[0]
 		const studioMicsObject = livePiece.content.timelineObjects.find(
-			t => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
+			(t) => t.layer === SisyfosLLAyer.SisyfosGroupStudioMics
 		)
 		expect(studioMicsObject).toBeUndefined()
 	})

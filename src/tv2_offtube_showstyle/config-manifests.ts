@@ -1,5 +1,5 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
-import { DEFAULT_GRAPHICS, getGraphicsSetupsEntries } from 'tv2-common'
+import { DEFAULT_GRAPHICS, getGfxDefaults, getGfxSetupsEntries } from 'tv2-common'
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
@@ -152,7 +152,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 		description: '',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
-		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => template.IsDesign),
+		defaultVal: DEFAULT_GRAPHICS.map((val) => ({ _id: '', ...val })).filter((template) => template.IsDesign),
 		columns: [
 			{
 				id: DESIGN_NAME_COLUMN_ID,
@@ -247,25 +247,13 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 	},
 	dveStylesManifest,
 	{
-		/*
-		Graphic template setup								
-		Grafik template (viz)	
-		Source layer
-		Layer mapping
-		inews code	
-		inews name	
-		destination	default out (default, S, B, O)	
-		var 1 name	
-		var 2 name 	
-		note
-		*/
-		id: 'GFXTemplates',
+		id: 'GfxTemplates',
 		name: 'GFX Templates',
 		description:
 			'This table can contain info in two ways. Things marked (**) are always required. If you want to do the mapping from iNews-code, then all (*)-elements are also required. GFX Template Name is what the graphic is called in the HTML package. Source layer is the ID of the Sofie Source layer in the UI (i.e. "studio0_graphicsTema"). Layer mapping is the Sofie studio layer mapping (i.e "viz_layer_tema").  iNews command can be something like "KG=", then iNews Name is the thing that follows in iNews i.e. "ident_nyhederne"',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
-		defaultVal: DEFAULT_GRAPHICS.map(val => ({ _id: '', ...val })).filter(template => !template.IsDesign),
+		defaultVal: DEFAULT_GRAPHICS.map((val) => ({ _id: '', ...val })).filter((template) => !template.IsDesign),
 		columns: [
 			{
 				id: 'INewsCode',
@@ -595,5 +583,6 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		]
 	},
 	...gfxSchemaTemplates,
-	...getGraphicsSetupsEntries([])
+	...getGfxSetupsEntries([]),
+	getGfxDefaults
 ]

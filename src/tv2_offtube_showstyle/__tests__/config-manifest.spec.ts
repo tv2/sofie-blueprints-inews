@@ -4,7 +4,7 @@ import { OfftubeShowStyleConfig } from '../helpers/config'
 
 const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	DVEStyles: [],
-	GFXTemplates: [],
+	GfxTemplates: [],
 	GfxDesignTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
@@ -15,13 +15,13 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	ShowstyleTransition: 'CUT',
 	MakeAdlibsForFulls: true,
 	GfxSchemaTemplates: [],
-	GraphicsSetups: [],
-	SelectedGraphicsSetupName: ''
+	GfxSetups: [],
+	GfxDefaults: []
 }
 
 describe('Config Manifest', () => {
 	test('Exposed ShowStyle Keys', () => {
-		const showStyleManifestKeys = _.map(showStyleConfigManifest, e => e.id)
+		const showStyleManifestKeys = _.map(showStyleConfigManifest, (e) => e.id)
 		const manifestKeys = showStyleManifestKeys.sort()
 
 		const definedKeys = Object.keys(blankShowStyleConfig)

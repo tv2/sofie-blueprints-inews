@@ -1,13 +1,14 @@
 import { fail } from 'assert'
 import { BlueprintResultSegment, IBlueprintPart, IBlueprintPiece, IngestSegment, TSR } from 'blueprints-integration'
-import { TimeFromFrames } from 'tv2-common'
+import { getTimeFromFrames } from 'tv2-common'
+import { SwitcherMixEffectLLayer } from 'tv2-constants'
 import * as _ from 'underscore'
-import { SegmentUserContext } from '../../__mocks__/context'
-import { parseConfig } from '../../tv2_afvd_studio/helpers/config'
-import { AtemLLayer } from '../../tv2_afvd_studio/layers'
+import { SegmentUserContextMock } from '../../__mocks__/context'
+import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
+import { preprocessConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
 import { getSegment } from '../getSegment'
-import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig, preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { MOCK_EFFEKT_1, MOCK_EFFEKT_2 } from './breakerConfigDefault'
 import { defaultShowStyleConfig, defaultStudioConfig } from './configs'
@@ -57,7 +58,7 @@ const templateSegment: IngestSegment = {
 	parts: []
 }
 
-function makeMockContextWithoutTransitionsConfig(): SegmentUserContext {
+function makeMockContextWithoutTransitionsConfig(): SegmentUserContextMock {
 	const context = makeMockContext()
 
 	// context.showStyleConfig.DefaultTransitions = []
@@ -65,10 +66,10 @@ function makeMockContextWithoutTransitionsConfig(): SegmentUserContext {
 	return context
 }
 
-function makeMockContext(): SegmentUserContext {
+function makeMockContext(): SegmentUserContextMock {
 	const config = { id: 'default', studioConfig: defaultStudioConfig, showStyleConfig: defaultShowStyleConfig }
 
-	const mockContext = new SegmentUserContext('test', mappingsDefaults, parseConfig, parseShowStyleConfig)
+	const mockContext = new SegmentUserContextMock('test', mappingsDefaults, preprocessConfig, parseShowStyleConfig)
 	mockContext.studioConfig = config.studioConfig as any
 	mockContext.showStyleConfig = config.showStyleConfig as any
 
@@ -88,20 +89,20 @@ function checkPartExistsWithProperties(segment: BlueprintResultSegment, props: P
 	}
 }
 
-function getTransitionProperties(effekt: ShowStyleConfig['BreakerConfig'][0]): Partial<IBlueprintPart> {
+function getTransitionProperties(effekt: GalleryShowStyleConfig['BreakerConfig'][0]): Partial<IBlueprintPart> {
 	const preroll = defaultStudioConfig.CasparPrerollDuration as number
 	return {
 		inTransition: {
-			blockTakeDuration: TimeFromFrames(Number(effekt.Duration)) + preroll,
-			previousPartKeepaliveDuration: TimeFromFrames(Number(effekt.StartAlpha)) + preroll,
+			blockTakeDuration: getTimeFromFrames(Number(effekt.Duration)) + preroll,
+			previousPartKeepaliveDuration: getTimeFromFrames(Number(effekt.StartAlpha)) + preroll,
 			partContentDelayDuration:
-				TimeFromFrames(Number(effekt.Duration)) - TimeFromFrames(Number(effekt.EndAlpha)) + preroll
+				getTimeFromFrames(Number(effekt.Duration)) - getTimeFromFrames(Number(effekt.EndAlpha)) + preroll
 		}
 	}
 }
 
 function getPieceOnLayerFromPart(segment: BlueprintResultSegment, layer: SourceLayer): IBlueprintPiece {
-	const piece = segment.parts[0].pieces.find(p => p.sourceLayerId === layer)
+	const piece = segment.parts[0].pieces.find((p) => p.sourceLayerId === layer)
 	expect(piece).toBeTruthy()
 
 	return piece!
@@ -109,8 +110,8 @@ function getPieceOnLayerFromPart(segment: BlueprintResultSegment, layer: SourceL
 
 function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
 	const atemMEObj = (piece!.content!.timelineObjects as TSR.TSRTimelineObj[]).find(
-		obj =>
-			obj.layer === AtemLLayer.AtemMEProgram &&
+		(obj) =>
+			obj.layer === prefixLayer(SwitcherMixEffectLLayer.PROGRAM) &&
 			obj.content.deviceType === TSR.DeviceType.ATEM &&
 			obj.content.type === TSR.TimelineContentTypeAtem.ME
 	) as TSR.TimelineObjAtemME
@@ -119,7 +120,7 @@ function getATEMMEObj(piece: IBlueprintPiece): TSR.TimelineObjAtemME {
 	return atemMEObj
 }
 
-function testNotes(context: SegmentUserContext) {
+function testNotes(context: SegmentUserContextMock) {
 	expect(context.getNotes()).toStrictEqual([])
 }
 

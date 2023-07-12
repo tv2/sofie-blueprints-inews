@@ -1,13 +1,11 @@
 import { ActionUserData, IActionExecutionContext } from 'blueprints-integration'
-import { executeAction } from 'tv2-common'
-import { AtemLLayer, CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
-import { getConfig } from './helpers/config'
+import { executeAction, ServerSelectMode } from 'tv2-common'
+import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { AFVD_DVE_GENERATOR_OPTIONS } from './helpers/content/dve'
 import { EvaluateCues } from './helpers/pieces/evaluateCues'
-import { pilotGeneratorSettingsAFVD } from './helpers/pieces/graphicPilot'
 import { createJingleContentAFVD } from './helpers/pieces/jingle'
 import { SourceLayer } from './layers'
-import { postProcessPieceTimelineObjects } from './postProcessTimelineObjects'
 
 export async function executeActionAFVD(
 	context: IActionExecutionContext,
@@ -17,9 +15,8 @@ export async function executeActionAFVD(
 ): Promise<void> {
 	await executeAction(
 		context,
+		GALLERY_UNIFORM_CONFIG,
 		{
-			getConfig,
-			postProcessPieceTimelineObjects,
 			EvaluateCues,
 			DVEGeneratorOptions: AFVD_DVE_GENERATOR_OPTIONS,
 			SourceLayers: {
@@ -44,13 +41,6 @@ export async function executeActionAFVD(
 					ClipPending: SisyfosLLAyer.SisyfosSourceClipPending,
 					Effekt: SisyfosLLAyer.SisyfosSourceJingle,
 					StudioMics: SisyfosLLAyer.SisyfosGroupStudioMics
-				},
-				Atem: {
-					MEProgram: AtemLLayer.AtemMEProgram,
-					MEClean: AtemLLayer.AtemMEClean,
-					Next: AtemLLayer.AtemAuxLookahead,
-					SSrcDefault: AtemLLayer.AtemSSrcDefault,
-					cutOnclean: false
 				}
 			},
 			SelectedAdlibs: {
@@ -64,7 +54,9 @@ export async function executeActionAFVD(
 				SELECTED_ADLIB_LAYERS: [SourceLayer.SelectedServer, SourceLayer.SelectedVoiceOver]
 			},
 			createJingleContent: createJingleContentAFVD,
-			pilotGraphicSettings: pilotGeneratorSettingsAFVD
+			serverActionSettings: {
+				defaultTriggerMode: ServerSelectMode.RESUME
+			}
 		},
 		actionId,
 		userData,

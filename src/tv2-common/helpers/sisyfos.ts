@@ -1,11 +1,11 @@
 import { Timeline, TSR } from 'blueprints-integration'
 import { SourceInfo, TimelineBlueprintExt } from 'tv2-common'
 import { SharedSisyfosLLayer } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { literal } from '../util'
 
 export function GetSisyfosTimelineObjForCamera(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	sourceInfo: SourceInfo,
 	minusMic: boolean,
 	enable?: Timeline.TimelineEnable
@@ -14,19 +14,19 @@ export function GetSisyfosTimelineObjForCamera(
 }
 
 export function GetSisyfosTimelineObjForRemote(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	sourceInfo: SourceInfo,
 	enable?: Timeline.TimelineEnable
 ) {
 	return GetSisyfosTimelineObjForSource(config, sourceInfo, false, false, enable)
 }
 
-export function GetSisyfosTimelineObjForReplay(config: TV2BlueprintConfig, sourceInfo: SourceInfo, vo: boolean) {
+export function GetSisyfosTimelineObjForReplay(config: TV2ShowStyleConfig, sourceInfo: SourceInfo, vo: boolean) {
 	return GetSisyfosTimelineObjForSource(config, sourceInfo, vo, true)
 }
 
 export function GetSisyfosTimelineObjForServer(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	vo: boolean,
 	clipPendingLayer: string,
 	mediaPlayerSession: string,
@@ -57,7 +57,7 @@ export function GetSisyfosTimelineObjForServer(
 }
 
 export function GetSisyfosTimelineObjForFull(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
 	const result: TSR.TimelineObjSisyfosAny[] = []
@@ -67,7 +67,7 @@ export function GetSisyfosTimelineObjForFull(
 }
 
 export function GetSisyfosTimelineObjForTelefon(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	telefonLayer: string,
 	enable?: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosAny[] {
@@ -90,7 +90,7 @@ export function GetSisyfosTimelineObjForTelefon(
 }
 
 function GetSisyfosTimelineObjForSource(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	sourceInfo: SourceInfo,
 	vo: boolean,
 	enableStudioMicsOnlyForVo: boolean,
@@ -98,7 +98,7 @@ function GetSisyfosTimelineObjForSource(
 ): TSR.TimelineObjSisyfosAny[] {
 	const result: TSR.TimelineObjSisyfosAny[] = []
 	const timelineEnable = getFallbackEnable(enable)
-	sourceInfo.sisyfosLayers?.forEach(layer => {
+	sourceInfo.sisyfosLayers?.forEach((layer) => {
 		result.push(
 			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
@@ -120,11 +120,11 @@ function GetSisyfosTimelineObjForSource(
 }
 
 function getStudioMicsTimelineObj(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	timelineEnable: Timeline.TimelineEnable
 ): TSR.TimelineObjSisyfosChannels {
 	const studioMicsChannels: TSR.TimelineObjSisyfosChannels['content']['channels'] = []
-	config.studio.StudioMics.forEach(layer => {
+	config.studio.StudioMics.forEach((layer) => {
 		studioMicsChannels.push({
 			mappedLayer: layer,
 			isPgm: 1

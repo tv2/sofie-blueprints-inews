@@ -2,7 +2,7 @@ import { IngestSegment } from 'blueprints-integration'
 import { literal } from 'tv2-common'
 import { getRundownDuration } from '../rundownDuration'
 
-export function makeSegmentWithoutTime(externalId: string, rank: number): IngestSegment {
+function makeSegmentWithoutTime(externalId: string, rank: number): IngestSegment {
 	return literal<IngestSegment>({
 		externalId,
 		name: externalId,

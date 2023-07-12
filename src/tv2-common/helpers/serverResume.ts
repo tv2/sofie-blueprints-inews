@@ -1,12 +1,11 @@
 import {
-	IActionExecutionContext,
 	IBlueprintActionTriggerMode,
 	IBlueprintPartInstance,
 	IBlueprintResolvedPieceInstance,
 	VTContent
 } from 'blueprints-integration'
-import { PartEndStateExt, PieceMetaData, t } from 'tv2-common'
-import { SharedSourceLayers } from 'tv2-constants'
+import { ActionExecutionContext, PartEndStateExt, PieceMetaData, t, TV2ShowStyleConfig } from 'tv2-common'
+import { SharedSourceLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { DVEPieceMetaData } from '../content'
 
@@ -48,22 +47,20 @@ export function getServerSeek(
 }
 
 export async function getServerPosition(
-	context: IActionExecutionContext,
+	context: ActionExecutionContext<TV2ShowStyleConfig>,
 	replacingCurrentPieceWithOffset?: number
 ): Promise<ServerPosition | undefined> {
-	const partInstance = await context.getPartInstance('current')
+	const partInstance = await context.core.getPartInstance('current')
 	if (!partInstance) {
 		throw new Error('Missing current PartInstance while calculating serverOffsets')
 	}
 
 	const pieceEnd =
 		replacingCurrentPieceWithOffset !== undefined
-			? context.getCurrentTime() + replacingCurrentPieceWithOffset
+			? context.core.getCurrentTime() + replacingCurrentPieceWithOffset
 			: undefined
 
-	const pieceInstances = (await context.getResolvedPieceInstances('current')) as Array<
-		IBlueprintResolvedPieceInstance<PieceMetaData>
-	>
+	const pieceInstances = await context.core.getResolvedPieceInstances('current')
 
 	return getServerPositionForPartInstance(partInstance, pieceInstances, pieceEnd)
 }
@@ -84,7 +81,7 @@ export function getServerPositionForPartInstance(
 	const previousPartEndState = partInstance.previousPartEndState as Partial<PartEndStateExt> | undefined
 	const previousServerPosition = previousPartEndState?.serverPosition
 
-	const currentPiecesWithServer = _.sortBy(pieceInstances.filter(shouldPreservePosition), p => p.resolvedStart)
+	const currentPiecesWithServer = _.sortBy(pieceInstances.filter(shouldPreservePosition), (p) => p.resolvedStart)
 
 	let currentServerPosition =
 		previousPartEndState?.segmentId === partInstance.segmentId ? previousServerPosition : undefined
@@ -95,7 +92,7 @@ export function getServerPositionForPartInstance(
 			(currentPieceEnd !== undefined ? currentPieceEnd - pieceInstance.resolvedStart : undefined)
 
 		const content = pieceInstance.piece.content as VTContent | undefined
-		if (pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmServer && content) {
+		if (pieceInstance.piece.sourceLayerId === SharedSourceLayer.PgmServer && content) {
 			currentServerPosition = getCurrentPositionFromServerPiece(
 				content,
 				pieceDuration,
@@ -104,7 +101,7 @@ export function getServerPositionForPartInstance(
 				currentPieceEnd,
 				partInstance
 			)
-		} else if (pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmDVEAdLib) {
+		} else if (pieceInstance.piece.sourceLayerId === SharedSourceLayer.PgmDVEAdLib) {
 			updateServerPositionFromDVEPiece(
 				pieceInstance as IBlueprintResolvedPieceInstance<DVEPieceMetaData>,
 				partInstance,
@@ -208,8 +205,8 @@ function getCurrentPositionFromServerPiece(
 export function shouldPreservePosition(pieceInstance: IBlueprintResolvedPieceInstance): boolean {
 	return (
 		!!pieceInstance.dynamicallyInserted &&
-		(pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmServer ||
-			(pieceInstance.piece.sourceLayerId === SharedSourceLayers.PgmDVEAdLib &&
+		(pieceInstance.piece.sourceLayerId === SharedSourceLayer.PgmServer ||
+			(pieceInstance.piece.sourceLayerId === SharedSourceLayer.PgmDVEAdLib &&
 				!!(pieceInstance.piece.metaData as DVEPieceMetaData | undefined)?.serverPlaybackTiming))
 	)
 }

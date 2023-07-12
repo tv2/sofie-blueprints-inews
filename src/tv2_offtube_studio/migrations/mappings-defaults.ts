@@ -1,20 +1,16 @@
 import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from 'blueprints-integration'
 import {
 	AbstractLLayerServerEnable,
+	ATEM_LAYER_PREFIX,
 	CasparPlayerClip,
 	CasparPlayerClipLoadingLoop,
-	GetDSKMappings,
-	literal
+	getAtemDskMappings,
+	literal,
+	prefixLayers
 } from 'tv2-common'
-import { AbstractLLayer } from 'tv2-constants'
+import { AbstractLLayer, SwitcherAuxLLayer, SwitcherDveLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import {
-	OfftubeAbstractLLayer,
-	OfftubeAtemLLayer,
-	OfftubeCasparLLayer,
-	OfftubeGraphicLLayer,
-	OfftubeSisyfosLLayer
-} from '../layers'
+import { OfftubeCasparLLayer, OfftubeGraphicLLayer, OfftubeSisyfosLLayer } from '../layers'
 
 const MAPPINGS_ABSTRACT: BlueprintMappings = {
 	core_abstract: literal<TSR.MappingAbstract & BlueprintMapping>({
@@ -22,7 +18,7 @@ const MAPPINGS_ABSTRACT: BlueprintMappings = {
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[AbstractLLayer.ServerEnablePending]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.SERVER_ENABLE_PENDING]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
@@ -37,17 +33,12 @@ const MAPPINGS_ABSTRACT: BlueprintMappings = {
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[OfftubeAbstractLLayer.OfftubeAbstractLLayerAbstractLookahead]: literal<TSR.MappingAbstract & BlueprintMapping>({
-		device: TSR.DeviceType.ABSTRACT,
-		deviceId: 'abstract0',
-		lookahead: LookaheadMode.WHEN_CLEAR
-	}),
-	[AbstractLLayer.IdentMarker]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.IDENT_MARKER]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[AbstractLLayer.AudioBedBaseline]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.AUDIO_BED_BASELINE]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
@@ -455,114 +446,76 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	})
 }
 
-const MAPPINGS_ATEM: BlueprintMappings = {
-	[OfftubeAtemLLayer.AtemMEClean]: literal<TSR.MappingAtem & BlueprintMapping>({
+const MAPPINGS_ATEM: Record<string, TSR.MappingAtem & BlueprintMapping> = prefixLayers(ATEM_LAYER_PREFIX, {
+	[SwitcherMixEffectLLayer.CLEAN]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 1 // 1 = ME2
-	}),
-	[OfftubeAtemLLayer.AtemMEProgram]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherMixEffectLLayer.PROGRAM]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
-	}),
-	[OfftubeAtemLLayer.AtemMENext]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherMixEffectLLayer.NEXT]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0, // 0 = ME1
 		lookaheadDepth: 1
-	}),
-	[OfftubeAtemLLayer.AtemMENextJingle]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherMixEffectLLayer.NEXT_JINGLE]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.PRELOAD,
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
-	}),
-	...GetDSKMappings(ATEMModel.PRODUCTION_STUDIO_4K_2ME),
-	[OfftubeAtemLLayer.AtemAuxClean]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.CLEAN]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 0 // 0 = out 1
-	}),
-	[OfftubeAtemLLayer.AtemAuxScreen]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.SCREEN]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 1 // 1 = out 2
-	}),
-	[OfftubeAtemLLayer.AtemAuxServerLookahead]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.SERVER_LOOKAHEAD]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 2 // 2 = out 3
-	}),
-	[OfftubeAtemLLayer.AtemSSrcArt]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherDveLLayer.DVE]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceProperties,
 		index: 0 // 0 = SS
-	}),
-	[OfftubeAtemLLayer.AtemSSrcDefault]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherDveLLayer.DVE_BOXES]: {
 		device: TSR.DeviceType.ATEM,
 		deviceId: 'atem0',
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		lookaheadMaxSearchDistance: 1,
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
-	}),
-	[OfftubeAtemLLayer.AtemSSrcBox1]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[OfftubeAtemLLayer.AtemSSrcBox2]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[OfftubeAtemLLayer.AtemSSrcBox3]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[OfftubeAtemLLayer.AtemSSrcBox4]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	// TODO: Future: Mix Minus in Offtubes
-	[OfftubeAtemLLayer.AtemAuxVideoMixMinus]: literal<TSR.MappingAbstract & BlueprintMapping>({
-		device: TSR.DeviceType.ABSTRACT,
-		deviceId: 'abstract0',
-		lookahead: LookaheadMode.NONE
-	})
-}
+	},
+	...getAtemDskMappings(ATEMModel.PRODUCTION_STUDIO_4K_2ME)
+})
 
 export default literal<BlueprintMappings>({
 	...MAPPINGS_ABSTRACT,

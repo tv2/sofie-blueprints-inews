@@ -5,9 +5,9 @@ import { ParseMappingTable, SourceInfoType, SourceMapping } from 'tv2-common'
 import { StudioConfig } from './config'
 
 export function parseMediaPlayers(studioConfig: StudioConfig): Array<{ id: string; val: string }> {
-	return studioConfig.ABMediaPlayers.map(player => ({
+	return studioConfig.ABMediaPlayers.map((player) => ({
 		id: player.SourceName,
-		val: player.AtemSource.toString()
+		val: player.SwitcherSource.toString()
 	}))
 }
 

@@ -6,15 +6,13 @@ import {
 	IngestSegment,
 	ISegmentUserContext,
 	PieceLifespan,
-	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { getSegmentBase, INewsPayload, literal } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { getSegmentBase, INewsPayload, literal, SegmentContext, SegmentContextImpl, TransitionStyle } from 'tv2-common'
+import { SharedOutputLayer } from 'tv2-constants'
 import * as _ from 'underscore'
-import { StudioConfig } from '../tv2_afvd_studio/helpers/config'
-import { AtemLLayer } from '../tv2_afvd_studio/layers'
-import { BlueprintConfig as ShowStyleConfig, getConfig } from './helpers/config'
+import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
+import { GalleryBlueprintConfig } from './helpers/config'
 import { CreateShowLifecyclePieces } from './helpers/pieces/showLifecycle'
 import { SourceLayer } from './layers'
 import { CreatePartEVS } from './parts/evs'
@@ -25,16 +23,15 @@ import { CreatePartLive } from './parts/live'
 import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
-import { postProcessPartTimelineObjects } from './postProcessTimelineObjects'
+
 export async function getSegment(
-	context: ISegmentUserContext,
+	coreContext: ISegmentUserContext,
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
-	const config = getConfig(context)
 	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
+	const context = new SegmentContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
 
-	const result: BlueprintResultSegment = await getSegmentBase<StudioConfig, ShowStyleConfig>(context, ingestSegment, {
-		getConfig,
+	const result: BlueprintResultSegment = await getSegmentBase<GalleryBlueprintConfig>(context, ingestSegment, {
 		CreatePartContinuity,
 		CreatePartUnknown,
 		CreatePartIntro,
@@ -51,10 +48,8 @@ export async function getSegment(
 	const blueprintParts = result.parts
 
 	if (segmentPayload) {
-		insertSpecialPieces(config, blueprintParts, segmentPayload)
+		insertSpecialPieces(context.config, blueprintParts, segmentPayload)
 	}
-
-	postProcessPartTimelineObjects(context, config, blueprintParts)
 
 	return {
 		segment: result.segment,
@@ -62,7 +57,10 @@ export async function getSegment(
 	}
 }
 
-export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: IngestSegment): BlueprintResultPart {
+export function CreatePartContinuity(
+	context: SegmentContext<GalleryBlueprintConfig>,
+	ingestSegment: IngestSegment
+): BlueprintResultPart {
 	return {
 		part: {
 			externalId: `${ingestSegment.externalId}-CONTINUITY`,
@@ -77,29 +75,20 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 				},
 				name: 'CONTINUITY',
 				sourceLayerId: SourceLayer.PgmContinuity,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<CameraContent>>({
 					studioLabel: '',
-					switcherInput: config.studio.AtemSource.Continuity,
-					timelineObjects: _.compact<TSR.TimelineObjAtemAny[]>([
-						literal<TSR.TimelineObjAtemME>({
-							id: '',
-							enable: {
-								start: 0
-							},
+					switcherInput: context.config.studio.SwitcherSource.Continuity,
+					timelineObjects: [
+						...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 							priority: 1,
-							layer: AtemLLayer.AtemMEProgram,
 							content: {
-								deviceType: TSR.DeviceType.ATEM,
-								type: TSR.TimelineContentTypeAtem.ME,
-								me: {
-									input: config.studio.AtemSource.Continuity,
-									transition: TSR.AtemTransitionStyle.CUT
-								}
+								input: context.config.studio.SwitcherSource.Continuity,
+								transition: TransitionStyle.CUT
 							}
 						})
-					])
+					]
 				})
 			})
 		],
@@ -109,7 +98,7 @@ export function CreatePartContinuity(config: ShowStyleConfig, ingestSegment: Ing
 }
 
 function insertSpecialPieces(
-	config: ShowStyleConfig,
+	config: GalleryBlueprintConfig,
 	blueprintParts: BlueprintResultPart[],
 	segmentPayload: INewsPayload
 ) {
@@ -119,19 +108,19 @@ function insertSpecialPieces(
 		return
 	}
 
-	const graphicsSetupsToInitialize = segmentPayload?.initializeShows
-	if (graphicsSetupsToInitialize) {
+	const gfxSetupsToInitialize = segmentPayload?.initializeShows
+	if (gfxSetupsToInitialize) {
 		const showsToInitialize = new Set<string>()
 		const allShows = new Set<string>()
-		config.showStyle.GraphicsSetups.forEach(graphicsSetup => {
-			allShows.add(graphicsSetup.FullShowName)
-			allShows.add(graphicsSetup.OvlShowName)
-			if (graphicsSetupsToInitialize.includes(graphicsSetup.Name)) {
-				showsToInitialize.add(graphicsSetup.FullShowName)
-				showsToInitialize.add(graphicsSetup.OvlShowName)
+		config.showStyle.GfxSetups.forEach((gfxSetup) => {
+			allShows.add(gfxSetup.FullShowName)
+			allShows.add(gfxSetup.OvlShowName)
+			if (gfxSetupsToInitialize.includes(gfxSetup.Name)) {
+				showsToInitialize.add(gfxSetup.FullShowName)
+				showsToInitialize.add(gfxSetup.OvlShowName)
 			}
 		})
-		const showsToCleanup = Array.from(allShows).filter(show => !showsToInitialize.has(show))
+		const showsToCleanup = Array.from(allShows).filter((show) => !showsToInitialize.has(show))
 		CreateShowLifecyclePieces(config, blueprintParts[0], Array.from(showsToInitialize), showsToCleanup)
 	}
 }

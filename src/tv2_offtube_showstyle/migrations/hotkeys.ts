@@ -11,16 +11,16 @@ export function GetDefaultStudioSourcesForOfftube(context: MigrationContextShowS
 	const dveLayoutConfig = context.getBaseConfig('DVEStyles') as TableConfigItemValue | undefined
 	let dveLayouts: string[] = []
 	if (dveLayoutConfig?.length) {
-		dveLayouts = dveLayoutConfig.map(dve => dve.DVEName).filter(name => name !== undefined) as string[]
+		dveLayouts = dveLayoutConfig.map((dve) => dve.DVEName).filter((name) => name !== undefined) as string[]
 	} else {
 		dveLayouts = (dveStylesManifest as ConfigManifestEntryTable).defaultVal
-			.map(dve => dve.DVEName)
-			.filter(name => name !== undefined) as string[]
+			.map((dve) => dve.DVEName)
+			.filter((name) => name !== undefined) as string[]
 	}
 
-	const camera = manifestOfftubeSourcesCam.defaultVal.map(source => source.SourceName) as string[]
-	const remote = manifestOfftubeSourcesRM.defaultVal.map(source => source.SourceName) as string[]
-	const feed = manifestOfftubeSourcesFeed.defaultVal.map(source => `F${source.SourceName}`)
+	const camera = manifestOfftubeSourcesCam.defaultVal.map((source) => source.SourceName) as string[]
+	const remote = manifestOfftubeSourcesRM.defaultVal.map((source) => source.SourceName) as string[]
+	const feed = manifestOfftubeSourcesFeed.defaultVal.map((source) => `F${source.SourceName}`)
 	const local: string[] = []
 
 	return {

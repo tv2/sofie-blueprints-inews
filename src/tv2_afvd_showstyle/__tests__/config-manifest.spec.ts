@@ -1,11 +1,11 @@
 import * as _ from 'underscore'
 import { showStyleConfigManifest } from '../config-manifests'
-import { ShowStyleConfig } from '../helpers/config'
+import { GalleryShowStyleConfig } from '../helpers/config'
 
-const blankShowStyleConfig: ShowStyleConfig = {
+const blankShowStyleConfig: GalleryShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	DVEStyles: [],
-	GFXTemplates: [],
+	GfxTemplates: [],
 	GfxDesignTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
@@ -14,15 +14,21 @@ const blankShowStyleConfig: ShowStyleConfig = {
 	CasparCGLoadingClip: '',
 	Transitions: [{ Transition: '1' }, { Transition: '2' }],
 	ShowstyleTransition: 'CUT',
-	SelectedGraphicsSetupName: '',
-	GraphicsSetups: [],
+	GfxSetups: [],
 	GfxSchemaTemplates: [],
-	OverlayShowMapping: []
+	GfxShowMapping: [],
+	GfxDefaults: [
+		{
+			DefaultSetupName: { value: '', label: '' },
+			DefaultDesign: '',
+			DefaultSchema: ''
+		}
+	]
 }
 
 describe('Config Manifest', () => {
 	test('Exposed ShowStyle Keys', () => {
-		const showStyleManifestKeys = _.map(showStyleConfigManifest, e => e.id)
+		const showStyleManifestKeys = _.map(showStyleConfigManifest, (e) => e.id)
 		const manifestKeys = showStyleManifestKeys.sort()
 
 		const definedKeys = Object.keys(blankShowStyleConfig)

@@ -1,3 +1,4 @@
+import { BasicConfigItemValue, IBlueprintShowStyleVariant } from '@sofie-automation/blueprints-integration'
 import {
 	BlueprintMappings,
 	ConfigItemValue,
@@ -22,7 +23,7 @@ export * from './sourceLayers'
 export * from './forceSourceLayerToDefaultsBase'
 export * from './hotkeys'
 
-export function RenameStudioConfig(versionStr: string, studio: string, from: string, to: string): MigrationStepStudio {
+export function renameStudioConfig(versionStr: string, studio: string, from: string, to: string): MigrationStepStudio {
 	return {
 		id: `${versionStr}.studioConfig.rename.${from}.${studio}`,
 		version: versionStr,
@@ -105,7 +106,7 @@ export function AddGraphicToGfxTable(
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as
+			const existing = context.getBaseConfig('GFXTemplates') as unknown as
 				| TableConfigItemGfxTemplateWithDesign[]
 				| undefined
 
@@ -114,16 +115,16 @@ export function AddGraphicToGfxTable(
 			}
 
 			return !existing.some(
-				g =>
+				(g) =>
 					g.INewsName === config.INewsName && g.INewsCode === config.INewsCode && g.VizTemplate === config.VizTemplate
 			)
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGfxTemplateWithDesign[]
+			const existing = context.getBaseConfig('GFXTemplates') as unknown as TableConfigItemGfxTemplateWithDesign[]
 
 			existing.push(config)
 
-			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
+			context.setBaseConfig('GFXTemplates', existing as unknown as ConfigItemValue)
 		}
 	}
 }
@@ -139,11 +140,9 @@ export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(from) as unknown) as
-				| TableConfigItemGfxTemplateWithDesign[]
-				| undefined
+			const gfxTemplates = context.getBaseConfig(from) as unknown as TableConfigItemGfxTemplateWithDesign[] | undefined
 
-			const designTemplates = (context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[] | undefined
+			const designTemplates = context.getBaseConfig(to) as unknown as TableConfigItemGfxDesignTemplate[] | undefined
 
 			if (!gfxTemplates || !gfxTemplates.length) {
 				return false
@@ -153,48 +152,104 @@ export function mapGfxTemplateToDesignTemplateAndDeleteOriginals(
 				return false
 			}
 
-			return gfxTemplates.some(template => template.IsDesign)
+			return gfxTemplates.some((template) => template.IsDesign)
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig(from) as unknown) as TableConfigItemGfxTemplateWithDesign[]
-			const designTemplates = ((context.getBaseConfig(to) as unknown) as TableConfigItemGfxDesignTemplate[]) ?? []
+			const gfxTemplates = context.getBaseConfig(from) as unknown as TableConfigItemGfxTemplateWithDesign[]
+			const designTemplates = (context.getBaseConfig(to) as unknown as TableConfigItemGfxDesignTemplate[]) ?? []
 
 			gfxTemplates
-				.filter(template => template.IsDesign)
-				.map(template => {
+				.filter((template) => template.IsDesign)
+				.map((template) => {
 					designTemplates.push({ ...template, INewsStyleColumn: '' })
 				})
 
-			const newGfxTemplates = gfxTemplates.filter(template => !template.IsDesign)
+			const newGfxTemplates = gfxTemplates.filter((template) => !template.IsDesign)
 
-			context.setBaseConfig(from, (newGfxTemplates as unknown) as ConfigItemValue)
-			context.setBaseConfig(to, (designTemplates as unknown) as ConfigItemValue)
+			context.setBaseConfig(from, newGfxTemplates as unknown as ConfigItemValue)
+			context.setBaseConfig(to, designTemplates as unknown as ConfigItemValue)
+		}
+	})
+}
+
+export function moveSelectedGfxSetupNameToGfxDefaults(versionStr: string) {
+	const fromValue = 'SelectedGfxSetupName'
+	const targetTable = 'GfxDefaults'
+	return literal<MigrationStepShowStyle>({
+		id: `${versionStr}.moveSelectedGfxSetupName.${fromValue}.toTable.${targetTable}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const singleValue = context.getBaseConfig(fromValue)
+			const designatedTable = context.getBaseConfig(targetTable)
+
+			return !!singleValue && Array.isArray(designatedTable)
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const singleValue = context.getBaseConfig(fromValue) as BasicConfigItemValue
+			const designatedTable = context.getBaseConfig(targetTable) as unknown as TableConfigItemValue
+			const setupName = 'DefaultSetupName'
+
+			designatedTable[0][setupName] = singleValue
+
+			context.setBaseConfig(targetTable, designatedTable)
+			context.removeBaseConfig(fromValue)
+		}
+	})
+}
+
+export function moveSelectedGfxSetupNameToGfxDefaultsInVariants(migrationVersion: string) {
+	const fromValue = 'SelectedGfxSetupName'
+	const targetTable = 'GfxDefaults'
+	return literal<MigrationStepShowStyle>({
+		id: `${migrationVersion}.moveSelectedGfxSetupNameToGfxDefaultsInVariants.${fromValue}.toTable.${targetTable}`,
+		version: migrationVersion,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextShowStyle) => {
+			const allVariants = context.getAllVariants()
+
+			return allVariants.some(
+				(variant: IBlueprintShowStyleVariant) =>
+					context.getVariantConfig(variant._id, fromValue) && !context.getVariantConfig(variant._id, targetTable)
+			)
+		},
+		migrate: (context: MigrationContextShowStyle) => {
+			const allVariants = context.getAllVariants()
+			allVariants.forEach((variant: IBlueprintShowStyleVariant) => {
+				const setupName = 'DefaultSetupName'
+				const singleValue = context.getVariantConfig(variant._id, fromValue) as BasicConfigItemValue
+				const designatedTable = (context.getVariantConfig(variant._id, targetTable) as TableConfigItemValue) ?? [
+					{ [setupName]: singleValue, _id: '' }
+				]
+
+				context.setVariantConfig(variant._id, targetTable, designatedTable)
+			})
 		}
 	})
 }
 
 export function addSourceToSourcesConfig(
-	versionStr: string,
+	migrationVersion: string,
 	studio: string,
 	configId: string,
 	source: TableConfigItemSourceMappingWithSisyfos
 ): MigrationStepStudio {
 	return {
-		id: `${versionStr}.studioConfig.addReplaySource.${source.SourceName}.${studio}`,
-		version: versionStr,
+		id: `${migrationVersion}.studioConfig.addReplaySource.${source.SourceName}.${studio}`,
+		version: migrationVersion,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
-			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+			const config = context.getConfig(configId) as unknown as TableConfigItemSourceMappingWithSisyfos[]
 
 			if (!config) {
 				return false
 			}
-			return !config.find(s => s.SourceName === source.SourceName)
+			return !config.find((s) => s.SourceName === source.SourceName)
 		},
 		migrate: (context: MigrationContextStudio) => {
-			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+			const config = context.getConfig(configId) as unknown as TableConfigItemSourceMappingWithSisyfos[]
 			config.push(source)
-			context.setConfig(configId, (config as unknown) as ConfigItemValue)
+			context.setConfig(configId, config as unknown as ConfigItemValue)
 		}
 	}
 }
@@ -211,7 +266,7 @@ export function changeGfxTemplate(
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const gfxTemplates = (context.getBaseConfig('GFXTemplates') as unknown) as
+			const gfxTemplates = context.getBaseConfig('GFXTemplates') as unknown as
 				| TableConfigItemGfxTemplateWithDesign[]
 				| undefined
 
@@ -219,14 +274,14 @@ export function changeGfxTemplate(
 				return false
 			}
 
-			return gfxTemplates.some(g => isGfxTemplateSubset(g, oldConfig))
+			return gfxTemplates.some((g) => isGfxTemplateSubset(g, oldConfig))
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			let existing = (context.getBaseConfig('GFXTemplates') as unknown) as TableConfigItemGfxTemplateWithDesign[]
+			let existing = context.getBaseConfig('GFXTemplates') as unknown as TableConfigItemGfxTemplateWithDesign[]
 
-			existing = existing.map(g => (isGfxTemplateSubset(g, oldConfig) ? { ...g, ...config } : g))
+			existing = existing.map((g) => (isGfxTemplateSubset(g, oldConfig) ? { ...g, ...config } : g))
 
-			context.setBaseConfig('GFXTemplates', (existing as unknown) as ConfigItemValue)
+			context.setBaseConfig('GFXTemplates', existing as unknown as ConfigItemValue)
 		}
 	}
 }
@@ -350,9 +405,9 @@ export function StripFolderFromShowStyleConfig(
 			}
 
 			// Some entry in the table contains a field that needs migrating
-			return configTableValue.some(config => {
-				return configFields.some(field => {
-					return ((config[field] as unknown) as string | undefined)?.match(regex)
+			return configTableValue.some((config) => {
+				return configFields.some((field) => {
+					return (config[field] as unknown as string | undefined)?.match(regex)
 				})
 			})
 		},
@@ -363,9 +418,9 @@ export function StripFolderFromShowStyleConfig(
 				return
 			}
 
-			configTableValue = configTableValue.map(config => {
-				configFields.forEach(field => {
-					const newConfig = (config[field] as unknown) as string
+			configTableValue = configTableValue.map((config) => {
+				configFields.forEach((field) => {
+					const newConfig = config[field] as unknown as string
 
 					const matches = newConfig.match(regex)
 
@@ -394,17 +449,17 @@ export function PrefixEvsWithEvs(
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextStudio) => {
-			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
+			const config = context.getConfig(configId) as unknown as TableConfigItemSourceMappingWithSisyfos[]
 
-			if (!config || config.find(value => value.SourceName === `EVS ${evsSourceNumber}`) !== undefined) {
+			if (!config || config.find((value) => value.SourceName === `EVS ${evsSourceNumber}`) !== undefined) {
 				return false
 			}
 
-			return config.find(value => value.SourceName === evsSourceNumber) !== undefined
+			return config.find((value) => value.SourceName === evsSourceNumber) !== undefined
 		},
 		migrate: (context: MigrationContextStudio) => {
-			const config = (context.getConfig(configId) as unknown) as TableConfigItemSourceMappingWithSisyfos[]
-			const index: number = config.findIndex(value => value.SourceName === evsSourceNumber)
+			const config = context.getConfig(configId) as unknown as TableConfigItemSourceMappingWithSisyfos[]
+			const index: number = config.findIndex((value) => value.SourceName === evsSourceNumber)
 			if (index === -1) {
 				return
 			}
@@ -412,7 +467,71 @@ export function PrefixEvsWithEvs(
 
 			evsSource.SourceName = `EVS ${evsSource.SourceName}`
 			config[index] = evsSource
-			context.setConfig(configId, (config as unknown) as ConfigItemValue)
+			context.setConfig(configId, config as unknown as ConfigItemValue)
+		}
+	}
+}
+
+export function convertStudioTableColumnToFloat(
+	versionStr: string,
+	tableId: string,
+	columnId: string
+): MigrationStepStudio {
+	return {
+		id: `${versionStr}.convertStudioTableColumnToFloat.${tableId}.${columnId}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const config = context.getConfig(tableId) as unknown as TableConfigItemValue
+
+			if (!config || !Array.isArray(config)) {
+				return false
+			}
+
+			return config.find((row) => columnId in row && typeof row[columnId] === 'string') !== undefined
+		},
+		migrate: (context: MigrationContextStudio) => {
+			let config = context.getConfig(tableId) as unknown as TableConfigItemValue
+			config = config.map((row) => {
+				const value = row[columnId]
+				if (typeof value === 'string') {
+					row[columnId] = parseFloat(value)
+				}
+				return row
+			})
+			context.setConfig(tableId, config as unknown as ConfigItemValue)
+		}
+	}
+}
+
+export function renameStudioTableColumn(
+	versionStr: string,
+	tableId: string,
+	oldColumnId: string,
+	newColumnId: string
+): MigrationStepStudio {
+	return {
+		id: `${versionStr}.renameStudioTableColumn.${tableId}.${oldColumnId}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const config = context.getConfig(tableId) as unknown as TableConfigItemValue
+
+			if (!config || !Array.isArray(config)) {
+				return false
+			}
+
+			return config.find((row) => oldColumnId in row) !== undefined
+		},
+		migrate: (context: MigrationContextStudio) => {
+			let config = context.getConfig(tableId) as unknown as TableConfigItemValue
+			config = config.map((row) => {
+				const value = row[oldColumnId]
+				delete row[oldColumnId]
+				row[newColumnId] = value
+				return row
+			})
+			context.setConfig(tableId, config as unknown as ConfigItemValue)
 		}
 	}
 }
@@ -428,23 +547,23 @@ export function renameTableColumn(
 		version: versionStr,
 		canBeRunAutomatically: true,
 		validate: (context: MigrationContextShowStyle) => {
-			const config = (context.getBaseConfig(tableId) as unknown) as TableConfigItemValue
+			const config = context.getBaseConfig(tableId) as unknown as TableConfigItemValue
 
 			if (!config || !Array.isArray(config)) {
 				return false
 			}
 
-			return config.find(row => oldColumnId in row) !== undefined
+			return config.find((row) => oldColumnId in row) !== undefined
 		},
 		migrate: (context: MigrationContextShowStyle) => {
-			let config = (context.getBaseConfig(tableId) as unknown) as TableConfigItemValue
-			config = config.map(row => {
+			let config = context.getBaseConfig(tableId) as unknown as TableConfigItemValue
+			config = config.map((row) => {
 				const value = row[oldColumnId]
 				delete row[oldColumnId]
 				row[newColumnId] = value
 				return row
 			})
-			context.setBaseConfig(tableId, (config as unknown) as ConfigItemValue)
+			context.setBaseConfig(tableId, config as unknown as ConfigItemValue)
 		}
 	}
 }

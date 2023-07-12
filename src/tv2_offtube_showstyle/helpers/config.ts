@@ -5,7 +5,7 @@ import {
 	IStudioContext,
 	TableConfigItemValue
 } from 'blueprints-integration'
-import { findGraphicsSetup, TableConfigGraphicsSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import { findGfxSetup, TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'
 
@@ -20,9 +20,9 @@ export interface TableConfigItemGfxTemplates {
 	IsDesign: boolean
 }
 
-export interface OfftubeShowstyleBlueprintConfig extends OfftubeStudioBlueprintConfig {
+export interface OfftubeBlueprintConfig extends OfftubeStudioBlueprintConfig {
 	showStyle: OfftubeShowStyleConfig
-	selectedGraphicsSetup: TableConfigGraphicsSetup
+	selectedGfxSetup: TableConfigGfxSetup
 }
 
 export interface DVEConfigInput {
@@ -36,28 +36,29 @@ export interface DVEConfigInput {
 
 export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	GraphicsSetups: TableConfigGraphicsSetup[]
+	GfxSetups: TableConfigGfxSetup[]
 }
 
-export function parseConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
-	const showstyleConfig = (rawConfig as unknown) as OfftubeShowStyleConfig
-	const selectedGraphicsSetup = findGraphicsSetup(context, showstyleConfig, {
+export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
+	const showstyleConfig = rawConfig as unknown as OfftubeShowStyleConfig
+	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
+		_id: '',
 		Name: '',
 		HtmlPackageFolder: ''
 	})
 	return {
 		showStyle: showstyleConfig,
-		selectedGraphicsSetup
+		selectedGfxSetup
 	}
 }
 
-export function getConfig(context: IShowStyleContext): OfftubeShowstyleBlueprintConfig {
-	return ({
+export function getConfig(context: IShowStyleContext): OfftubeBlueprintConfig {
+	return {
 		...(context.getStudioConfig() as any),
 		...(context.getShowStyleConfig() as any)
-	} as any) as OfftubeShowstyleBlueprintConfig
+	} as any as OfftubeBlueprintConfig
 }
 
-export function getStudioConfig(context: IStudioContext): OfftubeShowstyleBlueprintConfig {
-	return context.getStudioConfig() as OfftubeShowstyleBlueprintConfig
+export function getStudioConfig(context: IStudioContext): OfftubeBlueprintConfig {
+	return context.getStudioConfig() as OfftubeBlueprintConfig
 }

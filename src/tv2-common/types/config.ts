@@ -1,8 +1,8 @@
-import { DSKRoles } from 'tv2-constants'
+import { DskRole } from 'tv2-constants'
 
 export interface TableConfigItemSourceMapping {
 	SourceName: string
-	AtemSource: number
+	SwitcherSource: number
 }
 
 export type TableConfigItemSourceMappingWithSisyfos = {
@@ -12,14 +12,17 @@ export type TableConfigItemSourceMappingWithSisyfos = {
 	AcceptPersistAudio?: boolean
 } & TableConfigItemSourceMapping
 
-export interface TableConfigItemDSK {
+export interface SwitcherDskProps {
 	/** 0-based */
 	Number: number
 	Fill: number
 	Key: number
+	Clip: number
+	Gain: number
+}
+
+export interface TableConfigItemDSK extends SwitcherDskProps {
 	Toggle: boolean
 	DefaultOn: boolean
-	Roles?: DSKRoles[]
-	Clip: string
-	Gain: string
+	Roles?: DskRole[]
 }

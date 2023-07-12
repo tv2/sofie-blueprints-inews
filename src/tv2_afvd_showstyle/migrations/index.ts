@@ -5,6 +5,8 @@ import {
 	GetDefaultAdLibTriggers,
 	GetDSKSourceLayerNames,
 	mapGfxTemplateToDesignTemplateAndDeleteOriginals,
+	moveSelectedGfxSetupNameToGfxDefaults,
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants,
 	RemoveOldShortcuts,
 	removeSourceLayer,
 	renameTableColumn,
@@ -16,6 +18,11 @@ import {
 	UpsertValuesIntoTransitionTable
 } from 'tv2-common'
 import { SharedGraphicLLayer } from 'tv2-constants'
+import {
+	renameBlueprintConfiguration,
+	renameBlueprintsConfigurationForAllVariants,
+	renameTableId
+} from '../../tv2-common/migrations/renameConfigurationHelper'
 import { remapVizDOvl, remapVizLLayer } from '../../tv2_offtube_showstyle/migrations'
 import { remapTableColumnValues } from '../../tv2_offtube_showstyle/migrations/util'
 import { ATEMModel } from '../../types/atem'
@@ -27,7 +34,6 @@ import {
 	getOutputLayerDefaultsMigrationSteps,
 	getSourceLayerDefaultsMigrationSteps
 } from './util'
-import { getCreateVariantMigrationSteps } from './variants-defaults'
 
 declare const VERSION: string // Injected by webpack
 
@@ -39,7 +45,6 @@ const SHOW_STYLE_ID = 'tv2_afvd_showstyle'
  */
 
 export const showStyleMigrations: MigrationStepShowStyle[] = [
-	...getCreateVariantMigrationSteps(),
 	remapTableColumnValues('0.1.0', 'GFXTemplates', 'LayerMapping', remapVizLLayer),
 	// Rename "viz-d-ovl" to "OVL1"
 	remapTableColumnValues('0.1.0', 'GFXTemplates', 'VizDestination', remapVizDOvl),
@@ -109,7 +114,7 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * 1.6.3
 	 * - Hide DSK toggle layers
 	 */
-	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map(layerName =>
+	...GetDSKSourceLayerNames(ATEMModel.CONSTELLATION_8K_UHD_MODE).map((layerName) =>
 		forceSourceLayerToDefaults('1.6.3', layerName)
 	),
 
@@ -249,6 +254,22 @@ export const showStyleMigrations: MigrationStepShowStyle[] = [
 	 * - Update SourceLayerType for Continuity
 	 */
 	forceSourceLayerToDefaults('1.7.7', SourceLayer.PgmContinuity),
+
+	/**
+	 * 1.7.9 Rename to "Gfx"
+	 */
+	renameTableId('1.7.9', 'GFXTemplates', 'GfxTemplates'),
+	renameTableId('1.7.9', 'GraphicsSetups', 'GfxSetups'),
+	renameBlueprintConfiguration('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
+	renameBlueprintsConfigurationForAllVariants('1.7.9', 'SelectedGraphicsSetupName', 'SelectedGfxSetupName'),
+	renameTableColumn('1.7.9', 'OverlayShowMapping', 'GraphicsSetup', 'GfxSetup'),
+	renameTableId('1.7.9', 'OverlayShowMapping', 'GfxShowMapping'),
+
+	/**
+	 * 1.8.2 Move SelectedGfxSetupName to GFX Defaults
+	 */
+	moveSelectedGfxSetupNameToGfxDefaults('1.8.2'),
+	moveSelectedGfxSetupNameToGfxDefaultsInVariants('1.8.2'),
 
 	// Fill in any layers that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

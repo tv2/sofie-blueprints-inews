@@ -30,19 +30,19 @@ export function UpsertValuesIntoTransitionTable(
 ): MigrationStepShowStyle[] {
 	const steps: MigrationStepShowStyle[] = []
 
-	values.forEach(val => {
+	values.forEach((val) => {
 		steps.push({
 			id: `${versionStr}.insertTransition.${val.Transition.replace(/[\s\W]/g, '_')}`,
 			version: versionStr,
 			canBeRunAutomatically: true,
 			validate: (context: MigrationContextShowStyle) => {
-				const table = (context.getBaseConfig('Transitions') as unknown) as TransitionsTableValue[] | undefined
+				const table = context.getBaseConfig('Transitions') as unknown as TransitionsTableValue[] | undefined
 
 				if (!table) {
 					return `Transitions table does not exists`
 				}
 
-				const existingVal = table.find(v => v.Transition === val.Transition)
+				const existingVal = table.find((v) => v.Transition === val.Transition)
 
 				if (!existingVal) {
 					return `Transition "${val.Transition}" does not exist`
@@ -51,7 +51,7 @@ export function UpsertValuesIntoTransitionTable(
 				return existingVal.Transition !== val.Transition
 			},
 			migrate: (context: MigrationContextShowStyle) => {
-				const table = (context.getBaseConfig('Transitions') as unknown) as TransitionsTableValue[] | undefined
+				const table = context.getBaseConfig('Transitions') as unknown as TransitionsTableValue[] | undefined
 
 				if (!table) {
 					context.setBaseConfig('Transitions', [

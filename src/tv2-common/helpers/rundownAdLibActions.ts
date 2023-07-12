@@ -11,18 +11,16 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
-import { CreateJingleExpectedMedia } from '../content'
+import { AdlibActionType, AdlibTags, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
+import { TableConfigItemBreaker, TV2ShowStyleConfig } from '../blueprintConfig'
+import { createJingleExpectedMedia } from '../content'
 import { t } from './translation'
 
 interface TransitionValues {
 	rank: number
 	label: string
 	jingle: string
-	alphaAtStart?: number
-	duration?: number
-	alphaAtEnd?: number
+	breakerConfig?: TableConfigItemBreaker
 }
 
 export function GetTransitionAdLibActions<
@@ -41,7 +39,7 @@ export function GetTransitionAdLibActions<
 
 	if (config.showStyle.Transitions) {
 		const transitionActions: IBlueprintActionManifest[] = config.showStyle.Transitions.filter(
-			transition => transition.Transition && transition.Transition.length
+			(transition) => transition.Transition && transition.Transition.length
 		).flatMap((transition, i) => createActionsForTransition(config, transition.Transition, startingRank + 0.01 * i))
 		blueprintActionManifests.push(...transitionActions)
 	}
@@ -50,21 +48,16 @@ export function GetTransitionAdLibActions<
 }
 
 function createActionsForTransition(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	transition: string,
 	rank: number
 ): IBlueprintActionManifest[] {
-	const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition)
+	const jingleConfig = config.showStyle.BreakerConfig.find((j) => j.BreakerName === transition)
 	const transitionValues: TransitionValues = {
 		rank,
 		label: transition,
-		jingle: jingleConfig?.ClipName ?? transition
-	}
-
-	if (jingleConfig) {
-		transitionValues.alphaAtStart = jingleConfig.StartAlpha
-		transitionValues.duration = jingleConfig.Duration
-		transitionValues.alphaAtEnd = jingleConfig.EndAlpha
+		jingle: jingleConfig?.ClipName ?? transition,
+		breakerConfig: jingleConfig
 	}
 
 	const variant: ActionTakeWithTransitionVariant = ParseTransitionString(transition)
@@ -104,7 +97,7 @@ export function ParseTransitionString(transitionString: string): ActionTakeWithT
 }
 
 function makeTransitionOnTakeAction(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	variant: ActionTakeWithTransitionVariant,
 	transitionValues: TransitionValues
 ): IBlueprintActionManifest {
@@ -117,7 +110,7 @@ function makeTransitionOnTakeAction(
 }
 
 function makeTransitionOnNextTakeAction(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	variant: ActionTakeWithTransitionVariant,
 	transitionValues: TransitionValues
 ): IBlueprintActionManifest {
@@ -130,7 +123,7 @@ function makeTransitionOnNextTakeAction(
 }
 
 function makeTransitionAction(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	userData: ActionTakeWithTransition,
 	transitionValues: TransitionValues,
 	adlibTag: AdlibTags
@@ -146,23 +139,18 @@ function makeTransitionAction(
 		display: {
 			_rank: transitionValues.rank,
 			label: t(`${isEffekt ? 'EFFEKT ' : ''}${transitionValues.label}`),
-			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
-			outputLayerId: SharedOutputLayers.PGM,
+			sourceLayerId: SharedSourceLayer.PgmAdlibJingle,
+			outputLayerId: SharedOutputLayer.PGM,
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON, adlibTag],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
 			content:
 				/^MIX ?\d+$/i.test(transitionValues.label) ||
 				/^CUT$/i.test(transitionValues.label) ||
-				/^DIP ?\d+$/i.test(transitionValues.label)
+				/^DIP ?\d+$/i.test(transitionValues.label) ||
+				!transitionValues.breakerConfig
 					? {}
-					: CreateJingleExpectedMedia(
-							config,
-							transitionValues.jingle,
-							transitionValues.alphaAtStart ?? 0,
-							transitionValues.duration ?? 0,
-							transitionValues.alphaAtEnd ?? 0
-					  )
+					: createJingleExpectedMedia(config, transitionValues.jingle, transitionValues.breakerConfig)
 		}
 	}
 }

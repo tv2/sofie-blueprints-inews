@@ -1,21 +1,17 @@
 import {
 	BaseContent,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TimelineObjectCoreExt,
-	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { CueDefinitionPgmClean, findSourceInfo, literal, SourceInfo } from 'tv2-common'
-import { SharedOutputLayers, SourceType } from 'tv2-constants'
-import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { CueDefinitionPgmClean, findSourceInfo, literal, SegmentContext, SourceInfo } from 'tv2-common'
+import { SharedOutputLayer, SourceType, SwitcherAuxLLayer } from 'tv2-constants'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluatePgmClean(
-	context: IShowStyleUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	pieces: IBlueprintPiece[],
 	partId: string,
 	parsedCue: CueDefinitionPgmClean
@@ -25,12 +21,12 @@ export function OfftubeEvaluatePgmClean(
 		return
 	}
 
-	sourceInfo = findSourceInfo(config.sources, parsedCue.sourceDefinition)
+	sourceInfo = findSourceInfo(context.config.sources, parsedCue.sourceDefinition)
 
 	const name = parsedCue.sourceDefinition.name || parsedCue.sourceDefinition.sourceType
 
 	if (!sourceInfo) {
-		context.notifyUserWarning(`Invalid source for clean output: ${name}`)
+		context.core.notifyUserWarning(`Invalid source for clean output: ${name}`)
 		return
 	}
 
@@ -40,22 +36,16 @@ export function OfftubeEvaluatePgmClean(
 		enable: {
 			start: 0
 		},
-		outputLayerId: SharedOutputLayers.AUX,
+		outputLayerId: SharedOutputLayer.AUX,
 		sourceLayerId: OfftubeSourceLayer.AuxPgmClean,
 		lifespan: PieceLifespan.OutOnShowStyleEnd,
 		content: literal<WithTimeline<BaseContent>>({
 			timelineObjects: literal<TimelineObjectCoreExt[]>([
-				literal<TSR.TimelineObjAtemAUX>({
-					id: '',
+				context.videoSwitcher.getAuxTimelineObject({
 					enable: { while: '1' },
-					priority: 0,
-					layer: OfftubeAtemLLayer.AtemAuxClean,
+					layer: SwitcherAuxLLayer.CLEAN,
 					content: {
-						deviceType: TSR.DeviceType.ATEM,
-						type: TSR.TimelineContentTypeAtem.AUX,
-						aux: {
-							input: sourceInfo.port
-						}
+						input: sourceInfo.port
 					}
 				})
 			])

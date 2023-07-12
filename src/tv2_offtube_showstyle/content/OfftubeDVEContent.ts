@@ -1,24 +1,19 @@
-import { ISegmentUserContext, SplitsContent, WithTimeline } from 'blueprints-integration'
-import { CueDefinitionDVE, DVEConfigInput, DVEOptions, MakeContentDVEBase, PartDefinition } from 'tv2-common'
-import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { SplitsContent, WithTimeline } from 'blueprints-integration'
+import {
+	CueDefinitionDVE,
+	DVEConfigInput,
+	DVEOptions,
+	MakeContentDVEBase,
+	PartDefinition,
+	ShowStyleContext
+} from 'tv2-common'
+import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 
 export const NUMBER_OF_DVE_BOXES = 4
 
-export const boxMappings: [string, string, string, string] = [
-	OfftubeAtemLLayer.AtemSSrcBox1,
-	OfftubeAtemLLayer.AtemSSrcBox2,
-	OfftubeAtemLLayer.AtemSSrcBox3,
-	OfftubeAtemLLayer.AtemSSrcBox4
-]
-
 export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 	dveLayers: {
-		ATEM: {
-			SSrcDefault: OfftubeAtemLLayer.AtemSSrcDefault,
-			SSrcArt: OfftubeAtemLLayer.AtemSSrcArt,
-			MEProgram: OfftubeAtemLLayer.AtemMEClean
-		},
 		CASPAR: {
 			CGDVEKey: OfftubeCasparLLayer.CasparCGDVEKey,
 			CGDVEFrame: OfftubeCasparLLayer.CasparCGDVEFrame
@@ -30,17 +25,14 @@ export const OFFTUBE_DVE_GENERATOR_OPTIONS: DVEOptions = {
 		CasparLLayer: {
 			ClipPending: OfftubeCasparLLayer.CasparPlayerClipPending
 		}
-	},
-	boxMappings,
-	AUDIO_LAYERS: [] // TODO
+	}
 }
 
 export function OfftubeMakeContentDVE(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ShowStyleContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
-	return MakeContentDVEBase(context, config, partDefinition, parsedCue, dveConfig, OFFTUBE_DVE_GENERATOR_OPTIONS)
+	return MakeContentDVEBase(context, partDefinition, parsedCue, dveConfig, OFFTUBE_DVE_GENERATOR_OPTIONS)
 }

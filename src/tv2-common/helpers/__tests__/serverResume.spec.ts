@@ -7,7 +7,7 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import { DVEPieceMetaData, literal, PieceMetaData, RemoteType, SourceDefinitionRemote } from 'tv2-common'
-import { SharedSourceLayers, SourceType } from 'tv2-constants'
+import { SharedSourceLayer, SourceType } from 'tv2-constants'
 import { getServerPositionForPartInstance } from '../serverResume'
 
 const EKSTERN_SOURCE: SourceDefinitionRemote = {
@@ -48,7 +48,7 @@ describe('Server Resume', () => {
 					externalId: '',
 					name: '',
 					lifespan: PieceLifespan.WithinPart,
-					sourceLayerId: SharedSourceLayers.PgmServer,
+					sourceLayerId: SharedSourceLayer.PgmServer,
 					outputLayerId: '',
 					content: literal<WithTimeline<VTContent>>({
 						fileName: '123456',
@@ -76,7 +76,7 @@ describe('Server Resume', () => {
 						externalId: '',
 						name: '',
 						lifespan: PieceLifespan.WithinPart,
-						sourceLayerId: SharedSourceLayers.PgmServer,
+						sourceLayerId: SharedSourceLayer.PgmServer,
 						outputLayerId: '',
 						content: literal<WithTimeline<VTContent>>({
 							fileName: '123456',
@@ -116,7 +116,7 @@ describe('Server Resume', () => {
 						externalId: '',
 						name: '',
 						lifespan: PieceLifespan.WithinPart,
-						sourceLayerId: SharedSourceLayers.PgmDVEAdLib,
+						sourceLayerId: SharedSourceLayer.PgmDVEAdLib,
 						outputLayerId: '',
 						content: literal<WithTimeline<SplitsContent>>({
 							boxSourceConfiguration: [],
@@ -162,7 +162,7 @@ describe('Server Resume', () => {
 						externalId: '',
 						name: '',
 						lifespan: PieceLifespan.WithinPart,
-						sourceLayerId: SharedSourceLayers.PgmDVEAdLib,
+						sourceLayerId: SharedSourceLayer.PgmDVEAdLib,
 						outputLayerId: '',
 						content: literal<WithTimeline<SplitsContent>>({
 							boxSourceConfiguration: [],

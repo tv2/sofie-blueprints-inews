@@ -3,31 +3,30 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
 import {
 	AddScript,
-	ApplyFullGraphicPropertiesToPart,
+	applyFullGraphicPropertiesToPart,
 	GetJinglePartProperties,
 	GraphicIsPilot,
 	PartDefinition,
-	PartTime
+	PartTime,
+	ShowStyleContext
 } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { BlueprintConfig } from '../helpers/config'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
 
 export async function CreatePartUnknown(
-	context: ISegmentUserContext,
-	config: BlueprintConfig,
+	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
-	const partTime = PartTime(config, partDefinition, totalWords, false)
+	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 
 	let part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
@@ -42,19 +41,18 @@ export async function CreatePartUnknown(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	part = { ...part, ...CreateEffektForpart(context, config, partDefinition, pieces) }
-	part = { ...part, ...GetJinglePartProperties(context, config, partDefinition) }
+	part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
+	part = { ...part, ...GetJinglePartProperties(context, partDefinition) }
 
 	if (
-		partDefinition.cues.some(cue => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
-		!partDefinition.cues.filter(c => c.type === CueType.Jingle).length
+		partDefinition.cues.some((cue) => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
+		!partDefinition.cues.filter((c) => c.type === CueType.Jingle).length
 	) {
-		ApplyFullGraphicPropertiesToPart(config, part)
+		applyFullGraphicPropertiesToPart(context.config, part)
 	}
 
 	await EvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

@@ -1,16 +1,30 @@
 import { BlueprintMapping, BlueprintMappings, LookaheadMode, TSR } from 'blueprints-integration'
 import {
 	AbstractLLayerServerEnable,
+	ATEM_DEVICE_ID,
+	ATEM_LAYER_PREFIX,
 	CasparPlayerClip,
 	CasparPlayerClipLoadingLoop,
-	GetDSKMappings,
+	getAtemDskMappings,
+	getTriCasterDskMappings,
 	literal,
-	SisyfosPlayerClip
+	prefixLayers,
+	TRICASTER_CLEAN_ME,
+	TRICASTER_DEVICE_ID,
+	TRICASTER_DVE_ME,
+	TRICASTER_LAYER_PREFIX,
+	TRICASTER_PROGRAM_ME
 } from 'tv2-common'
-import { AbstractLLayer, RobotCameraLayer } from 'tv2-constants'
+import {
+	AbstractLLayer,
+	RobotCameraLayer,
+	SwitcherAuxLLayer,
+	SwitcherDveLLayer,
+	SwitcherMediaPlayerLLayer,
+	SwitcherMixEffectLLayer
+} from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
-import { BlueprintConfig } from '../helpers/config'
-import { AtemLLayer, CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
+import { CasparLLayer, GraphicLLayer, SisyfosLLAyer } from '../layers'
 
 export const MAPPINGS_ABSTRACT: BlueprintMappings = {
 	core_abstract: literal<TSR.MappingAbstract & BlueprintMapping>({
@@ -18,7 +32,7 @@ export const MAPPINGS_ABSTRACT: BlueprintMappings = {
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[AbstractLLayer.ServerEnablePending]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.SERVER_ENABLE_PENDING]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
@@ -33,12 +47,12 @@ export const MAPPINGS_ABSTRACT: BlueprintMappings = {
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[AbstractLLayer.IdentMarker]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.IDENT_MARKER]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
 	}),
-	[AbstractLLayer.AudioBedBaseline]: literal<TSR.MappingAbstract & BlueprintMapping>({
+	[AbstractLLayer.AUDIO_BED_BASELINE]: literal<TSR.MappingAbstract & BlueprintMapping>({
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
@@ -565,153 +579,209 @@ export const MAPPINGS_GRAPHICS: BlueprintMappings = {
 	})
 }
 
-export const MAPPINGS_ATEM: BlueprintMappings = {
-	[AtemLLayer.AtemMEProgram]: literal<TSR.MappingAtem & BlueprintMapping>({
+export const MAPPINGS_ATEM = prefixLayers<TSR.MappingAtem & BlueprintMapping>(ATEM_LAYER_PREFIX, {
+	[SwitcherMixEffectLLayer.PROGRAM]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 0 // 0 = ME1
-	}),
-	[AtemLLayer.AtemMEClean]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherMixEffectLLayer.CLEAN]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 3 // 3 = ME4
-	}),
-	[AtemLLayer.AtemCleanUSKEffect]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherMixEffectLLayer.CLEAN_USK_FULL]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.MixEffect,
 		index: 3 // 3 = ME4
-	}),
-	[AtemLLayer.AtemAuxPGM]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherMixEffectLLayer.CLEAN_USK_EFFECT]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingAtemType.MixEffect,
+		index: 3 // 3 = ME4
+	},
+	[SwitcherAuxLLayer.PROGRAM]: {
+		device: TSR.DeviceType.ATEM,
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 0 // 0 = out 1
-	}),
-	[AtemLLayer.AtemAuxClean]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.CLEAN]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 1 // 1 = out 2
-	}),
-	[AtemLLayer.AtemAuxWall]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.AR]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		mappingType: TSR.MappingAtemType.Auxilliary,
-		index: 2 // 2 = out 3
-	}),
-	[AtemLLayer.AtemAuxAR]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 3 // 3 = out 4
-	}),
-	[AtemLLayer.AtemAuxVizOvlIn1]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.VIZ_OVL_IN_1]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 4 // 4 = out 5
-	}),
-	// atem_aux_viz_full_in_1: literal<TSR.MappingAtem & BlueprintMapping>({
-	// 	device: TSR.DeviceType.ATEM,
-	// 	deviceId: 'atem0',
-	// 	lookahead: LookaheadMode.WHEN_CLEAR,
-	// 	mappingType: TSR.MappingAtemType.Auxilliary,
-	// 	index: 5 // 5 = out 6
-	// }),
-	[AtemLLayer.AtemAuxVideoMixMinus]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.VIDEO_MIX_MINUS]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
+		deviceId: ATEM_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 6 // 6 = out 7
-	}),
-	[AtemLLayer.AtemAuxVenue]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.LOOKAHEAD]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		mappingType: TSR.MappingAtemType.Auxilliary,
-		index: 7 // 7 = out 8
-	}),
-	[AtemLLayer.AtemAuxLookahead]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 10 // 10 = out 11
-	}),
-	[AtemLLayer.AtemAuxSSrc]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherAuxLLayer.DVE]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.WHEN_CLEAR,
 		mappingType: TSR.MappingAtemType.Auxilliary,
 		index: 11 // 11 = out 12
-	}),
-	...GetDSKMappings(ATEMModel.CONSTELLATION_8K_UHD_MODE),
-	[AtemLLayer.AtemSSrcArt]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherDveLLayer.DVE]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.SuperSourceProperties,
 		index: 0 // 0 = SS
-	}),
-	[AtemLLayer.AtemSSrcDefault]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherDveLLayer.DVE_BOXES]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.WHEN_CLEAR, // TODO - verify
 		mappingType: TSR.MappingAtemType.SuperSourceBox,
 		index: 0 // 0 = SS
-	}),
-	[AtemLLayer.AtemSSrcBox1]: literal<TSR.MappingAtem & BlueprintMapping>({
+	},
+	[SwitcherMediaPlayerLLayer.Mp1]: {
 		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[AtemLLayer.AtemSSrcBox2]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[AtemLLayer.AtemSSrcBox3]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[AtemLLayer.AtemSSrcBox4]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
-		lookahead: LookaheadMode.WHEN_CLEAR,
-		lookaheadMaxSearchDistance: 1,
-		mappingType: TSR.MappingAtemType.SuperSourceBox,
-		index: 0 // 0 = SS
-	}),
-	[AtemLLayer.AtemMP1]: literal<TSR.MappingAtem & BlueprintMapping>({
-		device: TSR.DeviceType.ATEM,
-		deviceId: 'atem0',
+		deviceId: ATEM_DEVICE_ID,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingAtemType.MediaPlayer,
 		index: 0
-	})
-}
+	},
+	...getAtemDskMappings(ATEMModel.CONSTELLATION_8K_UHD_MODE)
+})
+
+export const MAPPINGS_TRICASTER = prefixLayers<TSR.MappingTriCaster & BlueprintMapping>(TRICASTER_LAYER_PREFIX, {
+	[SwitcherMixEffectLLayer.PROGRAM]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_PROGRAM_ME
+	},
+	[SwitcherMixEffectLLayer.CLEAN]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_CLEAN_ME
+	},
+	[SwitcherMixEffectLLayer.CLEAN_USK_FULL]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_CLEAN_ME
+	},
+	[SwitcherMixEffectLLayer.CLEAN_USK_EFFECT]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_CLEAN_ME
+	},
+	[SwitcherAuxLLayer.PROGRAM]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix1'
+	},
+	[SwitcherAuxLLayer.CLEAN]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix2'
+	},
+	[SwitcherAuxLLayer.WALL]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix3'
+	},
+	[SwitcherAuxLLayer.AR]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix4'
+	},
+	[SwitcherAuxLLayer.VIZ_OVL_IN_1]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix5'
+	},
+	[SwitcherAuxLLayer.LOOKAHEAD]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix6'
+	},
+	[SwitcherAuxLLayer.MIX_EFFECT_3]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix7'
+	},
+	[SwitcherAuxLLayer.VIDEO_MIX_MINUS]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.MIX_OUTPUT,
+		name: 'mix8'
+	},
+	[SwitcherDveLLayer.DVE]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_DVE_ME
+	},
+	[SwitcherDveLLayer.DVE_BOXES]: {
+		device: TSR.DeviceType.TRICASTER,
+		deviceId: TRICASTER_DEVICE_ID,
+		lookahead: LookaheadMode.WHEN_CLEAR,
+		mappingType: TSR.MappingTriCasterType.ME,
+		name: TRICASTER_DVE_ME
+	},
+	...getTriCasterDskMappings()
+})
 
 export const MAPPINGS_TELEMETRICS: BlueprintMappings = {
 	[RobotCameraLayer.TELEMETRICS]: literal<TSR.Mapping & BlueprintMapping>({
@@ -727,42 +797,6 @@ export default literal<BlueprintMappings>({
 	...MAPPINGS_CASPAR,
 	...MAPPINGS_GRAPHICS,
 	...MAPPINGS_ATEM,
+	...MAPPINGS_TRICASTER,
 	...MAPPINGS_TELEMETRICS
 })
-
-export function getMediaPlayerMappings(mediaPlayers: BlueprintConfig['mediaPlayers']) {
-	const res: BlueprintMappings = {
-		casparcg_player_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
-			device: TSR.DeviceType.ABSTRACT,
-			deviceId: 'abstract0',
-			lookahead: LookaheadMode.PRELOAD,
-			lookaheadDepth: mediaPlayers.length // Number of players
-		}),
-		sisyfos_source_clip_pending: literal<TSR.MappingAbstract & BlueprintMapping>({
-			device: TSR.DeviceType.ABSTRACT,
-			deviceId: 'abstract0',
-			lookahead: LookaheadMode.NONE
-		})
-	}
-
-	for (const mp of mediaPlayers) {
-		res[CasparPlayerClip(mp.id)] = literal<TSR.MappingCasparCG & BlueprintMapping>({
-			device: TSR.DeviceType.CASPARCG,
-			deviceId: 'caspar01',
-			lookahead: LookaheadMode.NONE,
-			channel: 0, // TODO?
-			layer: 110
-		})
-		res[SisyfosPlayerClip(mp.id)] = literal<TSR.MappingSisyfos & BlueprintMapping>({
-			device: TSR.DeviceType.SISYFOS,
-			deviceId: 'sisyfos0',
-			lookahead: LookaheadMode.NONE,
-			channel: Number(mp.id) || 0,
-			mappingType: TSR.MappingSisyfosType.CHANNEL,
-			layerName: `Server ${mp.id === '1' ? 'A' : 'B'}`,
-			setLabelToLayerName: true
-		})
-	}
-
-	return res
-}

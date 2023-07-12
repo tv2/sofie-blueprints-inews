@@ -1,43 +1,22 @@
+import { GraphicsContent, IBlueprintPiece, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
 import {
-	GraphicsContent,
-	IBlueprintActionManifest,
-	IBlueprintAdLibPiece,
-	IBlueprintPiece,
-	PieceLifespan,
-	TSR,
-	WithTimeline
-} from 'blueprints-integration'
-import {
-	AtemLLayerDSK,
 	CueDefinitionGraphic,
 	CueDefinitionTelefon,
+	getDskLLayerName,
 	GraphicInternal,
 	GraphicPieceMetaData,
 	literal,
 	PartDefinitionKam
 } from 'tv2-common'
-import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayers, SourceType } from 'tv2-constants'
-import { SegmentUserContext } from '../../../../__mocks__/context'
-import {
-	DEFAULT_GRAPHICS_SETUP,
-	defaultShowStyleConfig,
-	defaultStudioConfig,
-	OVL_SHOW_NAME
-} from '../../../../tv2_afvd_showstyle/__tests__/configs'
+import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
+import { makeMockGalleryContext } from '../../../../__mocks__/context'
+import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
+import { OVL_SHOW_NAME } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
-import {
-	defaultDSKConfig,
-	parseConfig as parseStudioConfig,
-	StudioConfig
-} from '../../../../tv2_afvd_studio/helpers/config'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
-import mappingsDefaults from '../../../../tv2_afvd_studio/migrations/mappings-defaults'
-import { parseConfig as parseShowStyleConfig, ShowStyleConfig } from '../../config'
 import { EvaluateTelefon } from '../telefon'
 
-const mockContext = new SegmentUserContext('test', mappingsDefaults, parseStudioConfig, parseShowStyleConfig)
-mockContext.studioConfig = defaultStudioConfig as any
-mockContext.showStyleConfig = defaultShowStyleConfig as any
+const mockContext = makeMockGalleryContext()
 
 const dummyPart = literal<PartDefinitionKam>({
 	type: PartType.Kam,
@@ -79,40 +58,16 @@ describe('telefon', () => {
 			},
 			iNewsCommand: 'TELEFON'
 		}
-		const pieces: IBlueprintPiece[] = []
-		const adLibPieces: IBlueprintAdLibPiece[] = []
-		const actions: IBlueprintActionManifest[] = []
 		const partId = '0000000001'
-		EvaluateTelefon(
-			{
-				showStyle: (defaultShowStyleConfig as unknown) as ShowStyleConfig,
-				studio: (defaultStudioConfig as unknown) as StudioConfig,
-				sources: {
-					cameras: [],
-					lives: [],
-					feeds: [],
-					replays: []
-				},
-				mediaPlayers: [],
-				dsk: defaultDSKConfig,
-				selectedGraphicsSetup: DEFAULT_GRAPHICS_SETUP
-			},
-			mockContext,
-			pieces,
-			adLibPieces,
-			actions,
-			partId,
-			dummyPart,
-			cue
-		)
-		expect(pieces).toEqual([
+		const result = EvaluateTelefon(mockContext, partId, dummyPart, cue)
+		expect(result.pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'TLF 1',
 				enable: {
 					start: 0
 				},
-				outputLayerId: SharedOutputLayers.OVERLAY,
+				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
@@ -140,7 +95,7 @@ describe('telefon', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showId: OVL_SHOW_NAME
+								showName: OVL_SHOW_NAME
 							}
 						}),
 						literal<TSR.TimelineObjAtemDSK>({
@@ -149,7 +104,7 @@ describe('telefon', () => {
 								start: 0
 							},
 							priority: 1,
-							layer: AtemLLayerDSK(0),
+							layer: prefixLayer(getDskLLayerName(0)),
 							content: {
 								deviceType: TSR.DeviceType.ATEM,
 								type: TSR.TimelineContentTypeAtem.DSK,

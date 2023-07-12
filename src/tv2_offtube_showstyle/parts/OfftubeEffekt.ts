@@ -1,17 +1,16 @@
-import { IBlueprintPiece, IShowStyleUserContext } from 'blueprints-integration'
-import { CreateEffektForPartBase, PartDefinition } from 'tv2-common'
-import { SharedSourceLayers } from 'tv2-constants'
+import { IBlueprintPiece } from 'blueprints-integration'
+import { CreateEffektForPartBase, PartDefinition, ShowStyleContext } from 'tv2-common'
+import { SharedSourceLayer } from 'tv2-constants'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 
 export function CreateEffektForpart(
-	context: IShowStyleUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: ShowStyleContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[]
 ) {
-	return CreateEffektForPartBase(context, config, partDefinition, pieces, {
-		sourceLayer: SharedSourceLayers.PgmJingle,
+	return CreateEffektForPartBase(context, partDefinition, pieces, {
+		sourceLayer: SharedSourceLayer.PgmJingle,
 		casparLayer: OfftubeCasparLLayer.CasparPlayerJingle,
 		sisyfosLayer: OfftubeSisyfosLLayer.SisyfosSourceJingle
 	})
