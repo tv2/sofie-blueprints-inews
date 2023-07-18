@@ -275,7 +275,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 					'The Sofie Layer mapping to use in playback. This will ensure proper viz transition logic by matching the viz layers.',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
-					deviceTypes: [TSR.DeviceType.VIZMSE]
+					deviceTypes: [TSR.DeviceType.VIZMSE, TSR.DeviceType.CASPARCG]
 				},
 				multiple: false,
 				required: true,
