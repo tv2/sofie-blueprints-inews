@@ -12,7 +12,7 @@ import { SharedGraphicLLayer } from 'tv2-constants'
 
 export function CreateHTMLRendererContent(
 	config: TV2ShowStyleConfig,
-	mappedTemplate: string,
+	graphicTemplateName: string,
 	data: object
 ): TSR.TimelineObjCCGTemplate['content'] {
 	return {
@@ -22,7 +22,7 @@ export function CreateHTMLRendererContent(
 		name: getHtmlTemplateName(config),
 		data: {
 			display: 'program',
-			slots: getHtmlTemplateContent(config, mappedTemplate, data),
+			slots: getHtmlTemplateContent(config, graphicTemplateName, data),
 			partialUpdate: true
 		},
 		useStopCommand: false,
@@ -32,12 +32,22 @@ export function CreateHTMLRendererContent(
 	}
 }
 
+function getMappedGraphicsTemplateName(templateName: string): string {
+	switch (templateName) {
+		case 'locators-afvb':
+			return 'locators'
+		default:
+			return templateName
+	}
+}
+
 export function getHtmlTemplateContent(
 	config: TV2ShowStyleConfig,
-	graphicTemplate: string,
+	graphicTemplateName: string,
 	data: object
 ): Partial<Slots> {
-	const layer = getTimelineLayerForGraphic(config, graphicTemplate)
+	const mappedGraphicTemplateName = getMappedGraphicsTemplateName(graphicTemplateName)
+	const layer = getTimelineLayerForGraphic(config, mappedGraphicTemplateName)
 
 	const slot = layerToHTMLGraphicSlot[layer]
 
@@ -49,7 +59,7 @@ export function getHtmlTemplateContent(
 		[slot]: {
 			display: 'program',
 			payload: {
-				type: graphicTemplate,
+				type: graphicTemplateName,
 				...data
 			}
 		}

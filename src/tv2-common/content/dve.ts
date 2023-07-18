@@ -114,6 +114,8 @@ export interface DVEOptions {
 type BoxConfig = DVEConfigBox & { source: number }
 type BoxSources = Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) & SplitsContentBoxProperties>
 
+const DEFAULT_LOCATOR_TYPE = 'locators'
+
 export function MakeContentDVEBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
@@ -275,14 +277,9 @@ export function MakeContentDVE2<
 		}
 	})
 
-	let graphicsTemplateStyle: any = ''
-	try {
-		if (dveConfig.DVEGraphicsTemplateJSON) {
-			graphicsTemplateStyle = JSON.parse(dveConfig.DVEGraphicsTemplateJSON.toString())
-		}
-	} catch {
-		context.core.notifyUserWarning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
-	}
+	const graphicsTemplate = getDveGraphicsTemplate(dveConfig, context.core.notifyUserWarning)
+	const graphicsTemplateStyle = getDveGraphicsTemplateStyle(graphicsTemplate)
+	const locatorType = getDveLocatorType(graphicsTemplate)
 
 	let keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : undefined
 	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
@@ -331,9 +328,9 @@ export function MakeContentDVE2<
 					enable: { start: 0 },
 					priority: 1,
 					layer: SharedGraphicLLayer.GraphicLLayerLocators,
-					content: CreateHTMLRendererContent(context.config, 'locators', {
+					content: CreateHTMLRendererContent(context.config, locatorType, {
 						...graphicsTemplateContent,
-						style: graphicsTemplateStyle ?? {}
+						style: graphicsTemplateStyle
 					})
 				}),
 				...(keyFile
@@ -376,6 +373,34 @@ export function MakeContentDVE2<
 			])
 		})
 	}
+}
+
+function getDveGraphicsTemplate(dveConfigInput: DVEConfigInput, notifyUserWarning: (message: string) => void): object {
+	try {
+		const dveGraphicsTemplate = JSON.parse(dveConfigInput.DVEGraphicsTemplateJSON)
+		if (!isValidDveGraphicsTemplate(dveGraphicsTemplate)) {
+			notifyUserWarning(`DVE Graphics Template for ${dveConfigInput.DVEName} is invalid.`)
+			return {}
+		}
+		return dveGraphicsTemplate
+	} catch {
+		notifyUserWarning(`DVE Graphics Template JSON for ${dveConfigInput.DVEName} is ill-formed.`)
+		return {}
+	}
+}
+
+function isValidDveGraphicsTemplate(dveGraphicsTemplate: unknown): dveGraphicsTemplate is object {
+	return typeof dveGraphicsTemplate === 'object' && dveGraphicsTemplate !== null
+}
+
+function getDveGraphicsTemplateStyle(dveGraphicsTemplate: { locatorType?: string }): object {
+	const { locatorType, ...dveGraphicsTemplateStyle } = dveGraphicsTemplate
+	return dveGraphicsTemplateStyle
+}
+
+function getDveLocatorType(dveGraphicsTemplate: { locatorType?: string }): string {
+	const { locatorType } = dveGraphicsTemplate
+	return locatorType ?? DEFAULT_LOCATOR_TYPE
 }
 
 const setBoxSource = (
