@@ -1,5 +1,16 @@
-import { IBlueprintConfig, ICommonContext, TableConfigItemValue } from 'blueprints-integration'
-import { findGfxSetup, TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import {
+	IBlueprintConfig,
+	IBlueprintShowStyleVariant,
+	ICommonContext,
+	TableConfigItemValue
+} from 'blueprints-integration'
+import {
+	findGfxSetup,
+	getVizShowKeyframes,
+	TableConfigGfxSetup,
+	TV2ShowstyleBlueprintConfigBase,
+	VizShowKeyframes
+} from 'tv2-common'
 import { GalleryStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 
 export interface GalleryTableConfigGfxSetup extends TableConfigGfxSetup {
@@ -11,6 +22,8 @@ export interface GalleryTableConfigGfxSetup extends TableConfigGfxSetup {
 export interface GalleryBlueprintConfig extends GalleryStudioConfig {
 	showStyle: GalleryShowStyleConfig
 	selectedGfxSetup: GalleryTableConfigGfxSetup
+	vizShowKeyframes: VizShowKeyframes
+	variants: IBlueprintShowStyleVariant[]
 }
 
 export interface GalleryShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
@@ -18,7 +31,11 @@ export interface GalleryShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 	GfxSetups: GalleryTableConfigGfxSetup[]
 }
 
-export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
+export function preprocessConfig(
+	context: ICommonContext,
+	rawConfig: IBlueprintConfig,
+	showStyleVariants: IBlueprintShowStyleVariant[]
+): any {
 	const showstyleConfig = rawConfig as unknown as GalleryShowStyleConfig
 	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
 		_id: '',
@@ -30,6 +47,8 @@ export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintC
 	})
 	return {
 		showStyle: showstyleConfig,
-		selectedGfxSetup
+		vizShowKeyframes: getVizShowKeyframes(showstyleConfig),
+		selectedGfxSetup,
+		variants: showStyleVariants
 	}
 }

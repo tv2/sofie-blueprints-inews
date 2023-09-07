@@ -1,5 +1,5 @@
 import { BlueprintManifestType, ShowStyleBlueprintManifest } from 'blueprints-integration'
-import { getEndStateForPart, getShowStyleVariantId } from 'tv2-common'
+import { getEndStateForPart, getShowStyleVariantId, onSetNext } from 'tv2-common'
 import { showStyleConfigManifest } from './config-manifests'
 import { showStyleMigrations } from './migrations'
 
@@ -32,6 +32,7 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 		getEndStateForPart,
 		executeAction: executeActionAFVD,
 		syncIngestUpdateToPartInstance,
+		onSetNext,
 
 		showStyleConfigManifest,
 		showStyleMigrations

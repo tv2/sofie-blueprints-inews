@@ -1,5 +1,7 @@
 import { ICommonContext } from 'blueprints-integration'
-import { TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import { TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase, VizShowKeyframes } from 'tv2-common'
+
+export const GFX_SETUP_CLASS_PREFIX = 'GFX_SETUP_'
 
 export interface DVEConfigInput {
 	// _id: string
@@ -26,4 +28,30 @@ export function findGfxSetup<ShowStyleConfig extends TV2ShowstyleBlueprintConfig
 		return fallbackGfxSetup
 	}
 	return foundTableConfigGfxSetup
+}
+
+export function getVizShowKeyframes<ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase>(
+	config: ShowStyleConfig
+): VizShowKeyframes {
+	const keyframes: VizShowKeyframes = {
+		full: [],
+		overlay: []
+	}
+	config.GfxSetups.forEach((gfxSetup) => {
+		keyframes.full.push({
+			id: '',
+			enable: { while: `.${GFX_SETUP_CLASS_PREFIX}${gfxSetup._id}` },
+			content: {
+				showName: gfxSetup.FullShowName
+			}
+		})
+		keyframes.overlay.push({
+			id: '',
+			enable: { while: `.${GFX_SETUP_CLASS_PREFIX}${gfxSetup._id}` },
+			content: {
+				showName: gfxSetup.OvlShowName
+			}
+		})
+	})
+	return keyframes
 }

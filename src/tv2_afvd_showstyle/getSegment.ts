@@ -8,12 +8,11 @@ import {
 	PieceLifespan,
 	WithTimeline
 } from 'blueprints-integration'
-import { getSegmentBase, INewsPayload, literal, SegmentContext, SegmentContextImpl, TransitionStyle } from 'tv2-common'
+import { getSegmentBase, literal, SegmentContext, SegmentContextImpl, TransitionStyle } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { GalleryBlueprintConfig } from './helpers/config'
-import { CreateShowLifecyclePieces } from './helpers/pieces/showLifecycle'
 import { SourceLayer } from './layers'
 import { CreatePartEVS } from './parts/evs'
 import { CreatePartGrafik } from './parts/grafik'
@@ -28,7 +27,6 @@ export async function getSegment(
 	coreContext: ISegmentUserContext,
 	ingestSegment: IngestSegment
 ): Promise<BlueprintResultSegment> {
-	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
 	const context = new SegmentContextImpl<GalleryBlueprintConfig>(coreContext, GALLERY_UNIFORM_CONFIG)
 
 	const result: BlueprintResultSegment = await getSegmentBase<GalleryBlueprintConfig>(context, ingestSegment, {
@@ -46,10 +44,6 @@ export async function getSegment(
 	})
 
 	const blueprintParts = result.parts
-
-	if (segmentPayload) {
-		insertSpecialPieces(context.config, blueprintParts, segmentPayload)
-	}
 
 	return {
 		segment: result.segment,
@@ -94,33 +88,5 @@ export function CreatePartContinuity(
 		],
 		adLibPieces: [],
 		actions: []
-	}
-}
-
-function insertSpecialPieces(
-	config: GalleryBlueprintConfig,
-	blueprintParts: BlueprintResultPart[],
-	segmentPayload: INewsPayload
-) {
-	// Insert cue-independent pieces
-
-	if (!blueprintParts.length || config.studio.GraphicsType !== 'VIZ') {
-		return
-	}
-
-	const gfxSetupsToInitialize = segmentPayload?.initializeShows
-	if (gfxSetupsToInitialize) {
-		const showsToInitialize = new Set<string>()
-		const allShows = new Set<string>()
-		config.showStyle.GfxSetups.forEach((gfxSetup) => {
-			allShows.add(gfxSetup.FullShowName)
-			allShows.add(gfxSetup.OvlShowName)
-			if (gfxSetupsToInitialize.includes(gfxSetup.Name)) {
-				showsToInitialize.add(gfxSetup.FullShowName)
-				showsToInitialize.add(gfxSetup.OvlShowName)
-			}
-		})
-		const showsToCleanup = Array.from(allShows).filter((show) => !showsToInitialize.has(show))
-		CreateShowLifecyclePieces(config, blueprintParts[0], Array.from(showsToInitialize), showsToCleanup)
 	}
 }

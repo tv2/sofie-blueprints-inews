@@ -1,7 +1,6 @@
 import {
 	createCueDefinitionGraphicDesign,
 	createCueDefinitionGraphicSchema,
-	CueDefinitionFromField,
 	INewsFields,
 	parseTransitionStyle,
 	PostProcessDefinitions,
@@ -192,7 +191,7 @@ export function ParseBody(
 	fields: INewsFields,
 	modified: number
 ): PartDefinition[] {
-	let definitions: PartDefinition[] = []
+	const definitions: PartDefinition[] = []
 	let definition: PartDefinition = initDefinition(fields, modified, segmentName)
 
 	// Handle intro segments, they have special behaviour.
@@ -365,7 +364,6 @@ export function ParseBody(
 	})
 
 	definitions[0]?.cues.push(...parseFieldsToCueDefinitions(fields, config))
-	definitions = stripRedundantCuesWhenFieldCueIsPresent(definitions)
 
 	return PostProcessDefinitions(definitions, segmentId)
 }
@@ -717,42 +715,4 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 
 export function isMinusMic(inputName: string): boolean {
 	return /minus mic/i.test(inputName)
-}
-
-export function stripRedundantCuesWhenFieldCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {
-	return stripRedundantCuesForSchema(stripRedundantCuesForDesign(partDefinitions))
-}
-
-function stripRedundantCuesForDesign(partDefinitions: PartDefinition[]): PartDefinition[] {
-	return stripRedundantCues(partDefinitions, [CueType.GraphicDesign])
-}
-
-function stripRedundantCuesForSchema(partDefinitions: PartDefinition[]): PartDefinition[] {
-	return stripRedundantCues(partDefinitions, [CueType.GraphicSchema])
-}
-
-function stripRedundantCues(partDefinitions: PartDefinition[], cueTypesToCheck: CueType[]): PartDefinition[] {
-	const hasFieldCue: boolean = partDefinitions.some((definition) =>
-		definition.cues.some((cue) => {
-			const cueFromField = cue as CueDefinitionFromField
-			return cueTypesToCheck.includes(cue.type) && cueFromField.isFromField
-		})
-	)
-
-	if (!hasFieldCue) {
-		return partDefinitions
-	}
-
-	return partDefinitions.map((definition) => {
-		const cues = definition.cues.filter((cue) => {
-			if (!cueTypesToCheck.includes(cue.type)) {
-				return true
-			}
-			return (cue as CueDefinitionFromField).isFromField
-		})
-		return {
-			...definition,
-			cues
-		}
-	})
 }

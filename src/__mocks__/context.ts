@@ -13,6 +13,7 @@ import {
 	IBlueprintResolvedPieceInstance,
 	IBlueprintRundownDB,
 	IBlueprintRundownPlaylist,
+	IBlueprintShowStyleVariant,
 	ICommonContext,
 	IGetRundownContext,
 	IPackageInfoContext,
@@ -48,7 +49,7 @@ import { preprocessConfig as parseStudioConfigAFVD } from '../tv2_afvd_studio/he
 import mappingsDefaultsAFVD from '../tv2_afvd_studio/migrations/mappings-defaults'
 import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 
-export function getHash(str: string): string {
+function getHash(str: string): string {
 	const hash = crypto.createHash('sha1')
 	return hash
 		.update(str)
@@ -169,13 +170,21 @@ export class ShowStyleContextMock extends StudioContext implements IShowStyleCon
 	public studioConfig: { [key: string]: ConfigItemValue } = {}
 	public showStyleConfig: { [key: string]: ConfigItemValue } = {}
 
-	private parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any
+	private parseShowStyleConfig: (
+		context: ICommonContext,
+		config: IBlueprintConfig,
+		showStyleVariants: IBlueprintShowStyleVariant[]
+	) => any
 
 	constructor(
 		contextName: string,
 		mappingsDefaults: BlueprintMappings,
 		parseStudioConfig: (context: ICommonContext, rawConfig: IBlueprintConfig) => any,
-		parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any,
+		parseShowStyleConfig: (
+			context: ICommonContext,
+			config: IBlueprintConfig,
+			showStyleVariants: IBlueprintShowStyleVariant[]
+		) => any,
 		rundownId?: string,
 		segmentId?: string,
 		partId?: string
@@ -188,7 +197,7 @@ export class ShowStyleContextMock extends StudioContext implements IShowStyleCon
 	}
 
 	public getShowStyleConfig() {
-		return _.clone(this.parseShowStyleConfig(this, this.showStyleConfig))
+		return _.clone(this.parseShowStyleConfig(this, this.showStyleConfig, []))
 	}
 	public getShowStyleConfigRef(_configKey: string): string {
 		return 'test'
@@ -233,7 +242,11 @@ export class RundownContextMock extends ShowStyleContextMock implements IRundown
 		contextName: string,
 		mappingsDefaults: BlueprintMappings,
 		parseStudioConfig: (context: ICommonContext, rawConfig: IBlueprintConfig) => any,
-		parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any,
+		parseShowStyleConfig: (
+			context: ICommonContext,
+			config: IBlueprintConfig,
+			showStyleVariants: IBlueprintShowStyleVariant[]
+		) => any,
 		rundownId?: string,
 		segmentId?: string,
 		partId?: string
@@ -270,7 +283,11 @@ export class SegmentUserContextMock extends RundownContextMock implements ISegme
 		contextName: string,
 		mappingsDefaults: BlueprintMappings,
 		parseStudioConfig: (context: ICommonContext, rawConfig: IBlueprintConfig) => any,
-		parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any,
+		parseShowStyleConfig: (
+			context: ICommonContext,
+			config: IBlueprintConfig,
+			showStyleVariants: IBlueprintShowStyleVariant[]
+		) => any,
 		rundownId?: string,
 		segmentId?: string,
 		partId?: string
@@ -317,7 +334,11 @@ export class SyncIngestUpdateToPartInstanceContextMock
 		contextName: string,
 		mappingsDefaults: BlueprintMappings,
 		parseStudioConfig: (context: ICommonContext, rawConfig: IBlueprintConfig) => any,
-		parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any,
+		parseShowStyleConfig: (
+			context: ICommonContext,
+			config: IBlueprintConfig,
+			showStyleVariants: IBlueprintShowStyleVariant[]
+		) => any,
 		rundownId: string,
 		segmentId?: string,
 		partId?: string
@@ -422,7 +443,11 @@ export class ActionExecutionContextMock extends ShowStyleUserContextMock impleme
 		contextName: string,
 		mappingsDefaults: BlueprintMappings,
 		parseStudioConfig: (context: ICommonContext, rawConfig: IBlueprintConfig) => any,
-		parseShowStyleConfig: (context: ICommonContext, config: IBlueprintConfig) => any,
+		parseShowStyleConfig: (
+			context: ICommonContext,
+			config: IBlueprintConfig,
+			showStyleVariants: IBlueprintShowStyleVariant[]
+		) => any,
 		rundownId: string,
 		segmentId: string,
 		partId: string,
@@ -672,7 +697,6 @@ export function makeMockCoreGalleryContext(overrides?: MockConfigOverrides) {
 
 export function makeMockGalleryContext(overrides?: MockConfigOverrides) {
 	const mockCoreContext = makeMockCoreGalleryContext(overrides)
-	// @todo: this is not great, but it works
 	const config = { ...mockCoreContext.getStudioConfig(), ...(mockCoreContext.getShowStyleConfig() as any) }
 	const mockContext: SegmentContext<GalleryBlueprintConfig> = {
 		core: mockCoreContext,

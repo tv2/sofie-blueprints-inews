@@ -365,6 +365,14 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
+		_id: SourceLayer.PgmVariant,
+		_rank: 29,
+		name: 'Schema',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		isHidden: true
+	},
+	{
 		_id: OfftubeSourceLayer.PgmDesign,
 		_rank: 30,
 		name: 'GFX Design',
@@ -381,7 +389,7 @@ const SEC: ISourceLayer[] = [
 	},
 	{
 		_id: SourceLayer.PgmSchema,
-		_rank: 30,
+		_rank: 40,
 		name: 'Caspar Schema',
 		abbreviation: '',
 		type: SourceLayerType.UNKNOWN,

@@ -20,7 +20,6 @@ export const CasparLLayer = {
 export type CasparLLayer = AFVDCasparLLayer | SharedCasparLLayer
 
 enum AFVDGraphicLLayer {
-	GraphicLLayerInitialize = 'graphic_initialize',
 	GraphicLLayerCleanup = 'graphic_cleanup'
 }
 

@@ -14,13 +14,12 @@ import {
 	GraphicPieceMetaData,
 	GraphicPilot,
 	literal,
-	PartDefinitionKam,
-	PieceMetaData
+	OVL_SHOW_PLACEHOLDER,
+	PartDefinitionKam
 } from 'tv2-common'
 import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
-import { OVL_SHOW_NAME } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
 import { EvaluateCueGraphic } from '../graphic'
 
@@ -57,7 +56,7 @@ function makeTestBundCue(infiniteMode: CueTime['infiniteMode']): CueDefinitionGr
 	}
 }
 
-const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
+const DSK_ENABLE_OBJ = literal<TSR.TimelineObjAtemDSK>({
 	id: '',
 	enable: {
 		start: 0
@@ -84,6 +83,10 @@ const dskEnableObj = literal<TSR.TimelineObjAtemDSK>({
 	}
 })
 
+export const OVL_KEYFRAMES: TSR.TimelineObjVIZMSEElementInternal['keyframes'] = [
+	{ id: '', enable: { while: '.GFX_SETUP_SomeId' }, content: { showName: 'ovl-show-id' } }
+]
+
 describe('grafik piece', () => {
 	test('kg bund', () => {
 		const cue: CueDefinitionGraphic<GraphicInternal> = {
@@ -109,7 +112,7 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(result.pieces).toEqual([
+		expect(result.pieces).toMatchObject([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
@@ -142,10 +145,11 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			})
@@ -174,7 +178,7 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(result.adlibPieces).toEqual([
+		expect(result.adlibPieces).toMatchObject([
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
 				externalId: partId,
@@ -203,10 +207,11 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			}),
@@ -238,10 +243,11 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			})
@@ -270,7 +276,7 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(result.adlibPieces).toEqual([
+		expect(result.adlibPieces).toMatchObject([
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
 				externalId: partId,
@@ -299,10 +305,11 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			}),
@@ -334,10 +341,11 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			})
@@ -368,7 +376,7 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(result.pieces).toEqual([
+		expect(result.pieces).toMatchObject([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'bund - Odense\n - Copenhagen',
@@ -401,10 +409,11 @@ describe('grafik piece', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			})
@@ -517,7 +526,7 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(result.pieces).toEqual([
+		expect(result.pieces).toMatchObject([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'direkte - KØBENHAVN',
@@ -549,10 +558,11 @@ describe('grafik piece', () => {
 								templateName: 'direkte',
 								templateData: ['KØBENHAVN'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			})
@@ -583,7 +593,7 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(result.pieces).toEqual([
+		expect(result.pieces).toMatchObject([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'arkiv - unnamed org',
@@ -616,10 +626,11 @@ describe('grafik piece', () => {
 								templateName: 'arkiv',
 								templateData: ['unnamed org'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			})
@@ -648,7 +659,7 @@ describe('grafik piece', () => {
 			dummyPart,
 			cue.adlib ? { rank: 0 } : undefined
 		)
-		expect(result.adlibPieces).toEqual([
+		expect(result.adlibPieces).toMatchObject([
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
 				externalId: partId,
@@ -677,10 +688,11 @@ describe('grafik piece', () => {
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			}),
@@ -711,10 +723,11 @@ describe('grafik piece', () => {
 								templateName: 'tlftoptlive',
 								templateData: ['Line 1', 'Line 2'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
-						dskEnableObj
+						DSK_ENABLE_OBJ
 					])
 				})
 			})

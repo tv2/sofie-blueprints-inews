@@ -1,4 +1,4 @@
-import { TableConfigItemValue } from 'blueprints-integration'
+import { IBlueprintShowStyleVariant, TableConfigItemValue, TSR } from 'blueprints-integration'
 import {
 	DVEConfigInput,
 	SourceInfo,
@@ -39,9 +39,9 @@ export interface TableConfigItemGfxDesignTemplate {
 }
 
 export interface TableConfigItemGfxShowMapping {
-	Design: string
-	GraphicsSetup: string[]
-	Schema: string[]
+	Design: { value: string; label: string }
+	GfxSetup: Array<{ value: string; label: string }>
+	Schema: Array<{ value: string; label: string }>
 }
 
 export interface TableConfigItemGfxDefaults {
@@ -169,6 +169,11 @@ export interface SourceMapping {
 	replays: SourceInfo[]
 }
 
+export interface VizShowKeyframes {
+	overlay: NonNullable<TSR.TimelineObjVIZMSEElementInternal['keyframes']>
+	full: NonNullable<TSR.TimelineObjVIZMSEElementInternal['keyframes']>
+}
+
 export interface TV2StudioBlueprintConfigBase<StudioConfig extends TV2StudioConfigBase> {
 	studio: StudioConfig
 	sources: SourceMapping
@@ -197,8 +202,18 @@ export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase
 	extends TV2StudioBlueprintConfigBase<StudioConfig> {
 	showStyle: TV2ShowstyleBlueprintConfigBase
 	selectedGfxSetup: TableConfigGfxSetup
+	vizShowKeyframes: VizShowKeyframes
+	variants: TV2ShowStyleVariant[]
 }
 
 export type TV2StudioConfig = TV2StudioBlueprintConfigBase<TV2StudioConfigBase>
 
 export type TV2ShowStyleConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>
+
+export interface TV2ShowStyleVariantBlueprintConfig {
+	GfxDefaults?: TableConfigItemGfxDefaults[] // @todo: this should remain optional until Core allows making it required
+}
+
+export type TV2ShowStyleVariant = Omit<IBlueprintShowStyleVariant, 'blueprintConfig'> & {
+	blueprintConfig: TV2ShowStyleVariantBlueprintConfig
+}

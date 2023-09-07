@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@sofie-automation/blueprints-integration": "npm:@tv2media/blueprints-integration@46.3.0-staging",
-    "ts-mockito": "^2.6.1",
+    "jest-mock-extended": "^3.0.5",
     "underscore": "^1.12.1"
   },
   "resolutions": {

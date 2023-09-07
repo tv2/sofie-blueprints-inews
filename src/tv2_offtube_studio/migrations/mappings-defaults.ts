@@ -43,6 +43,11 @@ const MAPPINGS_ABSTRACT: BlueprintMappings = {
 		device: TSR.DeviceType.ABSTRACT,
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.NONE
+	}),
+	[AbstractLLayer.GFX_SETUP]: literal<TSR.MappingAbstract & BlueprintMapping>({
+		device: TSR.DeviceType.ABSTRACT,
+		deviceId: 'abstract0',
+		lookahead: LookaheadMode.NONE
 	})
 }
 
@@ -452,6 +457,18 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		deviceId: 'abstract0',
 		layerName: 'Override Concept',
 		lookahead: LookaheadMode.NONE
+	}),
+	[GraphicLLayer.GraphicLLayerInitFull]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: TSR.DeviceType.VIZMSE,
+		deviceId: 'abstract0',
+		layerName: 'GFX Fullscreen Show Initialization',
+		lookahead: LookaheadMode.WHEN_CLEAR
+	}),
+	[GraphicLLayer.GraphicLLayerInitOverlay]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: TSR.DeviceType.VIZMSE,
+		deviceId: 'abstract0',
+		layerName: 'GFX Overlay Show Initialization',
+		lookahead: LookaheadMode.WHEN_CLEAR
 	})
 }
 

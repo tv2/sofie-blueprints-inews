@@ -1,7 +1,7 @@
 import { ITimelineEventContext } from 'blueprints-integration'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { UniformConfig } from '../uniformConfig'
-import { ShowStyleContextImpl } from './context'
+import { ShowStyleContextImpl } from './ShowStyleContext'
 
 export class TimelineContext<
 	BlueprintConfig extends TV2ShowStyleConfig = TV2ShowStyleConfig

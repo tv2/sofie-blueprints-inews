@@ -1,9 +1,11 @@
-import { GraphicsContent, IBlueprintPiece, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
+import { GraphicsContent, PieceLifespan, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	calculateTime,
 	CueDefinitionGfxSchema,
+	EvaluateCueResult,
 	getHtmlTemplateName,
 	literal,
+	OVL_SHOW_PLACEHOLDER,
 	ShowStyleContext,
 	TableConfigGfxSchema,
 	TV2ShowStyleConfig
@@ -39,17 +41,17 @@ export class GfxSchemaGenerator {
 
 	public createBlueprintPieceFromGfxSchemaCue(
 		context: ShowStyleContext,
-		pieces: IBlueprintPiece[],
 		partId: string,
 		cue: CueDefinitionGfxSchema
-	): void {
+	): EvaluateCueResult {
+		const result = new EvaluateCueResult()
 		if (!cue.schema) {
 			context.core.notifyUserWarning(`No valid Schema found for ${cue.schema}`)
-			return
+			return result
 		}
 
 		const start = (cue.start ? calculateTime(cue.start) : 0) ?? 0
-		pieces.push({
+		result.pieces.push({
 			externalId: partId,
 			name: cue.schema,
 			enable: {
@@ -66,6 +68,7 @@ export class GfxSchemaGenerator {
 				timelineObjects: this.createTimelineObjects(context, cue)
 			})
 		})
+		return result
 	}
 
 	private createTimelineObjects(
@@ -131,8 +134,9 @@ export class GfxSchemaGenerator {
 				type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 				templateName: cue.schema,
 				templateData: [],
-				showName: config.selectedGfxSetup.OvlShowName ?? ''
-			}
+				showName: OVL_SHOW_PLACEHOLDER
+			},
+			keyframes: config.vizShowKeyframes.overlay
 		}
 	}
 

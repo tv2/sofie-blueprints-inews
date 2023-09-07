@@ -52,7 +52,6 @@ export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprint
 	const studioConfig = rawConfig as unknown as OfftubeStudioConfig
 	const config: OfftubeStudioBlueprintConfig = {
 		studio: rawConfig as any,
-		// showStyle: {} as any,
 		sources: parseSources(studioConfig),
 		mediaPlayers: parseMediaPlayers(studioConfig),
 		dsk: studioConfig.SwitcherSource.DSK

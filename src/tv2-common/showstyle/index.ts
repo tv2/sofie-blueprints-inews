@@ -1,3 +1,3 @@
 export * from './config-manifests'
-export * from './context'
+export * from './ShowStyleContext'
 export * from './timelineEventContext'

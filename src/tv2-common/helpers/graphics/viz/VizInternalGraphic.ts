@@ -1,8 +1,11 @@
-import { SomeContent, TSR, WithTimeline } from 'blueprints-integration'
+import { ExpectedPlayoutItemGeneric, SomeContent, TSR, WithTimeline } from 'blueprints-integration'
 import { getDskOnAirTimelineObjects, getTimelineLayerForGraphic, literal } from 'tv2-common'
-import { DskRole } from 'tv2-constants'
+import { DskRole, SharedGraphicLLayer } from 'tv2-constants'
 
 import { InternalGraphic } from '../internal'
+
+export const OVL_SHOW_PLACEHOLDER = 'ovl_show_placeholder'
+export const FULL_SHOW_PLACEHOLDER = 'full_show_placeholder'
 
 export class VizInternalGraphic extends InternalGraphic {
 	protected getContent(): WithTimeline<SomeContent> {
@@ -21,9 +24,10 @@ export class VizInternalGraphic extends InternalGraphic {
 						type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 						templateName: this.templateName,
 						templateData: this.cue.graphic.textFields,
-						channelName: this.engine === 'WALL' ? 'WALL1' : 'OVL1', // TODO: TranslateEngine
-						showName: this.findShowName()
-					}
+						channelName: this.getChannelName(),
+						showName: this.getShowName()
+					},
+					keyframes: this.getShowKeyframes()
 				}),
 				// Assume DSK is off by default (config table)
 				...getDskOnAirTimelineObjects(this.context, DskRole.OVERLAYGFX)
@@ -31,23 +35,54 @@ export class VizInternalGraphic extends InternalGraphic {
 		}
 	}
 
-	private findShowName(): string {
-		const graphicsSetup = this.config.selectedGfxSetup
+	protected getExpectedPlayoutItems(): ExpectedPlayoutItemGeneric[] {
+		return [
+			{
+				deviceSubType: TSR.DeviceType.VIZMSE,
+				content: {
+					templateName: this.templateName,
+					templateData: this.getTemplateData(),
+					channel: this.getChannelName(),
+					showLayer: this.getShowLayer()
+				}
+			}
+		]
+	}
+
+	private getShowLayer(): string {
 		switch (this.engine) {
 			case 'FULL':
 			case 'WALL':
-				if (graphicsSetup.FullShowName === undefined) {
-					this.core.logWarning("You're using Viz graphics with an incompatible ShowStyle")
-					return ''
-				}
-				return graphicsSetup.FullShowName
+				return SharedGraphicLLayer.GraphicLLayerInitFull
 			case 'TLF':
 			case 'OVL':
-				if (graphicsSetup.OvlShowName === undefined) {
-					this.core.logWarning("You're using Viz graphics with an incompatible ShowStyle")
-					return ''
-				}
-				return graphicsSetup.OvlShowName
+				return SharedGraphicLLayer.GraphicLLayerInitOverlay
 		}
+	}
+
+	private getShowName(): string {
+		switch (this.engine) {
+			case 'FULL':
+			case 'WALL':
+				return FULL_SHOW_PLACEHOLDER
+			case 'TLF':
+			case 'OVL':
+				return OVL_SHOW_PLACEHOLDER
+		}
+	}
+
+	private getShowKeyframes(): TSR.TimelineObjVIZMSEElementInternal['keyframes'] {
+		switch (this.engine) {
+			case 'FULL':
+			case 'WALL':
+				return this.config.vizShowKeyframes.full
+			case 'TLF':
+			case 'OVL':
+				return this.config.vizShowKeyframes.overlay
+		}
+	}
+
+	private getChannelName(): string {
+		return this.engine === 'WALL' ? 'WALL1' : 'OVL1'
 	}
 }

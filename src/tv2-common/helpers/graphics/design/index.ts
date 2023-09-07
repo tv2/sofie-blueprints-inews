@@ -11,6 +11,7 @@ import {
 	CueDefinitionGraphicDesign,
 	EvaluateCueResult,
 	getHtmlTemplateName,
+	OVL_SHOW_PLACEHOLDER,
 	PieceMetaData,
 	ShowStyleContext,
 	TV2ShowStyleConfig
@@ -85,11 +86,11 @@ function createDesignPieceContent(
 		fileName: cue.design,
 		path: cue.design,
 		ignoreMediaObjectStatus: true,
-		timelineObjects: designTimeline(context, cue)
+		timelineObjects: getdesignTimeline(context, cue)
 	}
 }
 
-function designTimeline(context: ShowStyleContext, parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineObj[] {
+function getdesignTimeline(context: ShowStyleContext, parsedCue: CueDefinitionGraphicDesign): TSR.TSRTimelineObj[] {
 	switch (context.config.studio.GraphicsType) {
 		case 'HTML':
 			return [getNonBaselineCasparCgDesignTimelineObject(context, parsedCue)]
@@ -149,8 +150,9 @@ function getVizDesignTimelineObject(config: TV2ShowStyleConfig, design: string):
 			type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 			templateName: design,
 			templateData: [],
-			showName: config.selectedGfxSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
-		}
+			showName: OVL_SHOW_PLACEHOLDER
+		},
+		keyframes: config.vizShowKeyframes.overlay
 	}
 }
 

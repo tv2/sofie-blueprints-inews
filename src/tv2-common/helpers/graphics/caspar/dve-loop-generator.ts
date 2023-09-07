@@ -8,8 +8,8 @@ export class DveLoopGenerator {
 		cue: CueDefinitionGfxSchema,
 		priority?: number
 	): TSR.TimelineObjCCGMedia[] {
-		if (!cue.CasparCgDesignValues || !cue.CasparCgDesignValues.length) {
-			const errorMessage = `No CasparCgDesignValues configured for Schema {${cue.schema}}`
+		if (!cue.CasparCgDesignValues?.length) {
+			const errorMessage = `No CasparCG Design Values configured for Schema "${cue.schema}"`
 			context.core.notifyUserError(errorMessage)
 			return []
 		}

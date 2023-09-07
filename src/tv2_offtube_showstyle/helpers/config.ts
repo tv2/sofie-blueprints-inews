@@ -1,11 +1,16 @@
 import {
 	IBlueprintConfig,
+	IBlueprintShowStyleVariant,
 	ICommonContext,
-	IShowStyleContext,
-	IStudioContext,
 	TableConfigItemValue
 } from 'blueprints-integration'
-import { findGfxSetup, TableConfigGfxSetup, TV2ShowstyleBlueprintConfigBase } from 'tv2-common'
+import {
+	findGfxSetup,
+	getVizShowKeyframes,
+	TableConfigGfxSetup,
+	TV2ShowstyleBlueprintConfigBase,
+	VizShowKeyframes
+} from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeStudioBlueprintConfig } from '../../tv2_offtube_studio/helpers/config'
 
@@ -23,6 +28,8 @@ export interface TableConfigItemGfxTemplates {
 export interface OfftubeBlueprintConfig extends OfftubeStudioBlueprintConfig {
 	showStyle: OfftubeShowStyleConfig
 	selectedGfxSetup: TableConfigGfxSetup
+	vizShowKeyframes: VizShowKeyframes
+	variants: IBlueprintShowStyleVariant[]
 }
 
 export interface DVEConfigInput {
@@ -39,7 +46,11 @@ export interface OfftubeShowStyleConfig extends TV2ShowstyleBlueprintConfigBase 
 	GfxSetups: TableConfigGfxSetup[]
 }
 
-export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintConfig): any {
+export function preprocessConfig(
+	context: ICommonContext,
+	rawConfig: IBlueprintConfig,
+	showStyleVariants: IBlueprintShowStyleVariant[]
+): any {
 	const showstyleConfig = rawConfig as unknown as OfftubeShowStyleConfig
 	const selectedGfxSetup = findGfxSetup(context, showstyleConfig, {
 		_id: '',
@@ -48,17 +59,8 @@ export function preprocessConfig(context: ICommonContext, rawConfig: IBlueprintC
 	})
 	return {
 		showStyle: showstyleConfig,
-		selectedGfxSetup
+		vizShowKeyframes: getVizShowKeyframes(showstyleConfig),
+		selectedGfxSetup,
+		variants: showStyleVariants
 	}
-}
-
-export function getConfig(context: IShowStyleContext): OfftubeBlueprintConfig {
-	return {
-		...(context.getStudioConfig() as any),
-		...(context.getShowStyleConfig() as any)
-	} as any as OfftubeBlueprintConfig
-}
-
-export function getStudioConfig(context: IStudioContext): OfftubeBlueprintConfig {
-	return context.getStudioConfig() as OfftubeBlueprintConfig
 }

@@ -1,12 +1,4 @@
-import {
-	CueDefinitionGraphicDesign,
-	getTransitionProperties,
-	INewsFields,
-	PartdefinitionTypes,
-	stripRedundantCuesWhenFieldCueIsPresent,
-	TransitionStyle,
-	UnparsedCue
-} from 'tv2-common'
+import { getTransitionProperties, INewsFields, PartdefinitionTypes, TransitionStyle, UnparsedCue } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { literal } from '../../../util'
@@ -3347,110 +3339,6 @@ describe('Body parser', () => {
 
 	/** END Merging Cues From Config */
 
-	describe('removeDuplicateDesignCues', () => {
-		it('has no no cues, does nothing', () => {
-			const definitions: PartDefinition[] = [createPartDefinition(), createPartDefinition()]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			expect(result).toEqual(definitions)
-		})
-
-		it('has a designCue from layout and a regular design cue, removes the regular design cue', () => {
-			const designFromLayout = 'designFromLayout'
-			const definitions: PartDefinition[] = [
-				createPartDefinition([
-					createDesignCueDefinition(designFromLayout, true),
-					createDesignCueDefinition('regularDesign')
-				])
-			]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			expect(result[0].cues).toHaveLength(1)
-			const graphicDesignCue: CueDefinitionGraphicDesign = result[0].cues[0] as CueDefinitionGraphicDesign
-			expect(graphicDesignCue.design).toEqual(designFromLayout)
-		})
-
-		it('only have a regular design cue, does nothing', () => {
-			const definitions: PartDefinition[] = [createPartDefinition([createDesignCueDefinition('someDesign')])]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			expect(result).toEqual(definitions)
-		})
-
-		it('only have a layout design cue, does nothing', () => {
-			const definitions: PartDefinition[] = [
-				createPartDefinition([createDesignCueDefinition('designFromLayout', true)])
-			]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			expect(result).toEqual(definitions)
-		})
-
-		it('has a regular design, layout design and two other random cues, only removes the regular design cue', () => {
-			const regularDesign = 'regularDesignCue'
-			const definitions: PartDefinition[] = [
-				createPartDefinition([
-					createDesignCueDefinition('designFromLayout', true),
-					createDesignCueDefinition(regularDesign),
-					createUnknownCueDefinition(),
-					createUnknownCueDefinition()
-				])
-			]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			const cues = result[0].cues
-			expect(cues).toHaveLength(3)
-			const regularDesignCue = cues.find((cue) => {
-				const designCue = cue as CueDefinitionGraphicDesign
-				if (!designCue.design) {
-					return false
-				}
-				return designCue.design === regularDesign
-			})
-			expect(regularDesignCue).toBeUndefined()
-		})
-
-		it('has a regular design cue in one partDefinition, has a layout cue in another partDefinition, remove the regular designCue', () => {
-			const layoutDesign = 'designFromLayout'
-			const definitions: PartDefinition[] = [
-				createPartDefinition([createDesignCueDefinition(layoutDesign, true)]),
-				createPartDefinition([createDesignCueDefinition('regularDesign')])
-			]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			const cues: CueDefinition[] = result.flatMap((definition) => definition.cues)
-			expect(cues).toHaveLength(1)
-			const graphicCue = cues[0] as CueDefinitionGraphicDesign
-			expect(graphicCue.design).toBe(layoutDesign)
-		})
-
-		it('only have a regular background cue, does nothing', () => {
-			const definitions: PartDefinition[] = [
-				createPartDefinition([createBackgroundLoopCueDefinition('regularBackground')])
-			]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			expect(result).toEqual(definitions)
-		})
-
-		it('only have a layout background cue, does nothing', () => {
-			const definitions: PartDefinition[] = [
-				createPartDefinition([createBackgroundLoopCueDefinition('layoutBackground', true)])
-			]
-
-			const result: PartDefinition[] = stripRedundantCuesWhenFieldCueIsPresent(definitions)
-
-			expect(result).toEqual(definitions)
-		})
-	})
-
 	describe('getTransitionProperties', () => {
 		it('has a Dip transition lasting 4 frames, transition.duration is 4', () => {
 			const iNewsCue = 'SOME PART DIP 4'
@@ -3494,23 +3382,6 @@ describe('Body parser', () => {
 			expect(cueDefinitions.some((cue) => cue.type === CueType.GraphicDesign)).toBeTruthy()
 		})
 
-		it('receives both a layout field and a body design cue, only one DesignCueDefinition is added to first PartDefinition', () => {
-			const segmentId: string = 'randomSegmentId'
-			const segmentName: string = 'randomSegmentName'
-			const body: string = `\r\n<p><pi>CAMERA 1</pi><\a idref="0"></a></p>\r\n`
-			const cues: UnparsedCue[] = [[`kg=DESIGN_FODBOLD_22`]]
-			const fields: INewsFields = {
-				layout: config.showStyle.GfxDesignTemplates[0].INewsStyleColumn
-			}
-
-			const result: PartDefinition[] = ParseBody(config, segmentId, segmentName, body, cues, fields, 0)
-
-			expect(result).toHaveLength(1)
-			const cueDefinitions = result[0].cues
-			expect(cueDefinitions).toHaveLength(1)
-			expect(cueDefinitions.some((cue) => cue.type === CueType.GraphicDesign)).toBeTruthy()
-		})
-
 		it('receives a schema field, DesignSchemaDefinition is added to first PartDefinition', () => {
 			const segmentId: string = 'randomSegmentId'
 			const segmentName: string = 'randomSegmentName'
@@ -3526,68 +3397,8 @@ describe('Body parser', () => {
 			const cueDefinitions = result[0].cues
 			expect(cueDefinitions.some((cue) => cue.type === CueType.GraphicSchema)).toBeTruthy()
 		})
-
-		it('receives both a schema field and a body schema cue, only one DesignSchemaDefinition is added to first PartDefinition', () => {
-			const segmentId: string = 'randomSegmentId'
-			const segmentName: string = 'randomSegmentName'
-			const body: string = `\r\n<p><pi>CAMERA 1</pi><\a idref="0"></a></p>\r\n`
-			const cues: UnparsedCue[] = [[`kg=SKEMA_NEWS`]]
-			const fields: INewsFields = {
-				skema: config.showStyle.GfxSchemaTemplates[0].INewsSkemaColumn
-			}
-
-			const result: PartDefinition[] = ParseBody(config, segmentId, segmentName, body, cues, fields, 0)
-
-			expect(result).toHaveLength(1)
-			const cueDefinitions = result[0].cues
-			expect(cueDefinitions).toHaveLength(1)
-			expect(cueDefinitions.some((cue) => cue.type === CueType.GraphicSchema)).toBeTruthy()
-		})
 	})
 })
-
-function createPartDefinition(cues?: CueDefinition[]): PartDefinition {
-	if (!cues) {
-		cues = []
-	}
-	return {
-		externalId: `externalId_${Math.random() * 1000}`,
-		cues,
-		type: PartType.Grafik,
-		script: '',
-		fields: {},
-		modified: 123,
-		storyName: 'someName',
-		segmentExternalId: `segmentExternalId_${Math.random() * 1000}`,
-		rawType: ''
-	}
-}
-
-function createDesignCueDefinition(design: string, isFromField?: boolean): CueDefinition {
-	return {
-		type: CueType.GraphicDesign,
-		design,
-		iNewsCommand: '',
-		isFromField
-	}
-}
-
-function createBackgroundLoopCueDefinition(backgroundLoop: string, isFromField?: boolean): CueDefinition {
-	return {
-		type: CueType.BackgroundLoop,
-		target: 'DVE',
-		backgroundLoop,
-		isFromField,
-		iNewsCommand: ''
-	}
-}
-
-function createUnknownCueDefinition(): CueDefinition {
-	return {
-		type: CueType.UNKNOWN,
-		iNewsCommand: ''
-	}
-}
 
 export function stripExternalId(definitions: PartDefinition[]) {
 	return definitions.map((def) => {

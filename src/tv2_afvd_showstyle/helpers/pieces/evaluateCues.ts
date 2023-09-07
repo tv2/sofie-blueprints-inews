@@ -11,6 +11,7 @@ import {
 	EvaluateCueRobotCamera,
 	EvaluateCuesBase,
 	EvaluateCuesOptions,
+	EvaluateCueVariant,
 	EvaluateLYD,
 	PartDefinition,
 	ShowStyleContext
@@ -51,11 +52,12 @@ export async function EvaluateCues(
 			EvaluateCueGraphic,
 			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
-			EvaluateCueGraphicSchema: (cue, piece, partId, parsedCue) =>
-				GfxSchemaGeneratorFacade.create().createBlueprintPieceFromGfxSchemaCue(cue, piece, partId, parsedCue),
+			EvaluateCueGraphicSchema: (cue, partId, parsedCue) =>
+				GfxSchemaGeneratorFacade.create().createBlueprintPieceFromGfxSchemaCue(cue, partId, parsedCue),
 			EvaluateCueRouting,
 			EvaluateCueMixMinus,
-			EvaluateCueRobotCamera
+			EvaluateCueRobotCamera,
+			EvaluateCueVariant
 		},
 		context,
 		part,

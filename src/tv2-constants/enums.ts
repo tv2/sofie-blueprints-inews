@@ -23,7 +23,7 @@ export enum CueType {
 	AdLib,
 	LYD,
 	Jingle,
-	Profile,
+	Variant,
 	ClearGrafiks,
 	UNPAIRED_TARGET,
 	UNPAIRED_PILOT,
@@ -185,14 +185,17 @@ export enum SharedGraphicLLayer {
 	GraphicLLayerWall = 'graphic_wall', // <= viz_layer_wall
 	GraphicLLayerLocators = 'graphic_locators',
 	GraphicLLayerConcept = 'graphic_concept',
-	GraphicLLayerSchema = 'graphic_schema'
+	GraphicLLayerSchema = 'graphic_schema',
+	GraphicLLayerInitOverlay = 'graphic_init_overlay',
+	GraphicLLayerInitFull = 'graphic_init_full'
 }
 
 export enum AbstractLLayer {
 	SERVER_ENABLE_PENDING = 'server_enable_pending',
 	/* Exists to give the Ident UI marker a timeline object so that it gets the startedPlayback callback */
 	IDENT_MARKER = 'ident_marker',
-	AUDIO_BED_BASELINE = 'audio_bed_baseline'
+	AUDIO_BED_BASELINE = 'audio_bed_baseline',
+	GFX_SETUP = 'gfx_setup'
 }
 
 export enum SwitcherMixEffectLLayer {
@@ -280,7 +283,8 @@ export enum SharedSourceLayer {
 	// "Full" / "Pilot" graphics
 	PgmPilot = 'studio0_pilot',
 	PgmPilotOverlay = 'studio0_pilotOverlay',
-	// "Design" templates
+	// Variant and "Design" templates
+	PgmVariant = 'studio0_variant',
 	PgmDesign = 'studio0_design',
 	PgmSchema = 'studio0_schema',
 

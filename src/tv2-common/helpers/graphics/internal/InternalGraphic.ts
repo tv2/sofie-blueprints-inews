@@ -1,4 +1,10 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext, PieceLifespan } from 'blueprints-integration'
+import {
+	ExpectedPlayoutItemGeneric,
+	IBlueprintAdLibPiece,
+	IBlueprintPiece,
+	IShowStyleUserContext,
+	PieceLifespan
+} from 'blueprints-integration'
 import {
 	CueDefinitionGraphic,
 	GraphicInternal,
@@ -33,6 +39,7 @@ export abstract class InternalGraphic extends Graphic {
 	private readonly partId?: string
 	private readonly rank?: number
 	private readonly content: IBlueprintPiece['content']
+	private readonly expectedPlayoutItems: IBlueprintPiece['expectedPlayoutItems']
 
 	protected constructor(graphicProps: InternalGraphicProps) {
 		super(graphicProps.context, graphicProps.parsedCue)
@@ -46,6 +53,7 @@ export abstract class InternalGraphic extends Graphic {
 		this.outputLayerId = IsTargetingWall(this.engine) ? SharedOutputLayer.SEC : SharedOutputLayer.OVERLAY
 		this.partId = graphicProps.partId
 		this.content = this.getContent()
+		this.expectedPlayoutItems = this.getExpectedPlayoutItems()
 	}
 
 	public createCommentatorAdlib(): IBlueprintAdLibPiece<PieceMetaData> {
@@ -59,7 +67,8 @@ export abstract class InternalGraphic extends Graphic {
 			lifespan: PieceLifespan.WithinPart,
 			expectedDuration: 5000,
 			tags: [AdlibTags.ADLIB_KOMMENTATOR],
-			content: _.clone(this.content)
+			content: _.clone(this.content),
+			expectedPlayoutItems: this.expectedPlayoutItems
 		}
 	}
 
@@ -78,7 +87,8 @@ export abstract class InternalGraphic extends Graphic {
 						expectedDuration: this.getPieceEnable().duration
 				  }),
 			lifespan: this.getPieceLifespan(),
-			content: _.clone(this.content)
+			content: _.clone(this.content),
+			expectedPlayoutItems: this.expectedPlayoutItems
 		}
 	}
 
@@ -98,7 +108,8 @@ export abstract class InternalGraphic extends Graphic {
 				partType: this.partDefinition?.type,
 				pieceExternalId: this.partDefinition?.externalId
 			},
-			content: _.clone(this.content)
+			content: _.clone(this.content),
+			expectedPlayoutItems: this.expectedPlayoutItems
 		}
 	}
 
@@ -119,13 +130,22 @@ export abstract class InternalGraphic extends Graphic {
 		return this.cue.graphic.template
 	}
 
+	public getTemplateData(): string[] {
+		return this.cue.graphic.textFields
+	}
+
 	public getDisplayName(): string {
-		return `${this.cue.graphic.template ? `${this.templateName}` : ''}${
-			this.cue.graphic.textFields.length ? ' - ' : ''
-		}${this.cue.graphic.textFields.filter((txt) => !txt.match(/^;.\.../i)).join('\n - ')}`
+		const templateDate = this.getTemplateData()
+		return `${this.cue.graphic.template ? `${this.templateName}` : ''}${templateDate.length ? ' - ' : ''}${templateDate
+			.filter((txt) => !txt.match(/^;.\.../i))
+			.join('\n - ')}`
 	}
 
 	protected abstract getContent(): IBlueprintPiece['content']
+
+	protected getExpectedPlayoutItems(): ExpectedPlayoutItemGeneric[] {
+		return []
+	}
 }
 
 export interface InternalGraphicProps {

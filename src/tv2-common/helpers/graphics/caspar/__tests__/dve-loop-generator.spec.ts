@@ -1,5 +1,5 @@
 import { Timeline, TSR } from 'blueprints-integration'
-import { mock } from 'ts-mockito'
+import { mock } from 'jest-mock-extended'
 import { CueDefinitionGfxSchema, ShowStyleContext } from 'tv2-common'
 import { CueType, SharedCasparLLayer } from 'tv2-constants'
 import { DveLoopGenerator } from '../dve-loop-generator'
@@ -11,7 +11,8 @@ describe('DveLoopGenerator', () => {
 			const cue: CueDefinitionGfxSchema = {
 				type: CueType.GraphicSchema,
 				schema: 'randomSchema',
-				iNewsCommand: ''
+				iNewsCommand: '',
+				CasparCgDesignValues: []
 			}
 
 			const testee: DveLoopGenerator = new DveLoopGenerator()

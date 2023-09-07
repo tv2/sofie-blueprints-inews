@@ -33,6 +33,7 @@ import {
 	CueDefinitionMixMinus,
 	CueDefinitionPgmClean,
 	CueDefinitionRouting,
+	CueDefinitionVariant,
 	GraphicInternalOrPilot,
 	GraphicIsPilot
 } from './inewsConversion'
@@ -77,10 +78,9 @@ export interface EvaluateCuesShowstyleOptions {
 	) => EvaluateCueResult
 	EvaluateCueGraphicSchema?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
-		pieces: IBlueprintPiece[],
 		partId: string,
 		parsedCue: CueDefinitionGfxSchema
-	) => void
+	) => EvaluateCueResult
 	EvaluateCueRouting?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
 		partId: string,
@@ -160,8 +160,11 @@ export interface EvaluateCuesShowstyleOptions {
 		part: PartDefinition,
 		parsedCue: CueDefinitionMixMinus
 	) => void
-	/** TODO: Profile -> Change the profile as defined in VIZ device settings */
-	EvaluateCueProfile?: () => void
+	EvaluateCueVariant?: (
+		context: ShowStyleContext<TV2ShowStyleConfig>,
+		partId: string,
+		parsedCue: CueDefinitionVariant
+	) => EvaluateCueResult
 	/** TODO: Mic -> For the future */
 	EvaluateCueMic?: () => void
 	EvaluateCueRobotCamera?: (cueDefinition: CueDefinitionRobotCamera, pieces: IBlueprintPiece[], partId: string) => void
@@ -288,7 +291,7 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.GraphicSchema:
 					if (showStyleOptions.EvaluateCueGraphicSchema) {
-						showStyleOptions.EvaluateCueGraphicSchema(context, pieces, partDefinition.externalId, cue)
+						result.push(showStyleOptions.EvaluateCueGraphicSchema(context, partDefinition.externalId, cue))
 					}
 					break
 				case CueType.ClearGrafiks:
@@ -343,9 +346,13 @@ export async function EvaluateCuesBase(
 						showStyleOptions.EvaluateCueRobotCamera(cue, pieces, partDefinition.externalId)
 					}
 					break
+				case CueType.Variant:
+					if (showStyleOptions.EvaluateCueVariant) {
+						result.push(showStyleOptions.EvaluateCueVariant(context, partDefinition.externalId, cue))
+					}
+					break
 				default:
-					if (cue.type !== CueType.Profile && cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
-						// TODO: Profile -> Change the profile as defined in VIZ device settings
+					if (cue.type !== CueType.Mic && cue.type !== CueType.UNKNOWN) {
 						// TODO: Mic -> For the future
 						// context.notifyUserWarning(`Unimplemented cue type: ${CueType[cue.type]}`)
 						assertUnreachable(cue)
@@ -362,43 +369,34 @@ export async function EvaluateCuesBase(
 	adLibPieces.push(...result.adlibPieces)
 	actions.push(...result.actions)
 	;[...pieces, ...adLibPieces].forEach((piece) => {
-		if (piece.content && piece.content.timelineObjects) {
-			piece.content.timelineObjects.forEach((obj: TSR.TSRTimelineObj) => {
-				if (obj.content.deviceType === TSR.DeviceType.VIZMSE) {
-					if (!piece.expectedPlayoutItems) {
-						piece.expectedPlayoutItems = []
-					}
-
-					if (obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL) {
-						const o = obj as TSR.TimelineObjVIZMSEElementInternal
-						const name = (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName
-						if (name && name.length) {
-							piece.expectedPlayoutItems.push({
-								deviceSubType: TSR.DeviceType.VIZMSE,
-								content: {
-									templateName: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateName,
-									templateData: (obj as TSR.TimelineObjVIZMSEElementInternal).content.templateData,
-									channel: o.content.channelName,
-									showName: o.content.showName
-								}
-							})
-						}
-					} else if (obj.content.type === TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT) {
-						const name = (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId
-						if (name !== undefined && name.toString().length) {
-							piece.expectedPlayoutItems.push({
-								deviceSubType: TSR.DeviceType.VIZMSE,
-								content: {
-									vcpid: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
-									channel: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName
-								}
-							})
-						}
-					}
-				}
-			})
-		}
+		insertExpectedPlayoutItems(piece)
 	})
+}
+
+function insertExpectedPlayoutItems(piece: IBlueprintPiece<unknown> | IBlueprintAdLibPiece<unknown>) {
+	if (piece.content && piece.content.timelineObjects) {
+		piece.content.timelineObjects.forEach((obj: TSR.TSRTimelineObj) => {
+			if (
+				obj.content.deviceType !== TSR.DeviceType.VIZMSE ||
+				obj.content.type !== TSR.TimelineContentTypeVizMSE.ELEMENT_PILOT
+			) {
+				return
+			}
+			const name = (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId
+			if (name !== undefined && name.toString().length) {
+				if (!piece.expectedPlayoutItems) {
+					piece.expectedPlayoutItems = []
+				}
+				piece.expectedPlayoutItems.push({
+					deviceSubType: TSR.DeviceType.VIZMSE,
+					content: {
+						vcpid: (obj as TSR.TimelineObjVIZMSEElementPilot).content.templateVcpId,
+						channel: (obj as TSR.TimelineObjVIZMSEElementPilot).content.channelName
+					}
+				})
+			}
+		})
+	}
 }
 
 export function SkipCue(

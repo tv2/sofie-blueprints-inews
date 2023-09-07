@@ -6,15 +6,16 @@ import {
 	GraphicInternal,
 	GraphicPieceMetaData,
 	literal,
+	OVL_SHOW_PLACEHOLDER,
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
-import { OVL_SHOW_NAME } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
 import { EvaluateTelefon } from '../telefon'
+import { OVL_KEYFRAMES } from './grafikViz.spec'
 
 const mockContext = makeMockGalleryContext()
 
@@ -60,7 +61,7 @@ describe('telefon', () => {
 		}
 		const partId = '0000000001'
 		const result = EvaluateTelefon(mockContext, partId, dummyPart, cue)
-		expect(result.pieces).toEqual([
+		expect(result.pieces).toMatchObject([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,
 				name: 'TLF 1',
@@ -74,6 +75,7 @@ describe('telefon', () => {
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
+				expectedPlayoutItems: [expect.any(Object)],
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',
 					path: 'bund',
@@ -92,8 +94,9 @@ describe('telefon', () => {
 								templateName: 'bund',
 								templateData: ['Odense', 'Copenhagen'],
 								channelName: 'OVL1',
-								showName: OVL_SHOW_NAME
-							}
+								showName: OVL_SHOW_PLACEHOLDER
+							},
+							keyframes: OVL_KEYFRAMES
 						}),
 						literal<TSR.TimelineObjAtemDSK>({
 							id: '',

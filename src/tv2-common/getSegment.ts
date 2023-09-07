@@ -3,6 +3,7 @@ import {
 	assertUnreachable,
 	GetNextPartCue,
 	INewsPayload,
+	INewsStory,
 	IsTargetingFull,
 	literal,
 	ParseBody,
@@ -15,6 +16,7 @@ import {
 } from 'tv2-common'
 import { CueType, PartType, SharedSourceLayer, TallyTags } from 'tv2-constants'
 import { TV2ShowStyleConfig } from './blueprintConfig'
+import { handleSchemaAndDesignCues } from './cues/handleSchemaAndDesignCues'
 import {
 	CueDefinitionUnpairedTarget,
 	PartDefinitionDVE,
@@ -115,7 +117,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 
 	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
-	const parsedParts: PartDefinition[] = ParseBody(
+	let parsedParts: PartDefinition[] = ParseBody(
 		config,
 		ingestSegment.externalId,
 		ingestSegment.name,
@@ -125,12 +127,9 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		TimeFromINewsField(iNewsStory.fields.modifyDate) || Date.now()
 	)
 
-	const totalWords = parsedParts.reduce((prev, cur) => {
-		if (cur.type === PartType.Server) {
-			return prev
-		}
-		return prev + cur.script.replace(/\n/g, '').replace(/\r/g, '').length
-	}, 0)
+	parsedParts = preprocessCues(context, parsedParts)
+
+	const totalWords = getTotalWords(parsedParts)
 
 	if (segment.name && segment.name.trim().match(/^\s*continuity\s*$/i)) {
 		blueprintParts.push(showStyleOptions.CreatePartContinuity(context, ingestSegment))
@@ -140,10 +139,104 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		}
 	}
 
-	let jingleTime = 0
 	const totalTime = TimeFromINewsField(iNewsStory.fields.totalTime)
 	const tapeTime = TimeFromINewsField(iNewsStory.fields.tapeTime)
 
+	const jingleTime = await createBlueprintParts(
+		parsedParts,
+		blueprintParts,
+		showStyleOptions,
+		context,
+		totalWords,
+		totalTime,
+		tapeTime
+	)
+
+	const allocatedTime = getAllocatedTime(blueprintParts, jingleTime)
+
+	handleSegmentAndShelfVisibility(blueprintParts, segment, iNewsStory)
+
+	blueprintParts = fixPartDurations(blueprintParts, config, totalTime, allocatedTime)
+
+	applyBudgetDuration(blueprintParts, totalTimeMs)
+
+	blueprintParts = blueprintParts.map((part) => {
+		const actualPart = part.part
+		actualPart.metaData = literal<PartMetaData>({
+			...(actualPart.metaData as any),
+			segmentExternalId: ingestSegment.externalId
+		})
+
+		actualPart.autoNext = !!actualPart.autoNext
+		actualPart.invalid = !!actualPart.invalid
+
+		if (segmentPayload?.untimed) {
+			actualPart.untimed = true
+		}
+
+		return {
+			...part,
+			part: actualPart
+		}
+	})
+
+	return {
+		segment,
+		parts: blueprintParts
+	}
+}
+
+function preprocessCues(context: SegmentContext<TV2ShowStyleConfig>, parsedParts: PartDefinition[]): PartDefinition[] {
+	return handleSchemaAndDesignCues(context, parsedParts)
+}
+
+function countPartsWithoutExpectedDuration(blueprintParts: BlueprintResultPart[]) {
+	return blueprintParts.reduce((total, p) => (!p.part.expectedDuration ? total + 1 : total), 0)
+}
+
+function getAllocatedTime(blueprintParts: BlueprintResultPart[], jingleTime: number) {
+	let allocatedTime =
+		blueprintParts.reduce((prev, cur) => {
+			return prev + (cur.part.expectedDuration ? cur.part.expectedDuration : 0)
+		}, 0) - jingleTime
+
+	if (allocatedTime < 0) {
+		allocatedTime = 0
+	}
+	return allocatedTime
+}
+
+function getTotalWords(parsedParts: PartDefinition[]) {
+	return parsedParts.reduce((prev, cur) => {
+		if (cur.type === PartType.Server) {
+			return prev
+		}
+		return prev + cur.script.replace(/\n/g, '').replace(/\r/g, '').length
+	}, 0)
+}
+
+function applyBudgetDuration(blueprintParts: BlueprintResultPart[], totalTimeMs: number) {
+	if (
+		blueprintParts.length > 1 ||
+		(blueprintParts[blueprintParts.length - 1] &&
+			!blueprintParts[blueprintParts.length - 1].pieces.some(
+				(piece) => piece.sourceLayerId === SharedSourceLayer.PgmJingle
+			))
+	) {
+		blueprintParts[0].part.budgetDuration = totalTimeMs
+	}
+}
+
+async function createBlueprintParts(
+	parsedParts: PartDefinition[],
+	blueprintParts: BlueprintResultPart[],
+	showStyleOptions: GetSegmentShowstyleOptions<TV2ShowStyleConfig>,
+	context: SegmentContext<TV2ShowStyleConfig>,
+	totalWords: number,
+	totalTime: number,
+	tapeTime: number
+): Promise<number> {
+	let jingleTime = 0
 	for (const part of parsedParts) {
 		// Make orphaned secondary cues into adlibs
 		if (
@@ -254,26 +347,44 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 			}
 		}
 	}
+	return jingleTime
+}
 
-	let allocatedTime =
-		blueprintParts.reduce((prev, cur) => {
-			return prev + (cur.part.expectedDuration ? cur.part.expectedDuration : 0)
-		}, 0) - jingleTime
-
-	if (allocatedTime < 0) {
-		allocatedTime = 0
+function handleSegmentAndShelfVisibility(
+	blueprintParts: BlueprintResultPart[],
+	segment: IBlueprintSegment<unknown>,
+	iNewsStory: INewsStory
+) {
+	if (
+		blueprintParts.filter((part) => part.pieces.length === 0 && (part.adLibPieces.length || part.actions?.length))
+			.length === blueprintParts.length
+	) {
+		segment.isHidden = true
+		if (blueprintParts.length > 0) {
+			segment.showShelf = true
+		}
 	}
 
-	const partsWithoutExpectedDuration = blueprintParts.reduce(
-		(total, p) => (!p.part.expectedDuration ? total + 1 : total),
-		0
-	)
+	if (blueprintParts.find((part) => part.adLibPieces.length || part.actions?.length)) {
+		segment.showShelf = true
+	}
+
+	if (blueprintParts.every((part) => part.part.invalid) && iNewsStory.cues.length === 0) {
+		segment.isHidden = true
+	}
+}
+
+function fixPartDurations(
+	blueprintParts: BlueprintResultPart[],
+	config: TV2ShowStyleConfig,
+	totalTimeMs: number,
+	allocatedTime: number
+) {
+	const partsWithoutExpectedDurationCount = countPartsWithoutExpectedDuration(blueprintParts)
 
 	blueprintParts.forEach((part) => {
-		// part.part.displayDurationGroup = ingestSegment.externalId
-
 		if (!part.part.expectedDuration && totalTimeMs > 0) {
-			part.part.expectedDuration = (totalTimeMs - allocatedTime || 0) / partsWithoutExpectedDuration
+			part.part.expectedDuration = (totalTimeMs - allocatedTime || 0) / partsWithoutExpectedDurationCount
 
 			if (part.part.expectedDuration < 0) {
 				part.part.expectedDuration = 0
@@ -304,35 +415,6 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		}
 	})
 
-	if (
-		blueprintParts.filter((part) => part.pieces.length === 0 && (part.adLibPieces.length || part.actions?.length))
-			.length === blueprintParts.length
-	) {
-		segment.isHidden = true
-		if (blueprintParts.length > 0) {
-			segment.showShelf = true
-		}
-	}
-
-	if (blueprintParts.find((part) => part.adLibPieces.length || part.actions?.length)) {
-		segment.showShelf = true
-	}
-
-	if (
-		// Filter out Jingle-only parts
-		blueprintParts.length > 1 ||
-		(blueprintParts[blueprintParts.length - 1] &&
-			!blueprintParts[blueprintParts.length - 1].pieces.some(
-				(piece) => piece.sourceLayerId === SharedSourceLayer.PgmJingle
-			))
-	) {
-		blueprintParts[0].part.budgetDuration = totalTimeMs
-	}
-
-	if (blueprintParts.every((part) => part.part.invalid) && iNewsStory.cues.length === 0) {
-		segment.isHidden = true
-	}
-
 	blueprintParts.forEach((part) => {
 		if (
 			part.part.expectedDuration! < config.studio.DefaultPartDuration &&
@@ -344,34 +426,5 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 			part.part.expectedDuration = config.studio.DefaultPartDuration
 		}
 	})
-
-	blueprintParts = blueprintParts.map((part) => {
-		const actualPart = part.part
-		actualPart.metaData = literal<PartMetaData>({
-			...(actualPart.metaData as any),
-			segmentExternalId: ingestSegment.externalId
-		})
-
-		if (actualPart.autoNext === undefined) {
-			actualPart.autoNext = false
-		}
-
-		if (actualPart.invalid === undefined) {
-			actualPart.invalid = false
-		}
-
-		if (segmentPayload?.untimed) {
-			actualPart.untimed = true
-		}
-
-		return {
-			...part,
-			part: actualPart
-		}
-	})
-
-	return {
-		segment,
-		parts: blueprintParts
-	}
+	return blueprintParts
 }
