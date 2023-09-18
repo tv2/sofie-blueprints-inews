@@ -67,12 +67,10 @@ function GetServerTimeline(
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps
 ): TimelineObjectCoreExt[] {
-	const serverEnableClass = `.${GetEnableClassForServer(contentProps.mediaPlayerSession)}`
-
 	const mediaObj: TSR.TimelineObjCCGMedia & TimelineBlueprintExt = {
 		id: '',
 		enable: {
-			while: serverEnableClass
+			start: 0
 		},
 		priority: 1,
 		layer: sourceLayers.Caspar.ClipPending,
@@ -92,17 +90,11 @@ function GetServerTimeline(
 		}
 	}
 
-	const mediaOffObj = JSON.parse(JSON.stringify(mediaObj)) as TSR.TimelineObjCCGMedia & TimelineBlueprintExt
-	mediaOffObj.enable = { while: `!${serverEnableClass}` }
-	mediaOffObj.content.playing = false
-	mediaOffObj.content.noStarttime = true
-
 	const audioEnable = {
-		while: serverEnableClass
+		start: 0
 	}
 	return [
 		mediaObj,
-		mediaOffObj,
 		...GetSisyfosTimelineObjForServer(
 			context.config,
 			partProps.voLevels,

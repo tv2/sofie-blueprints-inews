@@ -226,7 +226,7 @@ function getServerSelectionBlueprintPiece(
 		enable: { start: 0 },
 		outputLayerId: SharedOutputLayer.SEC,
 		sourceLayerId: layers.SourceLayer.SelectedServer,
-		lifespan: PieceLifespan.OutOnSegmentEnd,
+		lifespan: PieceLifespan.WithinPart,
 		metaData: {
 			mediaPlayerSessions: [contentProps.mediaPlayerSession],
 			userData: userDataElement,
