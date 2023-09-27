@@ -327,6 +327,8 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 			))
 	) {
 		blueprintParts[0].part.budgetDuration = totalTimeMs
+		/*NOTE: Set budgetDuration to Segment to new sofie-server*/
+		;(segment as any).budgetDuration = totalTimeMs
 	}
 
 	if (blueprintParts.every((part) => part.part.invalid) && iNewsStory.cues.length === 0) {
