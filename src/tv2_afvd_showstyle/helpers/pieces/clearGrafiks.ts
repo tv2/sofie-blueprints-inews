@@ -7,6 +7,8 @@ import {
 } from 'blueprints-integration'
 import { CueDefinitionClearGrafiks, getDefaultOut, getTimingEnable, literal, ShowStyleContext } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayer } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 
@@ -74,6 +76,10 @@ export function EvaluateClearGrafiks(
 						})
 				  ]
 				: []
+		},
+		metaData: {
+			type: Tv2PieceType.COMMAND,
+			outputLayer: Tv2OutputLayer.SECONDARY
 		}
 	})
 }

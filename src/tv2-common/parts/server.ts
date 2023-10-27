@@ -17,6 +17,8 @@ import {
 	ShowStyleContext
 } from 'tv2-common'
 import { AdlibActionType, PartType, SharedOutputLayer, TallyTags } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { getSourceDuration, GetVTContentProperties } from '../content'
@@ -228,6 +230,8 @@ function getServerSelectionBlueprintPiece(
 		sourceLayerId: layers.SourceLayer.SelectedServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
+			type: Tv2PieceType.VIDEO_CLIP,
+			outputLayer: Tv2OutputLayer.PROGRAM,
 			mediaPlayerSessions: [contentProps.mediaPlayerSession],
 			userData: userDataElement,
 			sisyfosPersistMetaData: {
@@ -259,6 +263,8 @@ function getPgmBlueprintPiece<
 		sourceLayerId: layers.SourceLayer.PgmServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
+			type: Tv2PieceType.VIDEO_CLIP,
+			outputLayer: Tv2OutputLayer.PROGRAM,
 			mediaPlayerSessions: [contentProps.mediaPlayerSession]
 		},
 		content: {

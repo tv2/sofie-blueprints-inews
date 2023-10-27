@@ -16,6 +16,8 @@ import {
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { ControlClasses, SharedOutputLayer, SourceType } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { GetSisyfosTimelineObjForRemote } from '../helpers'
 import { GetTagForLive } from '../pieces'
 import { findSourceInfo } from '../sources'
@@ -58,6 +60,8 @@ export function EvaluateEksternBase<
 			toBeQueued: true,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: {
+				type: Tv2PieceType.REMOTE,
+				outputLayer: Tv2OutputLayer.PROGRAM,
 				sisyfosPersistMetaData: {
 					sisyfosLayers: sourceInfoEkstern.sisyfosLayers ?? [],
 					wantsToPersistAudio: sourceInfoEkstern.wantsToPersistAudio,
@@ -95,6 +99,8 @@ export function EvaluateEksternBase<
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
 		metaData: {
+			type: Tv2PieceType.REMOTE,
+			outputLayer: Tv2OutputLayer.PROGRAM,
 			sisyfosPersistMetaData: {
 				sisyfosLayers: sourceInfoEkstern.sisyfosLayers ?? [],
 				wantsToPersistAudio: sourceInfoEkstern.wantsToPersistAudio,

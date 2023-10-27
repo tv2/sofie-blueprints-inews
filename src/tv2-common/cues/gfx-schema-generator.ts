@@ -9,6 +9,7 @@ import {
 	TV2ShowStyleConfig
 } from 'tv2-common'
 import { CueType, SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { DveLoopGenerator } from '../helpers/graphics/caspar/dve-loop-generator'
 
 const NON_BASELINE_SCHEMA = 'NON_BASELINE_SCHEMA'
@@ -64,7 +65,10 @@ export class GfxSchemaGenerator {
 				path: cue.schema,
 				ignoreMediaObjectStatus: true,
 				timelineObjects: this.createTimelineObjects(context, cue)
-			})
+			}),
+			metaData: {
+				type: Tv2PieceType.GRAPHICS
+			}
 		})
 	}
 

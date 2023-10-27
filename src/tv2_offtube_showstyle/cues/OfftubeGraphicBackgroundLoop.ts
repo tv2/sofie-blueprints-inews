@@ -8,6 +8,7 @@ import {
 	SegmentContext
 } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
@@ -36,7 +37,10 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				path,
 				ignoreMediaObjectStatus: true,
 				timelineObjects: dveLoopGenerator.createDveLoopTimelineObject(fileName)
-			})
+			}),
+			metaData: {
+				type: Tv2PieceType.UNKNOWN
+			}
 		})
 	} else {
 		result.pieces.push({
@@ -53,7 +57,10 @@ export function OfftubeEvaluateCueBackgroundLoop(
 				path,
 				ignoreMediaObjectStatus: true,
 				timelineObjects: dveLoopGenerator.createDveLoopTimelineObject(fileName)
-			})
+			}),
+			metaData: {
+				type: Tv2PieceType.UNKNOWN
+			}
 		})
 	}
 	return result

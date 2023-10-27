@@ -11,6 +11,8 @@ import {
 import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
+import { Tv2OutputLayer } from '../../../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 import { OVL_SHOW_NAME } from '../../../../tv2_afvd_showstyle/__tests__/configs'
 import { SourceLayer } from '../../../../tv2_afvd_showstyle/layers'
 import { SisyfosLLAyer } from '../../../../tv2_afvd_studio/layers'
@@ -71,6 +73,8 @@ describe('telefon', () => {
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
+					type: Tv2PieceType.GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
