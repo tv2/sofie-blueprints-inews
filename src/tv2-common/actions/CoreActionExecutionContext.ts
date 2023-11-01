@@ -197,10 +197,11 @@ export class CoreActionExecutionContext implements ITV2ActionExecutionContext {
 				this.modifiedParts.add('next')
 			}
 		}
-
-		piece.metaData = {
-			...piece.metaData,
-			modifiedByAction: true
+		if (piece.metaData) {
+			piece.metaData = {
+				...piece.metaData,
+				modifiedByAction: true
+			}
 		}
 
 		// Regardless of above, let core handle errors

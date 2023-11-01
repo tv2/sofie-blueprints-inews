@@ -15,6 +15,8 @@ import {
 	TableConfigItemBreaker
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -87,7 +89,11 @@ export function OfftubeEvaluateJingle(
 			GetTagForJingleNext(part.segmentExternalId, parsedCue.clip),
 			TallyTags.JINGLE_IS_LIVE,
 			!effekt ? TallyTags.JINGLE : ''
-		]
+		],
+		metaData: {
+			type: Tv2PieceType.JINGLE,
+			outputLayer: Tv2OutputLayer.JINGLE
+		}
 	})
 }
 

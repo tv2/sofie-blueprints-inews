@@ -16,6 +16,7 @@ import {
 	TV2ShowStyleConfig
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
+import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 
 const NON_BASELINE_DESIGN = 'NON_BASELINE_DESIGN'
 
@@ -53,7 +54,10 @@ function createDesignAdlibPiece(
 		sourceLayerId: SharedSourceLayer.PgmDesign,
 		// @ts-ignore
 		lifespan: cue.isFromField ? 'rundown-change-segment-lookback' : PieceLifespan.OutOnRundownChange,
-		content: createDesignPieceContent(context, cue)
+		content: createDesignPieceContent(context, cue),
+		metaData: {
+			type: Tv2PieceType.GRAPHICS
+		}
 	}
 }
 
@@ -73,7 +77,10 @@ function createDesignPiece(
 		sourceLayerId: SharedSourceLayer.PgmDesign,
 		// @ts-ignore
 		lifespan: cue.isFromField ? 'rundown-change-segment-lookback' : PieceLifespan.OutOnRundownChange,
-		content: createDesignPieceContent(context, cue)
+		content: createDesignPieceContent(context, cue),
+		metaData: {
+			type: Tv2PieceType.GRAPHICS
+		}
 	}
 }
 

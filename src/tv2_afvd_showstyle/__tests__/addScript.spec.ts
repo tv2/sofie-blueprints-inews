@@ -1,6 +1,8 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from 'blueprints-integration'
 import { AddScript, literal, PartDefinitionKam } from 'tv2-common'
 import { PartType, SharedOutputLayer, SourceType } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { SourceLayer } from '../layers'
 
 describe('addScript', () => {
@@ -56,7 +58,11 @@ describe('addScript', () => {
 					sourceDuration: 1000,
 					lastModified: part.modified * 1000,
 					timelineObjects: []
-				})
+				}),
+				metaData: {
+					type: Tv2PieceType.MANUS,
+					outputLayer: Tv2OutputLayer.MANUS
+				}
 			})
 		)
 	})

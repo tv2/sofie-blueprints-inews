@@ -22,6 +22,8 @@ import {
 } from 'tv2-common'
 import { AbstractLLayer, PartType, SharedSisyfosLLayer, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
+import { Tv2OutputLayer } from '../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../tv2-constants/tv2-piece-type'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
 
 export interface PartEndStateExt {
@@ -58,6 +60,8 @@ export type TimelineBlueprintExt = TSR.TSRTimelineObjBase & {
 }
 
 export interface PieceMetaData {
+	type: Tv2PieceType
+	outputLayer?: Tv2OutputLayer
 	sisyfosPersistMetaData?: SisyfosPersistenceMetaData
 	mediaPlayerSessions?: string[]
 	modifiedByAction?: boolean
