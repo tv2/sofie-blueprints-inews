@@ -206,8 +206,6 @@ export abstract class PilotGraphicGenerator extends Graphic {
 
 	protected getTv2OutputLayer(): Tv2OutputLayer | undefined {
 		switch (this.engine) {
-			case 'WALL':
-				return undefined
 			case 'OVL':
 				return Tv2OutputLayer.OVERLAY
 			case 'FULL':
