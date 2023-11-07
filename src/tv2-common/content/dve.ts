@@ -105,6 +105,13 @@ export interface DVEPieceMetaData extends PieceMetaData {
 	userData: ActionSelectDVE
 	mediaPlayerSessions?: string[] // TODO: Should probably move to a ServerPieceMetaData
 	serverPlaybackTiming?: Array<{ start?: number; end?: number }>
+	dve?: DvePieceActionMetadata
+}
+
+// This is used by the "new" Blueprint in order to put sources into a planned DVE.
+export interface DvePieceActionMetadata {
+	boxes: BoxConfig[]
+	audioTimelineObjectsForBoxes: { [inputIndex: number]: TSR.TSRTimelineObj[] }
 }
 
 export interface DVEOptions {
@@ -125,7 +132,7 @@ export function MakeContentDVEBase<
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
 	dveGeneratorOptions: DVEOptions
-): { content: WithTimeline<SplitsContent>; valid: boolean } {
+): { content: WithTimeline<SplitsContent>; valid: boolean; dvePieceActionMetadata?: DvePieceActionMetadata } {
 	if (!dveConfig) {
 		context.core.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
 		return {
@@ -162,7 +169,7 @@ export function MakeContentDVE2<
 	sources: DVESources | undefined,
 	dveGeneratorOptions: DVEOptions,
 	mediaPlayerSessionId?: string
-): { content: WithTimeline<SplitsContent>; valid: boolean } {
+): { content: WithTimeline<SplitsContent>; valid: boolean; dvePieceActionMetadata?: DvePieceActionMetadata } {
 	let template: DVEConfig
 	try {
 		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
@@ -194,13 +201,15 @@ export function MakeContentDVE2<
 	let valid = true
 	let hasServer = false
 
-	boxAssigments.forEach((mappingFrom, num) => {
-		const box = boxes[num]
+	const audioTimelineObjectsForBoxes: { [inputIndex: number]: TSR.TSRTimelineObj[] } = {}
+
+	boxAssigments.forEach((mappingFrom, index) => {
+		const box: BoxConfig = boxes[index]
 		if (mappingFrom === undefined) {
 			if (sources) {
 				// If it is intentional there are no sources, then ignore
 				// TODO - should this warn?
-				context.core.notifyUserWarning(`Missing source type for DVE box: ${num + 1}`)
+				context.core.notifyUserWarning(`Missing source type for DVE box: ${index + 1}`)
 				setBoxToBlack(box, boxSources)
 				valid = false
 			}
@@ -226,9 +235,12 @@ export function MakeContentDVE2<
 
 					setBoxSource(box, boxSources, sourceInfoCam)
 					cameraSources.push(box.source)
-					dveTimeline.push(
-						...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, mappingFrom.minusMic, audioEnable)
+
+					const audioTimelineObjectsForCamera: TSR.TSRTimelineObj[] = addRandomIdIfMissing(
+						GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, mappingFrom.minusMic, audioEnable)
 					)
+					audioTimelineObjectsForBoxes[index] = audioTimelineObjectsForCamera
+					dveTimeline.push(...audioTimelineObjectsForCamera)
 					break
 				case SourceType.REMOTE:
 					const sourceInfoLive = findSourceInfo(context.config.sources, mappingFrom)
@@ -240,7 +252,12 @@ export function MakeContentDVE2<
 					}
 
 					setBoxSource(box, boxSources, sourceInfoLive)
-					dveTimeline.push(...GetSisyfosTimelineObjForRemote(context.config, sourceInfoLive, audioEnable))
+
+					const audioTimelineObjectsForRemote: TSR.TSRTimelineObj[] = addRandomIdIfMissing(
+						GetSisyfosTimelineObjForRemote(context.config, sourceInfoLive, audioEnable)
+					)
+					audioTimelineObjectsForBoxes[index] = audioTimelineObjectsForRemote
+					dveTimeline.push(...audioTimelineObjectsForRemote)
 					break
 				case SourceType.REPLAY:
 					const sourceInfoReplay = findSourceInfo(context.config.sources, mappingFrom)
@@ -252,7 +269,12 @@ export function MakeContentDVE2<
 					}
 
 					setBoxSource(box, boxSources, sourceInfoReplay)
-					dveTimeline.push(...GetSisyfosTimelineObjForReplay(context.config, sourceInfoReplay, mappingFrom.vo))
+
+					const audioTimelineObjectsForReplay: TSR.TSRTimelineObj[] = addRandomIdIfMissing(
+						GetSisyfosTimelineObjForReplay(context.config, sourceInfoReplay, mappingFrom.vo)
+					)
+					audioTimelineObjectsForBoxes[index] = audioTimelineObjectsForReplay
+					dveTimeline.push(...audioTimelineObjectsForReplay)
 					break
 				case SourceType.GRAFIK:
 					if (mappingFrom.name === 'FULL') {
@@ -260,7 +282,12 @@ export function MakeContentDVE2<
 							sourceLayerType: SourceLayerType.GRAPHICS,
 							port: findDskFullGfx(context.config).Fill
 						})
-						dveTimeline.push(...GetSisyfosTimelineObjForFull(context.config))
+
+						const audioTimelineObjectsForFull: TSR.TSRTimelineObj[] = addRandomIdIfMissing(
+							GetSisyfosTimelineObjForFull(context.config)
+						)
+						audioTimelineObjectsForBoxes[index] = audioTimelineObjectsForFull
+						dveTimeline.push(...audioTimelineObjectsForFull)
 					} else {
 						context.core.notifyUserWarning(`Unsupported engine for DVE: ${mappingFrom.name}`)
 						setBoxToBlack(box, boxSources)
@@ -276,6 +303,11 @@ export function MakeContentDVE2<
 			}
 		}
 	})
+
+	const dvePieceActionMetadata: DvePieceActionMetadata = {
+		boxes,
+		audioTimelineObjectsForBoxes
+	}
 
 	const graphicsTemplate = getDveGraphicsTemplate(dveConfig, context.core.notifyUserWarning)
 	const graphicsTemplateStyle = getDveGraphicsTemplateStyle(graphicsTemplate)
@@ -297,6 +329,7 @@ export function MakeContentDVE2<
 	}
 
 	return {
+		dvePieceActionMetadata,
 		valid,
 		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
@@ -373,6 +406,15 @@ export function MakeContentDVE2<
 			])
 		})
 	}
+}
+
+function addRandomIdIfMissing(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj[] {
+	return timelineObjects.map((timelineObject) => {
+		if (timelineObject.id === '') {
+			timelineObject.id = `${Math.floor(Math.random() * Date.now())}`
+		}
+		return timelineObject
+	})
 }
 
 function getDveGraphicsTemplate(dveConfigInput: DVEConfigInput, notifyUserWarning: (message: string) => void): object {

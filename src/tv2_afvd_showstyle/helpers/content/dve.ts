@@ -3,6 +3,7 @@ import {
 	CueDefinitionDVE,
 	DVEConfigInput,
 	DVEOptions,
+	DvePieceActionMetadata,
 	MakeContentDVEBase,
 	PartDefinition,
 	ShowStyleContext
@@ -33,6 +34,6 @@ export function MakeContentDVE(
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined
-): { content: WithTimeline<SplitsContent>; valid: boolean } {
+): { content: WithTimeline<SplitsContent>; valid: boolean; dvePieceActionMetadata?: DvePieceActionMetadata } {
 	return MakeContentDVEBase(context, partDefinition, parsedCue, dveConfig, AFVD_DVE_GENERATOR_OPTIONS)
 }
