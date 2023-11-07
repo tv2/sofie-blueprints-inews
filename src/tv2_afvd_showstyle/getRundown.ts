@@ -179,6 +179,9 @@ class GlobalAdLibPiecesGenerator {
 						}
 					})
 				]
+			},
+			metaData: {
+				type: Tv2PieceType.UNKNOWN
 			}
 		}
 	}
