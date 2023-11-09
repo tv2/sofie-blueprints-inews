@@ -90,7 +90,7 @@ export function EvaluateDVE(
 					content: content.content,
 					prerollDuration: Number(context.config.studio.CasparPrerollDuration) || 0,
 					metaData: {
-						dve: content.dvePieceActionMetadata,
+						splitScreen: content.splitScreenPieceActionMetadata,
 						type: Tv2PieceType.SPLIT_SCREEN,
 						outputLayer: Tv2OutputLayer.PROGRAM,
 						mediaPlayerSessions: [partDefinition.segmentExternalId],
