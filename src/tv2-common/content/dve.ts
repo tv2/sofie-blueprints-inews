@@ -105,11 +105,11 @@ export interface DVEPieceMetaData extends PieceMetaData {
 	userData: ActionSelectDVE
 	mediaPlayerSessions?: string[] // TODO: Should probably move to a ServerPieceMetaData
 	serverPlaybackTiming?: Array<{ start?: number; end?: number }>
-	dve?: DvePieceActionMetadata
+	splitScreen?: SplitScreenPieceActionMetadata
 }
 
-// This is used by the "new" Blueprint in order to put sources into a planned DVE.
-export interface DvePieceActionMetadata {
+// This is used by the "new" Blueprint in order to put sources into a planned split screen.
+export interface SplitScreenPieceActionMetadata {
 	boxes: BoxConfig[]
 	audioTimelineObjectsForBoxes: { [inputIndex: number]: TSR.TSRTimelineObj[] }
 }
@@ -132,7 +132,11 @@ export function MakeContentDVEBase<
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
 	dveGeneratorOptions: DVEOptions
-): { content: WithTimeline<SplitsContent>; valid: boolean; dvePieceActionMetadata?: DvePieceActionMetadata } {
+): {
+	content: WithTimeline<SplitsContent>
+	valid: boolean
+	splitScreenPieceActionMetadata?: SplitScreenPieceActionMetadata
+} {
 	if (!dveConfig) {
 		context.core.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
 		return {
@@ -169,7 +173,11 @@ export function MakeContentDVE2<
 	sources: DVESources | undefined,
 	dveGeneratorOptions: DVEOptions,
 	mediaPlayerSessionId?: string
-): { content: WithTimeline<SplitsContent>; valid: boolean; dvePieceActionMetadata?: DvePieceActionMetadata } {
+): {
+	content: WithTimeline<SplitsContent>
+	valid: boolean
+	splitScreenPieceActionMetadata?: SplitScreenPieceActionMetadata
+} {
 	let template: DVEConfig
 	try {
 		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
@@ -304,7 +312,7 @@ export function MakeContentDVE2<
 		}
 	})
 
-	const dvePieceActionMetadata: DvePieceActionMetadata = {
+	const splitScreenPieceActionMetadata: SplitScreenPieceActionMetadata = {
 		boxes,
 		audioTimelineObjectsForBoxes
 	}
@@ -329,7 +337,7 @@ export function MakeContentDVE2<
 	}
 
 	return {
-		dvePieceActionMetadata,
+		splitScreenPieceActionMetadata,
 		valid,
 		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
