@@ -11,13 +11,17 @@ import {
 import { CueType, SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 import { DveLoopGenerator } from '../helpers/graphics/caspar/dve-loop-generator'
 
-const NON_BASELINE_SCHEMA = 'NON_BASELINE_SCHEMA'
+const NON_BASELINE_SCHEMA: string = 'NON_BASELINE_SCHEMA'
+const VALID_EMPTY_SCHEMA_VALUE: string = 'N/A'
 
 export class GfxSchemaGenerator {
 	constructor(private dveLoopGenerator: DveLoopGenerator) {}
 
 	public createBaselineTimelineObjectsFromGfxDefaults(context: ShowStyleContext): TSR.TSRTimelineObjBase[] {
-		const schemaId = context.config.showStyle.GfxDefaults[0].DefaultSchema.value
+		const schemaId: string = context.config.showStyle.GfxDefaults[0].DefaultSchema.value
+		if (VALID_EMPTY_SCHEMA_VALUE === schemaId) {
+			return []
+		}
 		const schema: TableConfigGfxSchema | undefined = context.config.showStyle.GfxSchemaTemplates.find(
 			(s) => s._id === schemaId
 		)
