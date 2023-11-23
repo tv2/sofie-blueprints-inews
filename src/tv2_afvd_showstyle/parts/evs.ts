@@ -23,6 +23,7 @@ import {
 	TransitionStyle
 } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
+import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { GalleryBlueprintConfig } from '../helpers/config'
@@ -68,6 +69,7 @@ export async function CreatePartEVS(
 		metaData: {
 			type: Tv2PieceType.REPLAY,
 			outputLayer: Tv2OutputLayer.PROGRAM,
+			audioMode: partDefinition.sourceDefinition.vo ? Tv2AudioMode.VOICE_OVER : undefined,
 			sisyfosPersistMetaData: {
 				sisyfosLayers: []
 			}
