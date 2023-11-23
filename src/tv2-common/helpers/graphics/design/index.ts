@@ -18,7 +18,8 @@ import {
 import { SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 
-const NON_BASELINE_DESIGN = 'NON_BASELINE_DESIGN'
+const NON_BASELINE_DESIGN: string = 'NON_BASELINE_DESIGN'
+const VALID_EMPTY_DESIGN_VALUE: string = 'N/A'
 
 export function EvaluateDesignBase(
 	context: ShowStyleContext,
@@ -163,6 +164,9 @@ function getVizDesignTimelineObject(config: TV2ShowStyleConfig, design: string):
 
 export function getVizBaselineDesignTimelineObject(context: ShowStyleContext) {
 	const designReference = context.config.showStyle.GfxDefaults[0].DefaultDesign
+	if (VALID_EMPTY_DESIGN_VALUE === designReference.value) {
+		return []
+	}
 	const design = context.config.showStyle.GfxDesignTemplates.find(
 		(designTemplate) => designTemplate._id === designReference.value
 	)
@@ -178,6 +182,9 @@ export function getCasparCgBaselineDesignTimelineObjects(
 	templateName: string
 ): TSR.TimelineObjCCGTemplate[] {
 	const designReference = context.config.showStyle.GfxDefaults[0].DefaultDesign
+	if (VALID_EMPTY_DESIGN_VALUE === designReference.value) {
+		return []
+	}
 	const design = context.config.showStyle.GfxDesignTemplates.find(
 		(designTemplate) => designTemplate._id === designReference.value
 	)
