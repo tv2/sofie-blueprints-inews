@@ -16,17 +16,17 @@ import {
 	ServerPieceMetaData,
 	ShowStyleContext
 } from 'tv2-common'
-import {AdlibActionType, PartType, SharedOutputLayer, SharedSourceLayer, TallyTags} from 'tv2-constants'
-import {Tv2AudioMode} from "../../tv2-constants/tv2-audio.mode";
-import {Tv2OutputLayer} from '../../tv2-constants/tv2-output-layer'
-import {Tv2PieceType} from '../../tv2-constants/tv2-piece-type'
-import {ActionSelectServerClip} from '../actions'
-import {TV2BlueprintConfigBase, TV2StudioConfigBase} from '../blueprintConfig'
-import {getSourceDuration, GetVTContentProperties} from '../content'
-import {getServerSeek, ServerPosition, ServerSelectMode} from '../helpers'
-import {PartDefinition} from '../inewsConversion'
-import {SanitizeString} from '../util'
-import {CreatePartInvalid} from './invalid'
+import { AdlibActionType, PartType, SharedOutputLayer, SharedSourceLayer, TallyTags } from 'tv2-constants'
+import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { ActionSelectServerClip } from '../actions'
+import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
+import { getSourceDuration, GetVTContentProperties } from '../content'
+import { getServerSeek, ServerPosition, ServerSelectMode } from '../helpers'
+import { PartDefinition } from '../inewsConversion'
+import { SanitizeString } from '../util'
+import { CreatePartInvalid } from './invalid'
 
 export interface ServerPartProps {
 	voLayer: boolean

@@ -69,7 +69,7 @@ export async function CreatePartEVS(
 		metaData: {
 			type: Tv2PieceType.REPLAY,
 			outputLayer: Tv2OutputLayer.PROGRAM,
-			audioMode: partDefinition.sourceDefinition.vo ? Tv2AudioMode.VOICE_OVER : undefined,
+			audioMode: partDefinition.sourceDefinition.vo ? Tv2AudioMode.VOICE_OVER : Tv2AudioMode.FULL,
 			sisyfosPersistMetaData: {
 				sisyfosLayers: []
 			}
