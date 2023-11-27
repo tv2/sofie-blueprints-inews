@@ -234,7 +234,9 @@ function getServerSelectionBlueprintPiece(
 			type: Tv2PieceType.VIDEO_CLIP,
 			outputLayer: Tv2OutputLayer.PROGRAM,
 			audioMode:
-				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver ? Tv2AudioMode.VOICE_OVER : undefined,
+				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
+					? Tv2AudioMode.VOICE_OVER
+					: Tv2AudioMode.FULL,
 			mediaPlayerSessions: [contentProps.mediaPlayerSession],
 			userData: userDataElement,
 			sisyfosPersistMetaData: {
@@ -269,7 +271,9 @@ function getPgmBlueprintPiece<
 			type: Tv2PieceType.VIDEO_CLIP,
 			outputLayer: Tv2OutputLayer.PROGRAM,
 			audioMode:
-				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver ? Tv2AudioMode.VOICE_OVER : undefined,
+				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
+					? Tv2AudioMode.VOICE_OVER
+					: Tv2AudioMode.FULL,
 			mediaPlayerSessions: [contentProps.mediaPlayerSession]
 		},
 		content: {
