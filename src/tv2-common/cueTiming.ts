@@ -1,7 +1,8 @@
 import { CueDefinition, CueTime } from './inewsConversion/converters/ParseCue'
 
 import { IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
-import { FRAME_RATE, TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
+import { TV2BlueprintConfigBase, TV2StudioConfigBase } from 'tv2-common'
+import { FRAME_RATE } from './frameTime'
 
 const FRAME_TIME = 1000 / FRAME_RATE // TODO: This should be pulled from config.
 
@@ -47,7 +48,7 @@ export function getLifeSpan(mode: 'B' | 'S' | 'O'): PieceLifespan {
 		case 'S':
 			return PieceLifespan.OutOnSegmentEnd
 		case 'O':
-			return PieceLifespan.OutOnShowStyleEnd
+			return PieceLifespan.OutOnRundownChange
 	}
 }
 

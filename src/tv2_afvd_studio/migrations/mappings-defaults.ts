@@ -541,6 +541,12 @@ export const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		layerName: 'GFX Design',
 		lookahead: LookaheadMode.NONE
 	}),
+	[GraphicLLayer.GraphicLLayerSchema]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: TSR.DeviceType.VIZMSE,
+		deviceId: 'viz0',
+		layerName: 'GFX Skema',
+		lookahead: LookaheadMode.NONE
+	}),
 	[GraphicLLayer.GraphicLLayerAdLibs]: literal<TSR.MappingVizMSE & BlueprintMapping>({
 		device: TSR.DeviceType.VIZMSE,
 		deviceId: 'viz0',

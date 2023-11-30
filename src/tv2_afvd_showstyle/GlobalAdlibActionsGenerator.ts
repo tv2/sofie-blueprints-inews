@@ -1,11 +1,13 @@
 import { IBlueprintActionManifest } from 'blueprints-integration'
 import {
 	ActionCallRobotPreset,
-	ActionClearGraphics,
+	ActionClearAllGraphics,
+	ActionClearTemaGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
 	ActionFadeDownPersistedAudioLevels,
+	ActionFadeDownSoundPlayer,
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
@@ -39,8 +41,8 @@ export class GlobalAdlibActionsGenerator {
 		this.config.sources.cameras
 			.slice(0, 5) // the first x cameras to create INP1/2/3 cam-adlibs from
 			.forEach((camera) => {
-				blueprintActions.push(this.makeCutDirectlyCameraAction(camera, globalRank++))
-				blueprintActions.push(this.makeQueueAsNextCameraAction(camera, globalRank++))
+				blueprintActions.push(this.makeCutCameraDirectlyAction(camera, globalRank++))
+				blueprintActions.push(this.makeQueueCameraAsNextAction(camera, globalRank++))
 			})
 
 		this.config.sources.cameras
@@ -53,7 +55,8 @@ export class GlobalAdlibActionsGenerator {
 			.slice(0, 10) // the first x remote to create INP1/2/3 live-adlibs from
 			.forEach((live) => {
 				blueprintActions.push(...this.makeAdlibBoxesActions(live, globalRank++))
-				blueprintActions.push(this.makeCutDirectLiveAction(live, globalRank++))
+				blueprintActions.push(this.makeCutDirectlyLiveAction(live, globalRank++))
+				blueprintActions.push(this.makeQueueAsNextLiveAction(live, globalRank++))
 			})
 
 		this.config.sources.feeds
@@ -75,6 +78,7 @@ export class GlobalAdlibActionsGenerator {
 
 		blueprintActions.push(this.makeClearGraphicsAction())
 		blueprintActions.push(this.makeClearGraphicsAltudAction())
+		blueprintActions.push(this.makeClearGraphicsTemaudAction())
 
 		blueprintActions.push(...GetTransitionAdLibActions(this.config, 800))
 
@@ -84,16 +88,25 @@ export class GlobalAdlibActionsGenerator {
 		blueprintActions.push(this.makePersistedAudioLevelsAction())
 
 		blueprintActions.push(this.makeRobotPresetAction())
+		blueprintActions.push(this.makeFadeSoundPlayerAction())
 
 		return blueprintActions
 	}
 
-	private makeCutDirectlyCameraAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+	private makeCutCameraDirectlyAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
 		return this.makeCutCameraAction(cameraSourceInfo, true, rank)
 	}
 
-	private makeQueueAsNextCameraAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+	private makeQueueCameraAsNextAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
 		return this.makeCutCameraAction(cameraSourceInfo, false, rank)
+	}
+
+	private makeCutDirectlyLiveAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+		return this.makeCutLiveAction(cameraSourceInfo, true, rank)
+	}
+
+	private makeQueueAsNextLiveAction(cameraSourceInfo: SourceInfo, rank: number): IBlueprintActionManifest {
+		return this.makeCutLiveAction(cameraSourceInfo, false, rank)
 	}
 
 	private makeCutCameraAction(
@@ -123,11 +136,11 @@ export class GlobalAdlibActionsGenerator {
 		}
 	}
 
-	private makeCutDirectLiveAction(info: SourceInfo, rank: number): IBlueprintActionManifest {
+	private makeCutLiveAction(info: SourceInfo, cutDirectly: boolean, rank: number): IBlueprintActionManifest {
 		const sourceDefinition = SourceInfoToSourceDefinition(info) as SourceDefinitionRemote
 		const userData: ActionCutToRemote = {
 			type: AdlibActionType.CUT_TO_REMOTE,
-			cutDirectly: true,
+			cutDirectly,
 			sourceDefinition
 		}
 		return {
@@ -141,7 +154,7 @@ export class GlobalAdlibActionsGenerator {
 				sourceLayerId: SourceLayer.PgmLive,
 				outputLayerId: SharedOutputLayer.PGM,
 				content: {},
-				tags: [AdlibTags.ADLIB_CUT_DIRECT]
+				tags: cutDirectly ? [AdlibTags.ADLIB_CUT_DIRECT] : [AdlibTags.ADLIB_QUEUE_NEXT]
 			}
 		}
 	}
@@ -257,14 +270,14 @@ export class GlobalAdlibActionsGenerator {
 	}
 
 	private makeClearGraphicsAction(): IBlueprintActionManifest {
-		const userData: ActionClearGraphics = {
-			type: AdlibActionType.CLEAR_GRAPHICS,
+		const userData: ActionClearAllGraphics = {
+			type: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			sendCommands: true,
 			label: 'GFX Clear'
 		}
 		return {
 			externalId: generateExternalId(this.context.core, userData),
-			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			actionId: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			userData,
 			userDataManifest: {},
 			display: {
@@ -281,14 +294,14 @@ export class GlobalAdlibActionsGenerator {
 	}
 
 	private makeClearGraphicsAltudAction(): IBlueprintActionManifest {
-		const userData: ActionClearGraphics = {
-			type: AdlibActionType.CLEAR_GRAPHICS,
+		const userData: ActionClearAllGraphics = {
+			type: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			sendCommands: false,
 			label: 'GFX Altud'
 		}
 		return {
 			externalId: generateExternalId(this.context.core, userData),
-			actionId: AdlibActionType.CLEAR_GRAPHICS,
+			actionId: AdlibActionType.CLEAR_ALL_GRAPHICS,
 			userData,
 			userDataManifest: {},
 			display: {
@@ -300,6 +313,28 @@ export class GlobalAdlibActionsGenerator {
 				tags: [AdlibTags.ADLIB_STATIC_BUTTON, AdlibTags.ADLIB_GFX_ALTUD],
 				currentPieceTags: [TallyTags.GFX_ALTUD],
 				nextPieceTags: [TallyTags.GFX_ALTUD]
+			}
+		}
+	}
+
+	private makeClearGraphicsTemaudAction(): IBlueprintActionManifest {
+		const userData: ActionClearTemaGraphics = {
+			type: AdlibActionType.CLEAR_TEMA_GRAPHICS
+		}
+		return {
+			externalId: generateExternalId(this.context.core, userData),
+			actionId: AdlibActionType.CLEAR_TEMA_GRAPHICS,
+			userData,
+			userDataManifest: {},
+			display: {
+				_rank: 400,
+				label: t(`GFX Temaud`),
+				sourceLayerId: SourceLayer.PgmAdlibGraphicCmd,
+				outputLayerId: SharedOutputLayer.SEC,
+				content: {},
+				tags: [AdlibTags.ADLIB_GFX_TEMAUD],
+				currentPieceTags: [TallyTags.GFX_TEMAUD],
+				nextPieceTags: [TallyTags.GFX_TEMAUD]
 			}
 		}
 	}
@@ -337,6 +372,25 @@ export class GlobalAdlibActionsGenerator {
 				label: t(`Call Robot preset`),
 				sourceLayerId: SourceLayer.RobotCamera,
 				outputLayerId: SharedOutputLayer.SEC,
+				tags: []
+			}
+		}
+	}
+
+	private makeFadeSoundPlayerAction(): IBlueprintActionManifest {
+		const fadeDownSoundPlayer: ActionFadeDownSoundPlayer = {
+			type: AdlibActionType.FADE_DOWN_SOUND_PLAYER
+		}
+		return {
+			externalId: generateExternalId(this.context.core, fadeDownSoundPlayer),
+			actionId: AdlibActionType.FADE_DOWN_SOUND_PLAYER,
+			userData: fadeDownSoundPlayer,
+			userDataManifest: {},
+			display: {
+				_rank: 400,
+				label: t(`Fade down sound player`),
+				sourceLayerId: SourceLayer.PgmAudioBed,
+				outputLayerId: SharedOutputLayer.MUSIK,
 				tags: []
 			}
 		}

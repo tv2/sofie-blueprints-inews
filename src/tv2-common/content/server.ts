@@ -84,7 +84,8 @@ function GetServerTimeline(
 			seek: contentProps.seek,
 			length: contentProps.seek ? contentProps.clipDuration : undefined,
 			inPoint: contentProps.seek ? 0 : undefined,
-			playing: true
+			playing: true,
+			noStarttime: true
 		},
 		metaData: {
 			mediaPlayerSession: contentProps.mediaPlayerSession

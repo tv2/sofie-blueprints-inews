@@ -16,6 +16,7 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	MakeAdlibsForFulls: true,
 	GfxSchemaTemplates: [],
 	GfxSetups: [],
+	GfxShowMapping: [],
 	GfxDefaults: []
 }
 

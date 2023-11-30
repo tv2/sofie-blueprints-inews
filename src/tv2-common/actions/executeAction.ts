@@ -8,6 +8,7 @@ import {
 	IBlueprintPiece,
 	IBlueprintPieceDB,
 	IBlueprintPieceInstance,
+	IBlueprintResolvedPieceInstance,
 	PieceLifespan,
 	SplitsContent,
 	TimelineObjectCoreExt,
@@ -16,7 +17,7 @@ import {
 	WithTimeline
 } from 'blueprints-integration'
 import {
-	ActionClearGraphics,
+	ActionClearAllGraphics,
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
@@ -27,6 +28,7 @@ import {
 	ActionSelectServerClip,
 	calculateTime,
 	createDipTransitionBlueprintPieceForPart,
+	createFadeSoundContent,
 	createInTransitionForTransitionStyle,
 	CreatePartServerBase,
 	CueDefinition,
@@ -37,6 +39,7 @@ import {
 	DVESources,
 	EvaluateCuesOptions,
 	executeWithContext,
+	findLastPlayingPieceInstance,
 	GetDVETemplate,
 	getServerPosition,
 	GetSisyfosTimelineObjForCamera,
@@ -46,16 +49,18 @@ import {
 	literal,
 	MakeContentDVE2,
 	PartDefinition,
+	PartEndStateExt,
 	PieceMetaData,
 	PilotGraphicGenerator,
 	ServerSelectMode,
 	ShowStyleContext,
-	SisyfosPersistMetaData,
+	SisyfosPersistenceMetaData,
 	TableConfigItemBreaker,
 	TimelineBlueprintExt,
 	TransitionStyle,
 	TV2AdlibAction,
 	TV2BlueprintConfigBase,
+	TV2ShowStyleConfig,
 	TV2StudioConfigBase,
 	UniformConfig
 } from 'tv2-common'
@@ -66,6 +71,7 @@ import {
 	PartType,
 	SharedGraphicLLayer,
 	SharedOutputLayer,
+	SharedSisyfosLLayer,
 	SharedSourceLayer,
 	SourceType,
 	TallyTags
@@ -99,14 +105,9 @@ const STOPPABLE_GRAPHICS_LAYERS = [
 	SharedSourceLayer.PgmGraphicsTLF
 ]
 
-const FADE_SISYFOS_LEVELS_PIECE_NAME = 'fadeDown'
-
-export interface ActionExecutionSettings<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
-> {
+export interface ActionExecutionSettings<BlueprintConfig extends TV2ShowStyleConfig = TV2ShowStyleConfig> {
 	EvaluateCues: (
-		context: ShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<BlueprintConfig>,
 		part: IBlueprintPart,
 		pieces: IBlueprintPiece[],
 		adLibPieces: IBlueprintAdLibPiece[],
@@ -155,7 +156,7 @@ export interface ActionExecutionSettings<
 		SELECTED_ADLIB_LAYERS: string[]
 	}
 	createJingleContent: (
-		context: ShowStyleContext<ShowStyleConfig>,
+		context: ShowStyleContext<BlueprintConfig>,
 		file: string,
 		breakerConfig: TableConfigItemBreaker
 	) => WithTimeline<VTContent>
@@ -172,7 +173,7 @@ export async function executeAction<
 >(
 	coreContext: IActionExecutionContext,
 	uniformConfig: UniformConfig,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionIdStr: string,
 	userData: ActionUserData,
 	triggerMode?: string
@@ -204,8 +205,11 @@ export async function executeAction<
 			case AdlibActionType.SELECT_JINGLE:
 				await executeActionSelectJingle(context, settings, actionId, userData as ActionSelectJingle)
 				break
-			case AdlibActionType.CLEAR_GRAPHICS:
-				await executeActionClearGraphics(context, userData as ActionClearGraphics)
+			case AdlibActionType.CLEAR_ALL_GRAPHICS:
+				await executeActionClearAllGraphics(context, userData as ActionClearAllGraphics)
+				break
+			case AdlibActionType.CLEAR_TEMA_GRAPHICS:
+				await executeActionClearTemaGraphics(context)
 				break
 			case AdlibActionType.CUT_TO_CAMERA:
 				await executeActionCutToCamera(context, settings, actionId, userData as ActionCutToCamera)
@@ -249,6 +253,15 @@ export async function executeAction<
 				await executeActionCallRobotPreset(context, preset)
 				break
 			}
+			case AdlibActionType.FADE_DOWN_SOUND_PLAYER: {
+				const fadeDurationFrames: number = Number(triggerMode)
+				if (Number.isNaN(fadeDurationFrames)) {
+					context.core.notifyUserWarning(`Calling Fade Sound Player ignored. '${triggerMode}' is not a number`)
+					break
+				}
+				await fadeDownSoundPlayer(context, fadeDurationFrames)
+				break
+			}
 			default:
 				assertUnreachable(actionId)
 				break
@@ -280,7 +293,7 @@ async function getExistingTransition<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	part: 'current' | 'next'
 ): Promise<ActionTakeWithTransition | undefined> {
 	const existingTransition = await context.core
@@ -385,7 +398,7 @@ async function executeActionSelectServerClip<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectServerClip,
 	triggerMode?: ServerSelectMode,
@@ -498,11 +511,7 @@ function dveContainsServer(sources: DVESources): boolean {
 function isServerOnPgm<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	pieceInstance: IBlueprintPieceInstance,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
-	voLayer: boolean
-) {
+>(pieceInstance: IBlueprintPieceInstance, settings: ActionExecutionSettings<ShowStyleConfig>, voLayer: boolean) {
 	return (
 		pieceInstance.piece.sourceLayerId === (voLayer ? settings.SourceLayers.VO : settings.SourceLayers.Server) ||
 		(pieceInstance.piece.sourceLayerId === settings.SourceLayers.DVEAdLib &&
@@ -515,7 +524,7 @@ async function executeActionSelectDVE<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectDVE
 ) {
@@ -551,9 +560,6 @@ async function executeActionSelectDVE<
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
-		sisyfosPersistMetaData: {
-			sisyfosLayers: []
-		},
 		userData
 	}
 
@@ -601,7 +607,7 @@ async function cutServerToBox<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	newDvePiece: IBlueprintPiece<DVEPieceMetaData>,
 	containedServerBefore?: boolean,
 	modifiesCurrent?: boolean
@@ -697,7 +703,7 @@ async function executeActionSelectDVELayout<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectDVELayout
 ) {
@@ -740,9 +746,6 @@ async function executeActionSelectDVELayout<
 		const newMetaData: DVEPieceMetaData = {
 			sources,
 			config: userData.config,
-			sisyfosPersistMetaData: {
-				sisyfosLayers: []
-			},
 			userData: {
 				type: AdlibActionType.SELECT_DVE,
 				config: {
@@ -790,10 +793,7 @@ async function executeActionSelectDVELayout<
 	const newMetaData2: DVEPieceMetaData = {
 		...meta,
 		sources: { ...sources, ...meta.sources },
-		config: userData.config,
-		sisyfosPersistMetaData: {
-			sisyfosLayers: []
-		}
+		config: userData.config
 	}
 
 	const pieceContent = MakeContentDVE2(context, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
@@ -832,7 +832,7 @@ async function startNewDVELayout<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	dvePiece: IBlueprintPiece<PieceMetaData>,
 	pieceContent: WithTimeline<SplitsContent>,
 	metaData: DVEPieceMetaData,
@@ -921,7 +921,7 @@ async function executeActionSelectJingle<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string,
 	userData: ActionSelectJingle
 ) {
@@ -990,7 +990,7 @@ async function executeActionCutToCamera<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string,
 	userData: ActionCutToCamera
 ) {
@@ -1020,8 +1020,8 @@ async function executeActionCutToCamera<
 		metaData: {
 			sisyfosPersistMetaData: {
 				sisyfosLayers: [],
-				acceptPersistAudio: sourceInfoCam.acceptPersistAudio,
-				isPieceInjectedInPart: true
+				acceptsPersistedAudio: sourceInfoCam.acceptPersistAudio,
+				isModifiedOrInsertedByAction: userData.cutDirectly
 			}
 		},
 		tags: [GetTagForKam(userData.sourceDefinition)],
@@ -1042,25 +1042,22 @@ async function executeActionCutToCamera<
 	await executePiece(context, settings, kamPiece, !userData.cutDirectly, part)
 }
 
-async function executePiece<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+async function executePiece(
+	context: ActionExecutionContext,
+	settings: ActionExecutionSettings,
 	pieceToExecute: IBlueprintPiece<PieceMetaData>,
 	shouldBeQueued: boolean,
 	partToQueue: IBlueprintPart
 ) {
-	const currentPieceInstances = await context.core.getPieceInstances('current')
+	const currentPieceInstances = await context.core.getResolvedPieceInstances('current')
 	const isServerInCurrentPart = currentPieceInstances.some(
 		(p) => p.piece.sourceLayerId === settings.SourceLayers.Server || p.piece.sourceLayerId === settings.SourceLayers.VO
 	)
 
 	const layersWithCutDirect: string[] = [settings.SourceLayers.Live, settings.SourceLayers.Cam]
-	const currentPiece: IBlueprintPieceInstance<PieceMetaData> | undefined = findLastPlayingPieceInstance(
+	const currentPieceInstance: IBlueprintResolvedPieceInstance<PieceMetaData> | undefined = findLastPlayingPieceInstance(
 		currentPieceInstances,
-		layersWithCutDirect
+		(p) => layersWithCutDirect.includes(p.piece.sourceLayerId)
 	)
 
 	if (shouldBeQueued || isServerInCurrentPart) {
@@ -1074,40 +1071,85 @@ async function executePiece<
 		if (isServerInCurrentPart && !shouldBeQueued) {
 			await context.core.takeAfterExecuteAction(true)
 		}
-	} else if (currentPiece && !isPlannedPieceOnLayer(currentPiece, settings.SourceLayers.Live)) {
-		pieceToExecute.externalId = currentPiece.piece.externalId
-		pieceToExecute.enable = currentPiece.piece.enable
-		const currentMetaData = currentPiece.piece.metaData!
-		const metaData = pieceToExecute.metaData!
-		metaData.sisyfosPersistMetaData!.previousPersistMetaDataForCurrentPiece = currentMetaData.sisyfosPersistMetaData
-
-		await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
-
-		await context.core.updatePieceInstance(currentPiece._id, pieceToExecute)
+	} else if (currentPieceInstance && !isPlannedPieceOnLayer(currentPieceInstance, settings.SourceLayers.Live)) {
+		await executePieceByReplacingCurrent(context, pieceToExecute, currentPieceInstance, currentPieceInstances)
 	} else {
-		const currentExternalId = await context.core
-			.getPartInstance('current')
-			.then((currentPartInstance) => currentPartInstance?.part.externalId)
-
-		if (currentExternalId) {
-			pieceToExecute.externalId = currentExternalId
-		}
-
-		await context.core.stopPiecesOnLayers([
-			settings.SourceLayers.DVE,
-			...(settings.SourceLayers.DVEAdLib ? [settings.SourceLayers.DVEAdLib] : []),
-			settings.SourceLayers.Effekt,
-			settings.SourceLayers.Live,
-			settings.SourceLayers.Server,
-			settings.SourceLayers.VO,
-			...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
-			settings.SourceLayers.Continuity
-		])
-		await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
-
-		pieceToExecute.enable = { start: 'now' }
-		await context.core.insertPiece('current', pieceToExecute)
+		await executePieceByStoppingCurrent(context, pieceToExecute, currentPieceInstances, settings)
 	}
+}
+
+async function executePieceByStoppingCurrent(
+	context: ActionExecutionContext,
+	pieceToExecute: IBlueprintPiece<PieceMetaData>,
+	currentPieceInstances: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>,
+	settings: ActionExecutionSettings<TV2ShowStyleConfig>
+) {
+	const currentExternalId = await context.core
+		.getPartInstance('current')
+		.then((currentPartInstance) => currentPartInstance?.part.externalId)
+
+	if (currentExternalId) {
+		pieceToExecute.externalId = currentExternalId
+	}
+
+	const currentPieceInstanceWithMetaData = findLastPlayingPieceInstance(
+		currentPieceInstances,
+		(piece) => !!piece.piece.metaData?.sisyfosPersistMetaData
+	)
+
+	await updatePersistenceMetaData(context, pieceToExecute, currentPieceInstanceWithMetaData)
+
+	await context.core.stopPiecesOnLayers([
+		settings.SourceLayers.DVE,
+		...(settings.SourceLayers.DVEAdLib ? [settings.SourceLayers.DVEAdLib] : []),
+		settings.SourceLayers.Effekt,
+		settings.SourceLayers.Live,
+		settings.SourceLayers.Server,
+		settings.SourceLayers.VO,
+		...(settings.SourceLayers.EVS ? [settings.SourceLayers.EVS] : []),
+		settings.SourceLayers.Continuity
+	])
+	await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
+
+	pieceToExecute.enable = { start: 'now' }
+	await context.core.insertPiece('current', pieceToExecute)
+}
+
+async function executePieceByReplacingCurrent(
+	context: ActionExecutionContext,
+	pieceToExecute: IBlueprintPiece<PieceMetaData>,
+	currentPiece: IBlueprintResolvedPieceInstance<PieceMetaData>,
+	currentPieceInstances: Array<IBlueprintResolvedPieceInstance<PieceMetaData>>
+) {
+	pieceToExecute.externalId = currentPiece.piece.externalId
+	pieceToExecute.enable = currentPiece.piece.enable
+
+	await updatePersistenceMetaData(context, pieceToExecute, currentPiece)
+
+	await stopGraphicPiecesThatShouldEndWithPart(context, currentPieceInstances)
+
+	await context.core.updatePieceInstance(currentPiece._id, pieceToExecute)
+}
+
+async function updatePersistenceMetaData(
+	context: ActionExecutionContext,
+	pieceToExecute: IBlueprintPiece<PieceMetaData>,
+	currentPieceInstance: IBlueprintResolvedPieceInstance<PieceMetaData> | undefined
+) {
+	const currentPart = await context.core.getPartInstance('current')
+	if (!currentPart) {
+		return
+	}
+
+	const currentMetaData = currentPieceInstance?.piece.metaData
+	const nextMetaData = pieceToExecute.metaData!
+	const previousPartEndState = currentPart.previousPartEndState as PartEndStateExt | undefined
+	nextMetaData.sisyfosPersistMetaData = mergePersistenceMetaData(
+		currentPart.segmentId,
+		nextMetaData.sisyfosPersistMetaData!,
+		currentMetaData?.sisyfosPersistMetaData,
+		previousPartEndState
+	)
 }
 
 function isPlannedPieceOnLayer(currentPiece: IBlueprintPieceInstance<PieceMetaData>, sourceLayerId: string) {
@@ -1116,24 +1158,6 @@ function isPlannedPieceOnLayer(currentPiece: IBlueprintPieceInstance<PieceMetaDa
 		!currentPiece.piece.metaData?.modifiedByAction &&
 		!currentPiece?.dynamicallyInserted
 	)
-}
-
-function findLastPlayingPieceInstance(
-	currentPieceInstances: Array<IBlueprintPieceInstance<PieceMetaData>>,
-	sourceLayerIds: string[]
-): IBlueprintPieceInstance<PieceMetaData> | undefined {
-	const playingPiecesOnSelectedLayers = currentPieceInstances.filter(
-		(p) => !p.stoppedPlayback && sourceLayerIds.includes(p.piece.sourceLayerId)
-	)
-	if (playingPiecesOnSelectedLayers.length <= 1) {
-		return playingPiecesOnSelectedLayers[0]
-	}
-	return playingPiecesOnSelectedLayers.reduce((prev, current) => {
-		const prevStartedPlayback = prev.startedPlayback ?? prev.dynamicallyInserted?.time ?? Infinity
-		const currentStartedPlayback = current.startedPlayback ?? current.dynamicallyInserted?.time ?? Infinity
-
-		return prevStartedPlayback > currentStartedPlayback ? prev : current
-	})
 }
 
 async function stopGraphicPiecesThatShouldEndWithPart(
@@ -1160,7 +1184,7 @@ async function executeActionCutToRemote<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string,
 	userData: ActionCutToRemote
 ) {
@@ -1183,13 +1207,13 @@ async function executeActionCutToRemote<
 
 	const eksternSisyfos: TSR.TimelineObjSisyfosAny[] = GetSisyfosTimelineObjForRemote(context.config, sourceInfo)
 
-	const sisyfosPersistMetaData: SisyfosPersistMetaData =
+	const sisyfosPersistMetaData: SisyfosPersistenceMetaData =
 		sourceInfo !== undefined
 			? {
 					sisyfosLayers: sourceInfo.sisyfosLayers ?? [],
 					wantsToPersistAudio: sourceInfo.wantsToPersistAudio,
-					acceptPersistAudio: sourceInfo.acceptPersistAudio,
-					isPieceInjectedInPart: userData.cutDirectly
+					acceptsPersistedAudio: sourceInfo.acceptPersistAudio,
+					isModifiedOrInsertedByAction: userData.cutDirectly
 			  }
 			: { sisyfosLayers: [] }
 
@@ -1231,7 +1255,7 @@ async function executeActionCutSourceToBox<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	_actionId: string,
 	userData: ActionCutSourceToBox
 ) {
@@ -1351,7 +1375,7 @@ function groupPiecesBySourceLayer(pieceInstances: Array<IBlueprintPieceInstance<
 function findPrimaryPieceUsingPriority<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>, piecesBySourceLayer: PiecesBySourceLayer) {
+>(settings: ActionExecutionSettings<ShowStyleConfig>, piecesBySourceLayer: PiecesBySourceLayer) {
 	const sourceLayersOrderedByPriority = [
 		settings.SourceLayers.Cam,
 		settings.SourceLayers.DVE,
@@ -1376,7 +1400,7 @@ async function executeActionTakeWithTransition<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string,
 	userData: ActionTakeWithTransition
 ) {
@@ -1589,7 +1613,7 @@ async function findMediaPlayerSessions(
 async function executeActionCommentatorSelectServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(context: ActionExecutionContext<ShowStyleConfig>, settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
+>(context: ActionExecutionContext<ShowStyleConfig>, settings: ActionExecutionSettings<ShowStyleConfig>) {
 	const data = await findDataStore<ActionSelectServerClip>(context, [
 		settings.SelectedAdlibs.SourceLayer.Server,
 		settings.SelectedAdlibs.SourceLayer.VO
@@ -1622,7 +1646,7 @@ async function executeActionCommentatorSelectServer<
 async function executeActionCommentatorSelectDVE<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(context: ActionExecutionContext<ShowStyleConfig>, settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
+>(context: ActionExecutionContext<ShowStyleConfig>, settings: ActionExecutionSettings<ShowStyleConfig>) {
 	if (!settings.SelectedAdlibs.SourceLayer.DVE) {
 		return
 	}
@@ -1639,7 +1663,7 @@ async function executeActionCommentatorSelectDVE<
 async function executeActionCommentatorSelectFull<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(context: ActionExecutionContext<ShowStyleConfig>, settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
+>(context: ActionExecutionContext<ShowStyleConfig>, settings: ActionExecutionSettings<ShowStyleConfig>) {
 	const data = await findDataStore<ActionSelectFullGrafik>(context, [SharedSourceLayer.SelectedAdlibGraphicsFull])
 
 	if (!data) {
@@ -1652,7 +1676,7 @@ async function executeActionCommentatorSelectFull<
 async function executeActionCommentatorSelectJingle<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(context: ActionExecutionContext<ShowStyleConfig>, settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
+>(context: ActionExecutionContext<ShowStyleConfig>, settings: ActionExecutionSettings<ShowStyleConfig>) {
 	if (!settings.SelectedAdlibs.SourceLayer.Effekt) {
 		return
 	}
@@ -1671,7 +1695,7 @@ async function executeActionRecallLastLive<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string
 ) {
 	const lastLive = await context.core.findLastPieceOnLayer(settings.SourceLayers.Live, {
@@ -1728,15 +1752,9 @@ async function executeActionRecallLastDVE<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string
 ) {
-	const currentPart = context.core.getPartInstance('current')
-
-	if (!currentPart) {
-		return
-	}
-
 	const lastPlayedScheduledDVE = (await context.core.findLastPieceOnLayer(settings.SourceLayers.DVE, {
 		originalOnly: true
 	})) as IBlueprintPieceInstance<DVEPieceMetaData> | undefined
@@ -1778,22 +1796,29 @@ async function addLatestPieceOnLayerForDve(
 }
 
 async function executeActionFadeDownPersistedAudioLevels(context: ActionExecutionContext) {
-	const fadeSisyfosMetaData = await createFadeSisyfosLevelsMetaData(context)
-	const resetSisyfosPersistedLevelsPiece: IBlueprintPiece<PieceMetaData> = {
-		externalId: 'fadeSisyfosPersistedLevelsDown',
-		name: FADE_SISYFOS_LEVELS_PIECE_NAME,
-		outputLayerId: '',
-		sourceLayerId: '',
-		enable: { start: 'now' },
-		lifespan: PieceLifespan.WithinPart,
-		metaData: {
-			sisyfosPersistMetaData: fadeSisyfosMetaData
-		},
-		content: {
-			timelineObjects: []
-		}
+	const resolvedPieceInstances = await context.core.getResolvedPieceInstances('current')
+	if (resolvedPieceInstances.length === 0) {
+		return
 	}
-	await context.core.insertPiece('current', resetSisyfosPersistedLevelsPiece)
+
+	const latestPiece = findLastPlayingPieceInstance(
+		resolvedPieceInstances,
+		(piece) => !!piece.piece.metaData?.sisyfosPersistMetaData
+	)
+	if (!latestPiece) {
+		return
+	}
+
+	latestPiece.piece.content.timelineObjects = latestPiece.piece.content.timelineObjects.filter(
+		(timelineObject) => timelineObject.layer !== SharedSisyfosLLayer.SisyfosPersistedLevels
+	)
+	const latestPieceMetaData = latestPiece.piece.metaData?.sisyfosPersistMetaData
+	if (latestPieceMetaData) {
+		delete latestPieceMetaData.previousSisyfosLayers
+		delete latestPieceMetaData.acceptsPersistedAudio
+		latestPieceMetaData.isModifiedOrInsertedByAction = true
+	}
+	return context.core.updatePieceInstance(latestPiece._id, latestPiece.piece)
 }
 
 async function executeActionCallRobotPreset(context: ActionExecutionContext, preset: number): Promise<void> {
@@ -1805,30 +1830,20 @@ async function executeActionCallRobotPreset(context: ActionExecutionContext, pre
 	await context.core.insertPiece('current', robotCameraPiece)
 }
 
-async function createFadeSisyfosLevelsMetaData(context: ActionExecutionContext) {
-	const resolvedPieceInstances = await context.core.getResolvedPieceInstances('current')
-	const emptySisyfosMetaData: SisyfosPersistMetaData = {
-		sisyfosLayers: []
+async function fadeDownSoundPlayer(context: ActionExecutionContext, fadeDurationFrames: number): Promise<void> {
+	const fadeSoundPlayerPiece: IBlueprintPiece<PieceMetaData> = {
+		externalId: `fadeSoundPlayerIn${fadeDurationFrames}frames`,
+		name: 'Fade Sound Player',
+		enable: {
+			start: 'now',
+			duration: getTimeFromFrames(fadeDurationFrames)
+		},
+		outputLayerId: SharedOutputLayer.MUSIK,
+		sourceLayerId: SharedSourceLayer.PgmAudioBed,
+		lifespan: PieceLifespan.WithinPart,
+		content: createFadeSoundContent(context.config, fadeDurationFrames)
 	}
-	if (resolvedPieceInstances.length === 0) {
-		return emptySisyfosMetaData
-	}
-
-	const latestPiece = resolvedPieceInstances
-		.filter((piece) => piece.piece.name !== FADE_SISYFOS_LEVELS_PIECE_NAME)
-		.sort((a, b) => b.resolvedStart - a.resolvedStart)[0]
-
-	const latestPieceMetaData = latestPiece.piece.metaData
-
-	if (!latestPieceMetaData || !latestPieceMetaData.sisyfosPersistMetaData) {
-		return emptySisyfosMetaData
-	}
-
-	return {
-		sisyfosLayers: latestPieceMetaData.sisyfosPersistMetaData.sisyfosLayers,
-		wantsToPersistAudio: latestPieceMetaData.sisyfosPersistMetaData.wantsToPersistAudio,
-		acceptPersistAudio: false
-	}
+	await context.core.insertPiece('current', fadeSoundPlayerPiece)
 }
 
 async function scheduleLastPlayedDVE<
@@ -1836,7 +1851,7 @@ async function scheduleLastPlayedDVE<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	actionId: string,
 	lastPlayedDVE: IBlueprintPieceInstance<DVEPieceMetaData>
 ): Promise<void> {
@@ -1857,7 +1872,7 @@ async function executeActionSelectFull<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ActionExecutionContext<ShowStyleConfig>,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>,
+	settings: ActionExecutionSettings<ShowStyleConfig>,
 	userData: ActionSelectFullGrafik
 ) {
 	const externalId = generateExternalId(context, 'cut_to_full', [userData.name])
@@ -1915,11 +1930,30 @@ async function executeActionSelectFull<
 	await context.core.stopPiecesOnLayers([SharedSourceLayer.SelectedAdlibGraphicsFull])
 }
 
-async function executeActionClearGraphics<
+async function executeActionClearAllGraphics<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(context: ActionExecutionContext<ShowStyleConfig>, userData: ActionClearGraphics) {
+>(context: ActionExecutionContext<ShowStyleConfig>, userData: ActionClearAllGraphics) {
 	await context.core.stopPiecesOnLayers(STOPPABLE_GRAPHICS_LAYERS)
+	const timelineObjects: TSR.TSRTimelineObj[] =
+		context.config.studio.GraphicsType === 'VIZ'
+			? [
+					{
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 100,
+						layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
+						content: {
+							deviceType: TSR.DeviceType.VIZMSE,
+							type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
+							channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined,
+							showName: context.config.selectedGfxSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
+						}
+					}
+			  ]
+			: []
 	await context.core.insertPiece('current', {
 		enable: {
 			start: 'now',
@@ -1930,41 +1964,73 @@ async function executeActionClearGraphics<
 		sourceLayerId: SharedSourceLayer.PgmAdlibGraphicCmd,
 		outputLayerId: SharedOutputLayer.SEC,
 		lifespan: PieceLifespan.WithinPart,
-		content:
-			context.config.studio.GraphicsType === 'HTML'
-				? {
-						timelineObjects: [
-							literal<TSR.TimelineObjAbstractAny>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 1,
-								layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
-								content: {
-									deviceType: TSR.DeviceType.ABSTRACT
-								}
-							})
-						]
-				  }
-				: {
-						timelineObjects: [
-							literal<TSR.TimelineObjVIZMSEClearAllElements>({
-								id: '',
-								enable: {
-									start: 0
-								},
-								priority: 100,
-								layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
-								content: {
-									deviceType: TSR.DeviceType.VIZMSE,
-									type: TSR.TimelineContentTypeVizMSE.CLEAR_ALL_ELEMENTS,
-									channelsToSendCommands: userData.sendCommands ? ['OVL1', 'FULL1', 'WALL1'] : undefined,
-									showName: context.config.selectedGfxSetup.OvlShowName ?? '' // @todo: improve types at the junction of HTML and Viz
-								}
-							})
-						]
-				  },
+		content: {
+			timelineObjects
+		},
 		tags: userData.sendCommands ? [TallyTags.GFX_CLEAR] : [TallyTags.GFX_ALTUD]
 	})
+}
+
+async function executeActionClearTemaGraphics(context: ActionExecutionContext) {
+	await context.core.stopPiecesOnLayers([SharedSourceLayer.PgmGraphicsTema])
+	const timelineObjects: TSR.TSRTimelineObj[] =
+		context.config.studio.GraphicsType === 'VIZ'
+			? [
+					{
+						id: '',
+						enable: {
+							start: 0
+						},
+						priority: 100,
+						layer: SharedGraphicLLayer.GraphicLLayerAdLibs,
+						content: {
+							deviceType: TSR.DeviceType.VIZMSE,
+							type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+							templateName: 'OUT_TEMA_H',
+							templateData: [],
+							showName: context.config.selectedGfxSetup.OvlShowName ?? ''
+						}
+					}
+			  ]
+			: []
+	await context.core.insertPiece('current', {
+		enable: {
+			start: 'now',
+			duration: 3000
+		},
+		externalId: 'clearTemaGFX',
+		name: 'GFX Temaud',
+		sourceLayerId: SharedSourceLayer.PgmAdlibGraphicCmd,
+		outputLayerId: SharedOutputLayer.SEC,
+		lifespan: PieceLifespan.WithinPart,
+		content: {
+			timelineObjects
+		},
+		tags: [TallyTags.GFX_TEMAUD]
+	})
+}
+
+export function mergePersistenceMetaData(
+	currentSegmentId: string,
+	nextMetaData: SisyfosPersistenceMetaData,
+	currentMetaData: SisyfosPersistenceMetaData | undefined,
+	previousPartEndState: PartEndStateExt | undefined
+): SisyfosPersistenceMetaData {
+	if (!currentMetaData) {
+		return nextMetaData
+	}
+	if (nextMetaData.acceptsPersistedAudio && currentMetaData.wantsToPersistAudio) {
+		const includePreviousPart =
+			!currentMetaData.isModifiedOrInsertedByAction &&
+			previousPartEndState &&
+			previousPartEndState.segmentId === currentSegmentId
+		nextMetaData.previousSisyfosLayers = Array.from(
+			new Set([
+				...(includePreviousPart ? previousPartEndState?.sisyfosPersistenceMetaData.sisyfosLayers : []),
+				...(currentMetaData.previousSisyfosLayers ?? []),
+				...currentMetaData.sisyfosLayers
+			])
+		)
+	}
+	return nextMetaData
 }

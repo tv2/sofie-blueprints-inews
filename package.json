@@ -1,6 +1,6 @@
 {
   "name": "tv2-sofie-blueprints-inews",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "repository": "https://github.com/olzzon/tv2-sofie-blueprints-inews",
   "license": "MIT",
   "private": true,
@@ -19,20 +19,15 @@
     "unit": "jest --maxWorkers=2",
     "test": "yarn lint --fix && yarn unit",
     "release": "standard-version",
+    "prepare": "husky install",
     "prepareChangelog": "standard-version --prerelease",
     "validate": "yarn validate:dependencies",
     "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
     "license-validate": "license-checker --onlyAllow \"MIT;Apache-2.0;ISC;BSD;CC0;CC-BY-3.0;CC-BY-4.0;UNLICENSED\" --summary"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.{js,ts,css,json,md}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "devDependencies": {
@@ -41,10 +36,12 @@
     "@types/underscore": "^1.8.9",
     "axios": "^0.19.0",
     "git-revision-webpack-plugin": "^3.0.3",
+    "husky": "^8.0.3",
     "jest": "^27.5.1",
     "jest-haste-map": "^24.5.0",
     "jest-resolve": "^24.5.0",
     "license-checker": "^25.0.1",
+    "lint-staged": "^13.2.2",
     "moment": "^2.29.2",
     "prettier": "^2.0.0",
     "standard-version": "9.1.1",
@@ -60,9 +57,9 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@sofie-automation/blueprints-integration": "npm:@tv2media/blueprints-integration@46.2.2",
-    "underscore": "^1.12.1",
-    "ts-mockito": "^2.6.1"
+    "@sofie-automation/blueprints-integration": "npm:@tv2media/blueprints-integration@46.3.0-staging",
+    "ts-mockito": "^2.6.1",
+    "underscore": "^1.12.1"
   },
   "resolutions": {
     "moment": "^2.29.2"

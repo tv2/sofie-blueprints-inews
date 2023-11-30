@@ -15,6 +15,7 @@ import {
 	PartDefinition,
 	ShowStyleContext
 } from 'tv2-common'
+import { GfxSchemaGeneratorFacade } from '../../../tv2-common/cues/gfx-schema-generator-facade'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateAdLib } from './adlib'
 import { EvaluateClearGrafiks } from './clearGrafiks'
@@ -50,6 +51,8 @@ export async function EvaluateCues(
 			EvaluateCueGraphic,
 			EvaluateCueBackgroundLoop,
 			EvaluateCueGraphicDesign: EvaluateCueDesign,
+			EvaluateCueGraphicSchema: (cue, piece, partId, parsedCue) =>
+				GfxSchemaGeneratorFacade.create().createBlueprintPieceFromGfxSchemaCue(cue, piece, partId, parsedCue),
 			EvaluateCueRouting,
 			EvaluateCueMixMinus,
 			EvaluateCueRobotCamera

@@ -1,9 +1,10 @@
-import { BasicConfigItemValue, IBlueprintShowStyleVariant } from '@sofie-automation/blueprints-integration'
 import {
+	BasicConfigItemValue,
+	IBlueprintShowStyleVariant,
 	MigrationContextShowStyle,
 	MigrationStepShowStyle,
 	TableConfigItemValue
-} from '../../types/blueprints-integration'
+} from 'blueprints-integration'
 
 /**
  * "Renames" the id of a table by copying over all values over into a new table which has the new id - then removes the values from the old table

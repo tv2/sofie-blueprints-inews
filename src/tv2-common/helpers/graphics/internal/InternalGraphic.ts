@@ -57,11 +57,6 @@ export abstract class InternalGraphic extends Graphic {
 			sourceLayerId: this.sourceLayerId,
 			outputLayerId: SharedOutputLayer.OVERLAY,
 			lifespan: PieceLifespan.WithinPart,
-			metaData: {
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				}
-			},
 			expectedDuration: 5000,
 			tags: [AdlibTags.ADLIB_KOMMENTATOR],
 			content: _.clone(this.content)
@@ -83,11 +78,6 @@ export abstract class InternalGraphic extends Graphic {
 						expectedDuration: this.getPieceEnable().duration
 				  }),
 			lifespan: this.getPieceLifespan(),
-			metaData: {
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				}
-			},
 			content: _.clone(this.content)
 		}
 	}
@@ -105,9 +95,6 @@ export abstract class InternalGraphic extends Graphic {
 			sourceLayerId: this.sourceLayerId,
 			lifespan: this.getPieceLifespan(),
 			metaData: {
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				},
 				partType: this.partDefinition?.type,
 				pieceExternalId: this.partDefinition?.externalId
 			},

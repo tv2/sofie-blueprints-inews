@@ -26,7 +26,6 @@ enum CasparLLayer {
 	/** Maps to the same Caspar layer as CasparPlayerJingle but its lookahead preloads the first frame */
 	CasparPlayerJinglePreload = 'casparcg_player_jingle_preload',
 	CasparGraphicsFullLoop = 'casparcg_graphics_full_loop',
-	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGDVEKeyedLoop = 'casparcg_dve_keyed_loop',
 	CasparCGDVEKey = 'casparcg_dve_key',
 	CasparCGDVEFrame = 'casparcg_dve_frame'

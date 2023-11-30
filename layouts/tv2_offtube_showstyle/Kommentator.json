@@ -11,12 +11,16 @@
       "rank": 0,
       "rundownBaseline": false,
       "default": false,
-      "url": "http://multiview.sofqbXX-od.tv2.local/",
+      "url": "http://multiview.{{studio.settings.sofieUrl}}/",
       "width": -1,
       "height": -1,
       "x": 0,
       "y": 0,
-      "scale": 0
+      "scale": 1,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "pyRvtqdtAbFE2gekk",
@@ -45,7 +49,11 @@
       ],
       "showThumbnailsInList": true,
       "hideDuplicates": false,
-      "toggleOnSingleClick": true
+      "toggleOnSingleClick": true,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "QZ6xdWdFmm5Mu7ZKJ",
@@ -79,7 +87,11 @@
         "kommentator"
       ],
       "showThumbnailsInList": true,
-      "toggleOnSingleClick": true
+      "toggleOnSingleClick": true,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "zHX89zpASjzyn7GTz",
@@ -107,7 +119,11 @@
         "studio0_voiceover"
       ],
       "showThumbnailsInList": true,
-      "toggleOnSingleClick": true
+      "toggleOnSingleClick": true,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "YC7RNPTbkXd5wnagp",
@@ -125,7 +141,6 @@
       "displayTakeButtons": true,
       "sourceLayerIds": [
         "studio0_graphicsIdent",
-        "studio0_graphicsIdent_persistent",
         "studio0_graphicsTop",
         "studio0_graphicsLower",
         "studio0_pilotOverlay"
@@ -135,7 +150,11 @@
       ],
       "hideDuplicates": true,
       "lineBreak": "\n - ",
-      "toggleOnSingleClick": true
+      "toggleOnSingleClick": true,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "icuekg6wiJxejsYsZ",
@@ -159,7 +178,11 @@
         "kommentator"
       ],
       "showThumbnailsInList": true,
-      "toggleOnSingleClick": true
+      "toggleOnSingleClick": true,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "6GDpdq547HjjZL9YK",
@@ -179,12 +202,14 @@
       "scale": 0,
       "thumbnailPriorityNextPieces": true,
       "hideThumbnailsForActivePieces": true,
-      "thumbnailPriorityNextPieces": true,
-      "hideThumbnailsForActivePieces": true,
       "thumbnailSourceLayerIds": [
         "studio0_full",
         "studio0_jingle"
-      ]
+      ],
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "gho9Kigti38sQYqq3",
@@ -205,7 +230,11 @@
         "studio0_offtube_jingle"
       ],
       "showBlackIfNoThumbnailPiece": false,
-      "hideThumbnailsForActivePieces": true
+      "hideThumbnailsForActivePieces": true,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "ooCyWRXeDE6ufYWWQ",
@@ -223,7 +252,11 @@
       "role": "queue",
       "tags": [
         "offtube_set_cam_next"
-      ]
+      ],
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "PDKiKYeYB7zcAq6Lp",
@@ -242,7 +275,11 @@
       "tags": [
         "offtube_set_remote_next"
       ],
-      "adlibRank": 0
+      "adlibRank": 0,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "AMrCRTvefKDS6qogp",
@@ -261,7 +298,11 @@
         "offtube_set_remote_next"
       ],
       "role": "queue",
-      "adlibRank": 1
+      "adlibRank": 1,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "HLzpg7NdLk6tdYZfT",
@@ -280,7 +321,11 @@
         "offtube_set_remote_next"
       ],
       "role": "queue",
-      "adlibRank": 2
+      "adlibRank": 2,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "mRPYndcCsfZJL9zYH",
@@ -300,7 +345,11 @@
       ],
       "role": "queue",
       "thumbnailPriorityNextPieces": false,
-      "showBlackIfNoThumbnailPiece": false
+      "showBlackIfNoThumbnailPiece": false,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "PDKiKYeYB7zcAq6La",
@@ -323,7 +372,11 @@
         "studio0_offtube_jingle",
         "studio0_jingle"
       ],
-      "showBlackIfNoThumbnailPiece": true
+      "showBlackIfNoThumbnailPiece": true,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "AMrCRTvefKDS6qoga",
@@ -342,7 +395,11 @@
       "tags": [
         "offtube_set_server_next"
       ],
-      "assignHotKeys": false
+      "assignHotKeys": false,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "HLzpg7NdLk6tdYZfa",
@@ -361,7 +418,11 @@
       "tags": [
         "offtube_set_dve_next"
       ],
-      "role": "queue"
+      "role": "queue",
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "zavcByHmMndMvZjCA",
@@ -381,7 +442,12 @@
         "studio0_clip",
         "studio0_voiceover",
         "studio0_jingle"
-      ]
+      ],
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem",
+      "scale": 1.5
     },
     {
       "_id": "get64yaM3ZzT9aRs3",
@@ -399,8 +465,12 @@
       "x": 1.3,
       "y": 24.9,
       "width": 22,
-      "scale": 0,
-      "showPartTitle": true
+      "scale": 1.4,
+      "showPartTitle": true,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "h9xDp3HvzLaSo4yJi",
@@ -418,8 +488,12 @@
       "x": 3,
       "y": 3.8,
       "width": 16,
-      "height": 3,
-      "scale": 0
+      "height": 3.2,
+      "scale": 1,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     },
     {
       "_id": "dkKTHZAwF98aKkD47",
@@ -434,7 +508,7 @@
       "default": false,
       "nextInCurrentPart": false,
       "oneNextPerSourceLayer": false,
-      "url": "http://sofqb06-od:1176/?view=mic-tally",
+      "url": "http://{{studio.settings.sofieUrl}}:1176/?view=mic-tally",
       "x": 3,
       "y": 0,
       "width": 16,
@@ -442,7 +516,11 @@
       "customClasses": [
         ""
       ],
-      "scale": 0
+      "scale": 0,
+      "xUnit": "rem",
+      "yUnit": "rem",
+      "widthUnit": "rem",
+      "heightUnit": "rem"
     }
   ],
   "type": "dashboard_layout",

@@ -53,11 +53,6 @@ export async function CreatePartKam(
 			outputLayerId: SharedOutputLayer.PGM,
 			sourceLayerId: SourceLayer.PgmJingle,
 			lifespan: PieceLifespan.WithinPart,
-			metaData: {
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				}
-			},
 			content: literal<WithTimeline<VTContent>>({
 				ignoreMediaObjectStatus: true,
 				fileName: '',
@@ -95,7 +90,7 @@ export async function CreatePartKam(
 			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],
-					acceptPersistAudio: sourceInfoCam.acceptPersistAudio
+					acceptsPersistedAudio: sourceInfoCam.acceptPersistAudio
 				}
 			},
 			content: {

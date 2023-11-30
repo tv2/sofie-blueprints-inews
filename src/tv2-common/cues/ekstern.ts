@@ -61,7 +61,7 @@ export function EvaluateEksternBase<
 				sisyfosPersistMetaData: {
 					sisyfosLayers: sourceInfoEkstern.sisyfosLayers ?? [],
 					wantsToPersistAudio: sourceInfoEkstern.wantsToPersistAudio,
-					acceptPersistAudio: sourceInfoEkstern.acceptPersistAudio
+					acceptsPersistedAudio: sourceInfoEkstern.acceptPersistAudio
 				}
 			},
 			content: literal<WithTimeline<RemoteContent>>({
@@ -98,7 +98,7 @@ export function EvaluateEksternBase<
 			sisyfosPersistMetaData: {
 				sisyfosLayers: sourceInfoEkstern.sisyfosLayers ?? [],
 				wantsToPersistAudio: sourceInfoEkstern.wantsToPersistAudio,
-				acceptPersistAudio: sourceInfoEkstern.acceptPersistAudio
+				acceptsPersistedAudio: sourceInfoEkstern.acceptPersistAudio
 			}
 		},
 		tags: [GetTagForLive(parsedCue.sourceDefinition)],

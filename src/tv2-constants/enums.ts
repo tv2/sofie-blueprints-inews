@@ -33,7 +33,8 @@ export enum CueType {
 	Routing,
 	PgmClean,
 	MixMinus,
-	RobotCamera
+	RobotCamera,
+	GraphicSchema
 }
 
 export const enum PartType {
@@ -87,6 +88,7 @@ export enum AdlibTags {
 	ADLIB_CUT_TO_BOX_3 = 'cut_to_box_3',
 	ADLIB_CUT_TO_BOX_4 = 'cut_to_box_4',
 	ADLIB_GFX_ALTUD = 'gfx_altud',
+	ADLIB_GFX_TEMAUD = 'gfx_temaud',
 	ADLIB_GFX_LOAD = 'gfx_load',
 	ADLIB_GFX_CONTINUE_FORWARD = 'gfx_continue_forward',
 	ADLIB_DSK_ON = 'dsk_on',
@@ -136,18 +138,21 @@ export enum AdlibActionType {
 	COMMENTATOR_SELECT_DVE = 'commentator_select_dve',
 	COMMENTATOR_SELECT_FULL = 'commentator_select_full',
 	COMMENTATOR_SELECT_JINGLE = 'commentator_select_jingle',
-	CLEAR_GRAPHICS = 'clear_graphics',
+	CLEAR_ALL_GRAPHICS = 'clear_all_graphics',
+	CLEAR_TEMA_GRAPHICS = 'clear_tema_graphics',
 	TAKE_WITH_TRANSITION = 'take_with_transition',
 	RECALL_LAST_LIVE = 'recall_last_live',
 	RECALL_LAST_DVE = 'recall_last_dve',
 	FADE_DOWN_PERSISTED_AUDIO_LEVELS = 'fade_down_persisted_audio_levels',
-	CALL_ROBOT_PRESET = 'call_robot_preset'
+	CALL_ROBOT_PRESET = 'call_robot_preset',
+	FADE_DOWN_SOUND_PLAYER = 'fade_down_sound_player'
 }
 
 export enum TallyTags {
 	// Actions
 	GFX_CLEAR = 'GFX_CLEAR',
 	GFX_ALTUD = 'GFX_ALTUD',
+	GFX_TEMAUD = 'GFX_TEMAUD',
 	TAKE_WITH_TRANSITION = 'TAKE_WITH_TRANSITION',
 
 	// A particular source is live
@@ -179,7 +184,8 @@ export enum SharedGraphicLLayer {
 	GraphicLLayerAdLibs = 'graphic_adlibs', // <= viz_layer_adlibs
 	GraphicLLayerWall = 'graphic_wall', // <= viz_layer_wall
 	GraphicLLayerLocators = 'graphic_locators',
-	GraphicLLayerConcept = 'graphic_concept'
+	GraphicLLayerConcept = 'graphic_concept',
+	GraphicLLayerSchema = 'graphic_schema'
 }
 
 export enum AbstractLLayer {
@@ -225,6 +231,7 @@ export enum SwitcherMediaPlayerLLayer {
 }
 
 export enum SharedCasparLLayer {
+	CasparCGDVELoop = 'casparcg_dve_loop',
 	CasparCGLYD = 'casparcg_audio_lyd',
 	CasparPlayerClipPending = 'casparcg_player_clip_pending',
 	CasparPlayerJingle = 'casparcg_player_jingle'
@@ -233,7 +240,8 @@ export enum SharedCasparLLayer {
 export enum SharedSisyfosLLayer {
 	SisyfosSourceAudiobed = 'sisyfos_source_audiobed',
 	SisyfosResync = 'sisyfos_resync',
-	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics'
+	SisyfosGroupStudioMics = 'sisyfos_group_studio_mics',
+	SisyfosPersistedLevels = 'sisyfos_persisted_levels'
 }
 
 export enum RobotCameraLayer {
@@ -274,6 +282,7 @@ export enum SharedSourceLayer {
 	PgmPilotOverlay = 'studio0_pilotOverlay',
 	// "Design" templates
 	PgmDesign = 'studio0_design',
+	PgmSchema = 'studio0_schema',
 
 	/** General, 'fallback', overlay layer */
 	PgmGraphicsOverlay = 'studio0_overlay',

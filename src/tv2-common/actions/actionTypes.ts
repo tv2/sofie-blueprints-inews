@@ -87,10 +87,14 @@ export interface ActionCommentatorSelectJingle extends ActionBase {
 	type: AdlibActionType.COMMENTATOR_SELECT_JINGLE
 }
 
-export interface ActionClearGraphics extends ActionBase {
-	type: AdlibActionType.CLEAR_GRAPHICS
+export interface ActionClearAllGraphics extends ActionBase {
+	type: AdlibActionType.CLEAR_ALL_GRAPHICS
 	sendCommands?: boolean
 	label: string
+}
+
+export interface ActionClearTemaGraphics extends ActionBase {
+	type: AdlibActionType.CLEAR_TEMA_GRAPHICS
 }
 
 export interface ActionTakeWithTransitionVariantBase {
@@ -141,6 +145,10 @@ export interface ActionFadeDownPersistedAudioLevels extends ActionBase {
 	type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
 }
 
+export interface ActionFadeDownSoundPlayer extends ActionBase {
+	type: AdlibActionType.FADE_DOWN_SOUND_PLAYER
+}
+
 export type TV2AdlibAction =
 	| ActionSelectServerClip
 	| ActionSelectDVE
@@ -154,8 +162,9 @@ export type TV2AdlibAction =
 	| ActionCommentatorSelectDVE
 	| ActionCommentatorSelectFull
 	| ActionCommentatorSelectJingle
-	| ActionClearGraphics
+	| ActionClearAllGraphics
 	| ActionTakeWithTransition
 	| ActionRecallLastLive
 	| ActionRecallLastDVE
 	| ActionFadeDownPersistedAudioLevels
+	| ActionFadeDownSoundPlayer

@@ -80,11 +80,6 @@ export function OfftubeEvaluateJingle(
 		lifespan: PieceLifespan.WithinPart,
 		outputLayerId: SharedOutputLayer.JINGLE,
 		sourceLayerId: OfftubeSourceLayer.PgmJingle,
-		metaData: {
-			sisyfosPersistMetaData: {
-				sisyfosLayers: []
-			}
-		},
 		prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(Number(jingle.StartAlpha)),
 		content: createJingleContentOfftube(context, file, jingle),
 		tags: [

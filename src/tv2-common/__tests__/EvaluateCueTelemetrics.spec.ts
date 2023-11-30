@@ -171,6 +171,20 @@ describe('EvaluateCueRobotCamera', () => {
 		}
 	}
 
+	it('does not create a piece when adlib is true', () => {
+		const cueDefinition: CueDefinitionRobotCamera = {
+			type: CueType.RobotCamera,
+			presetIdentifier: 1,
+			iNewsCommand: '',
+			adlib: true
+		}
+		const pieces: IBlueprintPiece[] = []
+
+		EvaluateCueRobotCamera(cueDefinition, pieces, '')
+
+		expect(pieces.length).toEqual(0)
+	})
+
 	describe('already has a piece with same externalId', () => {
 		it('has another start time, creates another blueprint piece', () => {
 			const cueDefinition: CueDefinitionRobotCamera = createRobotCameraCueDefinition(1, 20)

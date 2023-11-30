@@ -8,6 +8,7 @@ export interface INewsFields {
 	cumeTime?: string // number
 	backTime?: string // @number (seconds since midnight)
 	layout?: string
+	skema?: string
 }
 
 export interface INewsMetaData {

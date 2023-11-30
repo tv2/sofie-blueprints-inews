@@ -20,8 +20,8 @@ const blankShowStyleConfig: GalleryShowStyleConfig = {
 	GfxDefaults: [
 		{
 			DefaultSetupName: { value: '', label: '' },
-			DefaultDesign: '',
-			DefaultSchema: ''
+			DefaultDesign: { value: '', label: '' },
+			DefaultSchema: { value: '', label: '' }
 		}
 	]
 }

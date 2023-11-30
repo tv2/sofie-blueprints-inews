@@ -1,0 +1,33 @@
+#!/bin/sh
+
+echo "Upload Shelf Layouts"
+
+if [ $# -eq 0 ]; then
+    echo "Error: Path to layouts directory not provided."
+    echo "Usage: $(basename "$0") LAYOUTS_PATH"
+    exit 1
+fi
+
+directory=$1
+
+upload_layouts_from_directory() {
+  local directory="$1"
+  local blueprint_id=$(basename "${directory}")
+  local count=0
+
+  for file in "$directory"/*.json; do
+    if [[ -f "$file" ]]; then
+      count+=1
+      url="${SERVER}/shelfLayouts/uploadByShowStyleBlueprintId/${blueprint_id}"
+      echo "Upload ${file} to blueprint ${blueprint_id}"
+      target_path="$(readlink -f "$file")"
+      curl -X POST --data-binary "@$target_path" --header "Content-Type:application/json" -w "\n" "$url"
+    fi
+  done
+}
+
+for subdirectory in "$directory"/*; do
+  if [[ -d "$subdirectory" ]]; then
+    upload_layouts_from_directory "$subdirectory"
+  fi
+done

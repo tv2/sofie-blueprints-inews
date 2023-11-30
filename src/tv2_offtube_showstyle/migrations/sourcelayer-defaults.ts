@@ -1,6 +1,7 @@
 import { ISourceLayer, SourceLayerType } from 'blueprints-integration'
 import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
 import { SharedSourceLayer } from 'tv2-constants'
+import { SourceLayer } from '../../tv2_afvd_showstyle/layers'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
 
@@ -377,6 +378,14 @@ const SEC: ISourceLayer[] = [
 		isHidden: true,
 		allowDisable: false,
 		onPresenterScreen: false
+	},
+	{
+		_id: SourceLayer.PgmSchema,
+		_rank: 30,
+		name: 'Caspar Schema',
+		abbreviation: '',
+		type: SourceLayerType.UNKNOWN,
+		isHidden: true
 	},
 	{
 		_id: OfftubeSourceLayer.PgmSisyfosAdlibs,
