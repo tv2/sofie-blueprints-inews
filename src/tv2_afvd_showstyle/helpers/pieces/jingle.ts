@@ -1,3 +1,4 @@
+import { VTContent, WithTimeline } from '@sofie-automation/blueprints-integration'
 import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
@@ -66,6 +67,7 @@ export function EvaluateJingle(
 			}
 		})
 	} else {
+		const jingleContent: WithTimeline<VTContent> = createJingleContentAFVD(context, file, jingle)
 		pieces.push({
 			externalId: `${part.externalId}-JINGLE`,
 			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
@@ -77,10 +79,11 @@ export function EvaluateJingle(
 			sourceLayerId: SourceLayer.PgmJingle,
 			prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(jingle.StartAlpha),
 			tags: [!effekt ? TallyTags.JINGLE : ''],
-			content: createJingleContentAFVD(context, file, jingle),
+			content: jingleContent,
 			metaData: {
 				type: Tv2PieceType.JINGLE,
-				outputLayer: Tv2OutputLayer.JINGLE
+				outputLayer: Tv2OutputLayer.JINGLE,
+				mediaId: jingleContent.fileName
 			}
 		})
 	}
