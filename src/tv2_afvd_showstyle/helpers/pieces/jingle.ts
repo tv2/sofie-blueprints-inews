@@ -83,7 +83,7 @@ export function EvaluateJingle(
 			metaData: {
 				type: Tv2PieceType.JINGLE,
 				outputLayer: Tv2OutputLayer.JINGLE,
-				mediaName: jingleContent.fileName
+				sourceName: jingleContent.fileName
 			}
 		})
 	}

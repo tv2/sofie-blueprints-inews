@@ -233,7 +233,7 @@ function getServerSelectionBlueprintPiece(
 		metaData: {
 			type: Tv2PieceType.VIDEO_CLIP,
 			outputLayer: Tv2OutputLayer.PROGRAM,
-			mediaName: contentServerElement.fileName,
+			sourceName: contentServerElement.fileName,
 			audioMode:
 				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
 					? Tv2AudioMode.VOICE_OVER
@@ -272,7 +272,7 @@ function getPgmBlueprintPiece<
 		metaData: {
 			type: Tv2PieceType.VIDEO_CLIP,
 			outputLayer: Tv2OutputLayer.PROGRAM,
-			mediaName: vtContent.fileName,
+			sourceName: vtContent.fileName,
 			audioMode:
 				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
 					? Tv2AudioMode.VOICE_OVER
