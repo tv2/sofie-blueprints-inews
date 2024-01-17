@@ -280,7 +280,7 @@ function getPgmBlueprintPiece<
 			mediaPlayerSessions: [contentProps.mediaPlayerSession]
 		},
 		content: {
-			...GetVTContentProperties(context.config, contentProps),
+			...vtContent,
 			timelineObjects: CutToServer(context, contentProps.mediaPlayerSession, partDefinition)
 		},
 		tags: [
