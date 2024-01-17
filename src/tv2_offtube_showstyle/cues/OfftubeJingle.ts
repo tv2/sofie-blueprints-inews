@@ -95,7 +95,7 @@ export function OfftubeEvaluateJingle(
 		metaData: {
 			type: Tv2PieceType.JINGLE,
 			outputLayer: Tv2OutputLayer.JINGLE,
-			mediaId: jingleContent.fileName
+			mediaName: jingleContent.fileName
 		}
 	})
 }

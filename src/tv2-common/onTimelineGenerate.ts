@@ -63,7 +63,7 @@ export type TimelineBlueprintExt = TSR.TSRTimelineObjBase & {
 export interface PieceMetaData {
 	type: Tv2PieceType
 	outputLayer?: Tv2OutputLayer
-	mediaId?: string
+	mediaName?: string
 	audioMode?: Tv2AudioMode
 	sisyfosPersistMetaData?: SisyfosPersistenceMetaData
 	mediaPlayerSessions?: string[]

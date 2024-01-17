@@ -62,7 +62,7 @@ export function EvaluateCueBackgroundLoop(
 				}),
 				metaData: {
 					type: Tv2PieceType.UNKNOWN,
-					mediaId: fileName
+					mediaName: fileName
 				}
 			})
 		}
@@ -104,7 +104,7 @@ export function EvaluateCueBackgroundLoop(
 				}),
 				metaData: {
 					type: Tv2PieceType.UNKNOWN,
-					mediaId: parsedCue.backgroundLoop
+					mediaName: parsedCue.backgroundLoop
 				}
 			})
 		}

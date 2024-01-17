@@ -82,7 +82,7 @@ function createDesignPiece(
 		content: designContent,
 		metaData: {
 			type: Tv2PieceType.GRAPHICS,
-			mediaId: designContent.fileName
+			mediaName: designContent.fileName
 		}
 	}
 }

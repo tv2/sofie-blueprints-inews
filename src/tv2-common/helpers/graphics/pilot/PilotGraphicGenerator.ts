@@ -132,7 +132,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			metaData: {
 				type: this.getTv2PieceType(),
 				outputLayer: this.getTv2OutputLayer(),
-				mediaId: graphicsContent.fileName
+				mediaName: graphicsContent.fileName
 			}
 		}
 	}
@@ -167,7 +167,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			lifespan: PieceLifespan.OutOnSegmentEnd,
 			metaData: {
 				type: Tv2PieceType.GRAPHICS,
-				mediaId: content.fileName,
+				mediaName: content.fileName,
 				userData: {
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
 					name: this.cue.graphic.name,
