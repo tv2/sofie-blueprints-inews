@@ -68,6 +68,7 @@ function createDesignPiece(
 	cue: CueDefinitionGraphicDesign
 ): IBlueprintPiece<PieceMetaData> {
 	const start = (cue.start ? calculateTime(cue.start) : 0) ?? 0
+	const designContent: WithTimeline<GraphicsContent> = createDesignPieceContent(context, cue)
 	return {
 		externalId: partId,
 		name: cue.design,
@@ -78,9 +79,10 @@ function createDesignPiece(
 		sourceLayerId: SharedSourceLayer.PgmDesign,
 		// @ts-ignore
 		lifespan: cue.isFromField ? 'rundown-change-segment-lookback' : PieceLifespan.OutOnRundownChange,
-		content: createDesignPieceContent(context, cue),
+		content: designContent,
 		metaData: {
-			type: Tv2PieceType.GRAPHICS
+			type: Tv2PieceType.GRAPHICS,
+			sourceName: designContent.fileName
 		}
 	}
 }

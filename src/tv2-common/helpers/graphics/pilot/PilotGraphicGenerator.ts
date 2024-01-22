@@ -112,6 +112,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 	}
 
 	public createPiece(): IBlueprintPiece<PieceMetaData> {
+		const graphicsContent: WithTimeline<GraphicsContent> = this.getContent()
 		return {
 			externalId: this.partId,
 			name: this.getTemplateName(),
@@ -124,13 +125,14 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			sourceLayerId: this.getSourceLayer(),
 			prerollDuration: this.getPrerollDuration(),
 			lifespan: this.getPieceLifespan(),
-			content: this.getContent(),
+			content: graphicsContent,
 			tags: IsTargetingFull(this.engine)
 				? [GetTagForFull(this.segmentExternalId, this.cue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
 				: [],
 			metaData: {
 				type: this.getTv2PieceType(),
-				outputLayer: this.getTv2OutputLayer()
+				outputLayer: this.getTv2OutputLayer(),
+				sourceName: graphicsContent.fileName
 			}
 		}
 	}
@@ -165,6 +167,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			lifespan: PieceLifespan.OutOnSegmentEnd,
 			metaData: {
 				type: Tv2PieceType.GRAPHICS,
+				sourceName: content.fileName,
 				userData: {
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
 					name: this.cue.graphic.name,

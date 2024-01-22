@@ -1,3 +1,4 @@
+import { VTContent, WithTimeline } from '@sofie-automation/blueprints-integration'
 import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
@@ -73,6 +74,7 @@ export function OfftubeEvaluateJingle(
 		}
 	})
 
+	const jingleContent: WithTimeline<VTContent> = createJingleContentOfftube(context, file, jingle)
 	pieces.push({
 		externalId: `${part.externalId}-JINGLE`,
 		name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
@@ -83,7 +85,7 @@ export function OfftubeEvaluateJingle(
 		outputLayerId: SharedOutputLayer.JINGLE,
 		sourceLayerId: OfftubeSourceLayer.PgmJingle,
 		prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(Number(jingle.StartAlpha)),
-		content: createJingleContentOfftube(context, file, jingle),
+		content: jingleContent,
 		tags: [
 			GetTagForJingle(part.segmentExternalId, parsedCue.clip),
 			GetTagForJingleNext(part.segmentExternalId, parsedCue.clip),
@@ -92,7 +94,8 @@ export function OfftubeEvaluateJingle(
 		],
 		metaData: {
 			type: Tv2PieceType.JINGLE,
-			outputLayer: Tv2OutputLayer.JINGLE
+			outputLayer: Tv2OutputLayer.JINGLE,
+			sourceName: jingleContent.fileName
 		}
 	})
 }

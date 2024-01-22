@@ -233,6 +233,7 @@ function getServerSelectionBlueprintPiece(
 		metaData: {
 			type: Tv2PieceType.VIDEO_CLIP,
 			outputLayer: Tv2OutputLayer.PROGRAM,
+			sourceName: contentServerElement.fileName,
 			audioMode:
 				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
 					? Tv2AudioMode.VOICE_OVER
@@ -260,6 +261,7 @@ function getPgmBlueprintPiece<
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers
 ): IBlueprintPiece<PieceMetaData> {
+	const vtContent = GetVTContentProperties(context.config, contentProps)
 	return {
 		externalId: partDefinition.externalId,
 		name: contentProps.file,
@@ -270,6 +272,7 @@ function getPgmBlueprintPiece<
 		metaData: {
 			type: Tv2PieceType.VIDEO_CLIP,
 			outputLayer: Tv2OutputLayer.PROGRAM,
+			sourceName: vtContent.fileName,
 			audioMode:
 				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
 					? Tv2AudioMode.VOICE_OVER
@@ -277,7 +280,7 @@ function getPgmBlueprintPiece<
 			mediaPlayerSessions: [contentProps.mediaPlayerSession]
 		},
 		content: {
-			...GetVTContentProperties(context.config, contentProps),
+			...vtContent,
 			timelineObjects: CutToServer(context, contentProps.mediaPlayerSession, partDefinition)
 		},
 		tags: [

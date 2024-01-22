@@ -61,7 +61,8 @@ export function EvaluateCueBackgroundLoop(
 					timelineObjects: dveLoopGenerator.createDveLoopTimelineObject(fileName)
 				}),
 				metaData: {
-					type: Tv2PieceType.UNKNOWN
+					type: Tv2PieceType.UNKNOWN,
+					sourceName: fileName
 				}
 			})
 		}
@@ -102,7 +103,8 @@ export function EvaluateCueBackgroundLoop(
 					timelineObjects: fullLoopTimeline(context.config, parsedCue)
 				}),
 				metaData: {
-					type: Tv2PieceType.UNKNOWN
+					type: Tv2PieceType.UNKNOWN,
+					sourceName: parsedCue.backgroundLoop
 				}
 			})
 		}
