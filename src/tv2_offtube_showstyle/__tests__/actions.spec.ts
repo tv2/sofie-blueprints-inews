@@ -443,7 +443,7 @@ describe('Select Server Action', () => {
 
 		validateNextPartExistsWithDuration(context, SERVER_DURATION_A)
 		validateSourcePiecesExistWithPrerollDuration(activePieces)
-		expect(activePieces.dataStore?.piece.lifespan).toEqual(PieceLifespan.OutOnSegmentEnd)
+		expect(activePieces.dataStore?.piece.lifespan).toEqual(PieceLifespan.WithinPart)
 
 		validateNoWarningsOrErrors(context)
 	})

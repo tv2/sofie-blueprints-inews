@@ -16,7 +16,10 @@ import {
 	ServerPieceMetaData,
 	ShowStyleContext
 } from 'tv2-common'
-import { AdlibActionType, PartType, SharedOutputLayer, TallyTags } from 'tv2-constants'
+import { AdlibActionType, PartType, SharedOutputLayer, SharedSourceLayer, TallyTags } from 'tv2-constants'
+import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { getSourceDuration, GetVTContentProperties } from '../content'
@@ -226,8 +229,15 @@ function getServerSelectionBlueprintPiece(
 		enable: { start: 0 },
 		outputLayerId: SharedOutputLayer.SEC,
 		sourceLayerId: layers.SourceLayer.SelectedServer,
-		lifespan: PieceLifespan.OutOnSegmentEnd,
+		lifespan: PieceLifespan.WithinPart,
 		metaData: {
+			type: Tv2PieceType.VIDEO_CLIP,
+			outputLayer: Tv2OutputLayer.PROGRAM,
+			sourceName: contentServerElement.fileName,
+			audioMode:
+				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
+					? Tv2AudioMode.VOICE_OVER
+					: Tv2AudioMode.FULL,
 			mediaPlayerSessions: [contentProps.mediaPlayerSession],
 			userData: userDataElement,
 			sisyfosPersistMetaData: {
@@ -251,6 +261,7 @@ function getPgmBlueprintPiece<
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers
 ): IBlueprintPiece<PieceMetaData> {
+	const vtContent = GetVTContentProperties(context.config, contentProps)
 	return {
 		externalId: partDefinition.externalId,
 		name: contentProps.file,
@@ -259,10 +270,17 @@ function getPgmBlueprintPiece<
 		sourceLayerId: layers.SourceLayer.PgmServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
+			type: Tv2PieceType.VIDEO_CLIP,
+			outputLayer: Tv2OutputLayer.PROGRAM,
+			sourceName: vtContent.fileName,
+			audioMode:
+				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
+					? Tv2AudioMode.VOICE_OVER
+					: Tv2AudioMode.FULL,
 			mediaPlayerSessions: [contentProps.mediaPlayerSession]
 		},
 		content: {
-			...GetVTContentProperties(context.config, contentProps),
+			...vtContent,
 			timelineObjects: CutToServer(context, contentProps.mediaPlayerSession, partDefinition)
 		},
 		tags: [

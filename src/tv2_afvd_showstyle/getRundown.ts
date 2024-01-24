@@ -33,6 +33,8 @@ import { AdlibTags, CONSTANTS, SharedGraphicLLayer, SharedOutputLayer, SwitcherA
 import * as _ from 'underscore'
 import { GfxSchemaGenerator } from '../tv2-common/cues/gfx-schema-generator'
 import { GfxSchemaGeneratorFacade } from '../tv2-common/cues/gfx-schema-generator-facade'
+import { Tv2OutputLayer } from '../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../tv2-constants/tv2-piece-type'
 import { getMixEffectBaseline } from '../tv2_afvd_studio/getBaseline'
 import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
@@ -105,12 +107,6 @@ class GlobalAdLibPiecesGenerator {
 			expectedDuration: 0,
 			lifespan: PieceLifespan.WithinPart,
 			toBeQueued: true,
-			metaData: {
-				sisyfosPersistMetaData: {
-					sisyfosLayers: info.sisyfosLayers ?? [],
-					acceptsPersistedAudio: vo
-				}
-			},
 			tags: [AdlibTags.ADLIB_QUEUE_NEXT, vo ? AdlibTags.ADLIB_VO_AUDIO_LEVEL : AdlibTags.ADLIB_FULL_AUDIO_LEVEL],
 			content: {
 				ignoreMediaObjectStatus: true,
@@ -125,6 +121,14 @@ class GlobalAdLibPiecesGenerator {
 					}),
 					...GetSisyfosTimelineObjForReplay(this.config, info, vo)
 				]
+			},
+			metaData: {
+				type: Tv2PieceType.REPLAY,
+				outputLayer: Tv2OutputLayer.PROGRAM,
+				sisyfosPersistMetaData: {
+					sisyfosLayers: info.sisyfosLayers ?? [],
+					acceptsPersistedAudio: vo
+				}
 			}
 		}
 	}
@@ -175,6 +179,9 @@ class GlobalAdLibPiecesGenerator {
 						}
 					})
 				]
+			},
+			metaData: {
+				type: Tv2PieceType.UNKNOWN
 			}
 		}
 	}
@@ -191,6 +198,7 @@ class GlobalAdLibPiecesGenerator {
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			metaData: {
+				type: Tv2PieceType.UNKNOWN,
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
 					wantsToPersistAudio: info.wantsToPersistAudio,
@@ -243,6 +251,10 @@ class GlobalAdLibPiecesGenerator {
 							}
 						})
 					])
+				},
+				metadata: {
+					type: Tv2PieceType.COMMAND,
+					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
 			{
@@ -272,6 +284,10 @@ class GlobalAdLibPiecesGenerator {
 							}
 						})
 					]
+				},
+				metadata: {
+					type: Tv2PieceType.COMMAND,
+					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			}
 		]
@@ -306,6 +322,10 @@ class GlobalAdLibPiecesGenerator {
 							}
 						})
 					]
+				},
+				metaData: {
+					type: Tv2PieceType.COMMAND,
+					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
 			{
@@ -335,6 +355,10 @@ class GlobalAdLibPiecesGenerator {
 							}
 						})
 					]
+				},
+				metaData: {
+					type: Tv2PieceType.COMMAND,
+					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
 			{
@@ -360,6 +384,10 @@ class GlobalAdLibPiecesGenerator {
 							}
 						})
 					]
+				},
+				metaData: {
+					type: Tv2PieceType.COMMAND,
+					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			}
 		]
@@ -392,6 +420,10 @@ class GlobalAdLibPiecesGenerator {
 						classes: []
 					})
 				]
+			},
+			metaData: {
+				type: Tv2PieceType.COMMAND,
+				outputLayer: Tv2OutputLayer.SECONDARY
 			}
 		}
 	}

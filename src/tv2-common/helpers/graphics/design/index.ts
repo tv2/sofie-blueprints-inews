@@ -16,6 +16,7 @@ import {
 	TV2ShowStyleConfig
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
+import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 
 const NON_BASELINE_DESIGN: string = 'NON_BASELINE_DESIGN'
 const VALID_EMPTY_DESIGN_VALUE: string = 'N/A'
@@ -54,7 +55,10 @@ function createDesignAdlibPiece(
 		sourceLayerId: SharedSourceLayer.PgmDesign,
 		// @ts-ignore
 		lifespan: cue.isFromField ? 'rundown-change-segment-lookback' : PieceLifespan.OutOnRundownChange,
-		content: createDesignPieceContent(context, cue)
+		content: createDesignPieceContent(context, cue),
+		metaData: {
+			type: Tv2PieceType.GRAPHICS
+		}
 	}
 }
 
@@ -64,6 +68,7 @@ function createDesignPiece(
 	cue: CueDefinitionGraphicDesign
 ): IBlueprintPiece<PieceMetaData> {
 	const start = (cue.start ? calculateTime(cue.start) : 0) ?? 0
+	const designContent: WithTimeline<GraphicsContent> = createDesignPieceContent(context, cue)
 	return {
 		externalId: partId,
 		name: cue.design,
@@ -74,7 +79,11 @@ function createDesignPiece(
 		sourceLayerId: SharedSourceLayer.PgmDesign,
 		// @ts-ignore
 		lifespan: cue.isFromField ? 'rundown-change-segment-lookback' : PieceLifespan.OutOnRundownChange,
-		content: createDesignPieceContent(context, cue)
+		content: designContent,
+		metaData: {
+			type: Tv2PieceType.GRAPHICS,
+			sourceName: designContent.fileName
+		}
 	}
 }
 

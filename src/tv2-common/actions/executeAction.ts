@@ -77,6 +77,8 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import _ = require('underscore')
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { EnableServer } from '../content'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixTransitionBlueprintPieceForPart } from '../parts'
@@ -557,6 +559,7 @@ async function executeActionSelectDVE<
 	const end = parsedCue.end ? calculateTime(parsedCue.end) : undefined
 
 	const metaData: DVEPieceMetaData = {
+		type: Tv2PieceType.SPLIT_SCREEN,
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
@@ -744,6 +747,7 @@ async function executeActionSelectDVELayout<
 		}
 
 		const newMetaData: DVEPieceMetaData = {
+			type: Tv2PieceType.SPLIT_SCREEN,
 			sources,
 			config: userData.config,
 			userData: {
@@ -1018,6 +1022,8 @@ async function executeActionCutToCamera<
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
+			type: Tv2PieceType.CAMERA,
+			outputLayer: Tv2OutputLayer.PROGRAM,
 			sisyfosPersistMetaData: {
 				sisyfosLayers: [],
 				acceptsPersistedAudio: sourceInfoCam.acceptPersistAudio,
@@ -1228,6 +1234,8 @@ async function executeActionCutToRemote<
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
 		metaData: {
+			type: Tv2PieceType.REMOTE,
+			outputLayer: Tv2OutputLayer.PROGRAM,
 			sisyfosPersistMetaData
 		},
 		tags: [GetTagForLive(userData.sourceDefinition)],

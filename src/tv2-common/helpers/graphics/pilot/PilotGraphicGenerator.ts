@@ -36,6 +36,8 @@ import {
 	SharedSourceLayer,
 	TallyTags
 } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 import { Graphic } from '../index'
 
 export interface PilotGraphicProps {
@@ -110,6 +112,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 	}
 
 	public createPiece(): IBlueprintPiece<PieceMetaData> {
+		const graphicsContent: WithTimeline<GraphicsContent> = this.getContent()
 		return {
 			externalId: this.partId,
 			name: this.getTemplateName(),
@@ -122,10 +125,15 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			sourceLayerId: this.getSourceLayer(),
 			prerollDuration: this.getPrerollDuration(),
 			lifespan: this.getPieceLifespan(),
-			content: this.getContent(),
+			content: graphicsContent,
 			tags: IsTargetingFull(this.engine)
 				? [GetTagForFull(this.segmentExternalId, this.cue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
-				: []
+				: [],
+			metaData: {
+				type: this.getTv2PieceType(),
+				outputLayer: this.getTv2OutputLayer(),
+				sourceName: graphicsContent.fileName
+			}
 		}
 	}
 
@@ -158,6 +166,8 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			sourceLayerId: SharedSourceLayer.SelectedAdlibGraphicsFull,
 			lifespan: PieceLifespan.OutOnSegmentEnd,
 			metaData: {
+				type: Tv2PieceType.GRAPHICS,
+				sourceName: content.fileName,
 				userData: {
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
 					name: this.cue.graphic.name,
@@ -182,6 +192,31 @@ export abstract class PilotGraphicGenerator extends Graphic {
 		return this.config.studio.GraphicsType === 'HTML'
 			? this.config.studio.CasparPrerollDuration
 			: this.config.studio.VizPilotGraphics.PrerollDuration
+	}
+
+	protected getTv2PieceType(): Tv2PieceType {
+		switch (this.engine) {
+			case 'OVL':
+				return Tv2PieceType.OVERLAY_GRAPHICS
+			case 'WALL':
+			case 'FULL':
+			case 'TLF':
+				return Tv2PieceType.GRAPHICS
+			default:
+				return Tv2PieceType.GRAPHICS
+		}
+	}
+
+	protected getTv2OutputLayer(): Tv2OutputLayer | undefined {
+		switch (this.engine) {
+			case 'OVL':
+				return Tv2OutputLayer.OVERLAY
+			case 'FULL':
+			case 'TLF':
+				return Tv2OutputLayer.PROGRAM
+			default:
+				return undefined
+		}
 	}
 
 	protected getSourceLayer(): SharedSourceLayer {

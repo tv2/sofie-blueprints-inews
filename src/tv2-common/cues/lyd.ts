@@ -26,6 +26,8 @@ import {
 	SharedSisyfosLLayer,
 	SharedSourceLayer
 } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 
 export function EvaluateLYD(
@@ -71,6 +73,10 @@ export function EvaluateLYD(
 				? Math.max(1000, fadeIn ? getTimeFromFrames(fadeIn) : 0)
 				: getTimingEnable(parsedCue).enable.duration ?? undefined,
 			content: LydContent(context.config, file, lydType, fadeIn, fadeOut),
+			metaData: {
+				type: Tv2PieceType.AUDIO,
+				outputLayer: Tv2OutputLayer.AUDIO
+			},
 			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
 		})
 	} else {
@@ -90,7 +96,11 @@ export function EvaluateLYD(
 			outputLayerId: SharedOutputLayer.MUSIK,
 			sourceLayerId: SharedSourceLayer.PgmAudioBed,
 			lifespan,
-			content: LydContent(context.config, file, lydType, fadeIn, fadeOut)
+			content: LydContent(context.config, file, lydType, fadeIn, fadeOut),
+			metaData: {
+				type: Tv2PieceType.AUDIO,
+				outputLayer: Tv2OutputLayer.AUDIO
+			}
 		})
 	}
 }

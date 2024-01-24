@@ -1,3 +1,4 @@
+import { VTContent, WithTimeline } from '@sofie-automation/blueprints-integration'
 import { IBlueprintActionManifest, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
 import {
 	ActionSelectJingle,
@@ -13,6 +14,8 @@ import {
 	TableConfigItemBreaker
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../config'
@@ -64,6 +67,7 @@ export function EvaluateJingle(
 			}
 		})
 	} else {
+		const jingleContent: WithTimeline<VTContent> = createJingleContentAFVD(context, file, jingle)
 		pieces.push({
 			externalId: `${part.externalId}-JINGLE`,
 			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
@@ -75,7 +79,12 @@ export function EvaluateJingle(
 			sourceLayerId: SourceLayer.PgmJingle,
 			prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(jingle.StartAlpha),
 			tags: [!effekt ? TallyTags.JINGLE : ''],
-			content: createJingleContentAFVD(context, file, jingle)
+			content: jingleContent,
+			metaData: {
+				type: Tv2PieceType.JINGLE,
+				outputLayer: Tv2OutputLayer.JINGLE,
+				sourceName: jingleContent.fileName
+			}
 		})
 	}
 }

@@ -14,12 +14,13 @@ import {
 	GraphicPieceMetaData,
 	GraphicPilot,
 	literal,
-	PartDefinitionKam,
-	PieceMetaData
+	PartDefinitionKam
 } from 'tv2-common'
 import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
+import { Tv2OutputLayer } from '../../../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 import { OVL_SHOW_NAME } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
 import { EvaluateCueGraphic } from '../graphic'
@@ -119,6 +120,8 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
+					type: Tv2PieceType.GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
@@ -208,7 +211,11 @@ describe('grafik piece', () => {
 						}),
 						dskEnableObj
 					])
-				})
+				}),
+				metaData: {
+					type: Tv2PieceType.OVERLAY_GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY
+				}
 			}),
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
@@ -243,7 +250,11 @@ describe('grafik piece', () => {
 						}),
 						dskEnableObj
 					])
-				})
+				}),
+				metaData: {
+					type: Tv2PieceType.GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY
+				}
 			})
 		])
 	})
@@ -304,7 +315,11 @@ describe('grafik piece', () => {
 						}),
 						dskEnableObj
 					])
-				})
+				}),
+				metaData: {
+					type: Tv2PieceType.OVERLAY_GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY
+				}
 			}),
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
@@ -339,7 +354,11 @@ describe('grafik piece', () => {
 						}),
 						dskEnableObj
 					])
-				})
+				}),
+				metaData: {
+					type: Tv2PieceType.GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY
+				}
 			})
 		])
 	})
@@ -378,6 +397,8 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
+					type: Tv2PieceType.GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
@@ -526,6 +547,8 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
+					type: Tv2PieceType.GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
@@ -593,6 +616,8 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
+					type: Tv2PieceType.GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId
 				},
@@ -682,7 +707,11 @@ describe('grafik piece', () => {
 						}),
 						dskEnableObj
 					])
-				})
+				}),
+				metaData: {
+					type: Tv2PieceType.OVERLAY_GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY
+				}
 			}),
 			literal<IBlueprintAdLibPiece>({
 				_rank: 0,
@@ -716,7 +745,11 @@ describe('grafik piece', () => {
 						}),
 						dskEnableObj
 					])
-				})
+				}),
+				metaData: {
+					type: Tv2PieceType.GRAPHICS,
+					outputLayer: Tv2OutputLayer.OVERLAY
+				}
 			})
 		])
 	})

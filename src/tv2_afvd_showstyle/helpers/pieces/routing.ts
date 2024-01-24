@@ -9,6 +9,7 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayer, SwitcherAuxLLayer } from 'tv2-constants'
 import _ = require('underscore')
+import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueRouting(
@@ -52,7 +53,10 @@ export function EvaluateCueRouting(
 					}
 				})
 			])
-		})
+		}),
+		metaData: {
+			type: Tv2PieceType.UNKNOWN
+		}
 	})
 	return result
 }

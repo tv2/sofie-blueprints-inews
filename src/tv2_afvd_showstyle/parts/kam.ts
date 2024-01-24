@@ -23,6 +23,8 @@ import {
 	TransitionStyle
 } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
+import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
+import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -67,7 +69,11 @@ export async function CreatePartKam(
 						}
 					})
 				]
-			})
+			}),
+			metaData: {
+				type: Tv2PieceType.JINGLE,
+				outputLayer: Tv2OutputLayer.PROGRAM
+			}
 		})
 		part.expectedDuration = TimeFromINewsField(partDefinition.fields.totalTime) * 1000
 	} else {
@@ -88,6 +94,8 @@ export async function CreatePartKam(
 			sourceLayerId: SourceLayer.PgmCam,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: {
+				type: Tv2PieceType.CAMERA,
+				outputLayer: Tv2OutputLayer.PROGRAM,
 				sisyfosPersistMetaData: {
 					sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],
 					acceptsPersistedAudio: sourceInfoCam.acceptPersistAudio

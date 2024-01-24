@@ -13,7 +13,7 @@ import {
 	SegmentContext,
 	ShowStyleContext
 } from 'tv2-common'
-import { CueType, PartType, SharedSourceLayer, TallyTags } from 'tv2-constants'
+import { AdlibActionType, CueType, PartType, SharedSourceLayer, TallyTags } from 'tv2-constants'
 import { TV2ShowStyleConfig } from './blueprintConfig'
 import {
 	CueDefinitionUnpairedTarget,
@@ -84,6 +84,10 @@ export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyle
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 }
 
+interface SegmentMetadata {
+	miniShelfVideoClipFile?: string
+}
+
 export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>(
 	context: SegmentContext<ShowStyleConfig>,
 	ingestSegment: IngestSegment,
@@ -93,7 +97,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 
 	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
 	const iNewsStory = segmentPayload?.iNewsStory
-	const segment: IBlueprintSegment = {
+	const segment: IBlueprintSegment<SegmentMetadata> = {
 		name: ingestSegment.name || '',
 		metaData: {},
 		showShelf: false,
@@ -304,10 +308,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		}
 	})
 
-	if (
-		blueprintParts.filter((part) => part.pieces.length === 0 && (part.adLibPieces.length || part.actions?.length))
-			.length === blueprintParts.length
-	) {
+	if (blueprintParts.every((part) => part.pieces.length === 0 && (part.adLibPieces.length || part.actions?.length))) {
 		segment.isHidden = true
 		if (blueprintParts.length > 0) {
 			segment.showShelf = true
@@ -318,6 +319,17 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		segment.showShelf = true
 	}
 
+	blueprintParts = blueprintParts.map((blueprintPart) => {
+		blueprintPart.actions = blueprintPart.actions.map((action) => {
+			if (action.actionId !== AdlibActionType.SELECT_SERVER_CLIP) {
+				return action
+			}
+			segment.metaData!.miniShelfVideoClipFile = action.userData.file
+			return action
+		})
+		return blueprintPart
+	})
+
 	if (
 		// Filter out Jingle-only parts
 		blueprintParts.length > 1 ||
@@ -327,6 +339,8 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 			))
 	) {
 		blueprintParts[0].part.budgetDuration = totalTimeMs
+		/*NOTE: Set budgetDuration to Segment to new sofie-server*/
+		;(segment as any).budgetDuration = totalTimeMs
 	}
 
 	if (blueprintParts.every((part) => part.part.invalid) && iNewsStory.cues.length === 0) {
