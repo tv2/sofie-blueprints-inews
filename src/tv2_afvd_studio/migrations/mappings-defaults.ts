@@ -299,19 +299,19 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		mappingType: TSR.MappingSisyfosType.CHANNEL,
 		setLabelToLayerName: true
 	}),
-	[SisyfosLLAyer.SisyfosSourceEVS_1]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+	[SisyfosLLAyer.SisyfosSourceEVS_1_audio_1_2]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		layerName: 'EVS 1',
+		layerName: 'EVS 1 3/4',
 		channel: 24,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL,
 		setLabelToLayerName: true
 	}),
-	[SisyfosLLAyer.SisyfosSourceEVS_2]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+	[SisyfosLLAyer.SisyfosSourceEVS_2_audio_1_2]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		layerName: 'EVS 2',
+		layerName: 'EVS 2 1/2',
 		channel: 25,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL,
@@ -344,11 +344,38 @@ export const MAPPINGS_SISYFOS: BlueprintMappings = {
 		mappingType: TSR.MappingSisyfosType.CHANNEL,
 		setLabelToLayerName: true
 	}),
-	[SisyfosLLAyer.SisyfosSourceEpsio]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+	[SisyfosLLAyer.SisyfosSourceEpsio_audio_1_2]: literal<TSR.MappingSisyfos & BlueprintMapping>({
 		device: TSR.DeviceType.SISYFOS,
 		deviceId: 'sisyfos0',
-		layerName: 'EPSIO',
+		layerName: 'EPSIO 1/2',
 		channel: 29,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
+	}),
+	[SisyfosLLAyer.SisyfosSourceEVS_1_audio_3_4]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		layerName: 'EVS 1 3/4',
+		channel: 30,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
+	}),
+	[SisyfosLLAyer.SisyfosSourceEVS_2_audio_3_4]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		layerName: 'EVS 2 3/4',
+		channel: 31,
+		lookahead: LookaheadMode.NONE,
+		mappingType: TSR.MappingSisyfosType.CHANNEL,
+		setLabelToLayerName: true
+	}),
+	[SisyfosLLAyer.SisyfosSourceEpsio_audio_3_4]: literal<TSR.MappingSisyfos & BlueprintMapping>({
+		device: TSR.DeviceType.SISYFOS,
+		deviceId: 'sisyfos0',
+		layerName: 'EPSIO 3/4',
+		channel: 32,
 		lookahead: LookaheadMode.NONE,
 		mappingType: TSR.MappingSisyfosType.CHANNEL,
 		setLabelToLayerName: true

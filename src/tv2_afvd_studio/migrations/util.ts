@@ -237,10 +237,14 @@ export function GetSisyfosLayersForTableMigrationAFVD(configName: string, val: s
 			}
 			break
 		case 'SourcesDelayedPlayback':
-		case '1':
-			return [SisyfosLLAyer.SisyfosSourceEVS_1]
-		case '2':
-			return [SisyfosLLAyer.SisyfosSourceEVS_2]
+		case '1 1/2':
+			return [SisyfosLLAyer.SisyfosSourceEVS_1_audio_1_2]
+		case '2 1/2':
+			return [SisyfosLLAyer.SisyfosSourceEVS_2_audio_1_2]
+		case '1 3/4':
+			return [SisyfosLLAyer.SisyfosSourceEVS_1_audio_3_4]
+		case '2 3/4':
+			return [SisyfosLLAyer.SisyfosSourceEVS_2_audio_3_4]
 	}
 
 	return []

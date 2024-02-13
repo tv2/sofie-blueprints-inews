@@ -199,23 +199,44 @@ export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true
 export const manifestAFVDSourcesReplay = MakeConfigForSources('Replay', 'Replay', false, false, [
 	{
 		_id: '',
-		SourceName: '1',
+		SourceName: '1 1/2',
 		SwitcherSource: 22,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_1],
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_1_audio_1_2],
 		StudioMics: true
 	},
 	{
 		_id: '',
-		SourceName: '2',
+		SourceName: '2 1/2',
 		SwitcherSource: 23,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2],
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2_audio_1_2],
 		StudioMics: true
 	},
 	{
 		_id: '',
-		SourceName: 'EPSIO',
+		SourceName: 'EPSIO 1/2',
 		SwitcherSource: 25,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio_audio_1_2],
+		StudioMics: true
+	},
+	{
+		_id: '',
+		SourceName: '1 3/4',
+		SwitcherSource: 30,
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_1_audio_3_4],
+		StudioMics: true
+	},
+	{
+		_id: '',
+		SourceName: '2 3/4',
+		SwitcherSource: 31,
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEVS_2_audio_3_4],
+		StudioMics: true
+	},
+	{
+		_id: '',
+		SourceName: 'EPSIO 3/4',
+		SwitcherSource: 32,
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio_audio_3_4],
 		StudioMics: true
 	}
 ])

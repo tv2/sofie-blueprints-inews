@@ -62,9 +62,12 @@ enum AFVDSisyfosLLayer {
 	SisyfosSourceServerA = 'sisyfos_source_server_a',
 	SisyfosSourceServerB = 'sisyfos_source_server_b',
 	// SisyfosSourceServerC = 'sisyfos_source_server_c',
-	SisyfosSourceEVS_1 = 'sisyfos_source_evs_1',
-	SisyfosSourceEVS_2 = 'sisyfos_source_evs_2',
-	SisyfosSourceEpsio = 'sisyfos_source_epsio'
+	SisyfosSourceEVS_1_audio_1_2 = 'sisyfos_source_evs_1_audio_1_2',
+	SisyfosSourceEVS_2_audio_1_2 = 'sisyfos_source_evs_2_audio_1_2',
+	SisyfosSourceEpsio_audio_1_2 = 'sisyfos_source_epsio_audio_1_2',
+	SisyfosSourceEVS_1_audio_3_4 = 'sisyfos_source_evs_1_audio_3_4',
+	SisyfosSourceEVS_2_audio_3_4 = 'sisyfos_source_evs_2_audio_3_4',
+	SisyfosSourceEpsio_audio_3_4 = 'sisyfos_source_epsio_audio_3_4'
 }
 
 // tslint:disable-next-line: variable-name
