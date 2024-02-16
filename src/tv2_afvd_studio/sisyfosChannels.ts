@@ -85,10 +85,16 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	[SisyfosLLAyer.SisyfosSourceServerB]: {
 		isPgm: 0
 	},
-	[SisyfosLLAyer.SisyfosSourceEVS_1]: {
+	[SisyfosLLAyer.SisyfosSourceEVS_1_audio_1_2]: {
 		isPgm: 0
 	},
-	[SisyfosLLAyer.SisyfosSourceEVS_2]: {
+	[SisyfosLLAyer.SisyfosSourceEVS_2_audio_1_2]: {
+		isPgm: 0
+	},
+	[SisyfosLLAyer.SisyfosSourceEVS_1_audio_3_4]: {
+		isPgm: 0
+	},
+	[SisyfosLLAyer.SisyfosSourceEVS_2_audio_3_4]: {
 		isPgm: 0
 	},
 	[SisyfosLLAyer.SisyfosSourceJingle]: {
@@ -100,7 +106,10 @@ export const sisyfosChannels: { [key in SisyfosLLAyer]?: SisyfosChannel } = {
 	[SisyfosLLAyer.SisyfosSourceTLF]: {
 		isPgm: 0
 	},
-	[SisyfosLLAyer.SisyfosSourceEpsio]: {
+	[SisyfosLLAyer.SisyfosSourceEpsio_audio_1_2]: {
+		isPgm: 0
+	},
+	[SisyfosLLAyer.SisyfosSourceEpsio_audio_3_4]: {
 		isPgm: 0
 	}
 }

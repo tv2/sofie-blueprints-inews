@@ -140,8 +140,10 @@ export const studioMigrations: MigrationStepStudio[] = [
 		'sisyfos_source_live_10',
 		'sisyfos_source_server_a',
 		'sisyfos_source_server_b',
-		'sisyfos_source_evs_1',
-		'sisyfos_source_evs_2',
+		'sisyfos_source_evs_1_audio_1_2',
+		'sisyfos_source_evs_2_audio_1_2',
+		'sisyfos_source_evs_1_audio_3_4',
+		'sisyfos_source_evs_2_audio_3_4',
 		'sisyfos_resync'
 	].map((layer) => EnsureSisyfosMappingHasType('1.3.0', layer, TSR.MappingSisyfosType.CHANNEL)),
 	GetMappingDefaultMigrationStepForLayer('1.3.0', SisyfosLLAyer.SisyfosGroupStudioMics),
@@ -190,7 +192,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesReplay', {
 		SourceName: 'EPSIO',
 		SwitcherSource: 25,
-		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
+		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio_audio_1_2],
 		StudioMics: true
 	}),
 
