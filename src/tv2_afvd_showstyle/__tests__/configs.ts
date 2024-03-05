@@ -1,4 +1,4 @@
-import { literal, parseMapStr, SwitcherType } from 'tv2-common'
+import { literal, SwitcherType } from 'tv2-common'
 import { defaultDSKConfig, StudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import { GalleryShowStyleConfig, GalleryTableConfigGfxSetup } from '../helpers/config'
 import { DefaultBreakerConfig } from './breakerConfigDefault'
@@ -12,7 +12,7 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 		case 'SourcesFeed':
 			return ['sisyfos_source_live_' + id]
 		case 'SourcesDelayedPlayback':
-			return ['sisyfos_source_' + id.toLowerCase().replace(' ', '_')]
+			return ['sisyfos_source_' + id.toLowerCase().replace(/ /g, '_')]
 	}
 
 	return []
@@ -20,7 +20,7 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 
 // TODO: Broken
 function prepareConfig(
-	conf: string,
+	conf: Array<{ id: string; switcherSource: number; sisyfosLayers?: string[] }>,
 	configName: string,
 	studioMics: boolean,
 	wantsToPersistAudio?: boolean
@@ -31,11 +31,11 @@ function prepareConfig(
 	StudioMics: boolean
 	wantsToPersistAudio: boolean
 }> {
-	return parseMapStr(undefined, conf, true).map((c) => {
+	return conf.map((c) => {
 		return {
 			SourceName: c.id,
-			SwitcherSource: c.val,
-			SisyfosLayers: getSisyfosLayers(configName, c.id),
+			SwitcherSource: c.switcherSource,
+			SisyfosLayers: c.sisyfosLayers ?? getSisyfosLayers(configName, c.id),
 			StudioMics: studioMics,
 			wantsToPersistAudio: wantsToPersistAudio ?? false
 		}
@@ -86,14 +86,65 @@ export const defaultStudioConfig: StudioConfig = {
 	ServerPostrollDuration: 3000,
 	PreventOverlayWithFull: true,
 	SourcesCam: prepareConfig(
-		'1:1,2:2,3:3,4:4,5:5,1S:6,2S:7,3S:8,4S:9,5S:10,X8:13,HVID:14,AR:16,CS1:17,CS2:18,CS3:19,CS4:20,CS5:21,CS 1:17,CS 2:18,CS 3:19,CS 4:20,CS 5:21,SORT:22,11:11,12:12,13:13,14:14,15:15',
+		[
+			{ id: '1', switcherSource: 1 },
+			{ id: '2', switcherSource: 2 },
+			{ id: '3', switcherSource: 3 },
+			{ id: '4', switcherSource: 4 },
+			{ id: '5', switcherSource: 5 },
+			{ id: '1S', switcherSource: 6 },
+			{ id: '2S', switcherSource: 7 },
+			{ id: '3S', switcherSource: 8 },
+			{ id: '4S', switcherSource: 9 },
+			{ id: '5S', switcherSource: 10 }
+		],
 		'SourcesCam',
 		true
 	),
 	// TODO: prepareConfig is legacy code, refactor when refactoring FindSourceInfo
-	SourcesRM: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesRM', false, true),
-	SourcesFeed: prepareConfig('1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10', 'SourcesFeed', false, true),
-	SourcesReplay: prepareConfig('EVS 1:5,EVS 2:5,EPSIO:5', 'SourcesDelayedPlayback', false),
+	SourcesRM: prepareConfig(
+		[
+			{ id: '1', switcherSource: 1 },
+			{ id: '2', switcherSource: 2 },
+			{ id: '3', switcherSource: 3 },
+			{ id: '4', switcherSource: 4 },
+			{ id: '5', switcherSource: 5 },
+			{ id: '6', switcherSource: 6 },
+			{ id: '7', switcherSource: 7 },
+			{ id: '8', switcherSource: 8 },
+			{ id: '9', switcherSource: 9 },
+			{ id: '10', switcherSource: 10 }
+		],
+		'SourcesRM',
+		false,
+		true
+	),
+	SourcesFeed: prepareConfig(
+		[
+			{ id: '1', switcherSource: 1 },
+			{ id: '2', switcherSource: 2 },
+			{ id: '3', switcherSource: 3 },
+			{ id: '4', switcherSource: 4 },
+			{ id: '5', switcherSource: 5 },
+			{ id: '6', switcherSource: 6 },
+			{ id: '7', switcherSource: 7 },
+			{ id: '8', switcherSource: 8 },
+			{ id: '9', switcherSource: 9 },
+			{ id: '10', switcherSource: 10 }
+		],
+		'SourcesFeed',
+		false,
+		true
+	),
+	SourcesReplay: prepareConfig(
+		[
+			{ id: 'EVS 1', switcherSource: 5, sisyfosLayers: ['sisyfos_source_evs_1_audio_1_2'] },
+			{ id: 'EVS 2', switcherSource: 5, sisyfosLayers: ['sisyfos_source_evs_2_audio_1_2'] },
+			{ id: 'EPSIO', switcherSource: 5, sisyfosLayers: ['sisyfos_source_epsio_audio_1_2'] }
+		],
+		'SourcesDelayedPlayback',
+		false
+	),
 	StudioMics: [
 		'sisyfos_source_Host_1_st_a',
 		'sisyfos_source_Host_2_st_a',
