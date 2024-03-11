@@ -108,7 +108,8 @@ export abstract class InternalGraphic extends Graphic {
 				type: Tv2PieceType.GRAPHICS,
 				outputLayer: Tv2OutputLayer.OVERLAY,
 				partType: this.partDefinition?.type,
-				pieceExternalId: this.partDefinition?.externalId
+				pieceExternalId: this.partDefinition?.externalId,
+				graphicTemplateName: this.templateName
 			}
 		}
 	}
