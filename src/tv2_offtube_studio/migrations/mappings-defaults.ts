@@ -218,7 +218,7 @@ const MAPPINGS_CASPAR: BlueprintMappings = {
 		deviceId: 'abstract0',
 		lookahead: LookaheadMode.PRELOAD,
 		lookaheadDepth: 1,
-		lookaheadMaxSearchDistance: 1
+		lookaheadMaxSearchDistance: 5
 	}),
 	[CasparPlayerClip(1)]: literal<TSR.MappingCasparCG & BlueprintMapping>({
 		device: TSR.DeviceType.CASPARCG,
