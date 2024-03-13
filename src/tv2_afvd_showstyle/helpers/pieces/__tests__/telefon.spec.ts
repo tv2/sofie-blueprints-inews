@@ -77,7 +77,7 @@ describe('telefon', () => {
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId,
-					graphicTemplateName: 'bund'
+					graphicsTemplateName: 'bund'
 				},
 				content: literal<WithTimeline<GraphicsContent>>({
 					fileName: 'bund',

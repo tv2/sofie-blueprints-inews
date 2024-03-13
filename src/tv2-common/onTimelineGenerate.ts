@@ -73,7 +73,7 @@ export interface PieceMetaData {
 export interface GraphicPieceMetaData extends PieceMetaData {
 	partType?: PartType
 	pieceExternalId?: string
-	graphicTemplateName?: string
+	graphicsTemplateName?: string
 }
 
 export interface JinglePieceMetaData extends PieceMetaData {
