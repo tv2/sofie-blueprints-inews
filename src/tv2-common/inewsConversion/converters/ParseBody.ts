@@ -675,7 +675,7 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		}
 	} else if (EVS_RED_TEXT.test(typeStr)) {
 		const strippedToken = typeStr.match(EVS_RED_TEXT)
-		const id = `EVS ${strippedToken![1].toUpperCase()}`
+		const id = `EVS ${strippedToken![1].toUpperCase()} 1/2`
 		const vo = strippedToken![2]
 		return {
 			sourceType: SourceType.REPLAY,
@@ -687,7 +687,7 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 	} else if (/EPSIO/i.test(typeStr)) {
 		return {
 			sourceType: SourceType.REPLAY,
-			id: 'EPSIO',
+			id: 'EPSIO 1/2',
 			vo: true,
 			raw: typeStr,
 			name: 'EPSIO'
