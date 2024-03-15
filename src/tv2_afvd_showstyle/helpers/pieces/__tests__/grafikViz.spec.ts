@@ -123,7 +123,8 @@ describe('grafik piece', () => {
 					type: Tv2PieceType.GRAPHICS,
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
-					pieceExternalId: dummyPart.externalId
+					pieceExternalId: dummyPart.externalId,
+					graphicsTemplateName: 'bund'
 				},
 				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -400,7 +401,8 @@ describe('grafik piece', () => {
 					type: Tv2PieceType.GRAPHICS,
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
-					pieceExternalId: dummyPart.externalId
+					pieceExternalId: dummyPart.externalId,
+					graphicsTemplateName: 'bund'
 				},
 				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsLower,
@@ -550,7 +552,8 @@ describe('grafik piece', () => {
 					type: Tv2PieceType.GRAPHICS,
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
-					pieceExternalId: dummyPart.externalId
+					pieceExternalId: dummyPart.externalId,
+					graphicsTemplateName: 'direkte'
 				},
 				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
@@ -619,7 +622,8 @@ describe('grafik piece', () => {
 					type: Tv2PieceType.GRAPHICS,
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
-					pieceExternalId: dummyPart.externalId
+					pieceExternalId: dummyPart.externalId,
+					graphicsTemplateName: 'arkiv'
 				},
 				outputLayerId: SharedOutputLayer.OVERLAY,
 				sourceLayerId: SourceLayer.PgmGraphicsIdent,
