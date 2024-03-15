@@ -12,6 +12,11 @@ import { CueType, SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } fr
 import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { DveLoopGenerator } from '../helpers/graphics/caspar/dve-loop-generator'
 
+interface CasparCgDesignValues {
+	name: string
+	properties: unknown
+}
+
 const NON_BASELINE_SCHEMA: string = 'NON_BASELINE_SCHEMA'
 const VALID_EMPTY_SCHEMA_VALUE: string = 'N/A'
 
@@ -19,6 +24,8 @@ export class GfxSchemaGenerator {
 	constructor(private dveLoopGenerator: DveLoopGenerator) {}
 
 	public createBaselineTimelineObjectsFromGfxDefaults(context: ShowStyleContext): TSR.TSRTimelineObjBase[] {
+		this.assertAllCasparCgDesignValues(context)
+
 		const schemaId: string = context.config.showStyle.GfxDefaults[0].DefaultSchema.value
 		if (VALID_EMPTY_SCHEMA_VALUE === schemaId) {
 			return []
@@ -32,7 +39,6 @@ export class GfxSchemaGenerator {
 			)
 			return []
 		}
-
 		const cue: CueDefinitionGfxSchema = {
 			type: CueType.GraphicSchema,
 			schema: schema.VizTemplate,
@@ -40,6 +46,22 @@ export class GfxSchemaGenerator {
 			iNewsCommand: ''
 		}
 		return this.createBaselineTimelineObjects(context, cue, 10)
+	}
+
+	private assertAllCasparCgDesignValues(context: ShowStyleContext): void {
+		context.config.showStyle.GfxSchemaTemplates.forEach((schema) => {
+			if (!schema.CasparCgDesignValues) {
+				return
+			}
+			const casparCgDesignValues: CasparCgDesignValues[] = JSON.parse(schema.CasparCgDesignValues)
+			casparCgDesignValues.forEach((designValues) => {
+				if (designValues.name && designValues.name.includes(' ')) {
+					context.core.notifyUserError(
+						`Schema for ${schema.VizTemplate} has invalid CasparCgDesignValues. The Design ${designValues.name} has whitespace in it's name!`
+					)
+				}
+			})
+		})
 	}
 
 	public createBlueprintPieceFromGfxSchemaCue(
