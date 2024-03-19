@@ -675,14 +675,15 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		}
 	} else if (EVS_RED_TEXT.test(typeStr)) {
 		const strippedToken = typeStr.match(EVS_RED_TEXT)
-		const id = `EVS ${strippedToken![1].toUpperCase()} 1/2`
-		const vo = strippedToken![2]
+		const name: string = `EVS ${strippedToken![1].toUpperCase()}`
+		const audioTrack: string = '1/2'
+		const vo: string = strippedToken![2]
 		return {
 			sourceType: SourceType.REPLAY,
-			id,
+			id: `${name} ${audioTrack}`,
 			vo: !!vo,
 			raw: strippedToken![0].trim(),
-			name: `${id}${vo ? ' ' + vo : ''}`
+			name: `${name}${vo ? ' ' + vo : ''}`
 		}
 	} else if (/EPSIO/i.test(typeStr)) {
 		return {
