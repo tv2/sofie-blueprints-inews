@@ -231,8 +231,7 @@ function getServerSelectionBlueprintPiece(
 		sourceLayerId: layers.SourceLayer.SelectedServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
-			type: Tv2PieceType.VIDEO_CLIP,
-			outputLayer: Tv2OutputLayer.PROGRAM,
+			type: Tv2PieceType.UNKNOWN,
 			sourceName: contentServerElement.fileName,
 			audioMode:
 				layers.SourceLayer.SelectedServer === SharedSourceLayer.SelectedVoiceOver
