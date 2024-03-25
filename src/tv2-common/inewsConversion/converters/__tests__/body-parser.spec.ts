@@ -1514,7 +1514,7 @@ describe('Body parser', () => {
 				rawType: 'EVS 1',
 				sourceDefinition: {
 					sourceType: SourceType.REPLAY,
-					id: 'EVS 1',
+					id: 'EVS 1 1/2',
 					name: 'EVS 1',
 					raw: 'EVS 1',
 					vo: false
@@ -1541,7 +1541,7 @@ describe('Body parser', () => {
 				rawType: 'EVS1VOV',
 				sourceDefinition: {
 					sourceType: SourceType.REPLAY,
-					id: 'EVS 1',
+					id: 'EVS 1 1/2',
 					name: 'EVS 1 VOV',
 					raw: 'EVS1VOV',
 					vo: true
@@ -1567,7 +1567,7 @@ describe('Body parser', () => {
 				rawType: 'EVS 1 VO',
 				sourceDefinition: {
 					sourceType: SourceType.REPLAY,
-					id: 'EVS 1',
+					id: 'EVS 1 1/2',
 					name: 'EVS 1 VO',
 					raw: 'EVS 1 VO',
 					vo: true
@@ -1585,7 +1585,7 @@ describe('Body parser', () => {
 				rawType: 'EVS 2VO',
 				sourceDefinition: {
 					sourceType: SourceType.REPLAY,
-					id: 'EVS 2',
+					id: 'EVS 2 1/2',
 					name: 'EVS 2 VO',
 					raw: 'EVS 2VO',
 					vo: true
@@ -1603,7 +1603,7 @@ describe('Body parser', () => {
 				rawType: 'EVS3VO',
 				sourceDefinition: {
 					sourceType: SourceType.REPLAY,
-					id: 'EVS 3',
+					id: 'EVS 3 1/2',
 					name: 'EVS 3 VO',
 					raw: 'EVS3VO',
 					vo: true
@@ -1621,7 +1621,7 @@ describe('Body parser', () => {
 				rawType: 'EVS4 VO',
 				sourceDefinition: {
 					sourceType: SourceType.REPLAY,
-					id: 'EVS 4',
+					id: 'EVS 4 1/2',
 					name: 'EVS 4 VO',
 					raw: 'EVS4 VO',
 					vo: true
@@ -2564,7 +2564,7 @@ describe('Body parser', () => {
 							routing: {
 								type: CueType.Routing,
 								target: 'WALL',
-								INP1: { sourceType: SourceType.REPLAY, name: 'EVS 1', id: 'EVS 1', raw: 'EVS 1', vo: false },
+								INP1: { sourceType: SourceType.REPLAY, name: 'EVS 1', id: 'EVS 1 1/2', raw: 'EVS 1', vo: false },
 								iNewsCommand: ''
 							},
 							graphic: {
@@ -2603,7 +2603,7 @@ describe('Body parser', () => {
 				rawType: 'EVS 1',
 				sourceDefinition: {
 					sourceType: SourceType.REPLAY,
-					id: 'EVS 1',
+					id: 'EVS 1 1/2',
 					name: 'EVS 1',
 					raw: 'EVS 1',
 					vo: false

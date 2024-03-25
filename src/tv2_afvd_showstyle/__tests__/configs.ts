@@ -138,9 +138,9 @@ export const defaultStudioConfig: StudioConfig = {
 	),
 	SourcesReplay: prepareConfig(
 		[
-			{ id: 'EVS 1', switcherSource: 5, sisyfosLayers: ['sisyfos_source_evs_1_audio_1_2'] },
-			{ id: 'EVS 2', switcherSource: 5, sisyfosLayers: ['sisyfos_source_evs_2_audio_1_2'] },
-			{ id: 'EPSIO', switcherSource: 5, sisyfosLayers: ['sisyfos_source_epsio_audio_1_2'] }
+			{ id: 'EVS 1 1/2', switcherSource: 5, sisyfosLayers: ['sisyfos_source_evs_1_audio_1_2'] },
+			{ id: 'EVS 2 1/2', switcherSource: 5, sisyfosLayers: ['sisyfos_source_evs_2_audio_1_2'] },
+			{ id: 'EPSIO 1/2', switcherSource: 5, sisyfosLayers: ['sisyfos_source_epsio_audio_1_2'] }
 		],
 		'SourcesDelayedPlayback',
 		false
