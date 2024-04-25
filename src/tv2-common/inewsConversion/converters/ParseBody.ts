@@ -100,6 +100,10 @@ export interface PartDefinitionBase {
 	transition?: PartTransition
 	storyName: string
 	segmentExternalId: string
+	/**
+	 * The rank of the Segment this PartDefinition belongs to
+	 */
+	segmentRank: number
 	endWords?: string
 	/** Title set based on the primary cue for the following PartTypes: Grafik, DVE, Ekstern, Telefon, Unknown */
 	title?: string
@@ -187,13 +191,14 @@ export function ParseBody(
 	config: TV2ShowStyleConfig,
 	segmentId: string,
 	segmentName: string,
+	segmentRank: number,
 	body: string,
 	cues: UnparsedCue[],
 	fields: INewsFields,
 	modified: number
 ): PartDefinition[] {
 	let definitions: PartDefinition[] = []
-	let definition: PartDefinition = initDefinition(fields, modified, segmentName)
+	let definition: PartDefinition = initDefinition(fields, modified, segmentName, segmentRank)
 
 	// Handle intro segments, they have special behaviour.
 	if (segmentName === 'INTRO') {
@@ -214,7 +219,7 @@ export function ParseBody(
 			}
 		})
 		definitions.push(definition)
-		definition = initDefinition(fields, modified, segmentName)
+		definition = initDefinition(fields, modified, segmentName, segmentRank)
 		return definitions
 	}
 
@@ -263,7 +268,7 @@ export function ParseBody(
 							) {
 								if (shouldPushDefinition(definition)) {
 									definitions.push(definition)
-									definition = initDefinition(fields, modified, segmentName)
+									definition = initDefinition(fields, modified, segmentName, segmentRank)
 								}
 								definition = makeDefinitionPrimaryCue(
 									segmentId,
@@ -273,7 +278,8 @@ export function ParseBody(
 									modified,
 									segmentName,
 									definition.type,
-									cue
+									cue,
+									segmentRank
 								)
 								definition.cues.push(cue)
 							} else {
@@ -290,15 +296,31 @@ export function ParseBody(
 
 				const lastCue = definition.cues[definition.cues.length - 1]
 				if (/GRAFIK/i.test(typeStr) && lastCue && lastCue.type === CueType.UNPAIRED_TARGET && !definition.script) {
-					definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
+					definition = makeDefinition(
+						segmentId,
+						definitions.length,
+						typeStr,
+						fields,
+						modified,
+						segmentName,
+						segmentRank
+					)
 					definition.cues.push(lastCue)
 				} else {
 					if (shouldPushDefinition(definition)) {
 						definitions.push(definition)
-						definition = initDefinition(fields, modified, segmentName)
+						definition = initDefinition(fields, modified, segmentName, segmentRank)
 					}
 
-					definition = makeDefinition(segmentId, definitions.length, typeStr, fields, modified, segmentName)
+					definition = makeDefinition(
+						segmentId,
+						definitions.length,
+						typeStr,
+						fields,
+						modified,
+						segmentName,
+						segmentRank
+					)
 				}
 
 				definition.cues.push(...secondaryInlineCues)
@@ -324,7 +346,7 @@ export function ParseBody(
 					let storedScript = ''
 					if (shouldPushDefinition(definition)) {
 						definitions.push(definition)
-						definition = initDefinition(fields, modified, segmentName)
+						definition = initDefinition(fields, modified, segmentName, segmentRank)
 					} else if (definition.script.length) {
 						storedScript = definition.script
 					}
@@ -337,7 +359,8 @@ export function ParseBody(
 						modified,
 						segmentName,
 						definition.type,
-						cue
+						cue,
+						segmentRank
 					)
 
 					definition.script = storedScript
@@ -349,7 +372,7 @@ export function ParseBody(
 
 	if (shouldPushDefinition(definition)) {
 		definitions.push(definition)
-		definition = initDefinition(fields, modified, segmentName)
+		definition = initDefinition(fields, modified, segmentName, segmentRank)
 	}
 
 	// Flatten cues such as targetEngine.
@@ -431,7 +454,12 @@ export function FindTargetPair(partDefinition: PartDefinition): boolean {
 }
 
 /** Creates an initial part definition. */
-function initDefinition(fields: any, modified: number, segmentName: string): PartDefinitionUnknown {
+function initDefinition(
+	fields: any,
+	modified: number,
+	segmentName: string,
+	segmentRank: number
+): PartDefinitionUnknown {
 	return {
 		externalId: '',
 		type: PartType.Unknown,
@@ -441,7 +469,8 @@ function initDefinition(fields: any, modified: number, segmentName: string): Par
 		fields,
 		modified,
 		storyName: segmentName,
-		segmentExternalId: ''
+		segmentExternalId: '',
+		segmentRank
 	}
 }
 
@@ -512,9 +541,10 @@ function makeDefinitionPrimaryCue(
 	modified: number,
 	storyName: string,
 	partType: PartType,
-	cue: CueDefinition
+	cue: CueDefinition,
+	segmentRank: number
 ): PartDefinition {
-	let definition = makeDefinition(segmentId, i, typeStr, fields, modified, storyName)
+	let definition = makeDefinition(segmentId, i, typeStr, fields, modified, storyName, segmentRank)
 
 	switch (cue.type) {
 		case CueType.Ekstern:
@@ -550,7 +580,8 @@ function makeDefinition(
 	typeStr: string,
 	fields: any,
 	modified: number,
-	storyName: string
+	storyName: string,
+	segmentRank: number
 ): PartDefinition {
 	const part: PartDefinition = {
 		externalId: `${segmentId}-${i}`, // TODO - this should be something that sticks when inserting a part before the current part
@@ -561,7 +592,8 @@ function makeDefinition(
 		fields,
 		modified,
 		storyName,
-		segmentExternalId: ''
+		segmentExternalId: '',
+		segmentRank
 	}
 
 	return part

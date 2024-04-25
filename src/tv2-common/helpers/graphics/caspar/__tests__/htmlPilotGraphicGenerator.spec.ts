@@ -13,7 +13,8 @@ function makeGenerator(cue: CueDefinitionGraphic<GraphicPilot>) {
 		context,
 		partId: 'part01',
 		parsedCue: cue,
-		segmentExternalId: ''
+		segmentExternalId: '',
+		rank: 0
 	})
 	return generator
 }

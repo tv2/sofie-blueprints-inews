@@ -99,6 +99,7 @@ export async function EvaluateAdLib(
 			userData,
 			userDataManifest: {},
 			display: {
+				_rank: rank,
 				sourceLayerId: SourceLayer.PgmDVE,
 				outputLayerId: SharedOutputLayer.PGM,
 				uniquenessId: getUniquenessIdDVE(cueDVE),

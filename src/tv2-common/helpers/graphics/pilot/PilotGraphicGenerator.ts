@@ -45,6 +45,7 @@ export interface PilotGraphicProps {
 	partId: string
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
 	adlib?: Adlib
+	rank: number
 	segmentExternalId: string
 }
 
@@ -61,6 +62,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 	protected readonly partId: string
 	protected readonly cue: CueDefinitionGraphic<GraphicPilot>
 	protected readonly adlib?: Adlib
+	protected readonly rank: number
 	protected readonly segmentExternalId: string
 
 	protected constructor(graphicProps: PilotGraphicProps) {
@@ -71,6 +73,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 		this.cue = graphicProps.parsedCue
 		this.partId = graphicProps.partId
 		this.adlib = graphicProps.adlib
+		this.rank = graphicProps.rank
 		this.segmentExternalId = graphicProps.segmentExternalId
 	}
 
@@ -93,7 +96,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			userData,
 			userDataManifest: {},
 			display: {
-				_rank: (this.adlib && this.adlib.rank) || 0,
+				_rank: (this.adlib && this.adlib.rank) || this.rank,
 				label: t(this.getTemplateName()),
 				sourceLayerId: SharedSourceLayer.PgmPilot,
 				outputLayerId: SharedOutputLayer.PGM,
@@ -142,7 +145,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 		pilotPiece.tags = [...(pilotPiece.tags ?? []), AdlibTags.ADLIB_FLOW_PRODUCER, AdlibTags.ADLIB_KOMMENTATOR]
 		return {
 			...pilotPiece,
-			_rank: rank ?? 0
+			_rank: rank ?? this.rank
 		}
 	}
 

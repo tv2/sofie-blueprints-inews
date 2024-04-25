@@ -19,6 +19,7 @@ describe('Find target pair', () => {
 			fields: {},
 			modified: 0,
 			segmentExternalId: '',
+			segmentRank: 0,
 			cues: [
 				literal<CueDefinitionUnpairedTarget>({
 					type: CueType.UNPAIRED_TARGET,
@@ -48,6 +49,7 @@ describe('Find target pair', () => {
 			fields: {},
 			modified: 0,
 			segmentExternalId: '',
+			segmentRank: 0,
 			cues: [
 				literal<CueDefinitionGraphic<GraphicPilot>>({
 					type: CueType.Graphic,
@@ -82,6 +84,7 @@ describe('Find target pair', () => {
 			fields: {},
 			modified: 0,
 			segmentExternalId: '',
+			segmentRank: 0,
 			cues: [
 				literal<CueDefinitionTelefon>({
 					type: CueType.Telefon,
@@ -110,6 +113,7 @@ describe('Find target pair', () => {
 			fields: {},
 			modified: 0,
 			segmentExternalId: '',
+			segmentRank: 0,
 			cues: [
 				literal<CueDefinitionTelefon>({
 					type: CueType.Telefon,
