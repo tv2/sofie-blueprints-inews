@@ -91,7 +91,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			segmentExternalId: this.segmentExternalId
 		}
 		return {
-			externalId: generateExternalId(this.core, userData),
+			externalId: `${this.segmentExternalId}_${generateExternalId(this.core, userData)}`,
 			actionId: AdlibActionType.SELECT_FULL_GRAFIK,
 			userData,
 			userDataManifest: {},
