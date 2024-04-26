@@ -37,6 +37,8 @@ import {
 	GraphicIsPilot
 } from './inewsConversion'
 
+const PART_RANK_FRACTION_FACTOR: number = 1000
+
 export interface Adlib {
 	rank: number
 }
@@ -440,7 +442,7 @@ export async function EvaluateCuesBase(
 }
 
 function getRankForPartDefinition(rank: number, partDefinition: PartDefinition): number {
-	return partDefinition.segmentRank + rank / 100
+	return partDefinition.segmentRank + rank / PART_RANK_FRACTION_FACTOR
 }
 
 export function SkipCue(
