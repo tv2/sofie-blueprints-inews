@@ -18,6 +18,7 @@ export function EvaluateCueGraphic(
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	partDefinition: PartDefinition,
+	rank: number,
 	adlib?: Adlib
 ): EvaluateCueResult {
 	const result = new EvaluateCueResult()
@@ -28,7 +29,7 @@ export function EvaluateCueGraphic(
 	if (GraphicIsInternal(parsedCue)) {
 		result.push(CreateInternalGraphic(context, partId, parsedCue, partDefinition, adlib))
 	} else if (GraphicIsPilot(parsedCue)) {
-		result.push(EvaluateCueGraphicPilot(context, partId, parsedCue, partDefinition.segmentExternalId, adlib))
+		result.push(EvaluateCueGraphicPilot(context, partId, parsedCue, partDefinition.segmentExternalId, rank, adlib))
 	}
 
 	return result

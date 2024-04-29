@@ -35,7 +35,8 @@ const dummyPart = literal<PartDefinitionKam>({
 	storyName: '',
 	fields: {},
 	modified: 0,
-	segmentExternalId: ''
+	segmentExternalId: '',
+	segmentRank: 0
 })
 
 function makeTestBundCue(infiniteMode: CueTime['infiniteMode']): CueDefinitionGraphic<GraphicInternal> {
@@ -108,6 +109,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.pieces).toEqual([
@@ -176,6 +178,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.adlibPieces).toEqual([
@@ -280,6 +283,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.adlibPieces).toEqual([
@@ -386,6 +390,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.pieces).toEqual([
@@ -443,6 +448,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.pieces.length).toBe(1)
@@ -470,6 +476,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.pieces.length).toBe(1)
@@ -497,6 +504,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 
@@ -538,6 +546,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.pieces).toEqual([
@@ -607,6 +616,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.pieces).toEqual([
@@ -675,6 +685,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		expect(result.adlibPieces).toEqual([
@@ -783,6 +794,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 
@@ -819,6 +831,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 
@@ -850,6 +863,7 @@ describe('grafik piece', () => {
 			partId,
 			cue,
 			dummyPart,
+			0,
 			cue.adlib ? { rank: 0 } : undefined
 		)
 		const piece = result.pieces[0]

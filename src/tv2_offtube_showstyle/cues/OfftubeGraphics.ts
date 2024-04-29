@@ -17,6 +17,7 @@ export function OfftubeEvaluateGrafikCaspar(
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	partDefinition: PartDefinition,
+	rank: number,
 	adlib?: Adlib
 ): EvaluateCueResult {
 	if (GraphicIsPilot(parsedCue)) {
@@ -25,6 +26,7 @@ export function OfftubeEvaluateGrafikCaspar(
 			partId,
 			parsedCue,
 			adlib,
+			rank,
 			segmentExternalId: partDefinition.segmentExternalId
 		})
 	} else if (GraphicIsInternal(parsedCue)) {

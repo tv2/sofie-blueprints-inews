@@ -94,11 +94,12 @@ export async function EvaluateAdLib(
 			segmentExternalId: partDefinition.segmentExternalId
 		}
 		actions.push({
-			externalId: generateExternalId(context.core, userData),
+			externalId: `${partDefinition.segmentExternalId}_${generateExternalId(context.core, userData)}`,
 			actionId: AdlibActionType.SELECT_DVE,
 			userData,
 			userDataManifest: {},
 			display: {
+				_rank: rank,
 				sourceLayerId: SourceLayer.PgmDVE,
 				outputLayerId: SharedOutputLayer.PGM,
 				uniquenessId: getUniquenessIdDVE(cueDVE),

@@ -12,6 +12,7 @@ export function EvaluateCueGraphicPilot(
 	partId: string,
 	parsedCue: CueDefinitionGraphic<GraphicPilot>,
 	segmentExternalId: string,
+	rank: number,
 	adlib?: Adlib
 ): EvaluateCueResult {
 	return CreatePilotGraphic({
@@ -19,6 +20,7 @@ export function EvaluateCueGraphicPilot(
 		partId,
 		parsedCue,
 		adlib,
-		segmentExternalId
+		segmentExternalId,
+		rank
 	})
 }
