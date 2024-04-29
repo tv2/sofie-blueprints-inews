@@ -27,6 +27,7 @@ const SOURCE_DEFINITION_KAM_2: SourceDefinitionKam = {
 const partDefinitionTest1: PartDefinitionKam = {
 	type: PartType.Kam,
 	externalId: 'test-part',
+	segmentRank: 1,
 	rawType: 'KAM 1',
 	sourceDefinition: SOURCE_DEFINITION_KAM_1,
 	fields: {},
@@ -169,6 +170,7 @@ const partDefinitionTest1: PartDefinitionKam = {
 const partDefinitionTest2: PartDefinitionKam = {
 	type: PartType.Kam,
 	externalId: 'test-part',
+	segmentRank: 1,
 	rawType: 'KAM 1',
 	sourceDefinition: SOURCE_DEFINITION_KAM_1,
 	fields: {},

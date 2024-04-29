@@ -23,7 +23,8 @@ describe('addScript', () => {
 			fields: {},
 			modified: 0,
 			storyName: '',
-			segmentExternalId: '00000000001'
+			segmentExternalId: '00000000001',
+			segmentRank: 0
 		})
 		const result: IBlueprintPiece[] = [
 			literal<IBlueprintPiece>({

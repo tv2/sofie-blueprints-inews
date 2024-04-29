@@ -17,7 +17,7 @@ export function CreatePilotGraphic(pilotGraphicProps: PilotGraphicProps): Evalua
 	const generator = PilotGraphicGenerator.createPilotGraphicGenerator(pilotGraphicProps)
 
 	if (IsTargetingOVL(parsedCue.target) && adlib) {
-		result.adlibPieces.push(generator.createAdlibPiece())
+		result.adlibPieces.push(generator.createAdlibPiece(adlib.rank))
 	} else {
 		result.pieces.push(generator.createPiece())
 	}

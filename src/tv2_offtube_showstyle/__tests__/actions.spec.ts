@@ -165,7 +165,8 @@ const selectServerClipAction = literal<ActionSelectServerClip>({
 		},
 		modified: 0,
 		storyName: SEGMENT_ID,
-		segmentExternalId: SEGMENT_ID_EXTERNAL
+		segmentExternalId: SEGMENT_ID_EXTERNAL,
+		segmentRank: 0
 	}),
 	adLibPix: false
 })
@@ -188,7 +189,8 @@ const selectVOClipAction = literal<ActionSelectServerClip>({
 		},
 		modified: 0,
 		storyName: SEGMENT_ID,
-		segmentExternalId: SEGMENT_ID_EXTERNAL
+		segmentExternalId: SEGMENT_ID_EXTERNAL,
+		segmentRank: 0
 	}),
 	adLibPix: false
 })

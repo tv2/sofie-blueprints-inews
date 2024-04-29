@@ -43,7 +43,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartGrafik(context, partDefintion, 0)
@@ -79,7 +80,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		CreatePartGrafik(context, partDefinition, 0)
@@ -115,7 +117,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartGrafik(context, partDefinition, 0)
@@ -178,7 +181,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartGrafik(context, partDefinition, 0)
@@ -234,7 +238,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartGrafik(context, partDefinition, 0)
@@ -287,7 +292,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartGrafik(context, partDefinition, 0)
@@ -350,7 +356,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartGrafik(context, partDefinition, 0)
@@ -388,7 +395,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartUnknown(context, partDefinition, 0)
@@ -422,7 +430,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartUnknown(context, partDefinition, 0)
@@ -452,7 +461,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartUnknown(context, partDefinition, 0)
@@ -502,7 +512,8 @@ describe('Graphics', () => {
 			script: '',
 			fields: {},
 			modified: 0,
-			storyName: ''
+			storyName: '',
+			segmentRank: 0
 		})
 
 		const result = await CreatePartUnknown(context, partDefinition, 0)

@@ -17,7 +17,13 @@ export function CreateInternalGraphic(
 	adlib?: Adlib
 ): EvaluateCueResult {
 	const result = new EvaluateCueResult()
-	const internalGraphic = InternalGraphic.createInternalGraphicGenerator({ context, parsedCue, partId, partDefinition })
+	const internalGraphic = InternalGraphic.createInternalGraphicGenerator({
+		context,
+		parsedCue,
+		partId,
+		partDefinition,
+		rank: adlib?.rank ?? 0
+	})
 
 	if (!internalGraphic.templateName || !internalGraphic.templateName.length) {
 		context.core.notifyUserWarning(`No valid template found for ${parsedCue.graphic.template}`)
