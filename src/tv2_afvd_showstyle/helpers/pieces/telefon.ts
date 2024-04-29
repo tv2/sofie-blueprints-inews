@@ -22,7 +22,7 @@ export function EvaluateTelefon(
 		return new EvaluateCueResult()
 	}
 
-	const result = EvaluateCueGraphic(context, partId, parsedCue.graphic, partDefinition, adlib)
+	const result = EvaluateCueGraphic(context, partId, parsedCue.graphic, partDefinition, adlib?.rank ?? 0, adlib)
 
 	if (!adlib && result.pieces.length) {
 		const graphicPiece = findTelefonPiece(result)

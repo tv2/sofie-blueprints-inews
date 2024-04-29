@@ -36,7 +36,8 @@ const dummyPart = literal<PartDefinitionKam>({
 	storyName: '',
 	fields: {},
 	modified: 0,
-	segmentExternalId: ''
+	segmentExternalId: '',
+	segmentRank: 0
 })
 
 describe('telefon', () => {

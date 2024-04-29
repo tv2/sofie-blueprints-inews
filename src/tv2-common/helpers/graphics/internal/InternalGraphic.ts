@@ -47,6 +47,7 @@ export abstract class InternalGraphic extends Graphic {
 		this.outputLayerId = IsTargetingWall(this.engine) ? SharedOutputLayer.SEC : SharedOutputLayer.OVERLAY
 		this.partId = graphicProps.partId
 		this.content = this.getContent()
+		this.rank = graphicProps.rank
 	}
 
 	public createCommentatorAdlib(): IBlueprintAdLibPiece<PieceMetaData> {
@@ -145,4 +146,5 @@ export interface InternalGraphicProps {
 	parsedCue: CueDefinitionGraphic<GraphicInternal>
 	partId?: string
 	partDefinition?: PartDefinition
+	rank: number
 }

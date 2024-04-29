@@ -1908,7 +1908,8 @@ async function executeActionSelectFull<
 		partId: externalId,
 		parsedCue: cue,
 		segmentExternalId: userData.segmentExternalId,
-		adlib: { rank: 0 }
+		adlib: { rank: 0 },
+		rank: 0
 	})
 
 	const fullPiece = generator.createPiece()

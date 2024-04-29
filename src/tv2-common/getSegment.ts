@@ -123,6 +123,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		config,
 		ingestSegment.externalId,
 		ingestSegment.name,
+		ingestSegment.rank,
 		iNewsStory.body,
 		iNewsStory.cues,
 		iNewsStory.fields,

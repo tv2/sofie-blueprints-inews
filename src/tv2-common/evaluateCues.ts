@@ -37,6 +37,8 @@ import {
 	GraphicIsPilot
 } from './inewsConversion'
 
+const PART_RANK_FRACTION_FACTOR: number = 1000
+
 export interface Adlib {
 	rank: number
 }
@@ -59,6 +61,7 @@ export interface EvaluateCuesShowstyleOptions {
 		partId: string,
 		parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 		partDefinition: PartDefinition,
+		rank: number,
 		adlib?: Adlib
 	) => EvaluateCueResult
 	EvaluateCueBackgroundLoop?: (
@@ -192,13 +195,13 @@ export async function EvaluateCuesBase(
 	partDefinition: PartDefinition,
 	options: EvaluateCuesOptions
 ) {
-	let adLibRank = 0
+	let adLibRank = 1
 	const result = new EvaluateCueResult()
 
 	for (const cue of cues) {
 		if (cue && !SkipCue(cue, options.selectedCueTypes, options.excludeAdlibs, options.adlibsOnly)) {
 			const shouldAdlib = !!(options.adlib || cue.adlib)
-			const adlib = shouldAdlib ? { rank: adLibRank } : undefined
+			const adlib = shouldAdlib ? { rank: getRankForPartDefinition(adLibRank, partDefinition) } : undefined
 
 			switch (cue.type) {
 				case CueType.Graphic:
@@ -213,7 +216,14 @@ export async function EvaluateCuesBase(
 							break
 						}
 						result.push(
-							showStyleOptions.EvaluateCueGraphic(context, partDefinition.externalId, cue, partDefinition, adlib)
+							showStyleOptions.EvaluateCueGraphic(
+								context,
+								partDefinition.externalId,
+								cue,
+								partDefinition,
+								getRankForPartDefinition(adLibRank, partDefinition),
+								adlib
+							)
 						)
 					}
 					break
@@ -227,17 +237,33 @@ export async function EvaluateCuesBase(
 								cue,
 								partDefinition,
 								shouldAdlib,
-								adLibRank
+								getRankForPartDefinition(adLibRank, partDefinition)
 							)
 						)
 					}
 					break
 				case CueType.DVE:
 					if (showStyleOptions.EvaluateCueDVE) {
-						showStyleOptions.EvaluateCueDVE(context, pieces, actions, partDefinition, cue, shouldAdlib, adLibRank)
+						showStyleOptions.EvaluateCueDVE(
+							context,
+							pieces,
+							actions,
+							partDefinition,
+							cue,
+							shouldAdlib,
+							getRankForPartDefinition(adLibRank, partDefinition)
+						)
 						// Always make an adlib for DVEs
 						if (!shouldAdlib) {
-							showStyleOptions.EvaluateCueDVE(context, pieces, actions, partDefinition, cue, true, adLibRank)
+							showStyleOptions.EvaluateCueDVE(
+								context,
+								pieces,
+								actions,
+								partDefinition,
+								cue,
+								true,
+								getRankForPartDefinition(adLibRank, partDefinition)
+							)
 						}
 					}
 					break
@@ -249,7 +275,7 @@ export async function EvaluateCuesBase(
 							mediaSubscriptions,
 							cue,
 							partDefinition,
-							adLibRank
+							getRankForPartDefinition(adLibRank, partDefinition)
 						)
 					}
 					break
@@ -262,7 +288,15 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.Jingle:
 					if (showStyleOptions.EvaluateCueJingle) {
-						showStyleOptions.EvaluateCueJingle(context, pieces, actions, cue, partDefinition, shouldAdlib, adLibRank)
+						showStyleOptions.EvaluateCueJingle(
+							context,
+							pieces,
+							actions,
+							cue,
+							partDefinition,
+							shouldAdlib,
+							getRankForPartDefinition(adLibRank, partDefinition)
+						)
 					}
 					break
 				case CueType.LYD:
@@ -275,14 +309,20 @@ export async function EvaluateCuesBase(
 							cue,
 							partDefinition,
 							shouldAdlib,
-							adLibRank
+							getRankForPartDefinition(adLibRank, partDefinition)
 						)
 					}
 					break
 				case CueType.GraphicDesign:
 					if (showStyleOptions.EvaluateCueGraphicDesign) {
 						result.push(
-							showStyleOptions.EvaluateCueGraphicDesign(context, partDefinition.externalId, cue, shouldAdlib, adLibRank)
+							showStyleOptions.EvaluateCueGraphicDesign(
+								context,
+								partDefinition.externalId,
+								cue,
+								shouldAdlib,
+								getRankForPartDefinition(adLibRank, partDefinition)
+							)
 						)
 					}
 					break
@@ -312,7 +352,7 @@ export async function EvaluateCuesBase(
 								partDefinition.externalId,
 								cue,
 								shouldAdlib,
-								adLibRank
+								getRankForPartDefinition(adLibRank, partDefinition)
 							)
 						)
 					}
@@ -399,6 +439,10 @@ export async function EvaluateCuesBase(
 			})
 		}
 	})
+}
+
+function getRankForPartDefinition(rank: number, partDefinition: PartDefinition): number {
+	return partDefinition.segmentRank + rank / PART_RANK_FRACTION_FACTOR
 }
 
 export function SkipCue(

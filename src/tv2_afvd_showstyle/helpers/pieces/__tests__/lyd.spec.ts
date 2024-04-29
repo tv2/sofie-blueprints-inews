@@ -20,7 +20,8 @@ const MOCK_PART = literal<PartDefinitionKam>({
 	storyName: '',
 	fields: {},
 	modified: 0,
-	segmentExternalId: ''
+	segmentExternalId: '',
+	segmentRank: 0
 })
 
 describe('lyd', () => {
