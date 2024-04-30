@@ -10,7 +10,7 @@ function getSisyfosLayers(configName: string, id: string): string[] {
 			return []
 		case 'SourcesRM':
 		case 'SourcesFeed':
-			return ['sisyfos_source_live_' + id]
+			return ['sisyfos_source_live_' + id.match(/\d+/)]
 		case 'SourcesDelayedPlayback':
 			return ['sisyfos_source_' + id.toLowerCase().replace(/ /g, '_')]
 	}
@@ -104,16 +104,16 @@ export const defaultStudioConfig: StudioConfig = {
 	// TODO: prepareConfig is legacy code, refactor when refactoring FindSourceInfo
 	SourcesRM: prepareConfig(
 		[
-			{ id: '1', switcherSource: 1 },
-			{ id: '2', switcherSource: 2 },
-			{ id: '3', switcherSource: 3 },
-			{ id: '4', switcherSource: 4 },
-			{ id: '5', switcherSource: 5 },
-			{ id: '6', switcherSource: 6 },
-			{ id: '7', switcherSource: 7 },
-			{ id: '8', switcherSource: 8 },
-			{ id: '9', switcherSource: 9 },
-			{ id: '10', switcherSource: 10 }
+			{ id: 'LIVE 1', switcherSource: 1 },
+			{ id: 'LIVE 2', switcherSource: 2 },
+			{ id: 'LIVE 3', switcherSource: 3 },
+			{ id: 'LIVE 4', switcherSource: 4 },
+			{ id: 'LIVE 5', switcherSource: 5 },
+			{ id: 'LIVE 6', switcherSource: 6 },
+			{ id: 'LIVE 7', switcherSource: 7 },
+			{ id: 'LIVE 8', switcherSource: 8 },
+			{ id: 'LIVE 9', switcherSource: 9 },
+			{ id: 'LIVE 10', switcherSource: 10 }
 		],
 		'SourcesRM',
 		false,
@@ -121,16 +121,16 @@ export const defaultStudioConfig: StudioConfig = {
 	),
 	SourcesFeed: prepareConfig(
 		[
-			{ id: '1', switcherSource: 1 },
-			{ id: '2', switcherSource: 2 },
-			{ id: '3', switcherSource: 3 },
-			{ id: '4', switcherSource: 4 },
-			{ id: '5', switcherSource: 5 },
-			{ id: '6', switcherSource: 6 },
-			{ id: '7', switcherSource: 7 },
-			{ id: '8', switcherSource: 8 },
-			{ id: '9', switcherSource: 9 },
-			{ id: '10', switcherSource: 10 }
+			{ id: 'FEED 1', switcherSource: 1 },
+			{ id: 'FEED 2', switcherSource: 2 },
+			{ id: 'FEED 3', switcherSource: 3 },
+			{ id: 'FEED 4', switcherSource: 4 },
+			{ id: 'FEED 5', switcherSource: 5 },
+			{ id: 'FEED 6', switcherSource: 6 },
+			{ id: 'FEED 7', switcherSource: 7 },
+			{ id: 'FEED 8', switcherSource: 8 },
+			{ id: 'FEED 9', switcherSource: 9 },
+			{ id: 'FEED 10', switcherSource: 10 }
 		],
 		'SourcesFeed',
 		false,
