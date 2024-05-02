@@ -701,7 +701,7 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		return {
 			sourceType: SourceType.REMOTE,
 			remoteType: variant,
-			id,
+			id: `${variant} ${id}`, // The 'id' field needs to match the 'Name' field of the SourceMappingConfiguration.
 			raw: strippedTypeStr,
 			name: `${variant} ${id}`
 		}
