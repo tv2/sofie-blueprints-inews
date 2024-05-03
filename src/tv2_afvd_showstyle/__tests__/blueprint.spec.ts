@@ -908,7 +908,7 @@ describe('AFVD Blueprint', () => {
 			studioConfig: {
 				SourcesRM: [
 					{
-						SourceName: '1',
+						SourceName: 'LIVE 1',
 						SwitcherSource: 10,
 						SisyfosLayers: [],
 						StudioMics: true,
@@ -932,7 +932,7 @@ describe('AFVD Blueprint', () => {
 			studioConfig: {
 				SourcesRM: [
 					{
-						SourceName: '1',
+						SourceName: 'LIVE 1',
 						SwitcherSource: 10,
 						SisyfosLayers: [],
 						StudioMics: false,

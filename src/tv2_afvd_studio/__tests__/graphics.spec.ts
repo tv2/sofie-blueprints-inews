@@ -334,7 +334,13 @@ describe('Graphics', () => {
 				routing: {
 					type: CueType.Routing,
 					target: 'TLF',
-					INP1: { sourceType: SourceType.REMOTE, id: '1', name: 'LIVE 1', raw: 'LIVE 1', remoteType: RemoteType.LIVE },
+					INP1: {
+						sourceType: SourceType.REMOTE,
+						id: 'LIVE 1',
+						name: 'LIVE 1',
+						raw: 'LIVE 1',
+						remoteType: RemoteType.LIVE
+					},
 					iNewsCommand: ''
 				},
 				graphic: {

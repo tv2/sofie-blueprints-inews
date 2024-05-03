@@ -50,14 +50,14 @@ const SOURCE_DEFINITION_KAM_2: SourceDefinitionKam = {
 const SOURCE_DEFINITION_LIVE_1: SourceDefinitionRemote = {
 	sourceType: SourceType.REMOTE,
 	remoteType: RemoteType.LIVE,
-	id: '1',
+	id: 'LIVE 1',
 	name: 'LIVE 1',
 	raw: 'LIVE 1'
 }
 const SOURCE_DEFINITION_LIVE_2: SourceDefinitionRemote = {
 	sourceType: SourceType.REMOTE,
 	remoteType: RemoteType.LIVE,
-	id: '2',
+	id: 'LIVE 2',
 	name: 'LIVE 2',
 	raw: 'LIVE 2'
 }
