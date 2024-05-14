@@ -406,7 +406,8 @@ function getSegmentInvalidity(
 	parts: BlueprintResultPart[]
 ): SegmentInvalidity | undefined {
 	const doesSegmentHaveMiniShelf: boolean = !!segment.metaData?.miniShelfVideoClipFile
-	if (doesSegmentHaveMiniShelf && parts.length > 0) {
+	const doesSegmentHaveValidParts: boolean = parts.length > 0 && parts.some((part) => part.pieces.length > 0)
+	if (doesSegmentHaveMiniShelf && doesSegmentHaveValidParts) {
 		return {
 			reason: 'MiniShelf Segments are not allowed to also have Parts.'
 		}
