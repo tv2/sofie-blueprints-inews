@@ -84,6 +84,14 @@ export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyle
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 }
 
+interface Segment<T> extends IBlueprintSegment<T> {
+	invalidity?: SegmentInvalidity
+}
+
+interface SegmentInvalidity {
+	reason: string
+}
+
 interface SegmentMetadata {
 	miniShelfVideoClipFile?: string
 }
@@ -97,7 +105,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 
 	const segmentPayload = ingestSegment.payload as INewsPayload | undefined
 	const iNewsStory = segmentPayload?.iNewsStory
-	const segment: IBlueprintSegment<SegmentMetadata> = {
+	const segment: Segment<SegmentMetadata> = {
 		name: ingestSegment.name || '',
 		metaData: {},
 		showShelf: false,
@@ -385,8 +393,24 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 		}
 	})
 
+	segment.invalidity = getSegmentInvalidity(segment, blueprintParts)
+
 	return {
 		segment,
 		parts: blueprintParts
 	}
+}
+
+function getSegmentInvalidity(
+	segment: Segment<SegmentMetadata>,
+	parts: BlueprintResultPart[]
+): SegmentInvalidity | undefined {
+	const doesSegmentHaveMiniShelf: boolean = !!segment.metaData?.miniShelfVideoClipFile
+	const doesSegmentHaveValidParts: boolean = parts.length > 0 && parts.some((part) => part.pieces.length > 0)
+	if (doesSegmentHaveMiniShelf && doesSegmentHaveValidParts) {
+		return {
+			reason: 'MiniShelf Segments are not allowed to also have Parts.'
+		}
+	}
+	return undefined
 }
