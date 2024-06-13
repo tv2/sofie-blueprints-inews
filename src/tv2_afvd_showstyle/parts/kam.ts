@@ -16,6 +16,7 @@ import {
 	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	literal,
+	Part,
 	PartDefinitionKam,
 	PieceMetaData,
 	SegmentContext,
@@ -37,7 +38,7 @@ export async function CreatePartKam(
 ): Promise<BlueprintResultPart> {
 	const partKamBase = CreatePartKamBase(context, partDefinition, totalWords)
 
-	let part = partKamBase.part.part
+	let part: Part = partKamBase.part.part
 	const partTime = partKamBase.duration
 
 	const adLibPieces: IBlueprintAdLibPiece[] = []
@@ -80,7 +81,9 @@ export async function CreatePartKam(
 		const sourceInfoCam = findSourceInfo(context.config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
 			context.core.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
-			return CreatePartInvalid(partDefinition)
+			return CreatePartInvalid(partDefinition, {
+				reason: `No configuration found for the camera source '${partDefinition.rawType}'.`
+			})
 		}
 		const switcherInput = sourceInfoCam.port
 
@@ -136,6 +139,7 @@ export async function CreatePartKam(
 
 	if (pieces.length === 0) {
 		part.invalid = true
+		part.invalidity = { reason: 'The part has no pieces.' }
 	}
 
 	return {

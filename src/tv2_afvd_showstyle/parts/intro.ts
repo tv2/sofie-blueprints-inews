@@ -3,7 +3,6 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece
 } from 'blueprints-integration'
 import {
@@ -11,6 +10,7 @@ import {
 	CreatePartInvalid,
 	CueDefinitionJingle,
 	GetJinglePartProperties,
+	Part,
 	PartDefinition,
 	PartTime,
 	ShowStyleContext
@@ -28,13 +28,12 @@ export async function CreatePartIntro(
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 
 	const jingleCue = partDefinition.cues.find((cue) => {
-		const parsedCue = cue
-		return parsedCue.type === CueType.Jingle
+		return cue.type === CueType.Jingle
 	})
 
 	if (!jingleCue) {
 		context.core.notifyUserWarning(`Intro must contain a jingle`)
-		return CreatePartInvalid(partDefinition)
+		return CreatePartInvalid(partDefinition, { reason: 'Intro parts must contain a jingle.' })
 	}
 
 	const parsedJingle = jingleCue as CueDefinitionJingle
@@ -43,18 +42,20 @@ export async function CreatePartIntro(
 		jngl.BreakerName ? jngl.BreakerName.toString().toUpperCase() === parsedJingle.clip.toString().toUpperCase() : false
 	)
 	if (!jingle) {
-		context.core.notifyUserWarning(`Jingle ${parsedJingle.clip} is not configured`)
-		return CreatePartInvalid(partDefinition)
+		context.core.notifyUserWarning(`Jingle ${parsedJingle.clip} is not configured.`)
+		return CreatePartInvalid(partDefinition, {
+			reason: `No configuration found for the jingle '${parsedJingle.clip}'.`
+		})
 	}
 
 	const overlapFrames = jingle.EndAlpha
 
 	if (overlapFrames === undefined) {
 		context.core.notifyUserWarning(`Jingle ${parsedJingle.clip} does not have an out-duration set.`)
-		return CreatePartInvalid(partDefinition)
+		return CreatePartInvalid(partDefinition, { reason: `No out-duration set for the jingle '${parsedJingle.clip}'.` })
 	}
 
-	let part: IBlueprintPart = {
+	let part: Part = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {}
@@ -89,6 +90,7 @@ export async function CreatePartIntro(
 
 	if (pieces.length === 0) {
 		part.invalid = true
+		part.invalidity = { reason: 'The part has no pieces.' }
 	}
 
 	return {

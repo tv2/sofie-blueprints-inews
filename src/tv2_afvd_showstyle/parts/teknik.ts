@@ -3,10 +3,9 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
+import { AddScript, Part, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -17,7 +16,7 @@ export async function CreatePartTeknik(
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
-	const part: IBlueprintPart = {
+	const part: Part = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {}
@@ -45,6 +44,7 @@ export async function CreatePartTeknik(
 
 	if (pieces.length === 0) {
 		part.invalid = true
+		part.invalidity = { reason: 'The part has no pieces.' }
 	}
 
 	return {

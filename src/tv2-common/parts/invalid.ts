@@ -1,12 +1,22 @@
 import { BlueprintResultPart, IBlueprintPart } from 'blueprints-integration'
 import { PartDefinition } from 'tv2-common'
+import { Invalidity } from '../types/invalidity'
 
-export function CreatePartInvalid(ingestPart: PartDefinition, externalIdSuffix?: string): BlueprintResultPart {
-	const part: IBlueprintPart = {
+export interface Part<T = unknown> extends IBlueprintPart<T> {
+	invalidity?: Invalidity
+}
+
+export function CreatePartInvalid(
+	ingestPart: PartDefinition,
+	invalidity: Invalidity,
+	externalIdSuffix?: string
+): BlueprintResultPart {
+	const part: Part = {
 		externalId: ingestPart.externalId + (externalIdSuffix ? `_${externalIdSuffix}` : ''),
 		title: ingestPart.rawType || 'Unknown',
 		metaData: {},
-		invalid: true
+		invalid: true,
+		invalidity
 	}
 
 	return {

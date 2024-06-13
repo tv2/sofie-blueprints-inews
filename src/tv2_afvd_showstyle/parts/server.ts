@@ -1,5 +1,5 @@
 import { BlueprintResultPart, HackPartMediaObjectSubscription, IBlueprintActionManifest } from 'blueprints-integration'
-import { AddScript, CreatePartServerBase, PartDefinition, SegmentContext, ServerPartProps } from 'tv2-common'
+import { AddScript, CreatePartServerBase, Part, PartDefinition, SegmentContext, ServerPartProps } from 'tv2-common'
 import { CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -28,7 +28,7 @@ export async function CreatePartServer(
 		return basePartProps.part
 	}
 
-	let part = basePartProps.part.part
+	let part: Part = basePartProps.part.part
 	const pieces = basePartProps.part.pieces
 	const adLibPieces = basePartProps.part.adLibPieces
 	const duration = basePartProps.duration
@@ -57,6 +57,7 @@ export async function CreatePartServer(
 
 	if (pieces.length === 0) {
 		part.invalid = true
+		part.invalidity = { reason: 'The part has no pieces.' }
 	}
 
 	return {

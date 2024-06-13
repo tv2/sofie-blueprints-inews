@@ -3,13 +3,13 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece
 } from 'blueprints-integration'
 import {
 	AddScript,
 	applyFullGraphicPropertiesToPart,
 	GraphicIsPilot,
+	Part,
 	PartDefinition,
 	PartTime,
 	ShowStyleContext
@@ -25,7 +25,7 @@ export async function CreatePartGrafik(
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
-	const part: IBlueprintPart = {
+	const part: Part = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {}
@@ -61,6 +61,7 @@ export async function CreatePartGrafik(
 
 	if (pieces.length === 0) {
 		part.invalid = true
+		part.invalidity = { reason: 'The part has no pieces.' }
 	}
 
 	return {

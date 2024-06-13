@@ -3,7 +3,6 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece,
 	PieceLifespan,
 	TimelineObjectCoreExt
@@ -14,6 +13,7 @@ import {
 	findSourceInfo,
 	GetSisyfosTimelineObjForReplay,
 	literal,
+	Part,
 	PartDefinitionEVS,
 	PartTime,
 	PieceMetaData,
@@ -39,7 +39,7 @@ export async function CreatePartEVS(
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 	const title = partDefinition.sourceDefinition.name
 
-	let part: IBlueprintPart = {
+	let part: Part = {
 		externalId: partDefinition.externalId,
 		title,
 		metaData: {},
@@ -55,7 +55,9 @@ export async function CreatePartEVS(
 
 	const sourceInfoReplay = findSourceInfo(context.config.sources, partDefinition.sourceDefinition)
 	if (sourceInfoReplay === undefined) {
-		return CreatePartInvalid(partDefinition)
+		return CreatePartInvalid(partDefinition, {
+			reason: `No configuration found for the replay source '${partDefinition.sourceDefinition.name}'.`
+		})
 	}
 	const switcherInput = sourceInfoReplay.port
 
@@ -94,6 +96,7 @@ export async function CreatePartEVS(
 
 	if (pieces.length === 0) {
 		part.invalid = true
+		part.invalidity = { reason: 'The part has no pieces.' }
 	}
 
 	return {
