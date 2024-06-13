@@ -1,10 +1,7 @@
-import { BlueprintResultPart, IBlueprintPart } from 'blueprints-integration'
+import { BlueprintResultPart } from 'blueprints-integration'
 import { PartDefinition } from 'tv2-common'
 import { Invalidity } from '../types/invalidity'
-
-export interface Part<T = unknown> extends IBlueprintPart<T> {
-	invalidity?: Invalidity
-}
+import { Part } from '../types/part'
 
 export function CreatePartInvalid(
 	ingestPart: PartDefinition,
