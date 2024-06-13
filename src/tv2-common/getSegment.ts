@@ -86,6 +86,7 @@ export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyle
 
 interface Segment<T> extends IBlueprintSegment<T> {
 	invalidity?: SegmentInvalidity
+	definesShowStyleVariant?: boolean
 }
 
 interface SegmentInvalidity {
@@ -124,6 +125,10 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 	} else {
 		segment.isHidden = false
 	}
+
+	segment.definesShowStyleVariant = iNewsStory.cues.some((cue) =>
+		cue ? cue[0].toLowerCase().includes('showstylevariant') : false
+	)
 
 	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
