@@ -97,6 +97,8 @@ interface SegmentMetadata {
 	miniShelfVideoClipFile?: string
 }
 
+const SHOW_STYLE_VARIANT_LOWER_CASE_CUE: string = 'sofie=showstylevariant'
+
 export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>(
 	context: SegmentContext<ShowStyleConfig>,
 	ingestSegment: IngestSegment,
@@ -127,7 +129,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 	}
 
 	segment.definesShowStyleVariant = iNewsStory.cues.some((cue) =>
-		cue ? cue[0].toLowerCase().includes('showstylevariant') : false
+		cue?.some((cueElement) => cueElement.toLowerCase().includes(SHOW_STYLE_VARIANT_LOWER_CASE_CUE))
 	)
 
 	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
