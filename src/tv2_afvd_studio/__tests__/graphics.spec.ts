@@ -191,7 +191,7 @@ describe('Graphics', () => {
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
 		expect(piece.outputLayerId).toBe(SharedOutputLayer.OVERLAY)
 		expect(piece.enable).toEqual({ start: 2000 })
-		expect(piece.prerollDuration).toBe(context.config.studio.VizPilotGraphics.PrerollDuration)
+		expect(piece.prerollDuration).toBe(0)
 		expect(piece.lifespan).toBe(PieceLifespan.OutOnRundownChange)
 		const content = piece.content!
 		const timeline = content.timelineObjects as TSR.TSRTimelineObj[]

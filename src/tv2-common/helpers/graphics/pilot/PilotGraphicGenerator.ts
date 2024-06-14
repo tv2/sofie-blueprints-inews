@@ -20,6 +20,7 @@ import {
 	GraphicPilot,
 	HtmlPilotGraphicGenerator,
 	IsTargetingFull,
+	IsTargetingOVL,
 	IsTargetingWall,
 	PieceMetaData,
 	ShowStyleContext,
@@ -192,9 +193,15 @@ export abstract class PilotGraphicGenerator extends Graphic {
 	}
 
 	protected getPrerollDuration(): number {
-		return this.config.studio.GraphicsType === 'HTML'
-			? this.config.studio.CasparPrerollDuration
-			: this.config.studio.VizPilotGraphics.PrerollDuration
+		if (this.config.studio.GraphicsType === 'HTML') {
+			return this.config.studio.CasparPrerollDuration
+		}
+
+		if (IsTargetingOVL(this.engine)) {
+			return 0
+		}
+
+		return this.config.studio.VizPilotGraphics.PrerollDuration
 	}
 
 	protected getTv2PieceType(): Tv2PieceType {
