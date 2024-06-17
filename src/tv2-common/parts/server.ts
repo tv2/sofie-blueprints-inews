@@ -68,7 +68,14 @@ export async function CreatePartServerBase<
 ): Promise<{ part: BlueprintResultPart; file: string; duration: number; invalid?: true }> {
 	if (isVideoIdMissing(partDefinition)) {
 		context.core.notifyUserWarning('Video ID not set!')
-		return { part: CreatePartInvalid(partDefinition), file: '', duration: 0, invalid: true }
+		return {
+			part: CreatePartInvalid(partDefinition, {
+				reason: `The part is missing a video id.`
+			}),
+			file: '',
+			duration: 0,
+			invalid: true
+		}
 	}
 
 	const file = getVideoId(partDefinition)

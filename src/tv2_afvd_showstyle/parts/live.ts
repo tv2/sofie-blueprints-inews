@@ -3,10 +3,9 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, CueDefinitionEkstern, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
+import { AddScript, CueDefinition, Part, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
 import { CueType } from 'tv2-constants'
 import { GalleryBlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -19,7 +18,7 @@ export async function CreatePartLive(
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
-	let part: IBlueprintPart = {
+	let part: Part = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.title || 'Ekstern',
 		metaData: {},
@@ -48,12 +47,8 @@ export async function CreatePartLive(
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions
 
-	const liveCue = partDefinition.cues.find((c) => c.type === CueType.Ekstern) as CueDefinitionEkstern
-	const livePiece = pieces.find((p) => p.sourceLayerId === SourceLayer.PgmLive)
-
-	if (pieces.length === 0 || !liveCue || !livePiece) {
-		part.invalid = true
-	}
+	part.invalidity = getInvalidityReasonForLivePart(partDefinition, pieces)
+	part.invalid = part.invalidity !== undefined
 
 	return {
 		part,
@@ -61,4 +56,25 @@ export async function CreatePartLive(
 		pieces,
 		actions
 	}
+}
+
+function getInvalidityReasonForLivePart(
+	partDefinition: PartDefinition,
+	pieces: IBlueprintPiece[]
+): Part['invalidity'] | undefined {
+	if (pieces.length === 0) {
+		return { reason: 'The part has no pieces.' }
+	}
+
+	const liveCue: CueDefinition | undefined = partDefinition.cues.find((c) => c.type === CueType.Ekstern)
+	if (!liveCue) {
+		return { reason: 'The part has no cues with a remote source.' }
+	}
+
+	const livePiece = pieces.find((p) => p.sourceLayerId === SourceLayer.PgmLive)
+	if (!livePiece) {
+		return { reason: 'The part has no pieces with a remote source.' }
+	}
+
+	return undefined
 }
