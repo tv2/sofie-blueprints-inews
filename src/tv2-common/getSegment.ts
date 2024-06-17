@@ -87,11 +87,14 @@ export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyle
 
 interface Segment<T> extends IBlueprintSegment<T> {
 	invalidity?: Invalidity
+	definesShowStyleVariant?: boolean
 }
 
 interface SegmentMetadata {
 	miniShelfVideoClipFile?: string
 }
+
+const SHOW_STYLE_VARIANT_LOWER_CASE_CUE: string = 'sofie=showstylevariant'
 
 export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>(
 	context: SegmentContext<ShowStyleConfig>,
@@ -121,6 +124,10 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 	} else {
 		segment.isHidden = false
 	}
+
+	segment.definesShowStyleVariant = iNewsStory.cues.some((cue) =>
+		cue?.some((cueElement) => cueElement.toLowerCase().includes(SHOW_STYLE_VARIANT_LOWER_CASE_CUE))
+	)
 
 	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
