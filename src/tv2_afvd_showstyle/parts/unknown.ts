@@ -2,7 +2,6 @@ import {
 	HackPartMediaObjectSubscription,
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
-	IBlueprintPart,
 	IBlueprintPiece
 } from 'blueprints-integration'
 import {
@@ -10,6 +9,7 @@ import {
 	applyFullGraphicPropertiesToPart,
 	GetJinglePartProperties,
 	GraphicIsPilot,
+	Part,
 	PartDefinition,
 	PartTime,
 	ShowStyleContext
@@ -28,7 +28,7 @@ export async function CreatePartUnknown(
 ) {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
 
-	let part: IBlueprintPart = {
+	let part: Part = {
 		externalId: partDefinition.externalId,
 		title: partDefinition.type + ' - ' + partDefinition.rawType,
 		metaData: {},
@@ -70,6 +70,7 @@ export async function CreatePartUnknown(
 
 	if (pieces.length === 0) {
 		part.invalid = true
+		part.invalidity = { reason: 'The part has no pieces.' }
 	}
 
 	part.hackListenToMediaObjectUpdates = mediaSubscriptions

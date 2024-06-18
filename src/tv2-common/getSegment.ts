@@ -25,6 +25,7 @@ import {
 	TimeFromINewsField
 } from './inewsConversion'
 import { CreatePartInvalid, ServerPartProps } from './parts'
+import { Invalidity } from './types/invalidity'
 
 export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyleConfig> {
 	CreatePartContinuity: (
@@ -85,16 +86,15 @@ export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyle
 }
 
 interface Segment<T> extends IBlueprintSegment<T> {
-	invalidity?: SegmentInvalidity
-}
-
-interface SegmentInvalidity {
-	reason: string
+	invalidity?: Invalidity
+	definesShowStyleVariant?: boolean
 }
 
 interface SegmentMetadata {
 	miniShelfVideoClipFile?: string
 }
+
+const SHOW_STYLE_VARIANT_LOWER_CASE_CUE: string = 'sofie=showstylevariant'
 
 export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>(
 	context: SegmentContext<ShowStyleConfig>,
@@ -124,6 +124,10 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 	} else {
 		segment.isHidden = false
 	}
+
+	segment.definesShowStyleVariant = iNewsStory.cues.some((cue) =>
+		cue?.some((cueElement) => cueElement.toLowerCase().includes(SHOW_STYLE_VARIANT_LOWER_CASE_CUE))
+	)
 
 	const totalTimeMs = TimeFromINewsField(iNewsStory.fields.totalTime) * 1000
 	let blueprintParts: BlueprintResultPart[] = []
@@ -172,7 +176,13 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 			(c) => c.type === CueType.UNPAIRED_TARGET && IsTargetingFull(c.target)
 		) as CueDefinitionUnpairedTarget[]
 		if (unpairedTargets.length) {
-			blueprintParts.push(CreatePartInvalid(part))
+			blueprintParts.push(
+				CreatePartInvalid(part, {
+					reason: `The part has one or more unpaired targets: ${unpairedTargets
+						.map((cue) => cue.iNewsCommand)
+						.join(', ')}`
+				})
+			)
 			unpairedTargets.forEach((cue) => {
 				context.core.notifyUserWarning(`No graphic found after ${cue.iNewsCommand} cue`)
 			})
@@ -401,10 +411,7 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 	}
 }
 
-function getSegmentInvalidity(
-	segment: Segment<SegmentMetadata>,
-	parts: BlueprintResultPart[]
-): SegmentInvalidity | undefined {
+function getSegmentInvalidity(segment: Segment<SegmentMetadata>, parts: BlueprintResultPart[]): Invalidity | undefined {
 	const doesSegmentHaveMiniShelf: boolean = !!segment.metaData?.miniShelfVideoClipFile
 	const doesSegmentHaveValidParts: boolean = parts.length > 0 && parts.some((part) => part.pieces.length > 0)
 	if (doesSegmentHaveMiniShelf && doesSegmentHaveValidParts) {

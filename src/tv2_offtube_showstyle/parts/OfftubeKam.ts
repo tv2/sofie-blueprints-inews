@@ -77,7 +77,9 @@ export async function OfftubeCreatePartKam(
 	} else {
 		const sourceInfoCam = findSourceInfo(context.config.sources, partDefinition.sourceDefinition)
 		if (sourceInfoCam === undefined) {
-			return CreatePartInvalid(partDefinition)
+			return CreatePartInvalid(partDefinition, {
+				reason: `No configuration found for the camera source '${partDefinition.rawType}'.`
+			})
 		}
 		const switcherInput = sourceInfoCam.port
 

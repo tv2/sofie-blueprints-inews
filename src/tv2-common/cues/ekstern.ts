@@ -1,14 +1,9 @@
-import {
-	IBlueprintPart,
-	PieceLifespan,
-	RemoteContent,
-	TimelineObjectCoreExt,
-	WithTimeline
-} from 'blueprints-integration'
+import { PieceLifespan, RemoteContent, TimelineObjectCoreExt, WithTimeline } from 'blueprints-integration'
 import {
 	CueDefinitionEkstern,
 	EvaluateCueResult,
 	literal,
+	Part,
 	PartDefinition,
 	ShowStyleContext,
 	TransitionStyle,
@@ -33,7 +28,7 @@ export function EvaluateEksternBase<
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
 	context: ShowStyleContext<ShowStyleConfig>,
-	part: IBlueprintPart,
+	part: Part,
 	partId: string,
 	parsedCue: CueDefinitionEkstern,
 	partDefinition: PartDefinition,
@@ -46,6 +41,7 @@ export function EvaluateEksternBase<
 	if (parsedCue.sourceDefinition.sourceType !== SourceType.REMOTE || sourceInfoEkstern === undefined) {
 		context.core.notifyUserWarning(`EKSTERN source is not valid: "${parsedCue.sourceDefinition.raw}"`)
 		part.invalid = true
+		part.invalidity = { reason: `No configuration found for the remote source '${parsedCue.sourceDefinition.raw}"'.` }
 		return result
 	}
 	const switcherInput = sourceInfoEkstern.port
