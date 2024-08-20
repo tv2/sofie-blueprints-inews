@@ -125,7 +125,7 @@ function testNotes(context: SegmentUserContextMock) {
 }
 
 describe('Primary Cue Transitions Without Config', () => {
-	it('Cuts by default for KAM', async () => {
+	it('Transition is undefined by default for KAM', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>KAM 1</pi><p>'
@@ -138,7 +138,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmCam)
 		const atemCutObj = getATEMMEObj(piece)
 
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds effekt to KAM', async () => {
@@ -156,7 +156,7 @@ describe('Primary Cue Transitions Without Config', () => {
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_2))
 
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds mix to KAM', async () => {
@@ -183,7 +183,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(11)
 	})
 
-	it('Cuts by default for EVS1', async () => {
+	it('Transition is undefined by default for EVS1', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS 1</pi><p>'
@@ -196,7 +196,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLocal)
 		const atemCutObj = getATEMMEObj(piece)
 
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds effekt to EVS1', async () => {
@@ -213,7 +213,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds mix to EVS1', async () => {
@@ -240,7 +240,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(15)
 	})
 
-	it('Cuts by default for EVS1VO', async () => {
+	it('Transition is undefined by default for EVS1VO', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>EVS1VO</pi><p>'
@@ -253,7 +253,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmLocal)
 		const atemCutObj = getATEMMEObj(piece)
 
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds effekt to EVS1VO', async () => {
@@ -270,7 +270,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds mix to EVS1VO', async () => {
@@ -297,7 +297,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(25)
 	})
 
-	it('Cuts by default for SERVER', async () => {
+	it('Transition is undefined by default for SERVER', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>SERVER</pi><p>'
@@ -310,7 +310,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmServer)
 		const atemCutObj = getATEMMEObj(piece)
 
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds effekt to SERVER', async () => {
@@ -327,7 +327,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_2))
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds mix to SERVER', async () => {
@@ -354,7 +354,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		expect(atemCutObj.content.me.transitionSettings?.mix?.rate).toBe(20)
 	})
 
-	it('Cuts by default for VO', async () => {
+	it('Transition is undefined by default for VO', async () => {
 		const ingestSegment = _.clone(templateSegment)
 
 		ingestSegment.payload.iNewsStory.body = '\r\n<p><pi>VO</pi><p>'
@@ -367,7 +367,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const piece = getPieceOnLayerFromPart(segment, SourceLayer.PgmVoiceOver)
 		const atemCutObj = getATEMMEObj(piece)
 
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds effekt to VO', async () => {
@@ -384,7 +384,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
-		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+		expect(atemCutObj.content.me.transition).toBe(undefined)
 	})
 
 	it('Adds mix to VO', async () => {

@@ -409,10 +409,10 @@ function getATEMMEObj(piece: IBlueprintPieceInstance): TSR.TimelineObjAtemME {
 	return atemObj!
 }
 
-function expectATEMToCut(piece: IBlueprintPieceInstance) {
+function expectUndefinedTransition(piece: IBlueprintPieceInstance): void {
 	const atemObj = getATEMMEObj(piece)
 
-	expect(atemObj.content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
+	expect(atemObj.content.me.transition).toBe(undefined)
 }
 
 function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
@@ -956,7 +956,7 @@ describe('Combination Actions', () => {
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
-		expectATEMToCut(camPiece!)
+		expectUndefinedTransition(camPiece!)
 
 		await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
 
@@ -999,7 +999,7 @@ describe('Combination Actions', () => {
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
-		expectATEMToCut(camPiece!)
+		expectUndefinedTransition(camPiece!)
 
 		await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
 
@@ -1042,7 +1042,7 @@ describe('Combination Actions', () => {
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
-		expectATEMToCut(camPiece!)
+		expectUndefinedTransition(camPiece!)
 
 		await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
 
@@ -1085,7 +1085,7 @@ describe('Combination Actions', () => {
 
 		validateNextPartExistsWithDuration(context, 0)
 		validateCameraPiece(camPiece)
-		expectATEMToCut(camPiece!)
+		expectUndefinedTransition(camPiece!)
 
 		await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, setMIX20AsTransition)
 
