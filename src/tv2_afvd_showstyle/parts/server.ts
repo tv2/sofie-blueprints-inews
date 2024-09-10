@@ -9,6 +9,7 @@ import { CreateEffektForpart } from './effekt'
 export async function CreatePartServer(
 	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
+	partIndex: number,
 	partProps: ServerPartProps
 ): Promise<BlueprintResultPart> {
 	const basePartProps = await CreatePartServerBase(context, partDefinition, partProps, {
@@ -50,6 +51,7 @@ export async function CreatePartServer(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{}
 	)
 

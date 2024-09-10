@@ -22,6 +22,7 @@ import { OfftubeSourceLayer } from '../layers'
 export async function CreatePartUnknown(
 	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
+	partIndex: number,
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
@@ -58,6 +59,7 @@ export async function CreatePartUnknown(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{
 			adlib: asAdlibs
 		}

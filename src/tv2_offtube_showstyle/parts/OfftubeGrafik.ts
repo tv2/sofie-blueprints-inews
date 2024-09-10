@@ -13,6 +13,7 @@ import { OfftubeSourceLayer } from '../layers'
 export async function OfftubeCreatePartGrafik(
 	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
+	partIndex: number,
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
@@ -42,6 +43,7 @@ export async function OfftubeCreatePartGrafik(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{
 			adlib: asAdlibs
 		}

@@ -35,52 +35,62 @@ export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyle
 	CreatePartUnknown: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinition,
+		partIndex: number,
 		totalWords: number,
 		asAdlibs?: boolean
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartIntro?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinition,
+		partIndex: number,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartKam?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionKam,
+		partIndex: number,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartServer?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinition,
+		partIndex: number,
 		partProps: ServerPartProps
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartTeknik?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionTeknik,
+		partIndex: number,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartGrafik?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionGrafik,
+		partIndex: number,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartEkstern?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionEkstern,
+		partIndex: number,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartTelefon?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionTelefon,
+		partIndex: number,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartDVE?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionDVE,
+		partIndex: number,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 	CreatePartEVS?: (
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionEVS,
+		partIndex: number,
 		totalWords: number
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
 }
@@ -161,23 +171,26 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 	const totalTime = TimeFromINewsField(iNewsStory.fields.totalTime)
 	const tapeTime = TimeFromINewsField(iNewsStory.fields.tapeTime)
 
-	for (const part of parsedParts) {
+	for (let partIndex = 0; partIndex < parsedParts.length; partIndex++) {
+		const partDefinition: PartDefinition = parsedParts[partIndex]
 		// Make orphaned secondary cues into adlibs
 		if (
-			GetNextPartCue(part, -1) === -1 &&
-			part.type === PartType.Unknown &&
-			part.cues.filter((cue) => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
+			GetNextPartCue(partDefinition, -1) === -1 &&
+			partDefinition.type === PartType.Unknown &&
+			partDefinition.cues.filter((cue) => cue.type === CueType.Jingle || cue.type === CueType.AdLib).length === 0
 		) {
-			blueprintParts.push(await showStyleOptions.CreatePartUnknown(context, part, totalWords, true))
+			blueprintParts.push(
+				await showStyleOptions.CreatePartUnknown(context, partDefinition, partIndex, totalWords, true)
+			)
 			continue
 		}
 
-		const unpairedTargets = part.cues.filter(
+		const unpairedTargets = partDefinition.cues.filter(
 			(c) => c.type === CueType.UNPAIRED_TARGET && IsTargetingFull(c.target)
 		) as CueDefinitionUnpairedTarget[]
 		if (unpairedTargets.length) {
 			blueprintParts.push(
-				CreatePartInvalid(part, {
+				CreatePartInvalid(partDefinition, {
 					reason: `The part has one or more unpaired targets: ${unpairedTargets
 						.map((cue) => cue.iNewsCommand)
 						.join(', ')}`
@@ -189,21 +202,21 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 			continue
 		}
 
-		switch (part.type) {
+		switch (partDefinition.type) {
 			case PartType.INTRO:
 				if (showStyleOptions.CreatePartIntro) {
-					blueprintParts.push(await showStyleOptions.CreatePartIntro(context, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartIntro(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			case PartType.Kam:
 				if (showStyleOptions.CreatePartKam) {
-					blueprintParts.push(await showStyleOptions.CreatePartKam(context, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartKam(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			case PartType.Server:
 				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						await showStyleOptions.CreatePartServer(context, part, {
+						await showStyleOptions.CreatePartServer(context, partDefinition, partIndex, {
 							voLayer: false,
 							voLevels: false,
 							totalTime,
@@ -216,18 +229,18 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 				break
 			case PartType.Teknik:
 				if (showStyleOptions.CreatePartTeknik) {
-					blueprintParts.push(await showStyleOptions.CreatePartTeknik(context, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartTeknik(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			case PartType.Grafik:
 				if (showStyleOptions.CreatePartGrafik) {
-					blueprintParts.push(await showStyleOptions.CreatePartGrafik(context, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartGrafik(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			case PartType.VO:
 				if (showStyleOptions.CreatePartServer) {
 					blueprintParts.push(
-						await showStyleOptions.CreatePartServer(context, part, {
+						await showStyleOptions.CreatePartServer(context, partDefinition, partIndex, {
 							voLayer: true,
 							voLevels: true,
 							totalTime,
@@ -240,35 +253,35 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 				break
 			case PartType.DVE:
 				if (showStyleOptions.CreatePartDVE) {
-					blueprintParts.push(await showStyleOptions.CreatePartDVE(context, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartDVE(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			case PartType.REMOTE:
 				if (showStyleOptions.CreatePartEkstern) {
-					blueprintParts.push(await showStyleOptions.CreatePartEkstern(context, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartEkstern(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			case PartType.Telefon:
 				if (showStyleOptions.CreatePartTelefon) {
-					blueprintParts.push(await showStyleOptions.CreatePartTelefon(context, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartTelefon(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			case PartType.Unknown:
-				if (part.cues.length) {
-					blueprintParts.push(await showStyleOptions.CreatePartUnknown(context, part, totalWords))
+				if (partDefinition.cues.length) {
+					blueprintParts.push(await showStyleOptions.CreatePartUnknown(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			case PartType.EVS:
 				if (showStyleOptions.CreatePartEVS) {
-					blueprintParts.push(await showStyleOptions.CreatePartEVS(context, part, totalWords))
+					blueprintParts.push(await showStyleOptions.CreatePartEVS(context, partDefinition, partIndex, totalWords))
 				}
 				break
 			default:
-				assertUnreachable(part)
+				assertUnreachable(partDefinition)
 				break
 		}
 
-		if (part.cues.filter((cue) => cue.type === CueType.Jingle).length) {
+		if (partDefinition.cues.filter((cue) => cue.type === CueType.Jingle).length) {
 			if (blueprintParts[blueprintParts.length - 1]) {
 				const t = blueprintParts[blueprintParts.length - 1].part.expectedDuration
 				if (t) {

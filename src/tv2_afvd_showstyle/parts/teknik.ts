@@ -13,6 +13,7 @@ import { SourceLayer } from '../layers'
 export async function CreatePartTeknik(
 	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
+	partIndex: number,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
@@ -36,6 +37,7 @@ export async function CreatePartTeknik(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)

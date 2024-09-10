@@ -33,6 +33,7 @@ export async function OfftubeEvaluateCues(
 	mediaSubscriptions: HackPartMediaObjectSubscription[],
 	cues: CueDefinition[],
 	partDefinition: PartDefinition,
+	partIndex: number,
 	options: EvaluateCuesOptions
 ) {
 	await EvaluateCuesBase(
@@ -57,6 +58,7 @@ export async function OfftubeEvaluateCues(
 		mediaSubscriptions,
 		cues,
 		partDefinition,
-		options
+		options,
+		partIndex
 	)
 }
