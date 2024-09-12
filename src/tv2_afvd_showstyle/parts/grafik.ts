@@ -22,6 +22,7 @@ import { SourceLayer } from '../layers'
 export async function CreatePartGrafik(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
+	partIndex: number,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
@@ -51,6 +52,7 @@ export async function CreatePartGrafik(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{
 			isGrafikPart: true
 		}

@@ -34,6 +34,7 @@ import { CreateEffektForpart } from './effekt'
 export async function CreatePartKam(
 	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionKam,
+	partIndex: number,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partKamBase = CreatePartKamBase(context, partDefinition, totalWords)
@@ -131,6 +132,7 @@ export async function CreatePartKam(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)

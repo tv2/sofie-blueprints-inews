@@ -107,6 +107,8 @@ const STOPPABLE_GRAPHICS_LAYERS = [
 	SharedSourceLayer.PgmGraphicsTLF
 ]
 
+const EXECUTE_ACTION_PART_INDEX: number = 0
+
 export interface ActionExecutionSettings<BlueprintConfig extends TV2ShowStyleConfig = TV2ShowStyleConfig> {
 	EvaluateCues: (
 		context: ShowStyleContext<BlueprintConfig>,
@@ -117,6 +119,7 @@ export interface ActionExecutionSettings<BlueprintConfig extends TV2ShowStyleCon
 		mediaSubscriptions: HackPartMediaObjectSubscription[],
 		cues: CueDefinition[],
 		partDefinition: PartDefinition,
+		partIndex: number,
 		options: EvaluateCuesOptions
 	) => void
 	DVEGeneratorOptions: DVEOptions
@@ -471,10 +474,21 @@ async function executeActionSelectServerClip<
 		})
 	}
 
-	settings.EvaluateCues(context, basePart.part.part, grafikPieces, [], [], [], partDefinition.cues, partDefinition, {
-		excludeAdlibs: true,
-		selectedCueTypes: [CueType.Graphic]
-	})
+	settings.EvaluateCues(
+		context,
+		basePart.part.part,
+		grafikPieces,
+		[],
+		[],
+		[],
+		partDefinition.cues,
+		partDefinition,
+		EXECUTE_ACTION_PART_INDEX,
+		{
+			excludeAdlibs: true,
+			selectedCueTypes: [CueType.Graphic]
+		}
+	)
 
 	if (basePart.invalid || !activeServerPiece || !serverDataStore) {
 		context.core.notifyUserWarning(`Could not start server clip`)
