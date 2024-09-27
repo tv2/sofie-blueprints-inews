@@ -180,7 +180,8 @@ export function CreateEffektForPartInner<
 		}),
 		metaData: {
 			type: Tv2PieceType.JINGLE,
-			outputLayer: Tv2OutputLayer.JINGLE
+			outputLayer: Tv2OutputLayer.JINGLE,
+			sourceName: fileName
 		}
 	})
 
