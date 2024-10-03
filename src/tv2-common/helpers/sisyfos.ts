@@ -22,7 +22,7 @@ export function GetSisyfosTimelineObjForRemote(
 }
 
 export function GetSisyfosTimelineObjForReplay(config: TV2ShowStyleConfig, sourceInfo: SourceInfo, vo: boolean) {
-	return GetSisyfosTimelineObjForSource(config, sourceInfo, vo, true)
+	return GetSisyfosTimelineObjForSource(config, sourceInfo, vo, false)
 }
 
 export function GetSisyfosTimelineObjForServer(
