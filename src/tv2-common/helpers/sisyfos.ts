@@ -113,7 +113,7 @@ function GetSisyfosTimelineObjForSource(
 			})
 		)
 	})
-	if (sourceInfo.useStudioMics && (!enableStudioMicsOnlyForVo || vo)) {
+	if (vo || (sourceInfo.useStudioMics && !enableStudioMicsOnlyForVo)) {
 		result.push(getStudioMicsTimelineObj(config, timelineEnable))
 	}
 	return result
