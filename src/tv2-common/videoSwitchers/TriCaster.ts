@@ -74,7 +74,8 @@ export class TriCaster extends VideoSwitcherBase {
 			content: {
 				deviceType: TSR.DeviceType.TRICASTER,
 				type: TSR.TimelineContentTypeTriCaster.ME,
-				me: {
+				me: literal<TSR.TriCasterMixEffect & { type: 'PROGRAM' }>({
+					type: 'PROGRAM',
 					programInput: this.getInputName(content.input),
 					...(content.previewInput !== undefined && transition === 'cut'
 						? { previewInput: this.getInputName(content.previewInput) }
@@ -83,7 +84,7 @@ export class TriCaster extends VideoSwitcherBase {
 					transitionEffect: transition,
 					transitionDuration: this.getTransitionDuration(content.transition, content.transitionDuration),
 					keyers: content.keyers && this.getKeyers(content.keyers)
-				}
+				})
 			}
 		}
 		return result
@@ -134,14 +135,15 @@ export class TriCaster extends VideoSwitcherBase {
 			content: {
 				deviceType: TSR.DeviceType.TRICASTER,
 				type: TSR.TimelineContentTypeTriCaster.ME,
-				me: {
+				me: literal<TSR.TriCasterMixEffect & { type: 'DOWNSTREAM_KEYER' }>({
+					type: 'DOWNSTREAM_KEYER',
 					keyers: {
 						[`dsk${props.content.config.Number + 1}`]: {
 							onAir: props.content.onAir,
 							input: this.getInputName(props.content.config.Fill)
 						}
 					}
-				}
+				})
 			}
 		}
 	}
@@ -224,7 +226,8 @@ export class TriCaster extends VideoSwitcherBase {
 				content: {
 					deviceType: TSR.DeviceType.TRICASTER,
 					type: TSR.TimelineContentTypeTriCaster.ME,
-					me: literal<TSR.TriCasterMixEffectInEffectMode>({
+					me: literal<TSR.TriCasterMixEffectInEffectMode & { type: 'EFFECT_MODE' }>({
+						type: 'EFFECT_MODE',
 						transitionEffect: 7,
 						layers: this.generateDveBoxLayers(dveProps.content.boxes),
 						keyers: this.generateOverlayKeyer(dveProps.content.artFillSource)
