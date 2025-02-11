@@ -80,7 +80,7 @@ describe('ATEM', () => {
 			})
 		})
 
-		test('sets input when CUT transition provided', () => {
+		test('sets programInput when CUT transition provided', () => {
 			const atem = createTestee()
 			const timelineObject = atem.getMixEffectTimelineObject({
 				layer: SwitcherMixEffectLLayer.PROGRAM,
@@ -92,8 +92,7 @@ describe('ATEM', () => {
 			expect(timelineObject).toMatchObject({
 				content: {
 					me: {
-						input: 5,
-						transition: TSR.AtemTransitionStyle.CUT
+						programInput: 5
 					}
 				}
 			})

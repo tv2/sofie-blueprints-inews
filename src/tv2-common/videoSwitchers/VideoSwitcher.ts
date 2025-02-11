@@ -4,6 +4,7 @@ import {
 	AuxProps,
 	DskProps,
 	DveProps,
+	getTimeFromFrames,
 	MixEffectProps,
 	OnAirMixEffectProps,
 	SpecialInput,
@@ -53,6 +54,25 @@ export abstract class VideoSwitcherBase implements VideoSwitcher {
 				layer: this.uniformConfig.switcherLLayers.primaryMixEffect
 			})
 		)
+
+		// In order to set the preview we need to create another TimelineObject after the transition is over that sets program and preview.
+		if (properties.content.transitionDuration) {
+			// We need a slight delay before we tell the VideoMixer to set the next source, else we risk that the VideoMixer sets the next source in program.
+			const previewTimelineObjectDelay: number = 300
+			result.push(
+				this.getMixEffectTimelineObject({
+					...properties,
+					id: primaryId + Math.floor(Math.random() * 10000),
+					layer: this.uniformConfig.switcherLLayers.primaryMixEffect,
+					enable: { start: getTimeFromFrames(properties.content.transitionDuration) + previewTimelineObjectDelay },
+					content: {
+						input: properties.content.input,
+						transition: undefined
+					}
+				})
+			)
+		}
+
 		if (this.uniformConfig.switcherLLayers.primaryMixEffectClone) {
 			result.push(
 				this.getMixEffectTimelineObject({
