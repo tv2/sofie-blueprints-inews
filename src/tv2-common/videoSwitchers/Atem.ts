@@ -40,7 +40,7 @@ export class Atem extends VideoSwitcherBase {
 	public getMixEffectTimelineObject(props: MixEffectProps): TSR.TimelineObjAtemME & TimelineBlueprintExt {
 		const { content } = props
 		const me: TSR.TimelineObjAtemME['content']['me'] =
-			content.input && content.transition
+			content.input && content.transition && content.transition !== TransitionStyle.CUT
 				? {
 						input: this.getInputNumber(content.input),
 						transition: this.getTransition(content.transition),
