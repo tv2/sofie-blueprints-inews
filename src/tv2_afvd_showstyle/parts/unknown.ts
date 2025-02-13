@@ -23,6 +23,7 @@ import { CreateEffektForpart } from './effekt'
 export async function CreatePartUnknown(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
+	partIndex: number,
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
@@ -41,8 +42,11 @@ export async function CreatePartUnknown(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	part = { ...part, ...CreateEffektForpart(context, partDefinition, pieces) }
-	part = { ...part, ...GetJinglePartProperties(context, partDefinition) }
+	part = {
+		...part,
+		...CreateEffektForpart(context, partDefinition, pieces),
+		...GetJinglePartProperties(context, partDefinition)
+	}
 
 	if (
 		partDefinition.cues.some((cue) => cue.type === CueType.Graphic && GraphicIsPilot(cue) && cue.target === 'FULL') &&
@@ -60,6 +64,7 @@ export async function CreatePartUnknown(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{
 			adlib: asAdlibs
 		}

@@ -34,6 +34,7 @@ import { CreateEffektForpart } from './effekt'
 export async function CreatePartEVS(
 	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionEVS,
+	partIndex: number,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
@@ -88,6 +89,7 @@ export async function CreatePartEVS(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)

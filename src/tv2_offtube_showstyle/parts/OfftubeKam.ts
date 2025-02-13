@@ -33,6 +33,7 @@ import { CreateEffektForpart } from './OfftubeEffekt'
 export async function OfftubeCreatePartKam(
 	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinitionKam,
+	partIndex: number,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partKamBase = CreatePartKamBase(context, partDefinition, totalWords)
@@ -128,6 +129,7 @@ export async function OfftubeCreatePartKam(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{}
 	)
 

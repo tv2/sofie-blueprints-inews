@@ -30,6 +30,8 @@ import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 
+const STOP_AUDIO_BED_CLASS: string = 'STOP_AUDIO_BED_CLASS'
+
 export function EvaluateLYD(
 	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
@@ -133,7 +135,7 @@ function LydContent(
 						deviceType: TSR.DeviceType.ABSTRACT,
 						type: 'empty'
 					},
-					classes: []
+					classes: [STOP_AUDIO_BED_CLASS]
 				})
 			]
 		})
@@ -180,7 +182,8 @@ function LydContent(
 			literal<TSR.TimelineObjSisyfosChannel>({
 				id: '',
 				enable: {
-					start: 0
+					start: 0,
+					end: `.${STOP_AUDIO_BED_CLASS}`
 				},
 				priority: 1,
 				layer: SharedSisyfosLLayer.SisyfosSourceAudiobed,

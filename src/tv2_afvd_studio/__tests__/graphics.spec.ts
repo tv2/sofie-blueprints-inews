@@ -47,7 +47,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartGrafik(context, partDefintion, 0)
+		const result = await CreatePartGrafik(context, partDefintion, 0, 0)
 
 		expect((context.core as SegmentUserContextMock).getNotes().map((msg) => msg.message)).toEqual([
 			`No graphic found after GRAFIK cue`
@@ -84,7 +84,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		CreatePartGrafik(context, partDefinition, 0)
+		CreatePartGrafik(context, partDefinition, 0, 0)
 
 		expect((context.core as SegmentUserContextMock).getNotes().map((msg) => msg.message)).toEqual([
 			`Graphic found without target engine`
@@ -121,7 +121,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartGrafik(context, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilot)
@@ -185,7 +185,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartGrafik(context, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmPilotOverlay)
@@ -242,7 +242,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartGrafik(context, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.WallGraphics)
@@ -296,7 +296,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartGrafik(context, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(2)
 		const piece = result.pieces[0]
 		expect(piece.sourceLayerId).toBe(SourceLayer.PgmGraphicsTLF)
@@ -366,7 +366,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartGrafik(context, partDefinition, 0)
+		const result = await CreatePartGrafik(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(3)
 		const auxPiece = result.pieces.find((p) => p.outputLayerId === SharedOutputLayer.AUX)!
 		expect(auxPiece.enable).toEqual({ start: 0 })
@@ -405,7 +405,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartUnknown(context, partDefinition, 0)
+		const result = await CreatePartUnknown(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
@@ -440,7 +440,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartUnknown(context, partDefinition, 0)
+		const result = await CreatePartUnknown(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece.lifespan).toBe('rundown-change-segment-lookback')
@@ -471,7 +471,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartUnknown(context, partDefinition, 0)
+		const result = await CreatePartUnknown(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()
@@ -522,7 +522,7 @@ describe('Graphics', () => {
 			segmentRank: 0
 		})
 
-		const result = await CreatePartUnknown(context, partDefinition, 0)
+		const result = await CreatePartUnknown(context, partDefinition, 0, 0)
 		expect(result.pieces).toHaveLength(1)
 		const piece = result.pieces[0]
 		expect(piece).toBeTruthy()

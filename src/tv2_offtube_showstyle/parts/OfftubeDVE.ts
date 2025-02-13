@@ -14,6 +14,7 @@ import { OfftubeSourceLayer } from '../layers'
 export async function OfftubeCreatePartDVE(
 	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinitionDVE,
+	partIndex: number,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
@@ -38,6 +39,7 @@ export async function OfftubeCreatePartDVE(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{
 			adlib: true
 		}

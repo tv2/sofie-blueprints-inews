@@ -7,7 +7,7 @@ import {
 } from 'blueprints-integration'
 import { AddScript, CueDefinition, Part, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
 import { CueType } from 'tv2-constants'
-import { GalleryBlueprintConfig } from '../../tv2_afvd_showstyle/helpers/config'
+import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
@@ -15,6 +15,7 @@ import { CreateEffektForpart } from './effekt'
 export async function CreatePartLive(
 	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinition,
+	partIndex: number,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
 	const partTime = PartTime(context.config, partDefinition, totalWords, false)
@@ -41,6 +42,7 @@ export async function CreatePartLive(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{}
 	)
 	AddScript(partDefinition, pieces, partTime, SourceLayer.PgmScript)

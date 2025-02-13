@@ -16,6 +16,7 @@ import { CreateEffektForpart } from './OfftubeEffekt'
 export async function OfftubeCreatePartServer(
 	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
+	partIndex: number,
 	partProps: ServerPartProps
 ): Promise<BlueprintResultPart> {
 	const basePartProps = await CreatePartServerBase(context, partDefinition, partProps, {
@@ -78,6 +79,7 @@ export async function OfftubeCreatePartServer(
 		mediaSubscriptions,
 		partDefinition.cues,
 		partDefinition,
+		partIndex,
 		{}
 	)
 

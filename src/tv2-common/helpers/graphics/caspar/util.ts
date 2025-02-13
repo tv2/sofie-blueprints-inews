@@ -27,7 +27,7 @@ export function CreateHTMLRendererContent(
 		},
 		useStopCommand: false,
 		mixer: {
-			opacity: 100
+			opacity: 1
 		}
 	}
 }
