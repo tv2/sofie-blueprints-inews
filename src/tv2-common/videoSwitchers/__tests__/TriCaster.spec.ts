@@ -585,12 +585,13 @@ describe('TriCaster', () => {
 	})
 
 	describe('getDveTimelineObjects', () => {
-		it('creates one TriCaster DVE timelineObject', () => {
+		it('creates two TriCaster DVE timelineObject', () => {
 			const testee: TriCaster = createTestee()
 			const result: TSR.TSRTimelineObj[] = testee.getDveTimelineObjects(getBasicDveProps())
 
-			expect(result).toHaveLength(1)
+			expect(result).toHaveLength(2)
 			expect(result[0].layer).toBe(prefixLayer(SwitcherDveLLayer.DVE_BOXES))
+			expect(result[1].layer).toBe(prefixLayer(SwitcherDveLLayer.DVE))
 		})
 
 		// TODO: Replace with interface
@@ -625,7 +626,7 @@ describe('TriCaster', () => {
 			} as any as TV2StudioConfigBase)
 			const testee: TriCaster = createTestee({ config: instance(config) })
 			const basicDveProps = getBasicDveProps()
-			const content: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(basicDveProps)[0]
+			const content: TSR.TimelineObjTriCasterME['content'] = testee.getDveTimelineObjects(basicDveProps)[1]
 				.content as TSR.TimelineObjTriCasterME['content']
 			const result: Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> = content.me.keyers!
 
