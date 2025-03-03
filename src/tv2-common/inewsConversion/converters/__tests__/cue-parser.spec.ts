@@ -1497,12 +1497,12 @@ describe('Cue parser', () => {
 	})
 
 	test('PGMCLEAN', () => {
-		const cueJingle = ['PGMCLEAN=Live 1']
+		const cueJingle = ['PGMCLEAN=LIVE 1']
 		const result = ParseCue(cueJingle, config)
 		expect(result).toEqual(
 			literal<CueDefinitionPgmClean>({
 				type: CueType.PgmClean,
-				sourceDefinition: { ...SOURCE_DEFINITION_LIVE_1, raw: 'Live 1' },
+				sourceDefinition: { ...SOURCE_DEFINITION_LIVE_1, raw: 'LIVE 1' },
 				iNewsCommand: 'PGMCLEAN'
 			})
 		)
