@@ -1,6 +1,7 @@
 import {
 	CasparCgGfxDesignValues,
 	literal,
+	RemoteType,
 	TableConfigGfxSchema,
 	TableConfigItemGfxDesignTemplate,
 	TV2ShowStyleConfig,
@@ -246,7 +247,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return parsePilot(cue)
 	} else if (/^EKSTERN=/i.test(cue[0])) {
 		// EKSTERN
-		return parseEkstern(cue)
+		return parseRemoteAndFeedCue(cue[0])
 	} else if (/^DVE=/i.test(cue[0])) {
 		// DVE
 		return parseDVE(cue)
@@ -484,27 +485,30 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 	return pilotCue
 }
 
-function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
-	const eksternSource = stripTransitionProperties(cue[0]).match(/^EKSTERN=(.+)$/i)
-	if (eksternSource) {
-		let sourceDefinition = getSourceDefinition(eksternSource[1])
-		if (sourceDefinition?.sourceType !== SourceType.REMOTE) {
-			sourceDefinition = {
-				sourceType: SourceType.INVALID,
-				name: eksternSource[1],
-				raw: eksternSource[1]
-			}
-		}
-		const transitionProperties = getTransitionProperties(cue[0])
-		return literal<CueDefinitionEkstern>({
-			type: CueType.Ekstern,
-			iNewsCommand: 'EKSTERN',
-			transition: transitionProperties,
-			sourceDefinition
-		})
+function parseRemoteAndFeedCue(cue: string): CueDefinitionEkstern | undefined {
+	const source: RegExpMatchArray | null = stripTransitionProperties(cue).match(/^EKSTERN=(.+)$/i)
+	if (!source) {
+		return
 	}
 
-	return undefined
+	const leftSideOfCue: string = stripTransitionProperties(source[1])
+
+	const sourceDefinition: SourceDefinitionRemote = {
+		id: leftSideOfCue,
+		sourceType: SourceType.REMOTE,
+		remoteType: RemoteType.LIVE, // This is just hardcoded to LIVE. It was primarily used to see whether to look at the LIVES or FEEDS table. We now just look at both.
+		name: leftSideOfCue,
+		raw: leftSideOfCue
+	}
+
+	const transitionProperties = getTransitionProperties(cue)
+	const cueDefinition: CueDefinitionEkstern = {
+		type: CueType.Ekstern,
+		iNewsCommand: 'EKSTERN',
+		transition: transitionProperties,
+		sourceDefinition
+	}
+	return cueDefinition
 }
 
 function parseDVE(cue: string[]): CueDefinitionDVE {
