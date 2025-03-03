@@ -491,14 +491,13 @@ function parseRemoteAndFeedCue(cue: string): CueDefinitionEkstern | undefined {
 		return
 	}
 
-	const leftSideOfCue: string = stripTransitionProperties(source[1])
-
+	const rightSideOfCue: string = source[1]
 	const sourceDefinition: SourceDefinitionRemote = {
-		id: leftSideOfCue,
+		id: rightSideOfCue,
 		sourceType: SourceType.REMOTE,
 		remoteType: RemoteType.LIVE, // This is just hardcoded to LIVE. It was primarily used to see whether to look at the LIVES or FEEDS table. We now just look at both.
-		name: leftSideOfCue,
-		raw: leftSideOfCue
+		name: rightSideOfCue,
+		raw: rightSideOfCue
 	}
 
 	const transitionProperties = getTransitionProperties(cue)
