@@ -695,6 +695,7 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 			name: `KAM ${id}`
 		}
 	} else if (REMOTE_CUE.test(typeStr)) {
+		// NOTE: This if-clause is deprecated!
 		const remoteNumber = typeStr.match(REMOTE_CUE)
 		const variant = remoteNumber![1].toUpperCase() as RemoteType
 		const id = remoteNumber![2]
