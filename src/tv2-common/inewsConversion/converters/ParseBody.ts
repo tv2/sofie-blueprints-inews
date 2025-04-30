@@ -5,6 +5,7 @@ import {
 	INewsFields,
 	parseTransitionStyle,
 	PostProcessDefinitions,
+	TableConfigItemSourceMappingWithSisyfos,
 	TransitionStyle,
 	TV2ShowStyleConfig,
 	UnparsedCue
@@ -182,7 +183,6 @@ export type PartdefinitionTypes =
 const CAMERA_RED_TEXT = /\b[KC]AM(?:ERA)? ?(\S+)\b/i
 const EVS_RED_TEXT = /\bEVS ?(\d+) ?(VOV?)?\b/i
 const ACCEPTED_RED_TEXT = [/\b(SERVER|ATTACK|TEKNIK|GRAFIK|EPSIO|VOV?|VOSB)+\b/i, CAMERA_RED_TEXT, EVS_RED_TEXT]
-const REMOTE_CUE = /^(LIVE|FEED) ?([^\s]+)(?: (.+))?$/i
 const ENGINE_CUE = /ENGINE ?([^\s]+)/i
 
 const MAX_ALLOWED_TRANSITION_FRAMES = 250
@@ -279,7 +279,8 @@ export function ParseBody(
 									segmentName,
 									definition.type,
 									cue,
-									segmentRank
+									segmentRank,
+									config
 								)
 								definition.cues.push(cue)
 							} else {
@@ -303,7 +304,8 @@ export function ParseBody(
 						fields,
 						modified,
 						segmentName,
-						segmentRank
+						segmentRank,
+						config
 					)
 					definition.cues.push(lastCue)
 				} else {
@@ -319,7 +321,8 @@ export function ParseBody(
 						fields,
 						modified,
 						segmentName,
-						segmentRank
+						segmentRank,
+						config
 					)
 				}
 
@@ -360,7 +363,8 @@ export function ParseBody(
 						segmentName,
 						definition.type,
 						cue,
-						segmentRank
+						segmentRank,
+						config
 					)
 
 					definition.script = storedScript
@@ -542,9 +546,10 @@ function makeDefinitionPrimaryCue(
 	storyName: string,
 	partType: PartType,
 	cue: CueDefinition,
-	segmentRank: number
+	segmentRank: number,
+	config: TV2ShowStyleConfig
 ): PartDefinition {
-	let definition = makeDefinition(segmentId, i, typeStr, fields, modified, storyName, segmentRank)
+	let definition = makeDefinition(segmentId, i, typeStr, fields, modified, storyName, segmentRank, config)
 
 	switch (cue.type) {
 		case CueType.Ekstern:
@@ -581,11 +586,12 @@ function makeDefinition(
 	fields: any,
 	modified: number,
 	storyName: string,
-	segmentRank: number
+	segmentRank: number,
+	config: TV2ShowStyleConfig
 ): PartDefinition {
 	const part: PartDefinition = {
 		externalId: `${segmentId}-${i}`, // TODO - this should be something that sticks when inserting a part before the current part
-		...extractTypeProperties(typeStr),
+		...extractTypeProperties(typeStr, config),
 		rawType: stripTransitionProperties(typeStr),
 		cues: [],
 		script: '',
@@ -631,10 +637,10 @@ function getTimeForTransition(timeString: string): number {
 	return Math.min(time, MAX_ALLOWED_TRANSITION_FRAMES)
 }
 
-function extractTypeProperties(typeStr: string): PartdefinitionTypes {
+function extractTypeProperties(typeStr: string, config: TV2ShowStyleConfig): PartdefinitionTypes {
 	const transitionAndEffekt: Pick<PartdefinitionTypes, 'effekt' | 'transition'> = getTransitionProperties(typeStr)
 
-	const sourceDefinition = getSourceDefinition(typeStr)
+	const sourceDefinition = getSourceDefinition(typeStr, config)
 	switch (sourceDefinition?.sourceType) {
 		case SourceType.KAM:
 			return {
@@ -683,7 +689,7 @@ function extractTypeProperties(typeStr: string): PartdefinitionTypes {
 	}
 }
 
-export function getSourceDefinition(typeStr: string): SourceDefinition | undefined {
+export function getSourceDefinition(typeStr: string, config: TV2ShowStyleConfig): SourceDefinition | undefined {
 	const strippedTypeStr = stripTransitionProperties(typeStr).replace(/100%/g, '').trim()
 	if (CAMERA_RED_TEXT.test(strippedTypeStr)) {
 		const id = strippedTypeStr.match(CAMERA_RED_TEXT)![1].toUpperCase()
@@ -694,16 +700,13 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 			raw: strippedTypeStr,
 			name: `KAM ${id}`
 		}
-	} else if (REMOTE_CUE.test(typeStr)) {
-		const remoteNumber = typeStr.match(REMOTE_CUE)
-		const variant = remoteNumber![1].toUpperCase() as RemoteType
-		const id = remoteNumber![2]
+	} else if (isFeedOrLiveSource(typeStr, config)) {
 		return {
 			sourceType: SourceType.REMOTE,
-			remoteType: variant,
-			id: `${variant} ${id}`, // The 'id' field needs to match the 'Name' field of the SourceMappingConfiguration.
-			raw: strippedTypeStr,
-			name: `${variant} ${id}`
+			remoteType: RemoteType.LIVE,
+			id: typeStr, // The 'id' field needs to match the 'Name' field of the SourceMappingConfiguration.
+			raw: typeStr,
+			name: typeStr
 		}
 	} else if (EVS_RED_TEXT.test(typeStr)) {
 		const strippedToken = typeStr.match(EVS_RED_TEXT)
@@ -746,6 +749,15 @@ export function getSourceDefinition(typeStr: string): SourceDefinition | undefin
 		}
 	}
 	return undefined
+}
+
+function isFeedOrLiveSource(typeStr: string, config: TV2ShowStyleConfig): boolean {
+	const liveAndFeedConfigs: TableConfigItemSourceMappingWithSisyfos[] = config.studio.SourcesFeed.concat(
+		config.studio.SourcesRM
+	)
+	return liveAndFeedConfigs.some(
+		(sourceConfig) => sourceConfig.SourceName.toLowerCase().replace(' ', '') === typeStr.toLowerCase().replace(' ', '')
+	)
 }
 
 export function isMinusMic(inputName: string): boolean {

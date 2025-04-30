@@ -1,6 +1,7 @@
 import {
 	CasparCgGfxDesignValues,
 	literal,
+	RemoteType,
 	TableConfigGfxSchema,
 	TableConfigItemGfxDesignTemplate,
 	TV2ShowStyleConfig,
@@ -246,10 +247,10 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 		return parsePilot(cue)
 	} else if (/^EKSTERN=/i.test(cue[0])) {
 		// EKSTERN
-		return parseEkstern(cue)
+		return parseRemoteAndFeedCue(cue[0])
 	} else if (/^DVE=/i.test(cue[0])) {
 		// DVE
-		return parseDVE(cue)
+		return parseDVE(cue, config)
 	} else if (/^TELEFON=/i.test(cue[0])) {
 		// Telefon
 		return parseTelefon(cue, config)
@@ -263,7 +264,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 	} else if (/^STUDIE=MIC ON OFF$/i.test(cue[0])) {
 		return parseMic(cue)
 	} else if (/^ADLIBPI?X=/i.test(cue[0])) {
-		return parseAdLib(cue)
+		return parseAdLib(cue, config)
 	} else if (/^KOMMANDO=/i.test(cue[0])) {
 		return parseKommando(cue)
 	} else if (/^LYD=/i.test(cue[0])) {
@@ -271,9 +272,9 @@ export function ParseCue(cue: UnparsedCue, config: TV2ShowStyleConfig): CueDefin
 	} else if (/^JINGLE\d+=/i.test(cue[0])) {
 		return parseJingle(cue)
 	} else if (/^PGMCLEAN=/i.test(cue[0])) {
-		return parsePgmClean(cue)
+		return parsePgmClean(cue, config)
 	} else if (/^MINUSKAM\s*=/i.test(cue[0])) {
-		return parseMixMinus(cue)
+		return parseMixMinus(cue, config)
 	} else if (/^ROBOT\s*=/i.test(cue[0])) {
 		return parseRobotCue(cue)
 	}
@@ -484,30 +485,31 @@ function parsePilot(cue: string[]): CueDefinitionUnpairedPilot | CueDefinitionGr
 	return pilotCue
 }
 
-function parseEkstern(cue: string[]): CueDefinitionEkstern | undefined {
-	const eksternSource = stripTransitionProperties(cue[0]).match(/^EKSTERN=(.+)$/i)
-	if (eksternSource) {
-		let sourceDefinition = getSourceDefinition(eksternSource[1])
-		if (sourceDefinition?.sourceType !== SourceType.REMOTE) {
-			sourceDefinition = {
-				sourceType: SourceType.INVALID,
-				name: eksternSource[1],
-				raw: eksternSource[1]
-			}
-		}
-		const transitionProperties = getTransitionProperties(cue[0])
-		return literal<CueDefinitionEkstern>({
-			type: CueType.Ekstern,
-			iNewsCommand: 'EKSTERN',
-			transition: transitionProperties,
-			sourceDefinition
-		})
+function parseRemoteAndFeedCue(cue: string): CueDefinitionEkstern | undefined {
+	const source: RegExpMatchArray | null = stripTransitionProperties(cue).match(/^EKSTERN=(.+)$/i)
+	if (!source) {
+		return
 	}
 
-	return undefined
+	const rightSideOfCue: string = source[1]
+	const sourceDefinition: SourceDefinitionRemote = {
+		id: rightSideOfCue,
+		sourceType: SourceType.REMOTE,
+		remoteType: RemoteType.LIVE, // This is just hardcoded to LIVE. It was primarily used to see whether to look at the LIVES or FEEDS table. We now just look at both.
+		name: rightSideOfCue,
+		raw: rightSideOfCue
+	}
+
+	const transitionProperties = getTransitionProperties(cue)
+	return {
+		type: CueType.Ekstern,
+		iNewsCommand: 'EKSTERN',
+		transition: transitionProperties,
+		sourceDefinition
+	}
 }
 
-function parseDVE(cue: string[]): CueDefinitionDVE {
+function parseDVE(cue: string[], config: TV2ShowStyleConfig): CueDefinitionDVE {
 	let dvecue: CueDefinitionDVE = {
 		type: CueType.DVE,
 		template: '',
@@ -525,7 +527,7 @@ function parseDVE(cue: string[]): CueDefinitionDVE {
 		} else if (c.match(/^INP\d+=/i)) {
 			const input = c.match(/^(INP\d)+=(.+)$/i)
 			if (input && input[1] && input[2]) {
-				dvecue.sources[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2])
+				dvecue.sources[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2], config)
 			}
 		} else if (c.match(/^BYNAVN=/i)) {
 			const labels = c.match(/^BYNAVN=(.+)$/i)
@@ -621,7 +623,7 @@ function parseMic(cue: string[]): CueDefinitionMic {
 	return micCue
 }
 
-function parseAdLib(cue: string[]) {
+function parseAdLib(cue: string[], config: TV2ShowStyleConfig) {
 	const adlib: CueDefinitionAdLib = {
 		type: CueType.AdLib,
 		variant: '',
@@ -638,7 +640,7 @@ function parseAdLib(cue: string[]) {
 	for (const element of cue) {
 		const input = element.match(/^(INP\d)+=(.+)$/i)
 		if (input && input[1] && input[2] && adlib.inputs !== undefined) {
-			adlib.inputs[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2])
+			adlib.inputs[input[1].toUpperCase() as keyof DVESources] = getSourceDefinition(input[2], config)
 		}
 
 		const bynavn = element.match(/^BYNAVN=(.+)$/i)
@@ -746,12 +748,12 @@ function parseTargetEngine(
 			const c = cue[i].split('=')
 			const input = c[0].toString().toUpperCase()
 			if (input === 'INP') {
-				routing.INP = getSourceDefinition(c[1])
+				routing.INP = getSourceDefinition(c[1], config)
 				hasInputs = true
 			}
 
 			if (input === 'INP1') {
-				routing.INP1 = getSourceDefinition(c[1])
+				routing.INP1 = getSourceDefinition(c[1], config)
 				hasInputs = true
 			}
 		}
@@ -834,7 +836,7 @@ function parseAllOut(cue: string[]): CueDefinitionClearGrafiks {
 	return clearCue
 }
 
-export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
+export function parsePgmClean(cue: string[], config: TV2ShowStyleConfig): CueDefinitionPgmClean {
 	const pgmSource = cue[0].match(/^PGMCLEAN=(.+)$/i)
 	const pgmCleanCue: CueDefinitionPgmClean = {
 		type: CueType.PgmClean,
@@ -842,7 +844,7 @@ export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
 		sourceDefinition: { sourceType: SourceType.PGM }
 	}
 	if (pgmSource && pgmSource[1]) {
-		const sourceDefinition = getSourceDefinition(pgmSource[1])
+		const sourceDefinition = getSourceDefinition(pgmSource[1], config)
 		if (sourceDefinition) {
 			pgmCleanCue.sourceDefinition = sourceDefinition
 		}
@@ -850,12 +852,12 @@ export function parsePgmClean(cue: string[]): CueDefinitionPgmClean {
 	return pgmCleanCue
 }
 
-export function parseMixMinus(cue: string[]): CueDefinitionMixMinus | undefined {
+export function parseMixMinus(cue: string[], config: TV2ShowStyleConfig): CueDefinitionMixMinus | undefined {
 	const sourceMatch = cue[0].match(/^MINUSKAM\s*=\s*(?<source>.+)\s*$/i)
 	if (sourceMatch === null) {
 		return undefined
 	}
-	const sourceDefinition = getSourceDefinition(sourceMatch.groups!.source)
+	const sourceDefinition = getSourceDefinition(sourceMatch.groups!.source, config)
 	if (sourceDefinition === undefined) {
 		return undefined
 	}

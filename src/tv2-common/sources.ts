@@ -101,7 +101,7 @@ export function findSourceInfo(sources: SourceMapping, sourceDefinition: SourceD
 			arrayToSearchIn = sources.cameras
 			break
 		case SourceType.REMOTE:
-			arrayToSearchIn = sourceDefinition.remoteType === RemoteType.LIVE ? sources.lives : sources.feeds
+			arrayToSearchIn = sources.lives.concat(sources.feeds)
 			break
 		case SourceType.REPLAY:
 			arrayToSearchIn = sources.replays
@@ -109,7 +109,10 @@ export function findSourceInfo(sources: SourceMapping, sourceDefinition: SourceD
 		default:
 			return undefined
 	}
-	return _.find(arrayToSearchIn, (s) => s.id === sourceDefinition.id)
+	return _.find(
+		arrayToSearchIn,
+		(s) => s.id.toLowerCase().trim().replace(' ', '') === sourceDefinition.id.toLowerCase().replace(' ', '')
+	)
 }
 
 export function SourceInfoToSourceDefinition(

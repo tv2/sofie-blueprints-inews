@@ -229,7 +229,19 @@ export class TriCaster extends VideoSwitcherBase {
 					me: literal<TSR.TriCasterMixEffectInEffectMode & { type: 'EFFECT_MODE' }>({
 						type: 'EFFECT_MODE',
 						transitionEffect: 7,
-						layers: this.generateDveBoxLayers(dveProps.content.boxes),
+						layers: this.generateDveBoxLayers(dveProps.content.boxes)
+					}),
+					temporalPriority: TemporalPriority.DVE
+				}
+			},
+			{
+				...this.getBaseProperties(dveProps, SwitcherDveLLayer.DVE),
+				content: {
+					deviceType: TSR.DeviceType.TRICASTER,
+					type: TSR.TimelineContentTypeTriCaster.ME,
+					me: literal<TSR.TriCasterMixEffectInEffectMode & { type: 'EFFECT_MODE' }>({
+						type: 'EFFECT_MODE',
+						transitionEffect: 7,
 						keyers: this.generateOverlayKeyer(dveProps.content.artFillSource)
 					}),
 					temporalPriority: TemporalPriority.DVE
