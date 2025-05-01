@@ -16,6 +16,7 @@ import {
 import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../../tv2-constants/tv2-playout-content'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { CasparLLayer, SisyfosLLAyer } from '../../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../config'
@@ -81,6 +82,9 @@ export function EvaluateJingle(
 			tags: [!effekt ? TallyTags.JINGLE : ''],
 			content: jingleContent,
 			metaData: {
+				playoutContent: {
+					type: PlayoutContentType.JINGLE
+				},
 				type: Tv2PieceType.JINGLE,
 				outputLayer: Tv2OutputLayer.JINGLE,
 				sourceName: jingleContent.fileName

@@ -26,6 +26,7 @@ import {
 import { SharedOutputLayer } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
@@ -73,6 +74,9 @@ export async function CreatePartKam(
 				]
 			}),
 			metaData: {
+				playoutContent: {
+					type: PlayoutContentType.JINGLE
+				},
 				type: Tv2PieceType.JINGLE,
 				outputLayer: Tv2OutputLayer.PROGRAM
 			}
@@ -98,6 +102,10 @@ export async function CreatePartKam(
 			sourceLayerId: SourceLayer.PgmCam,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: {
+				playoutContent: {
+					type: PlayoutContentType.CAMERA,
+					source: sourceInfoCam.id
+				},
 				type: Tv2PieceType.CAMERA,
 				outputLayer: Tv2OutputLayer.PROGRAM,
 				sisyfosPersistMetaData: {

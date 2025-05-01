@@ -12,6 +12,7 @@ import { SharedOutputLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { Tv2OutputLayer } from '../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../tv2-constants/tv2-playout-content'
 import { QBOX_UNIFORM_CONFIG } from '../tv2_offtube_studio/uniformConfig'
 import { OfftubeBlueprintConfig } from './helpers/config'
 import { OfftubeSourceLayer } from './layers'
@@ -83,6 +84,9 @@ function CreatePartContinuity(
 					]
 				}),
 				metaData: {
+					playoutContent: {
+						type: PlayoutContentType.UNKNOWN
+					},
 					type: Tv2PieceType.UNKNOWN,
 					outputLayer: Tv2OutputLayer.PROGRAM
 				}

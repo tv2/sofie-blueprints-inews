@@ -10,6 +10,7 @@ import {
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayer } from 'tv2-constants'
 import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../../tv2-constants/tv2-playout-content'
 import { SourceLayer } from '../../layers'
 
 export function EvaluateCueBackgroundLoop(
@@ -41,6 +42,9 @@ export function EvaluateCueBackgroundLoop(
 					timelineObjects: dveLoopGenerator.createDveLoopTimelineObject(fileName)
 				}),
 				metaData: {
+					playoutContent: {
+						type: PlayoutContentType.UNKNOWN
+					},
 					type: Tv2PieceType.UNKNOWN
 				}
 			})
@@ -61,6 +65,9 @@ export function EvaluateCueBackgroundLoop(
 					timelineObjects: dveLoopGenerator.createDveLoopTimelineObject(fileName)
 				}),
 				metaData: {
+					playoutContent: {
+						type: PlayoutContentType.UNKNOWN
+					},
 					type: Tv2PieceType.UNKNOWN,
 					sourceName: fileName
 				}
@@ -83,6 +90,9 @@ export function EvaluateCueBackgroundLoop(
 					timelineObjects: fullLoopTimeline(context.config, parsedCue)
 				}),
 				metaData: {
+					playoutContent: {
+						type: PlayoutContentType.UNKNOWN
+					},
 					type: Tv2PieceType.UNKNOWN
 				}
 			})
@@ -103,6 +113,9 @@ export function EvaluateCueBackgroundLoop(
 					timelineObjects: fullLoopTimeline(context.config, parsedCue)
 				}),
 				metaData: {
+					playoutContent: {
+						type: PlayoutContentType.UNKNOWN
+					},
 					type: Tv2PieceType.UNKNOWN,
 					sourceName: parsedCue.backgroundLoop
 				}

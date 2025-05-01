@@ -39,6 +39,7 @@ import {
 } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../../../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
+import { PlayoutContent, PlayoutContentType } from '../../../../tv2-constants/tv2-playout-content'
 import { Graphic } from '../index'
 
 export interface PilotGraphicProps {
@@ -134,6 +135,7 @@ export abstract class PilotGraphicGenerator extends Graphic {
 				? [GetTagForFull(this.segmentExternalId, this.cue.graphic.vcpid), TallyTags.FULL_IS_LIVE]
 				: [],
 			metaData: {
+				playoutContent: this.getTv2PlayoutContent(),
 				type: this.getTv2PieceType(),
 				outputLayer: this.getTv2OutputLayer(),
 				sourceName: graphicsContent.fileName
@@ -170,6 +172,9 @@ export abstract class PilotGraphicGenerator extends Graphic {
 			sourceLayerId: SharedSourceLayer.SelectedAdlibGraphicsFull,
 			lifespan: PieceLifespan.OutOnSegmentEnd,
 			metaData: {
+				playoutContent: {
+					type: PlayoutContentType.GRAPHICS
+				},
 				type: Tv2PieceType.GRAPHICS,
 				sourceName: content.fileName,
 				userData: {
@@ -214,6 +219,22 @@ export abstract class PilotGraphicGenerator extends Graphic {
 				return Tv2PieceType.GRAPHICS
 			default:
 				return Tv2PieceType.GRAPHICS
+		}
+	}
+
+	protected getTv2PlayoutContent(): PlayoutContent {
+		switch (this.engine) {
+			case 'OVL':
+				return {
+					type: PlayoutContentType.OVERLAY_GRAPHICS
+				}
+			case 'WALL':
+			case 'FULL':
+			case 'TLF':
+			default:
+				return {
+					type: PlayoutContentType.GRAPHICS
+				}
 		}
 	}
 

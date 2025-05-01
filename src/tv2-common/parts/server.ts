@@ -20,6 +20,7 @@ import { AdlibActionType, PartType, SharedOutputLayer, SharedSourceLayer, TallyT
 import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { getSourceDuration, GetVTContentProperties } from '../content'
@@ -238,6 +239,9 @@ function getServerSelectionBlueprintPiece(
 		sourceLayerId: layers.SourceLayer.SelectedServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
+			playoutContent: {
+				type: PlayoutContentType.UNKNOWN
+			},
 			type: Tv2PieceType.UNKNOWN,
 			sourceName: contentServerElement.fileName,
 			audioMode:
@@ -276,6 +280,9 @@ function getPgmBlueprintPiece<
 		sourceLayerId: layers.SourceLayer.PgmServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
+			playoutContent: {
+				type: PlayoutContentType.VIDEO_CLIP
+			},
 			type: Tv2PieceType.VIDEO_CLIP,
 			outputLayer: Tv2OutputLayer.PROGRAM,
 			sourceName: vtContent.fileName,

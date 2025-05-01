@@ -9,6 +9,7 @@ import { CueDefinitionClearGrafiks, getDefaultOut, getTimingEnable, literal, Sho
 import { SharedGraphicLLayer, SharedOutputLayer } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../../tv2-constants/tv2-playout-content'
 import { SourceLayer } from '../../layers'
 import { GalleryBlueprintConfig } from '../config'
 
@@ -48,6 +49,9 @@ export function EvaluateClearGrafiks(
 				timelineObjects: []
 			},
 			metaData: {
+				playoutContent: {
+					type: PlayoutContentType.COMMAND
+				},
 				type: Tv2PieceType.COMMAND
 			}
 		})
@@ -81,6 +85,9 @@ export function EvaluateClearGrafiks(
 				: []
 		},
 		metaData: {
+			playoutContent: {
+				type: PlayoutContentType.COMMAND
+			},
 			type: Tv2PieceType.COMMAND,
 			outputLayer: Tv2OutputLayer.SECONDARY
 		}

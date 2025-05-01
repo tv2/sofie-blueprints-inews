@@ -79,6 +79,7 @@ import {
 import _ = require('underscore')
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { parseDveSourcesToPlayoutContent, PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { EnableServer } from '../content'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixTransitionBlueprintPieceForPart } from '../parts'
@@ -573,6 +574,11 @@ async function executeActionSelectDVE<
 	const end = parsedCue.end ? calculateTime(parsedCue.end) : undefined
 
 	const metaData: DVEPieceMetaData = {
+		playoutContent: {
+			type: PlayoutContentType.SPLIT_SCREEN,
+			layout: parsedCue.template,
+			sources: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
+		},
 		type: Tv2PieceType.SPLIT_SCREEN,
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
@@ -761,6 +767,11 @@ async function executeActionSelectDVELayout<
 		}
 
 		const newMetaData: DVEPieceMetaData = {
+			playoutContent: {
+				type: PlayoutContentType.SPLIT_SCREEN,
+				layout: userData.config.DVEName,
+				sources: []
+			},
 			type: Tv2PieceType.SPLIT_SCREEN,
 			sources,
 			config: userData.config,
@@ -1036,6 +1047,10 @@ async function executeActionCutToCamera<
 		sourceLayerId: settings.SourceLayers.Cam,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
+			playoutContent: {
+				type: PlayoutContentType.CAMERA,
+				source: sourceInfoCam.id
+			},
 			type: Tv2PieceType.CAMERA,
 			outputLayer: Tv2OutputLayer.PROGRAM,
 			sisyfosPersistMetaData: {
@@ -1248,6 +1263,10 @@ async function executeActionCutToRemote<
 		lifespan: PieceLifespan.WithinPart,
 		toBeQueued: true,
 		metaData: {
+			playoutContent: {
+				type: PlayoutContentType.REMOTE,
+				source: sourceInfo.id
+			},
 			type: Tv2PieceType.REMOTE,
 			outputLayer: Tv2OutputLayer.PROGRAM,
 			sisyfosPersistMetaData
