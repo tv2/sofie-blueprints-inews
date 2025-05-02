@@ -9,7 +9,6 @@ import {
 	TV2ShowStyleConfig
 } from 'tv2-common'
 import { CueType, SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { DveLoopGenerator } from '../helpers/graphics/caspar/dve-loop-generator'
 
@@ -96,8 +95,7 @@ export class GfxSchemaGenerator {
 			metaData: {
 				playoutContent: {
 					type: PlayoutContentType.GRAPHICS
-				},
-				type: Tv2PieceType.GRAPHICS
+				}
 			}
 		})
 	}

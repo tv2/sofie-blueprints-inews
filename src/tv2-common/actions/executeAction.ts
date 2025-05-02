@@ -78,7 +78,6 @@ import {
 } from 'tv2-constants'
 import _ = require('underscore')
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { parseDveSourcesToPlayoutContent, PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { EnableServer } from '../content'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
@@ -579,7 +578,6 @@ async function executeActionSelectDVE<
 			layout: parsedCue.template,
 			sources: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
 		},
-		type: Tv2PieceType.SPLIT_SCREEN,
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
@@ -772,7 +770,6 @@ async function executeActionSelectDVELayout<
 				layout: userData.config.DVEName,
 				sources: []
 			},
-			type: Tv2PieceType.SPLIT_SCREEN,
 			sources,
 			config: userData.config,
 			userData: {
@@ -1051,7 +1048,6 @@ async function executeActionCutToCamera<
 				type: PlayoutContentType.CAMERA,
 				source: sourceInfoCam.id
 			},
-			type: Tv2PieceType.CAMERA,
 			outputLayer: Tv2OutputLayer.PROGRAM,
 			sisyfosPersistMetaData: {
 				sisyfosLayers: [],
@@ -1267,7 +1263,6 @@ async function executeActionCutToRemote<
 				type: PlayoutContentType.REMOTE,
 				source: sourceInfo.id
 			},
-			type: Tv2PieceType.REMOTE,
 			outputLayer: Tv2OutputLayer.PROGRAM,
 			sisyfosPersistMetaData
 		},

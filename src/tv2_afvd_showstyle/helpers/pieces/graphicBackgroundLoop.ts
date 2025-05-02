@@ -9,7 +9,6 @@ import {
 	TV2ShowStyleConfig
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayer } from 'tv2-constants'
-import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../../tv2-constants/tv2-playout-content'
 import { SourceLayer } from '../../layers'
 
@@ -44,8 +43,7 @@ export function EvaluateCueBackgroundLoop(
 				metaData: {
 					playoutContent: {
 						type: PlayoutContentType.UNKNOWN
-					},
-					type: Tv2PieceType.UNKNOWN
+					}
 				}
 			})
 		} else {
@@ -68,7 +66,6 @@ export function EvaluateCueBackgroundLoop(
 					playoutContent: {
 						type: PlayoutContentType.UNKNOWN
 					},
-					type: Tv2PieceType.UNKNOWN,
 					sourceName: fileName
 				}
 			})
@@ -92,8 +89,7 @@ export function EvaluateCueBackgroundLoop(
 				metaData: {
 					playoutContent: {
 						type: PlayoutContentType.UNKNOWN
-					},
-					type: Tv2PieceType.UNKNOWN
+					}
 				}
 			})
 		} else {
@@ -116,7 +112,6 @@ export function EvaluateCueBackgroundLoop(
 					playoutContent: {
 						type: PlayoutContentType.UNKNOWN
 					},
-					type: Tv2PieceType.UNKNOWN,
 					sourceName: parsedCue.backgroundLoop
 				}
 			})

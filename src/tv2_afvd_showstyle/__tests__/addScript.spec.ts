@@ -2,7 +2,7 @@ import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from 'blu
 import { AddScript, literal, PartDefinitionKam } from 'tv2-common'
 import { PartType, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { SourceLayer } from '../layers'
 
 describe('addScript', () => {
@@ -61,7 +61,9 @@ describe('addScript', () => {
 					timelineObjects: []
 				}),
 				metaData: {
-					type: Tv2PieceType.MANUS,
+					playoutContent: {
+						type: PlayoutContentType.MANUS
+					},
 					outputLayer: Tv2OutputLayer.MANUS
 				}
 			})

@@ -27,7 +27,6 @@ import {
 } from 'tv2-common'
 import { DskRole, SharedOutputLayer } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { joinAssetToFolder, joinAssetToNetworkPath } from '../util'
@@ -183,7 +182,6 @@ export function CreateEffektForPartInner<
 			playoutContent: {
 				type: PlayoutContentType.JINGLE
 			},
-			type: Tv2PieceType.JINGLE,
 			outputLayer: Tv2OutputLayer.JINGLE,
 			sourceName: fileName
 		}
@@ -246,7 +244,6 @@ function createEffectBlueprintPiece(
 			playoutContent: {
 				type: PlayoutContentType.TRANSITION
 			},
-			type: Tv2PieceType.TRANSITION,
 			outputLayer: Tv2OutputLayer.SECONDARY
 		}
 	}

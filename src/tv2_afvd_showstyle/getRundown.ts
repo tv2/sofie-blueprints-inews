@@ -34,7 +34,6 @@ import * as _ from 'underscore'
 import { GfxSchemaGenerator } from '../tv2-common/cues/gfx-schema-generator'
 import { GfxSchemaGeneratorFacade } from '../tv2-common/cues/gfx-schema-generator-facade'
 import { Tv2OutputLayer } from '../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../tv2-constants/tv2-playout-content'
 import { getMixEffectBaseline } from '../tv2_afvd_studio/getBaseline'
 import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
@@ -128,7 +127,6 @@ class GlobalAdLibPiecesGenerator {
 					type: PlayoutContentType.REPLAY,
 					source: info.id
 				},
-				type: Tv2PieceType.REPLAY,
 				outputLayer: Tv2OutputLayer.PROGRAM,
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
@@ -188,8 +186,7 @@ class GlobalAdLibPiecesGenerator {
 			metaData: {
 				playoutContent: {
 					type: PlayoutContentType.UNKNOWN
-				},
-				type: Tv2PieceType.UNKNOWN
+				}
 			}
 		}
 	}
@@ -209,7 +206,6 @@ class GlobalAdLibPiecesGenerator {
 				playoutContent: {
 					type: PlayoutContentType.UNKNOWN
 				},
-				type: Tv2PieceType.UNKNOWN,
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
 					wantsToPersistAudio: info.wantsToPersistAudio,
@@ -267,7 +263,6 @@ class GlobalAdLibPiecesGenerator {
 					playoutContent: {
 						type: PlayoutContentType.COMMAND
 					},
-					type: Tv2PieceType.COMMAND,
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
@@ -303,7 +298,6 @@ class GlobalAdLibPiecesGenerator {
 					playoutContent: {
 						type: PlayoutContentType.COMMAND
 					},
-					type: Tv2PieceType.COMMAND,
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			}
@@ -344,7 +338,6 @@ class GlobalAdLibPiecesGenerator {
 					playoutContent: {
 						type: PlayoutContentType.COMMAND
 					},
-					type: Tv2PieceType.COMMAND,
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
@@ -380,7 +373,6 @@ class GlobalAdLibPiecesGenerator {
 					playoutContent: {
 						type: PlayoutContentType.COMMAND
 					},
-					type: Tv2PieceType.COMMAND,
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
@@ -412,7 +404,6 @@ class GlobalAdLibPiecesGenerator {
 					playoutContent: {
 						type: PlayoutContentType.COMMAND
 					},
-					type: Tv2PieceType.COMMAND,
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			}
@@ -451,7 +442,6 @@ class GlobalAdLibPiecesGenerator {
 				playoutContent: {
 					type: PlayoutContentType.COMMAND
 				},
-				type: Tv2PieceType.COMMAND,
 				outputLayer: Tv2OutputLayer.SECONDARY
 			}
 		}

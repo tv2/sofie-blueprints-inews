@@ -27,7 +27,6 @@ import {
 	SharedSourceLayer
 } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 
@@ -80,7 +79,6 @@ export function EvaluateLYD(
 				playoutContent: {
 					type: PlayoutContentType.AUDIO
 				},
-				type: Tv2PieceType.AUDIO,
 				outputLayer: Tv2OutputLayer.AUDIO
 			},
 			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
@@ -107,7 +105,6 @@ export function EvaluateLYD(
 				playoutContent: {
 					type: PlayoutContentType.AUDIO
 				},
-				type: Tv2PieceType.AUDIO,
 				outputLayer: Tv2OutputLayer.AUDIO
 			}
 		})

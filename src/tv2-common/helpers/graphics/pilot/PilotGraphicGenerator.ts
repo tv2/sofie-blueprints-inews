@@ -38,7 +38,6 @@ import {
 	TallyTags
 } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 import { PlayoutContent, PlayoutContentType } from '../../../../tv2-constants/tv2-playout-content'
 import { Graphic } from '../index'
 
@@ -136,7 +135,6 @@ export abstract class PilotGraphicGenerator extends Graphic {
 				: [],
 			metaData: {
 				playoutContent: this.getTv2PlayoutContent(),
-				type: this.getTv2PieceType(),
 				outputLayer: this.getTv2OutputLayer(),
 				sourceName: graphicsContent.fileName
 			}
@@ -175,7 +173,6 @@ export abstract class PilotGraphicGenerator extends Graphic {
 				playoutContent: {
 					type: PlayoutContentType.GRAPHICS
 				},
-				type: Tv2PieceType.GRAPHICS,
 				sourceName: content.fileName,
 				userData: {
 					type: AdlibActionType.SELECT_FULL_GRAFIK,
@@ -207,19 +204,6 @@ export abstract class PilotGraphicGenerator extends Graphic {
 		}
 
 		return this.config.studio.VizPilotGraphics.PrerollDuration
-	}
-
-	protected getTv2PieceType(): Tv2PieceType {
-		switch (this.engine) {
-			case 'OVL':
-				return Tv2PieceType.OVERLAY_GRAPHICS
-			case 'WALL':
-			case 'FULL':
-			case 'TLF':
-				return Tv2PieceType.GRAPHICS
-			default:
-				return Tv2PieceType.GRAPHICS
-		}
 	}
 
 	protected getTv2PlayoutContent(): PlayoutContent {

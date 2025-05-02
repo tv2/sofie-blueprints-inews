@@ -1,7 +1,6 @@
 import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
 import { CueDefinitionMixMinus, findSourceInfo, PartDefinition, ShowStyleContext, TemporalPriority } from 'tv2-common'
 import { ControlClasses, SharedOutputLayer, SharedSourceLayer, SwitcherAuxLLayer } from 'tv2-constants'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 
 export function EvaluateCueMixMinus(
@@ -39,8 +38,7 @@ export function EvaluateCueMixMinus(
 		metaData: {
 			playoutContent: {
 				type: PlayoutContentType.AUDIO
-			},
-			type: Tv2PieceType.AUDIO
+			}
 		}
 	})
 }

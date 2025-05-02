@@ -16,7 +16,6 @@ import {
 	TV2ShowStyleConfig
 } from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
-import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../../../tv2-constants/tv2-playout-content'
 
 const NON_BASELINE_DESIGN: string = 'NON_BASELINE_DESIGN'
@@ -60,8 +59,7 @@ function createDesignAdlibPiece(
 		metaData: {
 			playoutContent: {
 				type: PlayoutContentType.GRAPHICS
-			},
-			type: Tv2PieceType.GRAPHICS
+			}
 		}
 	}
 }
@@ -88,7 +86,6 @@ function createDesignPiece(
 			playoutContent: {
 				type: PlayoutContentType.GRAPHICS
 			},
-			type: Tv2PieceType.GRAPHICS,
 			sourceName: designContent.fileName
 		}
 	}

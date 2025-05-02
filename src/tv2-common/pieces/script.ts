@@ -2,7 +2,6 @@ import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from 'blu
 import { literal, PartDefinition } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 
 const PREVIEW_CHARACTERS = 30
@@ -43,7 +42,6 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 				playoutContent: {
 					type: PlayoutContentType.MANUS
 				},
-				type: Tv2PieceType.MANUS,
 				outputLayer: Tv2OutputLayer.MANUS
 			}
 		})

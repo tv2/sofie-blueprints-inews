@@ -25,7 +25,6 @@ import {
 import { SharedOutputLayer } from 'tv2-constants'
 import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { GalleryBlueprintConfig } from '../helpers/config'
 import { EvaluateCues } from '../helpers/pieces/evaluateCues'
@@ -75,7 +74,6 @@ export async function CreatePartEVS(
 				type: PlayoutContentType.REPLAY,
 				source: partDefinition.sourceDefinition.name
 			},
-			type: Tv2PieceType.REPLAY,
 			outputLayer: Tv2OutputLayer.PROGRAM,
 			audioMode: partDefinition.sourceDefinition.vo ? Tv2AudioMode.VOICE_OVER : Tv2AudioMode.FULL,
 			sisyfosPersistMetaData: {

@@ -14,7 +14,6 @@ import {
 import { AdlibTags, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { Tv2OutputLayer } from '../../../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
 import { PlayoutContentType } from '../../../../tv2-constants/tv2-playout-content'
 import { Graphic } from '../Graphic'
 
@@ -67,7 +66,6 @@ export abstract class InternalGraphic extends Graphic {
 				playoutContent: {
 					type: PlayoutContentType.OVERLAY_GRAPHICS
 				},
-				type: Tv2PieceType.OVERLAY_GRAPHICS,
 				outputLayer: Tv2OutputLayer.OVERLAY
 			}
 		}
@@ -93,7 +91,6 @@ export abstract class InternalGraphic extends Graphic {
 				playoutContent: {
 					type: PlayoutContentType.GRAPHICS
 				},
-				type: Tv2PieceType.GRAPHICS,
 				outputLayer: Tv2OutputLayer.OVERLAY
 			}
 		}
@@ -116,7 +113,6 @@ export abstract class InternalGraphic extends Graphic {
 				playoutContent: {
 					type: PlayoutContentType.GRAPHICS
 				},
-				type: Tv2PieceType.GRAPHICS,
 				outputLayer: Tv2OutputLayer.OVERLAY,
 				partType: this.partDefinition?.type,
 				pieceExternalId: this.partDefinition?.externalId,
