@@ -24,7 +24,7 @@ import {
 } from 'tv2-common'
 import { SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
@@ -71,7 +71,9 @@ export async function OfftubeCreatePartKam(
 				})
 			}),
 			metaData: {
-				type: Tv2PieceType.JINGLE,
+				playoutContent: {
+					type: PlayoutContentType.JINGLE
+				},
 				outputLayer: Tv2OutputLayer.PROGRAM
 			}
 		})
@@ -94,7 +96,10 @@ export async function OfftubeCreatePartKam(
 			sourceLayerId: OfftubeSourceLayer.PgmCam,
 			lifespan: PieceLifespan.WithinPart,
 			metaData: {
-				type: Tv2PieceType.CAMERA,
+				playoutContent: {
+					type: PlayoutContentType.CAMERA,
+					source: sourceInfoCam.id
+				},
 				outputLayer: Tv2OutputLayer.PROGRAM,
 				sisyfosPersistMetaData: {
 					sisyfosLayers: sourceInfoCam.sisyfosLayers ?? [],

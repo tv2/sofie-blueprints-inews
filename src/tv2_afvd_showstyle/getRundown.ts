@@ -34,7 +34,7 @@ import * as _ from 'underscore'
 import { GfxSchemaGenerator } from '../tv2-common/cues/gfx-schema-generator'
 import { GfxSchemaGeneratorFacade } from '../tv2-common/cues/gfx-schema-generator-facade'
 import { Tv2OutputLayer } from '../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../tv2-constants/tv2-playout-content'
 import { getMixEffectBaseline } from '../tv2_afvd_studio/getBaseline'
 import { CasparLLayer, SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { SisyfosChannel, sisyfosChannels } from '../tv2_afvd_studio/sisyfosChannels'
@@ -123,7 +123,10 @@ class GlobalAdLibPiecesGenerator {
 				]
 			},
 			metaData: {
-				type: Tv2PieceType.REPLAY,
+				playoutContent: {
+					type: PlayoutContentType.REPLAY,
+					source: info.id
+				},
 				outputLayer: Tv2OutputLayer.PROGRAM,
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
@@ -181,7 +184,9 @@ class GlobalAdLibPiecesGenerator {
 				]
 			},
 			metaData: {
-				type: Tv2PieceType.UNKNOWN
+				playoutContent: {
+					type: PlayoutContentType.UNKNOWN
+				}
 			}
 		}
 	}
@@ -198,7 +203,9 @@ class GlobalAdLibPiecesGenerator {
 			expectedDuration: 0,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			metaData: {
-				type: Tv2PieceType.UNKNOWN,
+				playoutContent: {
+					type: PlayoutContentType.UNKNOWN
+				},
 				sisyfosPersistMetaData: {
 					sisyfosLayers: info.sisyfosLayers ?? [],
 					wantsToPersistAudio: info.wantsToPersistAudio,
@@ -253,7 +260,9 @@ class GlobalAdLibPiecesGenerator {
 					])
 				},
 				metadata: {
-					type: Tv2PieceType.COMMAND,
+					playoutContent: {
+						type: PlayoutContentType.COMMAND
+					},
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
@@ -286,7 +295,9 @@ class GlobalAdLibPiecesGenerator {
 					]
 				},
 				metadata: {
-					type: Tv2PieceType.COMMAND,
+					playoutContent: {
+						type: PlayoutContentType.COMMAND
+					},
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			}
@@ -324,7 +335,9 @@ class GlobalAdLibPiecesGenerator {
 					]
 				},
 				metaData: {
-					type: Tv2PieceType.COMMAND,
+					playoutContent: {
+						type: PlayoutContentType.COMMAND
+					},
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
@@ -357,7 +370,9 @@ class GlobalAdLibPiecesGenerator {
 					]
 				},
 				metaData: {
-					type: Tv2PieceType.COMMAND,
+					playoutContent: {
+						type: PlayoutContentType.COMMAND
+					},
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			},
@@ -386,7 +401,9 @@ class GlobalAdLibPiecesGenerator {
 					]
 				},
 				metaData: {
-					type: Tv2PieceType.COMMAND,
+					playoutContent: {
+						type: PlayoutContentType.COMMAND
+					},
 					outputLayer: Tv2OutputLayer.SECONDARY
 				}
 			}
@@ -422,7 +439,9 @@ class GlobalAdLibPiecesGenerator {
 				]
 			},
 			metaData: {
-				type: Tv2PieceType.COMMAND,
+				playoutContent: {
+					type: PlayoutContentType.COMMAND
+				},
 				outputLayer: Tv2OutputLayer.SECONDARY
 			}
 		}

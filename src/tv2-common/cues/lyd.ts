@@ -27,7 +27,7 @@ import {
 	SharedSourceLayer
 } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
 
 const STOP_AUDIO_BED_CLASS: string = 'STOP_AUDIO_BED_CLASS'
@@ -76,7 +76,9 @@ export function EvaluateLYD(
 				: getTimingEnable(parsedCue).enable.duration ?? undefined,
 			content: LydContent(context.config, file, lydType, fadeIn, fadeOut),
 			metaData: {
-				type: Tv2PieceType.AUDIO,
+				playoutContent: {
+					type: PlayoutContentType.AUDIO
+				},
 				outputLayer: Tv2OutputLayer.AUDIO
 			},
 			tags: [AdlibTags.ADLIB_FLOW_PRODUCER]
@@ -100,7 +102,9 @@ export function EvaluateLYD(
 			lifespan,
 			content: LydContent(context.config, file, lydType, fadeIn, fadeOut),
 			metaData: {
-				type: Tv2PieceType.AUDIO,
+				playoutContent: {
+					type: PlayoutContentType.AUDIO
+				},
 				outputLayer: Tv2OutputLayer.AUDIO
 			}
 		})

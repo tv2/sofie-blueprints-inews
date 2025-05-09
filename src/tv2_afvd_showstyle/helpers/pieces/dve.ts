@@ -15,7 +15,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayer } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
+import { parseDveSourcesToPlayoutContent, PlayoutContentType } from '../../../tv2-constants/tv2-playout-content'
 import { GalleryBlueprintConfig } from '../../../tv2_afvd_showstyle/helpers/config'
 import { SourceLayer } from '../../../tv2_afvd_showstyle/layers'
 import { MakeContentDVE } from '../content/dve'
@@ -90,8 +90,12 @@ export function EvaluateDVE(
 					content: content.content,
 					prerollDuration: Number(context.config.studio.CasparPrerollDuration) || 0,
 					metaData: {
+						playoutContent: {
+							type: PlayoutContentType.SPLIT_SCREEN,
+							layout: parsedCue.template,
+							sources: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
+						},
 						splitScreen: content.splitScreenPieceActionMetadata,
-						type: Tv2PieceType.SPLIT_SCREEN,
 						outputLayer: Tv2OutputLayer.PROGRAM,
 						mediaPlayerSessions: [partDefinition.segmentExternalId],
 						sources: parsedCue.sources,

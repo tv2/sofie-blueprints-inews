@@ -7,7 +7,7 @@ import {
 } from 'blueprints-integration'
 import { CueDefinitionPgmClean, findSourceInfo, literal, SegmentContext, SourceInfo } from 'tv2-common'
 import { SharedOutputLayer, SourceType, SwitcherAuxLLayer } from 'tv2-constants'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeSourceLayer } from '../layers'
 
@@ -52,7 +52,9 @@ export function OfftubeEvaluatePgmClean(
 			])
 		}),
 		metaData: {
-			type: Tv2PieceType.UNKNOWN
+			playoutContent: {
+				type: PlayoutContentType.UNKNOWN
+			}
 		}
 	})
 }

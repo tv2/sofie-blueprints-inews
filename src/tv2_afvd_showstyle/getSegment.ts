@@ -10,9 +10,8 @@ import {
 } from 'blueprints-integration'
 import { getSegmentBase, INewsPayload, literal, SegmentContext, SegmentContextImpl, TransitionStyle } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
-import * as _ from 'underscore'
 import { Tv2OutputLayer } from '../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../tv2-constants/tv2-playout-content'
 import { GALLERY_UNIFORM_CONFIG } from '../tv2_afvd_studio/uniformConfig'
 import { GalleryBlueprintConfig } from './helpers/config'
 import { CreateShowLifecyclePieces } from './helpers/pieces/showLifecycle'
@@ -93,7 +92,9 @@ export function CreatePartContinuity(
 					]
 				}),
 				metaData: {
-					type: Tv2PieceType.UNKNOWN,
+					playoutContent: {
+						type: PlayoutContentType.UNKNOWN
+					},
 					outputLayer: Tv2OutputLayer.PROGRAM
 				}
 			})

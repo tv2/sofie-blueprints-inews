@@ -16,7 +16,7 @@ import {
 } from 'tv2-common'
 import { AdlibActionType, AdlibTags, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { parseDveSourcesToPlayoutContent, PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { OfftubeMakeContentDVE } from '../content/OfftubeDVEContent'
 import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
@@ -70,7 +70,11 @@ export function OfftubeEvaluateDVE(
 			},
 			prerollDuration: Number(context.config.studio.CasparPrerollDuration) || 0,
 			metaData: literal<DVEPieceMetaData>({
-				type: Tv2PieceType.SPLIT_SCREEN,
+				playoutContent: {
+					type: PlayoutContentType.SPLIT_SCREEN,
+					layout: parsedCue.template,
+					sources: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
+				},
 				outputLayer: Tv2OutputLayer.PROGRAM,
 				mediaPlayerSessions: [partDefinition.segmentExternalId],
 				sources: parsedCue.sources,

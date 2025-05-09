@@ -20,7 +20,7 @@ import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, S
 import { makeMockGalleryContext } from '../../../../__mocks__/context'
 import { prefixLayer } from '../../../../tv2-common/__tests__/testUtil'
 import { Tv2OutputLayer } from '../../../../tv2-constants/tv2-output-layer'
-import { Tv2PieceType } from '../../../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../../../tv2-constants/tv2-playout-content'
 import { OVL_SHOW_NAME } from '../../../__tests__/configs'
 import { SourceLayer } from '../../../layers'
 import { EvaluateCueGraphic } from '../graphic'
@@ -122,7 +122,9 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
-					type: Tv2PieceType.GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId,
@@ -217,7 +219,9 @@ describe('grafik piece', () => {
 					])
 				}),
 				metaData: {
-					type: Tv2PieceType.OVERLAY_GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.OVERLAY_GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY
 				}
 			}),
@@ -256,7 +260,9 @@ describe('grafik piece', () => {
 					])
 				}),
 				metaData: {
-					type: Tv2PieceType.GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY
 				}
 			})
@@ -322,7 +328,9 @@ describe('grafik piece', () => {
 					])
 				}),
 				metaData: {
-					type: Tv2PieceType.OVERLAY_GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.OVERLAY_GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY
 				}
 			}),
@@ -361,7 +369,9 @@ describe('grafik piece', () => {
 					])
 				}),
 				metaData: {
-					type: Tv2PieceType.GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY
 				}
 			})
@@ -403,7 +413,9 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
-					type: Tv2PieceType.GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId,
@@ -558,7 +570,9 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
-					type: Tv2PieceType.GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId,
@@ -629,7 +643,9 @@ describe('grafik piece', () => {
 				},
 				lifespan: PieceLifespan.WithinPart,
 				metaData: {
-					type: Tv2PieceType.GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY,
 					partType: PartType.Kam,
 					pieceExternalId: dummyPart.externalId,
@@ -724,7 +740,9 @@ describe('grafik piece', () => {
 					])
 				}),
 				metaData: {
-					type: Tv2PieceType.OVERLAY_GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.OVERLAY_GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY
 				}
 			}),
@@ -762,7 +780,9 @@ describe('grafik piece', () => {
 					])
 				}),
 				metaData: {
-					type: Tv2PieceType.GRAPHICS,
+					playoutContent: {
+						type: PlayoutContentType.GRAPHICS
+					},
 					outputLayer: Tv2OutputLayer.OVERLAY
 				}
 			})
