@@ -127,7 +127,7 @@ describe('Server Resume', () => {
 							playoutContent: {
 								type: PlayoutContentType.SPLIT_SCREEN,
 								layout: '',
-								sources: []
+								inputPlayoutContents: []
 							},
 							sources: {
 								INP1: { sourceType: SourceType.SERVER },
@@ -178,7 +178,7 @@ describe('Server Resume', () => {
 							playoutContent: {
 								type: PlayoutContentType.SPLIT_SCREEN,
 								layout: '',
-								sources: []
+								inputPlayoutContents: []
 							},
 							sources: {
 								INP1: { sourceType: SourceType.SERVER },

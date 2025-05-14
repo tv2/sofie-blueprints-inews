@@ -93,7 +93,7 @@ export function EvaluateDVE(
 						playoutContent: {
 							type: PlayoutContentType.SPLIT_SCREEN,
 							layout: parsedCue.template,
-							sources: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
+							inputPlayoutContents: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
 						},
 						splitScreen: content.splitScreenPieceActionMetadata,
 						outputLayer: Tv2OutputLayer.PROGRAM,

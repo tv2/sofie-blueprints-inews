@@ -5,6 +5,7 @@ export enum PlayoutContentType {
 	REMOTE = 'REMOTE',
 	REPLAY = 'REPLAY',
 	SPLIT_SCREEN = 'SPLIT_SCREEN',
+	SPLIT_SCREEN_INPUT = 'SPLIT_SCREEN_INPUT',
 	GRAPHICS = 'GRAPHICS',
 	OVERLAY_GRAPHICS = 'OVERLAY_GRAPHICS',
 	VIDEO_CLIP = 'VIDEO_CLIP',
@@ -20,6 +21,7 @@ export enum PlayoutContentType {
 export type PlayoutContent =
 	| SourcePlayoutContent
 	| SplitScreenPlayoutContent
+	| SplitScreenInputPlayoutContent
 	| GraphicsPlayoutContent
 	| OverlayGraphicsPlayoutContent
 	| VideoPlayoutContent
@@ -48,10 +50,16 @@ interface ReplayPlayoutContent {
 	source: string
 }
 
-interface SplitScreenPlayoutContent {
+export interface SplitScreenPlayoutContent {
 	type: PlayoutContentType.SPLIT_SCREEN
 	layout: string
-	sources: SourcePlayoutContent[]
+	inputPlayoutContents: Record<number, SplitScreenInputPlayoutContent>
+}
+
+export interface SplitScreenInputPlayoutContent {
+	type: PlayoutContentType.SPLIT_SCREEN_INPUT
+	inputIndex: number // zero-indexed
+	sourcePlayoutContent: SourcePlayoutContent
 }
 
 interface GraphicsPlayoutContent {
@@ -98,23 +106,39 @@ interface UnknownPlayoutContent {
 export function parseDveSourcesToPlayoutContent(
 	sources: DVESources,
 	context: ShowStyleContext
-): SourcePlayoutContent[] {
-	const playoutContents: SourcePlayoutContent[] = []
+): Record<number, SplitScreenInputPlayoutContent> {
+	const playoutContents: Record<number, SplitScreenInputPlayoutContent> = []
 	const inp1: SourcePlayoutContent | undefined = parseSourceDefinitionToPlayoutContent(context, sources.INP1)
 	if (inp1) {
-		playoutContents.push(inp1)
+		playoutContents[0] = {
+			type: PlayoutContentType.SPLIT_SCREEN_INPUT,
+			inputIndex: 0,
+			sourcePlayoutContent: inp1
+		}
 	}
 	const inp2: SourcePlayoutContent | undefined = parseSourceDefinitionToPlayoutContent(context, sources.INP2)
 	if (inp2) {
-		playoutContents.push(inp2)
+		playoutContents[1] = {
+			type: PlayoutContentType.SPLIT_SCREEN_INPUT,
+			inputIndex: 1,
+			sourcePlayoutContent: inp2
+		}
 	}
 	const inp3: SourcePlayoutContent | undefined = parseSourceDefinitionToPlayoutContent(context, sources.INP3)
 	if (inp3) {
-		playoutContents.push(inp3)
+		playoutContents[2] = {
+			type: PlayoutContentType.SPLIT_SCREEN_INPUT,
+			inputIndex: 2,
+			sourcePlayoutContent: inp3
+		}
 	}
 	const inp4: SourcePlayoutContent | undefined = parseSourceDefinitionToPlayoutContent(context, sources.INP4)
 	if (inp4) {
-		playoutContents.push(inp4)
+		playoutContents[3] = {
+			type: PlayoutContentType.SPLIT_SCREEN_INPUT,
+			inputIndex: 3,
+			sourcePlayoutContent: inp4
+		}
 	}
 	return playoutContents
 }
