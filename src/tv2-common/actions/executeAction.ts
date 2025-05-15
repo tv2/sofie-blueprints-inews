@@ -576,7 +576,7 @@ async function executeActionSelectDVE<
 		playoutContent: {
 			type: PlayoutContentType.SPLIT_SCREEN,
 			layout: parsedCue.template,
-			sources: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
+			inputPlayoutContents: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
 		},
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
@@ -768,7 +768,7 @@ async function executeActionSelectDVELayout<
 			playoutContent: {
 				type: PlayoutContentType.SPLIT_SCREEN,
 				layout: userData.config.DVEName,
-				sources: []
+				inputPlayoutContents: []
 			},
 			sources,
 			config: userData.config,

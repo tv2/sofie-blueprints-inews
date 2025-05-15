@@ -73,7 +73,7 @@ export function OfftubeEvaluateDVE(
 				playoutContent: {
 					type: PlayoutContentType.SPLIT_SCREEN,
 					layout: parsedCue.template,
-					sources: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
+					inputPlayoutContents: parseDveSourcesToPlayoutContent(parsedCue.sources, context)
 				},
 				outputLayer: Tv2OutputLayer.PROGRAM,
 				mediaPlayerSessions: [partDefinition.segmentExternalId],
