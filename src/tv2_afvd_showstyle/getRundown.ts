@@ -10,7 +10,6 @@ import {
 } from 'blueprints-integration'
 import {
 	CasparPlayerClipLoadingLoop,
-	createDskBaseline,
 	CreateDSKBaselineAdlibs,
 	CreateLYDBaseline,
 	findDskFullGfx,
@@ -511,9 +510,6 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 					url: context.config.studio.SofieHostURL + '/countdowns/studio0/presenter'
 				}
 			}),
-
-			// keyers
-			...createDskBaseline(context.config, context.videoSwitcher),
 
 			// ties the DSK for jingles to ME4 USK1 to have effects on CLEAN (ME4)
 			context.uniformConfig.switcherLLayers.jingleUskMixEffect
