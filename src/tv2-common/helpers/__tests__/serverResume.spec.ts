@@ -8,7 +8,7 @@ import {
 } from 'blueprints-integration'
 import { DVEPieceMetaData, literal, PieceMetaData, RemoteType, SourceDefinitionRemote } from 'tv2-common'
 import { SharedSourceLayer, SourceType } from 'tv2-constants'
-import { Tv2PieceType } from '../../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../../tv2-constants/tv2-playout-content'
 import { getServerPositionForPartInstance } from '../serverResume'
 
 const EKSTERN_SOURCE: SourceDefinitionRemote = {
@@ -124,7 +124,11 @@ describe('Server Resume', () => {
 							timelineObjects: []
 						}),
 						metaData: literal<Partial<DVEPieceMetaData> & PieceMetaData>({
-							type: Tv2PieceType.SPLIT_SCREEN,
+							playoutContent: {
+								type: PlayoutContentType.SPLIT_SCREEN,
+								layout: '',
+								inputPlayoutContents: []
+							},
 							sources: {
 								INP1: { sourceType: SourceType.SERVER },
 								INP2: EKSTERN_SOURCE
@@ -171,7 +175,11 @@ describe('Server Resume', () => {
 							timelineObjects: []
 						}),
 						metaData: literal<Partial<DVEPieceMetaData> & PieceMetaData>({
-							type: Tv2PieceType.SPLIT_SCREEN,
+							playoutContent: {
+								type: PlayoutContentType.SPLIT_SCREEN,
+								layout: '',
+								inputPlayoutContents: []
+							},
 							sources: {
 								INP1: { sourceType: SourceType.SERVER },
 								INP2: EKSTERN_SOURCE

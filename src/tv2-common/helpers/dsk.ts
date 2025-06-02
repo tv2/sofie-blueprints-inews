@@ -8,7 +8,7 @@ import {
 } from 'blueprints-integration'
 import { getDskLLayerName, literal, ShowStyleContext, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
 import { AdlibTags, DskRole, SharedOutputLayer } from 'tv2-constants'
-import { Tv2PieceType } from '../../tv2-constants/tv2-piece-type'
+import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
 import { ATEMModel } from '../../types/atem'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
 import { TableConfigItemDSK } from '../types'
@@ -128,7 +128,9 @@ export function CreateDSKBaselineAdlibs(
 						]
 					},
 					metaData: {
-						type: Tv2PieceType.COMMAND
+						playoutContent: {
+							type: PlayoutContentType.COMMAND
+						}
 					}
 				})
 			} else {
@@ -155,7 +157,9 @@ export function CreateDSKBaselineAdlibs(
 						]
 					},
 					metaData: {
-						type: Tv2PieceType.COMMAND
+						playoutContent: {
+							type: PlayoutContentType.COMMAND
+						}
 					}
 				})
 			}

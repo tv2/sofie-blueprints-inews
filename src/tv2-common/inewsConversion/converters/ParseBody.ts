@@ -243,6 +243,17 @@ export function ParseBody(
 				.replace(/<\/tab>/i, '')
 				.trim()
 
+			if (typeStr && /SLUTORD/i.test(typeStr)) {
+				if (definition.endWords) {
+					definition.endWords += ` ${typeStr.replace(/^SLUTORD:? ?/i, '')}`
+				} else {
+					definition.endWords = typeStr.replace(/^SLUTORD:? ?/i, '')
+				}
+				// We should just add script for end words
+				addScript(line, definition)
+				return
+			}
+
 			if (typeStr && ACCEPTED_RED_TEXT.some((r) => r.test(typeStr))) {
 				const inlineCues = line
 					.replace(/<\/?p>/g, '')
@@ -327,14 +338,6 @@ export function ParseBody(
 				}
 
 				definition.cues.push(...secondaryInlineCues)
-			}
-
-			if (typeStr && /SLUTORD/i.test(typeStr)) {
-				if (definition.endWords) {
-					definition.endWords += ` ${typeStr.replace(/^SLUTORD:? ?/i, '')}`
-				} else {
-					definition.endWords = typeStr.replace(/^SLUTORD:? ?/i, '')
-				}
 			}
 		}
 
