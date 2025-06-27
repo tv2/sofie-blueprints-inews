@@ -380,6 +380,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				BreakerName: '',
 				ClipName: '',
 				Duration: 0,
+				MixDurationInFrames: 0,
 				StartAlpha: 0,
 				EndAlpha: 0,
 				Autonext: true
@@ -414,13 +415,22 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				rank: 2
 			},
 			{
+				id: 'MixDurationInFrames',
+				name: 'Mix Duration',
+				description: 'Number of frames for mix transition.',
+				type: ConfigManifestEntryType.INT,
+				required: true,
+				defaultVal: 0,
+				rank: 3
+			},
+			{
 				id: 'StartAlpha',
 				name: 'Alpha at Start',
 				description: 'Number of frames of alpha at start',
 				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
-				rank: 3
+				rank: 4
 			},
 			{
 				id: 'EndAlpha',
@@ -429,7 +439,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,
-				rank: 4
+				rank: 5
 			},
 			{
 				id: 'Autonext',
@@ -438,7 +448,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.BOOLEAN,
 				required: true,
 				defaultVal: true,
-				rank: 5
+				rank: 6
 			},
 			{
 				id: 'LoadFirstFrame',
@@ -447,7 +457,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				type: ConfigManifestEntryType.BOOLEAN,
 				required: true,
 				defaultVal: true,
-				rank: 6
+				rank: 7
 			}
 		]
 	},

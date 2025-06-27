@@ -73,7 +73,8 @@ export function CreateJingleContentBase<
 				priority: 1,
 				content: {
 					input: jingleDsk.Fill,
-					transition: TransitionStyle.CUT
+					transition: TransitionStyle.MIX,
+					transitionDuration: breakerConfig.MixDurationInFrames || 0
 				}
 			}),
 			...getDskOnAirTimelineObjects(context, DskRole.JINGLE, { start: config.studio.CasparPrerollDuration }),

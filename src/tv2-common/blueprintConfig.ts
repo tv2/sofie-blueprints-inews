@@ -15,6 +15,7 @@ export interface TableConfigItemBreaker {
 	Duration: number
 	StartAlpha: number
 	EndAlpha: number
+	MixDurationInFrames: number
 	Autonext: boolean
 	LoadFirstFrame: boolean
 }
