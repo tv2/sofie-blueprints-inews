@@ -15,6 +15,7 @@ describe('GetJinglePartPropertiesFromTableValue', () => {
 		const properties = GetJinglePartPropertiesFromTableValue({
 			...BREAKER,
 			Duration: 200,
+			MixDurationInFrames: 0,
 			StartAlpha: 50,
 			EndAlpha: 100
 		})
@@ -24,6 +25,7 @@ describe('GetJinglePartPropertiesFromTableValue', () => {
 		const properties = GetJinglePartPropertiesFromTableValue({
 			...BREAKER,
 			Duration: 50,
+			MixDurationInFrames: 0,
 			StartAlpha: 100,
 			EndAlpha: 50
 		})
@@ -33,6 +35,7 @@ describe('GetJinglePartPropertiesFromTableValue', () => {
 		const properties = GetJinglePartPropertiesFromTableValue({
 			...BREAKER,
 			Duration: 100,
+			MixDurationInFrames: 0,
 			StartAlpha: 20,
 			EndAlpha: 50
 		})
@@ -42,6 +45,7 @@ describe('GetJinglePartPropertiesFromTableValue', () => {
 		const properties = GetJinglePartPropertiesFromTableValue({
 			...BREAKER,
 			Duration: 100,
+			MixDurationInFrames: 0,
 			StartAlpha: 75,
 			EndAlpha: 50
 		})
@@ -50,6 +54,7 @@ describe('GetJinglePartPropertiesFromTableValue', () => {
 	it('Disables autoNext when Autonext is false', () => {
 		const properties = GetJinglePartPropertiesFromTableValue({
 			...BREAKER,
+			MixDurationInFrames: 0,
 			Autonext: false
 		})
 		expect(properties.autoNext).toBe(false)
@@ -57,6 +62,7 @@ describe('GetJinglePartPropertiesFromTableValue', () => {
 	it('Enables autoNext when Autonext is true', () => {
 		const properties = GetJinglePartPropertiesFromTableValue({
 			...BREAKER,
+			MixDurationInFrames: 0,
 			Autonext: true
 		})
 		expect(properties.autoNext).toBe(true)
