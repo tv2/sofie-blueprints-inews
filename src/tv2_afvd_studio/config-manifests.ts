@@ -197,7 +197,7 @@ export const manifestAFVDSourcesRM = MakeConfigForSources('RM', 'Live', true, tr
 
 export const manifestAFVDSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, false, [])
 
-export const manifestForAxiliaryMappings = MakeConfigForAuxiliary('Auxiliary', 'Auxiliary', [])
+export const manifestForAuxiliaryMappings = MakeConfigForAuxiliary('Auxiliary', 'Auxiliary', [])
 
 export const manifestAFVDSourcesReplay = MakeConfigForSources('Replay', 'Replay', false, false, [
 	{
@@ -317,7 +317,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	manifestAFVDSourcesCam,
 	manifestAFVDSourcesRM,
 	manifestAFVDSourcesFeed,
-	manifestForAxiliaryMappings,
+	manifestForAuxiliaryMappings,
 	manifestAFVDSourcesReplay,
 	manifestAFVDSourcesABMediaPlayers,
 	manifestAFVDStudioMics,
