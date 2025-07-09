@@ -6,6 +6,7 @@ import {
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
+	Part,
 	PartDefinition,
 	ShowStyleContext
 } from 'tv2-common'
@@ -16,6 +17,7 @@ import { EvaluateCueRouting } from './routing'
 export function EvaluateCueGraphic(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partId: string,
+	part: Part,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	partDefinition: PartDefinition,
 	rank: number,
@@ -28,8 +30,14 @@ export function EvaluateCueGraphic(
 
 	if (GraphicIsInternal(parsedCue)) {
 		result.push(CreateInternalGraphic(context, partId, parsedCue, partDefinition, adlib))
+		if (parsedCue.target === 'FULL') {
+			part.title = parsedCue.graphic.template
+		}
 	} else if (GraphicIsPilot(parsedCue)) {
 		result.push(EvaluateCueGraphicPilot(context, partId, parsedCue, partDefinition.segmentExternalId, rank, adlib))
+		if (parsedCue.target === 'FULL') {
+			part.title = parsedCue.graphic.name
+		}
 	}
 
 	return result

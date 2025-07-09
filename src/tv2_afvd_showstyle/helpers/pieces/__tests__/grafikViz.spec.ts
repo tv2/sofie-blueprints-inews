@@ -14,6 +14,7 @@ import {
 	GraphicPieceMetaData,
 	GraphicPilot,
 	literal,
+	Part,
 	PartDefinitionKam
 } from 'tv2-common'
 import { AdlibTags, CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
@@ -107,6 +108,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -178,6 +180,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -287,6 +290,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext({ studioConfig: { PreventOverlayWithFull: false } }),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -398,6 +402,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -458,6 +463,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -486,6 +492,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -514,6 +521,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -556,6 +564,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -628,6 +637,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -699,6 +709,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -812,6 +823,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -849,6 +861,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,
@@ -881,6 +894,7 @@ describe('grafik piece', () => {
 		const result = EvaluateCueGraphic(
 			makeMockGalleryContext(),
 			partId,
+			{} as unknown as Part,
 			cue,
 			dummyPart,
 			0,

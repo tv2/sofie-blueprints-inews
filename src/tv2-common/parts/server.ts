@@ -16,7 +16,7 @@ import {
 	ServerPieceMetaData,
 	ShowStyleContext
 } from 'tv2-common'
-import { AdlibActionType, PartType, SharedOutputLayer, SharedSourceLayer, TallyTags } from 'tv2-constants'
+import { AdlibActionType, SharedOutputLayer, SharedSourceLayer, TallyTags } from 'tv2-constants'
 import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
@@ -155,10 +155,7 @@ function getActualDuration(duration: number, sanitisedScript: string, props: Ser
 }
 
 function getDisplayTitle(partDefinition: PartDefinition): string {
-	if (partDefinition.type === PartType.VO || partDefinition.type === PartType.Server) {
-		return partDefinition.rawType
-	}
-	return 'SERVER'
+	return partDefinition.fields.videoId ?? partDefinition.storyName
 }
 
 function getScriptWithoutLineBreaks(partDefinition: PartDefinition) {
