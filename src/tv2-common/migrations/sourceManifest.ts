@@ -118,7 +118,7 @@ export function MakeConfigForAuxiliary(
 				required: true,
 				defaultVal: '',
 				rank: 2
-			},
+			}
 		]
 	}
 }

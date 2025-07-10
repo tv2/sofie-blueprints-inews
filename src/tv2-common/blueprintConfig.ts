@@ -3,6 +3,7 @@ import {
 	DVEConfigInput,
 	SourceInfo,
 	SwitcherType,
+	TableConfigForAuxiliary,
 	TableConfigItemDSK,
 	TableConfigItemSourceMappingWithSisyfos
 } from 'tv2-common'
@@ -130,6 +131,7 @@ export interface TV2StudioConfigBase {
 	}
 	AtemSettings: {}
 	StudioMics: string[]
+	SourcesAuxiliary: TableConfigForAuxiliary[]
 	SourcesRM: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesFeed: TableConfigItemSourceMappingWithSisyfos[]
 	SourcesCam: TableConfigItemSourceMappingWithSisyfos[]
