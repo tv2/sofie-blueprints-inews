@@ -23,6 +23,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	GraphicIgnoreStatus: false,
 	AudioBedIgnoreStatus: false,
 	DVEIgnoreStatus: false,
+	SourcesAuxiliary: [],
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesFeed: [],
