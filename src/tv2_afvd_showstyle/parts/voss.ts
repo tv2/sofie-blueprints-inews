@@ -1,3 +1,4 @@
+import { BlueprintMappings, VTContent, WithTimeline } from '@sofie-automation/blueprints-integration'
 import {
 	BlueprintResultPart,
 	HackPartMediaObjectSubscription,
@@ -6,53 +7,75 @@ import {
 	IBlueprintPiece,
 	PieceLifespan
 } from 'blueprints-integration'
+// import * as TSR from 'timeline-state-resolver-types'
 import {
 	AddScript,
 	CreatePartInvalid,
-	// CreatePartServerBase,
 	CreatePartKamBase,
+	// EnableServer,
 	findCameraSourceForVoss,
+	getServerSeek,
 	GetSisyfosTimelineObjForCamera,
+	getSourceDuration,
+	GetTagForServer,
+	MakeContentServer,
+	MakeContentServerSourceLayers,
 	Part,
+	PartDefinition,
 	PartDefinitionVOSS,
 	PieceMetaData,
+	SanitizeString,
 	SegmentContext,
-	// ServerPartProps,
-	TransitionStyle
+	ServerContentProps, ServerPartLayers,
+	ServerPartProps,
+	ShowStyleContext,
+	// SpecialInput,
+	TableConfigItemSourceMapping,
+	TransitionStyle,
+	TV2BlueprintConfigBase
+	// VideoSwitcher
 } from 'tv2-common'
-import { SharedOutputLayer } from 'tv2-constants'
+import { SharedOutputLayer, TallyTags } from 'tv2-constants'
+import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
+import { StudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import { CasparLLayer, SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import { GalleryBlueprintConfig } from '../helpers/config'
+import { EvaluateCues } from '../helpers/pieces/evaluateCues'
 import { SourceLayer } from '../layers'
 import { CreateEffektForpart } from './effekt'
-import { EvaluateCues } from '../helpers/pieces/evaluateCues'
-// import { CasparLLayer, SisyfosLLAyer } from 'src/tv2_afvd_studio/layers'
 
 export async function CreatePartVOSS(
 	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionVOSS,
 	partIndex: number,
 	totalWords: number,
-	// partProps: ServerPartProps
+	serverPartProps: ServerPartProps
 ): Promise<BlueprintResultPart> {
-	return makePartWithCamera(context, partDefinition, partIndex, totalWords)
-	// const vo = await makeVoiceOver(context, partDefinition, partIndex, partProps)
-
-	// return {
-	// 	actions: [...cam.actions, ...vo.actions],
-	// 	part: cam.part,
-	// 	adLibPieces: [...cam.adLibPieces, ...vo.adLibPieces],
-	// 	pieces: [...cam.pieces, ...vo.pieces]
-	// }
+	return makePartWithCamera(context, partDefinition, partIndex, serverPartProps, totalWords)
+	// return CreatePartServer(context, partDefinition, partIndex, serverPartProps)
 }
 
 async function makePartWithCamera(
 	context: SegmentContext<GalleryBlueprintConfig>,
 	partDefinition: PartDefinitionVOSS,
 	partIndex: number,
+	serverPartProps: ServerPartProps,
 	totalWords: number
 ): Promise<BlueprintResultPart> {
+	const sourceLayers: ServerPartLayers = {
+		SourceLayer: {
+			PgmServer: serverPartProps.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
+			SelectedServer: serverPartProps.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
+		},
+		Caspar: {
+			ClipPending: CasparLLayer.CasparPlayerClipPending
+		},
+		Sisyfos: {
+			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+		}
+	}
 	const partKamBase = CreatePartKamBase(context, partDefinition, totalWords)
 
 	let part: Part = partKamBase.part.part
@@ -77,7 +100,7 @@ async function makePartWithCamera(
 
 	pieces.push({
 		externalId: partDefinition.externalId,
-		name: part.title,
+		name: `KAM ${partDefinition.sourceDefinition.cameraId}`,
 		enable: { start: 0 },
 		outputLayerId: SharedOutputLayer.PGM,
 		sourceLayerId: SourceLayer.PgmCam,
@@ -109,6 +132,17 @@ async function makePartWithCamera(
 			]
 		}
 	})
+
+	const vossVideoClipPiece: IBlueprintPiece<PieceMetaData> | undefined = await createVossVideoClipPiece(
+		context,
+		partDefinition,
+		sourceLayers,
+		serverPartProps
+	)
+	if (vossVideoClipPiece) {
+		pieces.push(vossVideoClipPiece)
+	}
+
 	await EvaluateCues(
 		context,
 		part,
@@ -138,66 +172,101 @@ async function makePartWithCamera(
 	}
 }
 
-// async function makeVoiceOver(
-// 	context: SegmentContext<GalleryBlueprintConfig>,
-// 	partDefinition: PartDefinitionVOSS,
-// 	partIndex: number,
-// 	partProps: ServerPartProps
-// ): Promise<BlueprintResultPart> {
-// 	const basePartProps = await CreatePartServerBase(context, partDefinition, partProps, {
-// 		SourceLayer: {
-// 			PgmServer: partProps.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
-// 			SelectedServer: partProps.voLayer ? SourceLayer.SelectedVoiceOver : SourceLayer.SelectedServer
+async function createVossVideoClipPiece(
+	context: ShowStyleContext<TV2BlueprintConfigBase<StudioConfig>>,
+	partDefinition: PartDefinitionVOSS,
+	sourceLayers: MakeContentServerSourceLayers,
+	partProps: ServerPartProps
+): Promise<IBlueprintPiece<PieceMetaData> | undefined> {
+	const auxiliaryId: string = partDefinition.sourceDefinition.auxiliaryId
+	const auxiliaryMapping: ({ AuxiliaryId: string; LayerId: string } & TableConfigItemSourceMapping) | undefined =
+		context.config.studio.SourcesAuxiliary.find((entry) => entry.AuxiliaryId === auxiliaryId)
+
+	if (!auxiliaryMapping) {
+		context.core.notifyUserWarning(
+			`Failed creating VOSS video clip piece: Unable to find auxiliary mapping for auxiliary id ${auxiliaryId}.`
+		)
+		context.core.logWarning(
+			`Failed creating VOSS video clip piece: Unable to find auxiliary mapping for auxiliary id ${auxiliaryId}.`
+		)
+		return
+	}
+
+	const layerId: string = auxiliaryMapping.LayerId
+	const studioMappings: Readonly<BlueprintMappings> = context.core.getStudioMappings()
+	const layerMapping = Object.entries(studioMappings).find(([mappingLayerId]) => mappingLayerId === layerId)?.[1]
+	if (!layerMapping) {
+		context.core.notifyUserWarning(
+			`Failed creating VOSS video clip piece: Unable to find layer mapping with layer id ${auxiliaryMapping.LayerId}.`
+		)
+		context.core.logWarning(
+			`Failed creating VOSS video clip piece: Unable to find layer mapping with layer id ${auxiliaryMapping.LayerId}.`
+		)
+		return
+	}
+
+	const file = getVideoId(partDefinition)
+	const mediaObjectDurationSec = await context.core.hackGetMediaObjectDuration(file)
+	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
+	const sourceDuration = getSourceDuration(mediaObjectDuration, context.config.studio.ServerPostrollDuration)
+
+	const contentProps: ServerContentProps = {
+		seek: getServerSeek(partProps.lastServerPosition, file, mediaObjectDuration, partProps.actionTriggerMode),
+		clipDuration: mediaObjectDuration ?? partProps.tapeTime * 1000,
+		mediaPlayerSession: SanitizeString(`segment_${partProps.session ?? partDefinition.segmentExternalId}_${file}`),
+		sourceDuration,
+		file
+	}
+	const content: WithTimeline<VTContent> = MakeContentServer(context, sourceLayers, partProps, contentProps)
+	// 		...GetVTContentProperties(context.config, contentProps),
+	// 		timelineObjects: [
+	// 			// EnableServer(mediaPlayerSessionId),
+	// 			// createVideoClipTimelineObject(context.videoSwitcher, SwitcherAuxLLayer.WALL, contentProps)
+	// 		]
+	// 	}
+
+	return {
+		externalId: partDefinition.externalId,
+		name: `${contentProps.file} \u2192 AUX${auxiliaryId}`,
+		lifespan: PieceLifespan.OutOnSegmentEnd,
+		sourceLayerId: auxiliaryMapping.LayerId,
+		outputLayerId: SharedOutputLayer.AUX,
+		enable: {
+			start: 0
+		},
+		metaData: {
+			playoutContent: {
+				type: PlayoutContentType.VIDEO_CLIP
+			},
+			outputLayer: Tv2OutputLayer.AUXILIARY,
+			sourceName: contentProps.file,
+			audioMode: Tv2AudioMode.VOICE_OVER,
+			// TODO: Should we add sisyfosPersistMetadata?
+			mediaPlayerSessions: partProps.session ? [partProps.session] : [],
+			modifiedByAction: false
+		},
+		content,
+		prerollDuration: context.config.studio.CasparPrerollDuration,
+		tags: [GetTagForServer(partDefinition.segmentExternalId, contentProps.file, true), TallyTags.SERVER_IS_LIVE]
+	}
+}
+
+function getVideoId(partDefinition: PartDefinition): string {
+	return partDefinition.fields.videoId ? partDefinition.fields.videoId : ''
+}
+
+// function createVideoClipTimelineObject(
+// 	videoSwitcher: VideoSwitcher,
+// 	auxiliaryLayerId: SwitcherAuxLLayer,
+// 	serverContentProps: ServerContentProps
+// ): TSR.TSRTimelineObj {
+// 	return videoSwitcher.getAuxTimelineObject({
+// 		layer: auxiliaryLayerId, // TODO: Should this be clip pending
+// 		content: {
+// 			input: SpecialInput.AB_PLACEHOLDER
 // 		},
-// 		Caspar: {
-// 			ClipPending: CasparLLayer.CasparPlayerClipPending
-// 		},
-// 		Sisyfos: {
-// 			ClipPending: SisyfosLLAyer.SisyfosSourceClipPending
+// 		metaData: {
+// 			mediaPlayerSession: serverContentProps.mediaPlayerSession
 // 		}
 // 	})
-
-// 	if (basePartProps.invalid) {
-// 		return basePartProps.part
-// 	}
-
-// 	let part: Part = basePartProps.part.part
-// 	const pieces = basePartProps.part.pieces
-// 	const adLibPieces = basePartProps.part.adLibPieces
-// 	const duration = basePartProps.duration
-// 	const actions: IBlueprintActionManifest[] = []
-// 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
-
-// 	part = {
-// 		...part,
-// 		...CreateEffektForpart(context, partDefinition, pieces)
-// 	}
-// 	AddScript(partDefinition, pieces, duration, SourceLayer.PgmScript)
-
-// 	await EvaluateCues(
-// 		context,
-// 		part,
-// 		pieces,
-// 		adLibPieces,
-// 		actions,
-// 		mediaSubscriptions,
-// 		partDefinition.cues,
-// 		partDefinition,
-// 		partIndex,
-// 		{}
-// 	)
-
-// 	part.hackListenToMediaObjectUpdates = (part.hackListenToMediaObjectUpdates || []).concat(mediaSubscriptions)
-
-// 	if (pieces.length === 0) {
-// 		part.invalid = true
-// 		part.invalidity = { reason: 'The part has no pieces.' }
-// 	}
-
-// 	return {
-// 		part,
-// 		adLibPieces,
-// 		pieces,
-// 		actions
-// 	}
 // }
