@@ -20,6 +20,7 @@ import {
 	CueDefinitionTelefon,
 	IsTargetingFull,
 	IsTargetingOVL,
+	Part,
 	PartDefinition,
 	PieceMetaData,
 	ShowStyleContext
@@ -60,6 +61,7 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueGraphic?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
 		partId: string,
+		part: Part,
 		parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 		partDefinition: PartDefinition,
 		rank: number,
@@ -101,6 +103,7 @@ export interface EvaluateCuesShowstyleOptions {
 	) => EvaluateCueResult
 	EvaluateCueDVE?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
+		part: Part,
 		pieces: IBlueprintPiece[],
 		actions: IBlueprintActionManifest[],
 		partDefinition: PartDefinition,
@@ -119,16 +122,18 @@ export interface EvaluateCuesShowstyleOptions {
 	EvaluateCueTelefon?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
 		partId: string,
+		part: Part,
 		partDefinition: PartDefinition,
 		parsedCue: CueDefinitionTelefon,
 		adlib?: Adlib
 	) => EvaluateCueResult
 	EvaluateCueJingle?: (
 		context: ShowStyleContext<TV2ShowStyleConfig>,
+		part: Part,
 		pieces: IBlueprintPiece[],
 		actions: IBlueprintActionManifest[],
 		parsedCue: CueDefinitionJingle,
-		part: PartDefinition,
+		partDefinition: PartDefinition,
 		adlib?: boolean,
 		rank?: number,
 		effekt?: boolean
@@ -222,6 +227,7 @@ export async function EvaluateCuesBase(
 							showStyleOptions.EvaluateCueGraphic(
 								context,
 								partDefinition.externalId,
+								part,
 								cue,
 								partDefinition,
 								adlibRank,
@@ -247,10 +253,10 @@ export async function EvaluateCuesBase(
 					break
 				case CueType.DVE:
 					if (showStyleOptions.EvaluateCueDVE) {
-						showStyleOptions.EvaluateCueDVE(context, pieces, actions, partDefinition, cue, shouldAdlib, adlibRank)
+						showStyleOptions.EvaluateCueDVE(context, part, pieces, actions, partDefinition, cue, shouldAdlib, adlibRank)
 						// Always make an adlib for DVEs
 						if (!shouldAdlib) {
-							showStyleOptions.EvaluateCueDVE(context, pieces, actions, partDefinition, cue, true, adlibRank)
+							showStyleOptions.EvaluateCueDVE(context, part, pieces, actions, partDefinition, cue, true, adlibRank)
 						}
 					}
 					break
@@ -269,13 +275,22 @@ export async function EvaluateCuesBase(
 				case CueType.Telefon:
 					if (showStyleOptions.EvaluateCueTelefon) {
 						result.push(
-							showStyleOptions.EvaluateCueTelefon(context, partDefinition.externalId, partDefinition, cue, adlib)
+							showStyleOptions.EvaluateCueTelefon(context, partDefinition.externalId, part, partDefinition, cue, adlib)
 						)
 					}
 					break
 				case CueType.Jingle:
 					if (showStyleOptions.EvaluateCueJingle) {
-						showStyleOptions.EvaluateCueJingle(context, pieces, actions, cue, partDefinition, shouldAdlib, adlibRank)
+						showStyleOptions.EvaluateCueJingle(
+							context,
+							part,
+							pieces,
+							actions,
+							cue,
+							partDefinition,
+							shouldAdlib,
+							adlibRank
+						)
 					}
 					break
 				case CueType.LYD:

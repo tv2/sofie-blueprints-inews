@@ -7,6 +7,7 @@ import {
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
+	Part,
 	PartDefinition,
 	ShowStyleContext
 } from 'tv2-common'
@@ -15,6 +16,7 @@ import { OfftubeBlueprintConfig } from '../helpers/config'
 export function OfftubeEvaluateGrafikCaspar(
 	context: ShowStyleContext<OfftubeBlueprintConfig>,
 	partId: string,
+	_part: Part,
 	parsedCue: CueDefinitionGraphic<GraphicInternalOrPilot>,
 	partDefinition: PartDefinition,
 	rank: number,
