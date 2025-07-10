@@ -22,6 +22,7 @@ import {
 	PartDefinitionGrafik,
 	PartDefinitionTeknik,
 	PartDefinitionTelefon,
+	PartDefinitionVOSS,
 	TimeFromINewsField
 } from './inewsConversion'
 import { CreatePartInvalid, ServerPartProps } from './parts'
@@ -91,8 +92,16 @@ export interface GetSegmentShowstyleOptions<ShowStyleConfig extends TV2ShowStyle
 		context: ShowStyleContext<ShowStyleConfig>,
 		partDefinition: PartDefinitionEVS,
 		partIndex: number,
-		totalWords: number
+		totalWords: number,
 	) => BlueprintResultPart | Promise<BlueprintResultPart>
+	CreatePartVOSS?: (
+		context: ShowStyleContext<ShowStyleConfig>,
+		partDefinition: PartDefinitionVOSS,
+		partIndex: number,
+		totalWords: number,
+		partProps: ServerPartProps
+	) => BlueprintResultPart | Promise<BlueprintResultPart>
+
 }
 
 interface Segment<T> extends IBlueprintSegment<T> {
@@ -274,6 +283,20 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 			case PartType.EVS:
 				if (showStyleOptions.CreatePartEVS) {
 					blueprintParts.push(await showStyleOptions.CreatePartEVS(context, partDefinition, partIndex, totalWords))
+				}
+				break
+			case PartType.VOSS:
+				if (showStyleOptions.CreatePartVOSS) {
+					blueprintParts.push(await showStyleOptions.CreatePartVOSS(context, partDefinition, partIndex, totalWords, 
+						{
+							voLayer: false,
+							voLevels: false,
+							totalTime,
+							totalWords,
+							tapeTime,
+							adLibPix: false
+						}
+					))
 				}
 				break
 			default:

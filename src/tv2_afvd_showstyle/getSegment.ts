@@ -24,6 +24,7 @@ import { CreatePartLive } from './parts/live'
 import { CreatePartServer } from './parts/server'
 import { CreatePartTeknik } from './parts/teknik'
 import { CreatePartUnknown } from './parts/unknown'
+import { CreatePartVOSS } from './parts/voss'
 
 export async function getSegment(
 	coreContext: ISegmentUserContext,
@@ -39,6 +40,7 @@ export async function getSegment(
 		CreatePartKam,
 		CreatePartServer,
 		CreatePartEVS,
+		CreatePartVOSS,
 		CreatePartGrafik,
 		CreatePartEkstern: CreatePartLive,
 		CreatePartTeknik,
