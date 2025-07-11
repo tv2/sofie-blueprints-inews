@@ -1,4 +1,4 @@
-import { BlueprintMappings, VTContent, WithTimeline } from '@sofie-automation/blueprints-integration'
+import { VTContent, WithTimeline } from '@sofie-automation/blueprints-integration'
 import {
 	BlueprintResultPart,
 	HackPartMediaObjectSubscription,
@@ -7,12 +7,10 @@ import {
 	IBlueprintPiece,
 	PieceLifespan
 } from 'blueprints-integration'
-// import * as TSR from 'timeline-state-resolver-types'
 import {
 	AddScript,
 	CreatePartInvalid,
 	CreatePartKamBase,
-	// EnableServer,
 	findCameraSourceForVoss,
 	getServerSeek,
 	GetSisyfosTimelineObjForCamera,
@@ -26,16 +24,18 @@ import {
 	PieceMetaData,
 	SanitizeString,
 	SegmentContext,
-	ServerContentProps, ServerPartLayers,
+	ServerContentProps,
+	ServerPartLayers,
 	ServerPartProps,
 	ShowStyleContext,
-	// SpecialInput,
+	SpecialInput,
 	TableConfigItemSourceMapping,
+	TimelineBlueprintExt,
 	TransitionStyle,
-	TV2BlueprintConfigBase
-	// VideoSwitcher
+	TV2BlueprintConfigBase,
+	VideoSwitcher
 } from 'tv2-common'
-import { SharedOutputLayer, TallyTags } from 'tv2-constants'
+import { SharedOutputLayer, SwitcherAuxLLayer, TallyTags } from 'tv2-constants'
 import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
@@ -193,18 +193,6 @@ async function createVossVideoClipPiece(
 	}
 
 	const layerId: string = auxiliaryMapping.LayerId
-	const studioMappings: Readonly<BlueprintMappings> = context.core.getStudioMappings()
-	const layerMapping = Object.entries(studioMappings).find(([mappingLayerId]) => mappingLayerId === layerId)?.[1]
-	if (!layerMapping) {
-		context.core.notifyUserWarning(
-			`Failed creating VOSS video clip piece: Unable to find layer mapping with layer id ${auxiliaryMapping.LayerId}.`
-		)
-		context.core.logWarning(
-			`Failed creating VOSS video clip piece: Unable to find layer mapping with layer id ${auxiliaryMapping.LayerId}.`
-		)
-		return
-	}
-
 	const file = getVideoId(partDefinition)
 	const mediaObjectDurationSec = await context.core.hackGetMediaObjectDuration(file)
 	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
@@ -218,12 +206,9 @@ async function createVossVideoClipPiece(
 		file
 	}
 	const content: WithTimeline<VTContent> = MakeContentServer(context, sourceLayers, partProps, contentProps)
-	// 		...GetVTContentProperties(context.config, contentProps),
-	// 		timelineObjects: [
-	// 			// EnableServer(mediaPlayerSessionId),
-	// 			// createVideoClipTimelineObject(context.videoSwitcher, SwitcherAuxLLayer.WALL, contentProps)
-	// 		]
-	// 	}
+	content.timelineObjects.push(
+		...createAuxiliaryRoutingTimelineObjects(context.videoSwitcher, contentProps, layerId as SwitcherAuxLLayer) // TODO: Check if LayerId is a SwitcherAuxLLayer
+	)
 
 	return {
 		externalId: partDefinition.externalId,
@@ -241,7 +226,6 @@ async function createVossVideoClipPiece(
 			outputLayer: Tv2OutputLayer.AUXILIARY,
 			sourceName: contentProps.file,
 			audioMode: Tv2AudioMode.VOICE_OVER,
-			// TODO: Should we add sisyfosPersistMetadata?
 			mediaPlayerSessions: partProps.session ? [partProps.session] : [],
 			modifiedByAction: false
 		},
@@ -252,21 +236,24 @@ async function createVossVideoClipPiece(
 }
 
 function getVideoId(partDefinition: PartDefinition): string {
-	return partDefinition.fields.videoId ? partDefinition.fields.videoId : ''
+	return partDefinition.fields.videoId ?? ''
 }
 
-// function createVideoClipTimelineObject(
-// 	videoSwitcher: VideoSwitcher,
-// 	auxiliaryLayerId: SwitcherAuxLLayer,
-// 	serverContentProps: ServerContentProps
-// ): TSR.TSRTimelineObj {
-// 	return videoSwitcher.getAuxTimelineObject({
-// 		layer: auxiliaryLayerId, // TODO: Should this be clip pending
-// 		content: {
-// 			input: SpecialInput.AB_PLACEHOLDER
-// 		},
-// 		metaData: {
-// 			mediaPlayerSession: serverContentProps.mediaPlayerSession
-// 		}
-// 	})
-// }
+// TODO: What about lookahead?
+function createAuxiliaryRoutingTimelineObjects(
+	videoSwitcher: VideoSwitcher,
+	serverContentProps: ServerContentProps,
+	auxiliaryLayerId: SwitcherAuxLLayer
+): readonly TimelineBlueprintExt[] {
+	return [
+		videoSwitcher.getAuxTimelineObject({
+			layer: auxiliaryLayerId,
+			content: {
+				input: SpecialInput.AB_PLACEHOLDER
+			},
+			metaData: {
+				mediaPlayerSession: serverContentProps.mediaPlayerSession
+			}
+		}),
+	]
+}
