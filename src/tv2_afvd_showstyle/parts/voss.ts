@@ -53,17 +53,6 @@ export async function CreatePartVOSS(
 	totalWords: number,
 	serverPartProps: ServerPartProps
 ): Promise<BlueprintResultPart> {
-	return makePartWithCamera(context, partDefinition, partIndex, serverPartProps, totalWords)
-	// return CreatePartServer(context, partDefinition, partIndex, serverPartProps)
-}
-
-async function makePartWithCamera(
-	context: SegmentContext<GalleryBlueprintConfig>,
-	partDefinition: PartDefinitionVOSS,
-	partIndex: number,
-	serverPartProps: ServerPartProps,
-	totalWords: number
-): Promise<BlueprintResultPart> {
 	const sourceLayers: ServerPartLayers = {
 		SourceLayer: {
 			PgmServer: serverPartProps.voLayer ? SourceLayer.PgmVoiceOver : SourceLayer.PgmServer, // TODO this actually is shared
@@ -239,7 +228,6 @@ function getVideoId(partDefinition: PartDefinition): string {
 	return partDefinition.fields.videoId ?? ''
 }
 
-// TODO: What about lookahead?
 function createAuxiliaryRoutingTimelineObjects(
 	videoSwitcher: VideoSwitcher,
 	serverContentProps: ServerContentProps,
@@ -254,6 +242,6 @@ function createAuxiliaryRoutingTimelineObjects(
 			metaData: {
 				mediaPlayerSession: serverContentProps.mediaPlayerSession
 			}
-		}),
+		})
 	]
 }

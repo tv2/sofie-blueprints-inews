@@ -95,7 +95,10 @@ export interface SourceInfo {
 	acceptPersistAudio?: boolean
 }
 
-export function findCameraSourceForVoss(sources: SourceMapping, sourceDefinition: SourceDefinitionVOSS): SourceInfo | undefined {
+export function findCameraSourceForVoss(
+	sources: SourceMapping,
+	sourceDefinition: SourceDefinitionVOSS
+): SourceInfo | undefined {
 	return _.find(
 		sources.cameras,
 		(s) => s.id.toLowerCase().trim().replace(' ', '') === sourceDefinition.cameraId.toLowerCase().replace(' ', '')
