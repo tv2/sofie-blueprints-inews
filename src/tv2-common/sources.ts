@@ -8,7 +8,8 @@ import {
 	SourceDefinition,
 	SourceDefinitionKam,
 	SourceDefinitionRemote,
-	SourceDefinitionReplay
+	SourceDefinitionReplay,
+	SourceDefinitionVOSS
 } from './inewsConversion'
 import { TableConfigItemSourceMappingWithSisyfos } from './types'
 import { assertUnreachable } from './util'
@@ -92,6 +93,16 @@ export interface SourceInfo {
 	useStudioMics?: boolean
 	wantsToPersistAudio?: boolean
 	acceptPersistAudio?: boolean
+}
+
+export function findCameraSourceForVoss(
+	sources: SourceMapping,
+	sourceDefinition: SourceDefinitionVOSS
+): SourceInfo | undefined {
+	return _.find(
+		sources.cameras,
+		(s) => s.id.toLowerCase().trim().replace(' ', '') === sourceDefinition.cameraId.toLowerCase().replace(' ', '')
+	)
 }
 
 export function findSourceInfo(sources: SourceMapping, sourceDefinition: SourceDefinition): SourceInfo | undefined {

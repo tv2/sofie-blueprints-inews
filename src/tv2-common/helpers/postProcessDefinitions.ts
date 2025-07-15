@@ -75,6 +75,7 @@ function getExternalId(segmentId: string, partDefinition: PartDefinition, foundM
 			// Possibly an unused part type, not seen in production - only one example found in original test data
 			id += `-TEKNIK`
 			break
+		case PartType.VOSS:
 		case PartType.Grafik:
 		case PartType.DVE:
 		case PartType.REMOTE:

@@ -23,7 +23,7 @@ export interface MakeContentServerSourceLayers {
 	}
 }
 
-type VTProps = Pick<
+export type VTProps = Pick<
 	VTContent,
 	'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration' | 'postrollDuration' | 'seek'
 >

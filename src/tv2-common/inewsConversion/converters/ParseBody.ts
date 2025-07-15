@@ -79,6 +79,13 @@ export interface SourceDefinitionPGM extends SourceDefinitionBase {
 	sourceType: SourceType.PGM
 }
 
+export interface SourceDefinitionVOSS extends SourceDefinitionBase {
+	sourceType: SourceType.VOSS
+	name: string
+	cameraId: string
+	auxiliaryId: string
+}
+
 export type SourceDefinition =
 	| SourceDefinitionKam
 	| SourceDefinitionReplay
@@ -88,6 +95,7 @@ export type SourceDefinition =
 	| SourceDefinitionDefault
 	| SourceDefinitionPGM
 	| SourceDefinitionInvalid
+	| SourceDefinitionVOSS
 
 export interface PartDefinitionBase {
 	externalId: string
@@ -134,6 +142,15 @@ export interface PartDefinitionVO extends PartDefinitionBase {
 	type: PartType.VO
 }
 
+export interface PartDefinitionVOSS extends PartDefinitionBase {
+	type: PartType.VOSS
+	sourceDefinition: SourceDefinitionVOSS
+}
+
+export interface PartDefinitionVO extends PartDefinitionBase {
+	type: PartType.VO
+}
+
 export interface PartDefinitionIntro extends PartDefinitionBase {
 	type: PartType.INTRO
 }
@@ -162,6 +179,7 @@ export type PartDefinition =
 	| PartDefinitionTeknik
 	| PartDefinitionGrafik
 	| PartDefinitionVO
+	| PartDefinitionVOSS
 	| PartDefinitionIntro
 	| PartDefinitionEVS
 	| PartDefinitionDVE
@@ -174,6 +192,7 @@ export type PartdefinitionTypes =
 	| Pick<PartDefinitionTeknik, 'type' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionGrafik, 'type' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionVO, 'type' | 'effekt' | 'transition'>
+	| Pick<PartDefinitionVOSS, 'type' | 'sourceDefinition' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionIntro, 'type' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionEVS, 'type' | 'sourceDefinition' | 'effekt' | 'transition'>
 	| Pick<PartDefinitionDVE, 'type' | 'effekt' | 'transition'>
@@ -182,7 +201,13 @@ export type PartdefinitionTypes =
 
 const CAMERA_RED_TEXT = /\b[KC]AM(?:ERA)? ?(\S+)\b/i
 const EVS_RED_TEXT = /\bEVS ?(\d+) ?(VOV?)?\b/i
-const ACCEPTED_RED_TEXT = [/\b(SERVER|ATTACK|TEKNIK|GRAFIK|EPSIO|VOV?|VOSB)+\b/i, CAMERA_RED_TEXT, EVS_RED_TEXT]
+const VOSS_RED_TEXT = /\bVO(\d+)SS(\d+)\b/i
+const ACCEPTED_RED_TEXT = [
+	/\b(SERVER|ATTACK|TEKNIK|GRAFIK|EPSIO|VOV?|VOSB)+\b/i,
+	CAMERA_RED_TEXT,
+	EVS_RED_TEXT,
+	VOSS_RED_TEXT
+]
 const ENGINE_CUE = /ENGINE ?([^\s]+)/i
 
 const MAX_ALLOWED_TRANSITION_FRAMES = 250
@@ -318,6 +343,7 @@ export function ParseBody(
 						segmentRank,
 						config
 					)
+
 					definition.cues.push(lastCue)
 				} else {
 					if (shouldPushDefinition(definition)) {
@@ -657,6 +683,12 @@ function extractTypeProperties(typeStr: string, config: TV2ShowStyleConfig): Par
 				sourceDefinition,
 				...transitionAndEffekt
 			}
+		case SourceType.VOSS:
+			return {
+				type: PartType.VOSS,
+				sourceDefinition,
+				...transitionAndEffekt
+			}
 		default:
 			break
 	}
@@ -749,6 +781,14 @@ export function getSourceDefinition(typeStr: string, config: TV2ShowStyleConfig)
 	} else if (/PGM/i.test(typeStr)) {
 		return {
 			sourceType: SourceType.PGM
+		}
+	} else if (VOSS_RED_TEXT.test(typeStr)) {
+		const strippedToken = typeStr.match(VOSS_RED_TEXT)
+		return {
+			cameraId: strippedToken![1],
+			auxiliaryId: strippedToken![2],
+			name: 'VOSS',
+			sourceType: SourceType.VOSS
 		}
 	}
 	return undefined

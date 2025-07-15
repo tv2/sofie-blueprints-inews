@@ -134,6 +134,7 @@ export class Atem extends VideoSwitcherBase {
 		return {
 			...this.getBaseProperties(props, props.layer),
 			content: {
+				...props.content,
 				deviceType: TSR.DeviceType.ATEM,
 				type: TSR.TimelineContentTypeAtem.AUX,
 				aux: {
