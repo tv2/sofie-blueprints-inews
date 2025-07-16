@@ -104,7 +104,7 @@ export function MakeConfigForAuxiliary(
 			{
 				id: 'AuxiliaryId',
 				name: 'Auxiliary id',
-				description: `Auxiliary id.`,
+				description: 'The auxiliary identifier used in iNews.',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',
@@ -113,7 +113,7 @@ export function MakeConfigForAuxiliary(
 			{
 				id: 'LayerId',
 				name: 'Layer id',
-				description: `NRCS identifier for the auxiliary.`,
+				description: 'The video mixer layer that controls the auxiliary.',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',
