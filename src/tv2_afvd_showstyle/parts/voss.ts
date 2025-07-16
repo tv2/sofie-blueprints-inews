@@ -11,7 +11,6 @@ import {
 	AddScript,
 	CreatePartInvalid,
 	CreatePartKamBase,
-	findCameraSourceForVoss,
 	getServerSeek,
 	GetSisyfosTimelineObjForCamera,
 	getSourceDuration,
@@ -28,6 +27,9 @@ import {
 	ServerPartLayers,
 	ServerPartProps,
 	ShowStyleContext,
+	SourceDefinitionVOSS,
+	SourceInfo,
+	SourceMapping,
 	SpecialInput,
 	TableConfigItemSourceMapping,
 	TimelineBlueprintExt,
@@ -36,6 +38,7 @@ import {
 	VideoSwitcher
 } from 'tv2-common'
 import { SharedOutputLayer, SwitcherAuxLLayer, TallyTags } from 'tv2-constants'
+import * as _ from 'underscore'
 import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
@@ -80,7 +83,7 @@ export async function CreatePartVOSS(
 	if (sourceInfoCam === undefined) {
 		context.core.notifyUserWarning(`${partDefinition.rawType} does not exist in this studio`)
 		return CreatePartInvalid(partDefinition, {
-			reason: `No configuration found for the camera source '${partDefinition.rawType}'.`
+			reason: `Camera '${partDefinition.sourceDefinition.cameraId}' is not defined in the Camera mappings table.`
 		})
 	}
 	const switcherInput = sourceInfoCam.port
@@ -128,7 +131,12 @@ export async function CreatePartVOSS(
 		sourceLayers,
 		serverPartProps
 	)
-	if (vossVideoClipPiece) {
+	if (!vossVideoClipPiece) {
+		part.invalid = true
+		part.invalidity = {
+			reason: `Auxiliary '${partDefinition.sourceDefinition.auxiliaryId}' is not defined in the Auxiliary mappings table.`
+		}
+	} else {
 		pieces.push(vossVideoClipPiece)
 	}
 
@@ -245,4 +253,18 @@ function createAuxiliaryRoutingTimelineObjects(
 			}
 		})
 	]
+}
+
+function getCameraIdForVoss(sourceDefinition: SourceDefinitionVOSS): string {
+	return sourceDefinition.cameraId.toLowerCase().replace(' ', '')
+}
+
+function findCameraSourceForVoss(
+	sources: SourceMapping,
+	sourceDefinition: SourceDefinitionVOSS
+): SourceInfo | undefined {
+	return _.find(
+		sources.cameras,
+		(s) => s.id.toLowerCase().trim().replace(' ', '') === getCameraIdForVoss(sourceDefinition)
+	)
 }

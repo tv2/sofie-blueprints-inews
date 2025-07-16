@@ -64,6 +64,9 @@ export interface SourceDefinitionInvalid extends SourceDefinitionWithRaw {
 
 export interface SourceDefinitionServer extends SourceDefinitionBase {
 	sourceType: SourceType.SERVER
+	additionalRouting?: {
+		auxiliaryId: string
+	}
 }
 
 export interface SourceDefinitionGrafik extends SourceDefinitionWithRaw {
@@ -128,6 +131,9 @@ export interface PartDefinitionKam extends PartDefinitionBase {
 }
 export interface PartDefinitionServer extends PartDefinitionBase {
 	type: PartType.Server
+	additionalRouting?: {
+		auxiliaryId: string
+	}
 }
 
 export interface PartDefinitionTeknik extends PartDefinitionBase {
@@ -697,8 +703,11 @@ function extractTypeProperties(typeStr: string, config: TV2ShowStyleConfig): Par
 	const firstToken = tokens[0]
 
 	if (/SERVER|ATTACK/i.test(firstToken)) {
+		const additionalRouting: PartDefinitionServer['additionalRouting'] | undefined =
+			sourceDefinition?.sourceType === SourceType.SERVER ? sourceDefinition.additionalRouting : undefined
 		return {
 			type: PartType.Server,
+			...(additionalRouting ? { additionalRouting } : undefined),
 			...transitionAndEffekt
 		}
 	} else if (/TEKNIK/i.test(firstToken)) {
@@ -775,8 +784,10 @@ export function getSourceDefinition(typeStr: string, config: TV2ShowStyleConfig)
 			sourceType: SourceType.DEFAULT
 		}
 	} else if (/SERVER/i.test(typeStr)) {
+		const auxiliaryId: string | undefined = /\bAUX\s*(?<auxiliaryId>\d+)\b/i.exec(typeStr)?.groups?.auxiliaryId
 		return {
-			sourceType: SourceType.SERVER
+			sourceType: SourceType.SERVER,
+			...(auxiliaryId ? { additionalRouting: { auxiliaryId } } : undefined)
 		}
 	} else if (/PGM/i.test(typeStr)) {
 		return {
