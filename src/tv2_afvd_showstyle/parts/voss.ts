@@ -236,6 +236,7 @@ function createAuxiliaryRoutingTimelineObjects(
 	return [
 		videoSwitcher.getAuxTimelineObject({
 			layer: auxiliaryLayerId,
+			priority: 1,
 			content: {
 				input: SpecialInput.AB_PLACEHOLDER
 			},
