@@ -16,11 +16,11 @@ import {
 	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
 	GetTagForKam,
+	getVideoMixerMixEffectPropsContentForEffekt,
 	literal,
 	PartDefinitionKam,
 	PieceMetaData,
-	SegmentContext,
-	TransitionStyle
+	SegmentContext
 } from 'tv2-common'
 import { SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
@@ -63,11 +63,7 @@ export async function OfftubeCreatePartKam(
 				path: '',
 				timelineObjects: context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 					priority: 1,
-					content: {
-						input: jingleDsk.Fill,
-						transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-						transitionDuration: partDefinition.transition?.duration
-					}
+					content: getVideoMixerMixEffectPropsContentForEffekt(jingleDsk.Fill, partDefinition)
 				})
 			}),
 			metaData: {
@@ -113,11 +109,7 @@ export async function OfftubeCreatePartKam(
 				timelineObjects: [
 					...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						priority: 1,
-						content: {
-							input: switcherInput,
-							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-							transitionDuration: partDefinition.transition?.duration
-						}
+						content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition)
 					}),
 					...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 				]

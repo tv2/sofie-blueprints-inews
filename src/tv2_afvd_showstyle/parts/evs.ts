@@ -12,6 +12,7 @@ import {
 	CreatePartInvalid,
 	findSourceInfo,
 	GetSisyfosTimelineObjForReplay,
+	getVideoMixerMixEffectPropsContentForEffekt,
 	literal,
 	Part,
 	PartDefinitionEVS,
@@ -19,8 +20,7 @@ import {
 	PieceMetaData,
 	SegmentContext,
 	ShowStyleContext,
-	SourceInfo,
-	TransitionStyle
+	SourceInfo
 } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
 import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
@@ -125,11 +125,7 @@ function makeContentEVS(
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 				priority: 1,
-				content: {
-					input: switcherInput,
-					transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-					transitionDuration: partDefinition.transition?.duration
-				}
+				content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition)
 			}),
 			...GetSisyfosTimelineObjForReplay(context.config, sourceInfoReplay, partDefinition.sourceDefinition.vo)
 		])

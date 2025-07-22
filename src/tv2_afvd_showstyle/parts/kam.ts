@@ -15,13 +15,13 @@ import {
 	findDskJingle,
 	findSourceInfo,
 	GetSisyfosTimelineObjForCamera,
+	getVideoMixerMixEffectPropsContentForEffekt,
 	literal,
 	Part,
 	PartDefinitionKam,
 	PieceMetaData,
 	SegmentContext,
-	TimeFromINewsField,
-	TransitionStyle
+	TimeFromINewsField
 } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
@@ -64,11 +64,7 @@ export async function CreatePartKam(
 				timelineObjects: [
 					...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						priority: 1,
-						content: {
-							input: jingleDsk.Fill,
-							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-							transitionDuration: partDefinition.transition?.duration
-						}
+						content: getVideoMixerMixEffectPropsContentForEffekt(jingleDsk.Fill, partDefinition)
 					})
 				]
 			}),
@@ -116,11 +112,7 @@ export async function CreatePartKam(
 				timelineObjects: [
 					...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						priority: 1,
-						content: {
-							input: switcherInput,
-							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-							transitionDuration: partDefinition.transition?.duration
-						}
+						content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition)
 					}),
 					...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 				]
