@@ -3,6 +3,8 @@ import {
 	findDskJingle,
 	getDskOnAirTimelineObjects,
 	getTimeFromFrames,
+	MixEffectProps,
+	PartDefinition,
 	ShowStyleContext,
 	TransitionStyle
 } from 'tv2-common'
@@ -178,5 +180,16 @@ export function getBreakerMixEffectCutEnable(
 		duration:
 			getTimeFromFrames(breakerConfig.Duration - breakerConfig.StartAlpha - breakerConfig.EndAlpha) +
 			casparPrerollDuration
+	}
+}
+
+export function getVideoMixerMixEffectPropsContentForEffekt(
+	mixerInput: number,
+	partDefinition: PartDefinition
+): MixEffectProps['content'] {
+	return {
+		input: mixerInput,
+		transition: !!partDefinition.effekt ? TransitionStyle.MIX : partDefinition.transition?.style ?? TransitionStyle.CUT,
+		transitionDuration: !!partDefinition.effekt ? 4 : partDefinition.transition?.duration
 	}
 }

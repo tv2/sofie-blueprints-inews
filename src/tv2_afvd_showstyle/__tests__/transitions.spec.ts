@@ -156,7 +156,7 @@ describe('Primary Cue Transitions Without Config', () => {
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_2))
 
-		expect(atemCutObj.content.me.transition).toBe(undefined)
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 	})
 
 	it('Adds mix to KAM', async () => {
@@ -213,7 +213,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
-		expect(atemCutObj.content.me.transition).toBe(undefined)
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 	})
 
 	it('Adds mix to EVS1', async () => {
@@ -270,7 +270,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
-		expect(atemCutObj.content.me.transition).toBe(undefined)
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 	})
 
 	it('Adds mix to EVS1VO', async () => {
@@ -327,7 +327,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_2))
-		expect(atemCutObj.content.me.transition).toBe(undefined)
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 	})
 
 	it('Adds mix to SERVER', async () => {
@@ -384,7 +384,7 @@ describe('Primary Cue Transitions Without Config', () => {
 		const atemCutObj = getATEMMEObj(piece)
 
 		checkPartExistsWithProperties(segment, getTransitionProperties(MOCK_EFFEKT_1))
-		expect(atemCutObj.content.me.transition).toBe(undefined)
+		expect(atemCutObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 	})
 
 	it('Adds mix to VO', async () => {
