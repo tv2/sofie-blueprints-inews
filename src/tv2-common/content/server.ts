@@ -1,11 +1,11 @@
 import { TimelineObjectCoreExt, TSR, VTContent, WithTimeline } from 'blueprints-integration'
 import {
 	GetSisyfosTimelineObjForServer,
+	getVideoMixerMixEffectPropsContentForEffekt,
 	literal,
 	PartDefinition,
 	ShowStyleContext,
-	SpecialInput,
-	TransitionStyle
+	SpecialInput
 } from 'tv2-common'
 import { AbstractLLayer, GetEnableClassForServer } from 'tv2-constants'
 import { TV2ShowStyleConfig } from '../blueprintConfig'
@@ -23,7 +23,7 @@ export interface MakeContentServerSourceLayers {
 	}
 }
 
-type VTProps = Pick<
+export type VTProps = Pick<
 	VTContent,
 	'fileName' | 'path' | 'mediaFlowIds' | 'ignoreMediaObjectStatus' | 'sourceDuration' | 'postrollDuration' | 'seek'
 >
@@ -130,11 +130,7 @@ export function CutToServer(
 				start: context.config.studio.CasparPrerollDuration
 			},
 			priority: 1,
-			content: {
-				input: SpecialInput.AB_PLACEHOLDER,
-				transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-				transitionDuration: partDefinition.transition?.duration
-			},
+			content: getVideoMixerMixEffectPropsContentForEffekt(SpecialInput.AB_PLACEHOLDER, partDefinition),
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId
 			}

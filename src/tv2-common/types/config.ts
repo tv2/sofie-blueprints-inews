@@ -5,6 +5,11 @@ export interface TableConfigItemSourceMapping {
 	SwitcherSource: number
 }
 
+export type TableConfigForAuxiliary = {
+	AuxiliaryId: string
+	LayerId: string
+} & TableConfigItemSourceMapping
+
 export type TableConfigItemSourceMappingWithSisyfos = {
 	SisyfosLayers: string[]
 	StudioMics: boolean

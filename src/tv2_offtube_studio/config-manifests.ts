@@ -8,6 +8,7 @@ import {
 import {
 	DSKConfigManifest,
 	literal,
+	MakeConfigForAuxiliary,
 	MakeConfigForSources,
 	MakeConfigWithMediaFlow,
 	SwitcherType,
@@ -121,6 +122,8 @@ export const manifestOfftubeStudioMics: ConfigManifestEntry = {
 
 export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = DSKConfigManifest(defaultDSKConfig)
 
+export const manifestForAuxiliaryMappings = MakeConfigForAuxiliary('Auxiliary', 'Auxiliary', [])
+
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'SwitcherType',
@@ -136,6 +139,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	...MakeConfigWithMediaFlow('Graphic', '', 'flow2', '.png', '', false),
 	...MakeConfigWithMediaFlow('AudioBed', '', 'flow1', '.wav', 'audio', true),
 	...MakeConfigWithMediaFlow('DVE', '', 'flow1', '.png', 'dve', true),
+	manifestForAuxiliaryMappings,
 	manifestOfftubeSourcesCam,
 	manifestOfftubeSourcesRM,
 	manifestOfftubeSourcesFeed,

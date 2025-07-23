@@ -2,11 +2,11 @@ import { PieceLifespan, RemoteContent, TimelineObjectCoreExt, WithTimeline } fro
 import {
 	CueDefinitionEkstern,
 	EvaluateCueResult,
+	getVideoMixerMixEffectPropsContentForEffekt,
 	literal,
 	Part,
 	PartDefinition,
 	ShowStyleContext,
-	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
@@ -73,11 +73,7 @@ export function EvaluateEksternBase<
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						priority: 1,
-						content: {
-							input: switcherInput,
-							transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-							transitionDuration: partDefinition.transition?.duration
-						},
+						content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition),
 						classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 					}),
 
@@ -116,11 +112,7 @@ export function EvaluateEksternBase<
 			timelineObjects: literal<TimelineObjectCoreExt[]>([
 				...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 					priority: 1,
-					content: {
-						input: switcherInput,
-						transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
-						transitionDuration: partDefinition.transition?.duration
-					},
+					content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition),
 					classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 				}),
 

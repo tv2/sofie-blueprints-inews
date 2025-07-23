@@ -32,6 +32,7 @@ const blankStudioConfig: StudioConfig = {
 	ClipIgnoreStatus: false,
 	AudioBedIgnoreStatus: false,
 	DVEIgnoreStatus: false,
+	SourcesAuxiliary: [],
 	SourcesCam: [],
 	SourcesRM: [],
 	SourcesFeed: [],

@@ -12,11 +12,22 @@ import {
 	GetTagForServerNext,
 	MakeContentServer,
 	MakeContentServerSourceLayers,
+	Part,
+	PartDefinitionServer,
 	PieceMetaData,
 	ServerPieceMetaData,
-	ShowStyleContext
+	ShowStyleContext,
+	SpecialInput,
+	TableConfigForAuxiliary
 } from 'tv2-common'
-import { AdlibActionType, PartType, SharedOutputLayer, SharedSourceLayer, TallyTags } from 'tv2-constants'
+import {
+	AdlibActionType,
+	PartType,
+	SharedOutputLayer,
+	SharedSourceLayer,
+	SwitcherAuxLLayer,
+	TallyTags
+} from 'tv2-constants'
 import { Tv2AudioMode } from '../../tv2-constants/tv2-audio.mode'
 import { Tv2OutputLayer } from '../../tv2-constants/tv2-output-layer'
 import { PlayoutContentType } from '../../tv2-constants/tv2-playout-content'
@@ -95,7 +106,7 @@ export async function CreatePartServerBase<
 	}
 
 	const displayTitle = getDisplayTitle(partDefinition)
-	const basePart = getBasePart(partDefinition, displayTitle, actualDuration, file)
+	const basePart: Part = getBasePart(partDefinition, displayTitle, actualDuration, file)
 
 	const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 
@@ -113,6 +124,22 @@ export async function CreatePartServerBase<
 
 	pieces.push(serverSelectionBlueprintPiece)
 	pieces.push(pgmBlueprintPiece)
+	if (partDefinition.type === PartType.Server && partDefinition.additionalRouting) {
+		const auxiliaryRoutingPiece: IBlueprintPiece<PieceMetaData> | undefined = createVideoClipAuxiliaryRoutingPiece(
+			context,
+			contentProps,
+			partProps,
+			partDefinition
+		)
+		if (auxiliaryRoutingPiece) {
+			pieces.push(auxiliaryRoutingPiece)
+		} else {
+			basePart.invalid = true
+			basePart.invalidity = {
+				reason: `Auxiliary '${partDefinition.additionalRouting.auxiliaryId}' is not defined in the Auxiliary mappings table.`
+			}
+		}
+	}
 
 	return {
 		part: {
@@ -123,6 +150,68 @@ export async function CreatePartServerBase<
 		},
 		file,
 		duration: actualDuration
+	}
+}
+
+function createVideoClipAuxiliaryRoutingPiece<
+	StudioConfig extends TV2StudioConfigBase,
+	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
+>(
+	context: ShowStyleContext<ShowStyleConfig>,
+	serverContentProps: ServerContentProps,
+	serverPartProps: ServerPartProps,
+	partDefinition: PartDefinitionServer
+): IBlueprintPiece<PieceMetaData> | undefined {
+	const auxiliaryId: string = partDefinition.additionalRouting?.auxiliaryId ?? ''
+	const auxiliaryMapping: TableConfigForAuxiliary | undefined = context.config.studio.SourcesAuxiliary.find(
+		(mapping) => mapping.AuxiliaryId === auxiliaryId
+	)
+
+	if (!auxiliaryMapping) {
+		context.core.notifyUserWarning(`No auxiliary mappings found for the auxiliary id: ${auxiliaryId}`)
+		context.core.logWarning(`No auxiliary mappings found for the auxiliary id: ${auxiliaryId}`)
+		return
+	}
+
+	const content: WithTimeline<VTContent> = {
+		fileName: serverContentProps.file,
+		path: serverContentProps.file, // TODO: Is this correct? Check MakeContentServer
+		timelineObjects: [
+			context.videoSwitcher.getAuxTimelineObject({
+				layer: auxiliaryMapping.LayerId as SwitcherAuxLLayer, // TODO: Check that it is a SwitcherAuxLLayer.
+				priority: 1,
+				content: {
+					input: SpecialInput.AB_PLACEHOLDER
+				},
+				metaData: {
+					mediaPlayerSession: serverContentProps.mediaPlayerSession
+				}
+			})
+		]
+	}
+
+	return {
+		externalId: partDefinition.externalId,
+		name: `${serverContentProps.file} \u2192 AUX${auxiliaryId}`,
+		lifespan: PieceLifespan.WithinPart,
+		sourceLayerId: auxiliaryMapping.LayerId,
+		outputLayerId: SharedOutputLayer.AUX,
+		enable: {
+			start: 0
+		},
+		metaData: {
+			playoutContent: {
+				type: PlayoutContentType.VIDEO_CLIP
+			},
+			outputLayer: Tv2OutputLayer.AUXILIARY,
+			sourceName: serverContentProps.file,
+			audioMode: Tv2AudioMode.FULL,
+			mediaPlayerSessions: serverPartProps.session ? [serverPartProps.session] : [],
+			modifiedByAction: false
+		},
+		content,
+		prerollDuration: context.config.studio.CasparPrerollDuration,
+		tags: [GetTagForServer(partDefinition.segmentExternalId, serverContentProps.file, true), TallyTags.SERVER_IS_LIVE]
 	}
 }
 
@@ -155,10 +244,7 @@ function getActualDuration(duration: number, sanitisedScript: string, props: Ser
 }
 
 function getDisplayTitle(partDefinition: PartDefinition): string {
-	if (partDefinition.type === PartType.VO || partDefinition.type === PartType.Server) {
-		return partDefinition.rawType
-	}
-	return 'SERVER'
+	return partDefinition.fields.videoId ?? partDefinition.storyName
 }
 
 function getScriptWithoutLineBreaks(partDefinition: PartDefinition) {

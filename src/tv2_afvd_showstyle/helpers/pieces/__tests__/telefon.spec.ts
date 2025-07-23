@@ -6,6 +6,7 @@ import {
 	GraphicInternal,
 	GraphicPieceMetaData,
 	literal,
+	Part,
 	PartDefinitionKam
 } from 'tv2-common'
 import { CueType, PartType, SharedGraphicLLayer, SharedOutputLayer, SourceType } from 'tv2-constants'
@@ -62,7 +63,7 @@ describe('telefon', () => {
 			iNewsCommand: 'TELEFON'
 		}
 		const partId = '0000000001'
-		const result = EvaluateTelefon(mockContext, partId, dummyPart, cue)
+		const result = EvaluateTelefon(mockContext, partId, {} as unknown as Part, dummyPart, cue)
 		expect(result.pieces).toEqual([
 			literal<IBlueprintPiece<GraphicPieceMetaData>>({
 				externalId: partId,

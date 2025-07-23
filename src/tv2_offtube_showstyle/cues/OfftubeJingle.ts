@@ -9,6 +9,7 @@ import {
 	GetTagForJingle,
 	GetTagForJingleNext,
 	getTimeFromFrames,
+	Part,
 	PartDefinition,
 	PieceMetaData,
 	SegmentContext,
@@ -24,10 +25,11 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateJingle(
 	context: SegmentContext<OfftubeBlueprintConfig>,
+	part: Part,
 	pieces: Array<IBlueprintPiece<PieceMetaData>>,
 	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
-	part: PartDefinition,
+	partDefinition: PartDefinition,
 	_adlib?: boolean,
 	_rank?: number,
 	effekt?: boolean
@@ -43,8 +45,9 @@ export function OfftubeEvaluateJingle(
 	} else {
 		file = jingle.ClipName.toString()
 	}
+	part.title = jingle.BreakerName
 
-	const p = GetJinglePartProperties(context, part)
+	const p = GetJinglePartProperties(context, partDefinition)
 
 	if (JSON.stringify(p) === JSON.stringify({})) {
 		context.core.notifyUserWarning(`Could not create adlib for ${parsedCue.clip}`)
@@ -54,7 +57,7 @@ export function OfftubeEvaluateJingle(
 	const userData: ActionSelectJingle = {
 		type: AdlibActionType.SELECT_JINGLE,
 		clip: parsedCue.clip,
-		segmentExternalId: part.segmentExternalId
+		segmentExternalId: partDefinition.segmentExternalId
 	}
 	actions.push({
 		externalId: generateExternalId(context.core, userData),
@@ -69,14 +72,14 @@ export function OfftubeEvaluateJingle(
 				...createJingleContentOfftube(context, file, jingle)
 			},
 			tags: [AdlibTags.OFFTUBE_100pc_SERVER, AdlibTags.ADLIB_KOMMENTATOR],
-			currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
-			nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
+			currentPieceTags: [GetTagForJingle(partDefinition.segmentExternalId, parsedCue.clip)],
+			nextPieceTags: [GetTagForJingleNext(partDefinition.segmentExternalId, parsedCue.clip)]
 		}
 	})
 
 	const jingleContent: WithTimeline<VTContent> = createJingleContentOfftube(context, file, jingle)
 	pieces.push({
-		externalId: `${part.externalId}-JINGLE`,
+		externalId: `${partDefinition.externalId}-JINGLE`,
 		name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 		enable: {
 			start: 0
@@ -87,8 +90,8 @@ export function OfftubeEvaluateJingle(
 		prerollDuration: context.config.studio.CasparPrerollDuration + getTimeFromFrames(Number(jingle.StartAlpha)),
 		content: jingleContent,
 		tags: [
-			GetTagForJingle(part.segmentExternalId, parsedCue.clip),
-			GetTagForJingleNext(part.segmentExternalId, parsedCue.clip),
+			GetTagForJingle(partDefinition.segmentExternalId, parsedCue.clip),
+			GetTagForJingleNext(partDefinition.segmentExternalId, parsedCue.clip),
 			TallyTags.JINGLE_IS_LIVE,
 			!effekt ? TallyTags.JINGLE : ''
 		],

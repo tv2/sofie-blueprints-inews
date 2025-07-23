@@ -9,6 +9,7 @@ import {
 	GetTagForDVE,
 	GetTagForDVENext,
 	literal,
+	Part,
 	PartDefinition,
 	SegmentContext,
 	t,
@@ -23,6 +24,7 @@ import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 export function OfftubeEvaluateDVE(
 	context: SegmentContext<OfftubeBlueprintConfig>,
+	part: Part,
 	pieces: IBlueprintPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
@@ -33,6 +35,7 @@ export function OfftubeEvaluateDVE(
 	if (!parsedCue.template) {
 		return
 	}
+	part.title = `DVE: ${parsedCue.template}`
 
 	const rawTemplate = GetDVETemplate(context.config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {
