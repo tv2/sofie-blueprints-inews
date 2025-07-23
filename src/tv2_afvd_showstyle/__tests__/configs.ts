@@ -101,6 +101,7 @@ export const defaultStudioConfig: StudioConfig = {
 		'SourcesCam',
 		true
 	),
+	SourcesAuxiliary: [],
 	// TODO: prepareConfig is legacy code, refactor when refactoring FindSourceInfo
 	SourcesRM: prepareConfig(
 		[

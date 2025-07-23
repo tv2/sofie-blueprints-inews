@@ -87,3 +87,38 @@ export function MakeConfigForSources(
 		]
 	}
 }
+
+export function MakeConfigForAuxiliary(
+	name: string,
+	displayName: string,
+	defaultVal: ConfigManifestEntryTable['defaultVal']
+): ConfigManifestEntryTable {
+	return {
+		id: `Sources${name}`,
+		name: `${displayName} Mapping`,
+		description: 'Define which auxiliary maps to layer mappings.',
+		type: ConfigManifestEntryType.TABLE,
+		required: false,
+		defaultVal,
+		columns: [
+			{
+				id: 'AuxiliaryId',
+				name: 'Auxiliary id',
+				description: 'The auxiliary identifier used in iNews.',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: '',
+				rank: 1
+			},
+			{
+				id: 'LayerId',
+				name: 'Layer id',
+				description: 'The video mixer layer that controls the auxiliary.',
+				type: ConfigManifestEntryType.STRING,
+				required: true,
+				defaultVal: '',
+				rank: 2
+			}
+		]
+	}
+}

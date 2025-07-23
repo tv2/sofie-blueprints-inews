@@ -8,6 +8,7 @@ import {
 	GetDVETemplate,
 	getUniquenessIdDVE,
 	literal,
+	Part,
 	PartDefinition,
 	ShowStyleContext,
 	t,
@@ -22,6 +23,7 @@ import { MakeContentDVE } from '../content/dve'
 
 export function EvaluateDVE(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
+	part: Part,
 	pieces: IBlueprintPiece[],
 	actions: IBlueprintActionManifest[],
 	partDefinition: PartDefinition,
@@ -32,6 +34,7 @@ export function EvaluateDVE(
 	if (!parsedCue.template) {
 		return
 	}
+	part.title = `DVE: ${parsedCue.template}`
 
 	const rawTemplate = GetDVETemplate(context.config.showStyle.DVEStyles, parsedCue.template)
 	if (!rawTemplate) {

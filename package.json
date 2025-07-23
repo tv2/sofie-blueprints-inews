@@ -30,6 +30,9 @@
       "prettier --write"
     ]
   },
+  "engines": {
+    "node": "<17"
+  },
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/node": "^12.12.2",

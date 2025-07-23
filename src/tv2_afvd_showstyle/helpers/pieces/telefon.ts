@@ -3,6 +3,7 @@ import {
 	CueDefinitionTelefon,
 	EvaluateCueResult,
 	GetSisyfosTimelineObjForTelefon,
+	Part,
 	PartDefinition,
 	ShowStyleContext
 } from 'tv2-common'
@@ -14,6 +15,7 @@ import { EvaluateCueGraphic } from './graphic'
 export function EvaluateTelefon(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
 	partId: string,
+	part: Part,
 	partDefinition: PartDefinition,
 	parsedCue: CueDefinitionTelefon,
 	adlib?: Adlib
@@ -22,7 +24,7 @@ export function EvaluateTelefon(
 		return new EvaluateCueResult()
 	}
 
-	const result = EvaluateCueGraphic(context, partId, parsedCue.graphic, partDefinition, adlib?.rank ?? 0, adlib)
+	const result = EvaluateCueGraphic(context, partId, part, parsedCue.graphic, partDefinition, adlib?.rank ?? 0, adlib)
 
 	if (!adlib && result.pieces.length) {
 		const graphicPiece = findTelefonPiece(result)

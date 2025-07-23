@@ -8,6 +8,7 @@ import {
 	GetTagForJingle,
 	GetTagForJingleNext,
 	getTimeFromFrames,
+	Part,
 	PartDefinition,
 	ShowStyleContext,
 	t,
@@ -22,10 +23,11 @@ import { GalleryBlueprintConfig } from '../config'
 
 export function EvaluateJingle(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
+	part: Part,
 	pieces: IBlueprintPiece[],
 	actions: IBlueprintActionManifest[],
 	parsedCue: CueDefinitionJingle,
-	part: PartDefinition,
+	partDefinition: PartDefinition,
 	adlib?: boolean,
 	rank?: number,
 	effekt?: boolean
@@ -41,12 +43,13 @@ export function EvaluateJingle(
 	} else {
 		file = jingle.ClipName.toString()
 	}
+	part.title = jingle.BreakerName
 
 	if (adlib) {
 		const userData: ActionSelectJingle = {
 			type: AdlibActionType.SELECT_JINGLE,
 			clip: parsedCue.clip,
-			segmentExternalId: part.segmentExternalId
+			segmentExternalId: partDefinition.segmentExternalId
 		}
 		actions.push({
 			externalId: generateExternalId(context.core, userData),
@@ -62,14 +65,14 @@ export function EvaluateJingle(
 					...createJingleContentAFVD(context, file, jingle)
 				},
 				tags: [AdlibTags.ADLIB_FLOW_PRODUCER],
-				currentPieceTags: [GetTagForJingle(part.segmentExternalId, parsedCue.clip)],
-				nextPieceTags: [GetTagForJingleNext(part.segmentExternalId, parsedCue.clip)]
+				currentPieceTags: [GetTagForJingle(partDefinition.segmentExternalId, parsedCue.clip)],
+				nextPieceTags: [GetTagForJingleNext(partDefinition.segmentExternalId, parsedCue.clip)]
 			}
 		})
 	} else {
 		const jingleContent: WithTimeline<VTContent> = createJingleContentAFVD(context, file, jingle)
 		pieces.push({
-			externalId: `${part.externalId}-JINGLE`,
+			externalId: `${partDefinition.externalId}-JINGLE`,
 			name: effekt ? `EFFEKT ${parsedCue.clip}` : parsedCue.clip,
 			enable: {
 				start: 0
