@@ -125,7 +125,7 @@ function makeContentEVS(
 		timelineObjects: literal<TimelineObjectCoreExt[]>([
 			...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 				priority: 1,
-				content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition)
+				content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition, context)
 			}),
 			...GetSisyfosTimelineObjForReplay(context.config, sourceInfoReplay, partDefinition.sourceDefinition.vo)
 		])
