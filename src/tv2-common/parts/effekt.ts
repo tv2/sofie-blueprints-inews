@@ -11,6 +11,9 @@ import {
 import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
+	doesBreakerHaveAlphaForItsEntireDuration,
+	findDskJingle,
+	getBreakerMixEffectCutEnable,
 	getDskOnAirTimelineObjects,
 	GetTagForTransition,
 	getTimeFromFrames,
@@ -110,6 +113,8 @@ export function CreateEffektForPartInner<
 
 	const fileName = joinAssetToFolder(context.config.studio.JingleFolder, file)
 
+	const jingleDsk = findDskJingle(context.config)
+
 	pieces.push({
 		externalId,
 		name: label,
@@ -148,15 +153,17 @@ export function CreateEffektForPartInner<
 						file: fileName
 					}
 				}),
-				// TODO: The VideoMixerOnAirTimelineObjects does seem to be needed. Leaving the code commented in case that isn't true. Should be deleted by end of 2025.
-				// ...context.videoSwitcher.getOnAirTimelineObjects({
-				// 	enable: getBreakerMixEffectCutEnable(effektConfig, context.config.studio.CasparPrerollDuration),
-				// 	priority: 1,
-				// 	content: {
-				// 		input: jingleDsk.Fill,
-				// 		transition: TransitionStyle.CUT
-				// 	}
-				// }),
+				// Only add the cut to Jingle Fill if the BreakerEffect takes up the entire screen at some point during its duration
+				...(doesBreakerHaveAlphaForItsEntireDuration(context, effekt)
+					? []
+					: context.videoSwitcher.getOnAirTimelineObjects({
+							enable: getBreakerMixEffectCutEnable(effektConfig, context.config.studio.CasparPrerollDuration),
+							priority: 1,
+							content: {
+								input: jingleDsk.Fill,
+								transition: TransitionStyle.CUT
+							}
+					  })),
 				...getDskOnAirTimelineObjects(context, DskRole.JINGLE, {
 					start: context.config.studio.CasparPrerollDuration
 				}),

@@ -208,7 +208,7 @@ function getRegularMixEffectPropsContentForPartDefinition(
 	}
 }
 
-function doesBreakerHaveAlphaForItsEntireDuration(context: ShowStyleContext, breakerName: string): boolean {
+export function doesBreakerHaveAlphaForItsEntireDuration(context: ShowStyleContext, breakerName: string): boolean {
 	const breaker: TableConfigItemBreaker | undefined = context.config.showStyle.BreakerConfig.find(
 		(tableConfigItemBreaker) => tableConfigItemBreaker.BreakerName === breakerName
 	)
