@@ -185,11 +185,44 @@ export function getBreakerMixEffectCutEnable(
 
 export function getVideoMixerMixEffectPropsContentForEffekt(
 	mixerInput: number,
+	partDefinition: PartDefinition,
+	context: ShowStyleContext
+): MixEffectProps['content'] {
+	if (!partDefinition.effekt) {
+		return getRegularMixEffectPropsContentForPartDefinition(mixerInput, partDefinition)
+	}
+
+	return doesBreakerHaveAlphaForItsEntireDuration(context, partDefinition.effekt + '')
+		? getMixDuringBreakerMixEffectPropsContent(mixerInput)
+		: getRegularMixEffectPropsContentForPartDefinition(mixerInput, partDefinition)
+}
+
+function getRegularMixEffectPropsContentForPartDefinition(
+	mixerInput: number,
 	partDefinition: PartDefinition
 ): MixEffectProps['content'] {
 	return {
 		input: mixerInput,
-		transition: !!partDefinition.effekt ? TransitionStyle.MIX : partDefinition.transition?.style ?? TransitionStyle.CUT,
-		transitionDuration: !!partDefinition.effekt ? 4 : partDefinition.transition?.duration
+		transition: partDefinition.transition?.style ?? TransitionStyle.CUT,
+		transitionDuration: partDefinition.transition?.duration
+	}
+}
+
+export function doesBreakerHaveAlphaForItsEntireDuration(context: ShowStyleContext, breakerName: string): boolean {
+	const breaker: TableConfigItemBreaker | undefined = context.config.showStyle.BreakerConfig.find(
+		(tableConfigItemBreaker) => tableConfigItemBreaker.BreakerName === breakerName
+	)
+	if (!breaker) {
+		return false
+	}
+
+	return breaker.StartAlpha + breaker.EndAlpha === breaker.Duration
+}
+
+function getMixDuringBreakerMixEffectPropsContent(mixerInput: number): MixEffectProps['content'] {
+	return {
+		input: mixerInput,
+		transition: TransitionStyle.MIX,
+		transitionDuration: 4
 	}
 }

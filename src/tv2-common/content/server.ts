@@ -130,7 +130,7 @@ export function CutToServer(
 				start: context.config.studio.CasparPrerollDuration
 			},
 			priority: 1,
-			content: getVideoMixerMixEffectPropsContentForEffekt(SpecialInput.AB_PLACEHOLDER, partDefinition),
+			content: getVideoMixerMixEffectPropsContentForEffekt(SpecialInput.AB_PLACEHOLDER, partDefinition, context),
 			metaData: {
 				mediaPlayerSession: mediaPlayerSessionId
 			}

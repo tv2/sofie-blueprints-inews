@@ -63,7 +63,7 @@ export async function OfftubeCreatePartKam(
 				path: '',
 				timelineObjects: context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 					priority: 1,
-					content: getVideoMixerMixEffectPropsContentForEffekt(jingleDsk.Fill, partDefinition)
+					content: getVideoMixerMixEffectPropsContentForEffekt(jingleDsk.Fill, partDefinition, context)
 				})
 			}),
 			metaData: {
@@ -109,7 +109,7 @@ export async function OfftubeCreatePartKam(
 				timelineObjects: [
 					...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						priority: 1,
-						content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition)
+						content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition, context)
 					}),
 					...GetSisyfosTimelineObjForCamera(context.config, sourceInfoCam, partDefinition.sourceDefinition.minusMic)
 				]

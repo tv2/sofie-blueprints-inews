@@ -73,7 +73,7 @@ export function EvaluateEksternBase<
 				timelineObjects: literal<TimelineObjectCoreExt[]>([
 					...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 						priority: 1,
-						content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition),
+						content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition, context),
 						classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 					}),
 
@@ -112,7 +112,7 @@ export function EvaluateEksternBase<
 			timelineObjects: literal<TimelineObjectCoreExt[]>([
 				...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
 					priority: 1,
-					content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition),
+					content: getVideoMixerMixEffectPropsContentForEffekt(switcherInput, partDefinition, context),
 					classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 				}),
 
