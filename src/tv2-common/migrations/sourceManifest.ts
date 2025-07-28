@@ -96,15 +96,15 @@ export function MakeConfigForAuxiliary(
 	return {
 		id: `Sources${name}`,
 		name: `${displayName} Mapping`,
-		description: 'Define which auxiliary maps to layer mappings.',
+		description: 'Define the identifier that should map to a video mixer layer controlling an auxiliary.',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal,
 		columns: [
 			{
 				id: 'AuxiliaryId',
-				name: 'Auxiliary id',
-				description: 'The auxiliary identifier used in iNews.',
+				name: 'Mapping id',
+				description: 'The identifier used in iNews.',
 				type: ConfigManifestEntryType.STRING,
 				required: true,
 				defaultVal: '',

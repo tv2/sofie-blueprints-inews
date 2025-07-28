@@ -181,10 +181,10 @@ async function createVossVideoClipPiece(
 
 	if (!auxiliaryMapping) {
 		context.core.notifyUserWarning(
-			`Failed creating VOSS video clip piece: Unable to find auxiliary mapping for auxiliary id ${auxiliaryId}.`
+			`Failed creating VOSS video clip piece: Unable to find auxiliary mapping for mapping id ${auxiliaryId}.`
 		)
 		context.core.logWarning(
-			`Failed creating VOSS video clip piece: Unable to find auxiliary mapping for auxiliary id ${auxiliaryId}.`
+			`Failed creating VOSS video clip piece: Unable to find auxiliary mapping for mapping id ${auxiliaryId}.`
 		)
 		return
 	}
@@ -209,7 +209,7 @@ async function createVossVideoClipPiece(
 
 	return {
 		externalId: partDefinition.externalId,
-		name: `${contentProps.file} \u2192 AUX${auxiliaryId}`,
+		name: `${contentProps.file} \u2192 SS${auxiliaryId}`,
 		lifespan: PieceLifespan.OutOnSegmentEnd,
 		sourceLayerId: auxiliaryMapping.LayerId,
 		outputLayerId: SharedOutputLayer.AUX,
