@@ -288,8 +288,8 @@ export async function getSegmentBase<ShowStyleConfig extends TV2ShowStyleConfig>
 				if (showStyleOptions.CreatePartVOSS) {
 					blueprintParts.push(
 						await showStyleOptions.CreatePartVOSS(context, partDefinition, partIndex, totalWords, {
-							voLayer: false,
-							voLevels: false,
+							voLayer: true,
+							voLevels: true,
 							totalTime,
 							totalWords,
 							tapeTime,
