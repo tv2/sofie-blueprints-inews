@@ -784,7 +784,7 @@ export function getSourceDefinition(typeStr: string, config: TV2ShowStyleConfig)
 			sourceType: SourceType.DEFAULT
 		}
 	} else if (/SERVER/i.test(typeStr)) {
-		const auxiliaryId: string | undefined = /\bAUX\s*(?<auxiliaryId>\d+)\b/i.exec(typeStr)?.groups?.auxiliaryId
+		const auxiliaryId: string | undefined = /\bSS\s*(?<auxiliaryId>\d+)\b/i.exec(typeStr)?.groups?.auxiliaryId
 		return {
 			sourceType: SourceType.SERVER,
 			...(auxiliaryId ? { additionalRouting: { auxiliaryId } } : undefined)
