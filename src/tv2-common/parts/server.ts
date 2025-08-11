@@ -136,7 +136,7 @@ export async function CreatePartServerBase<
 		} else {
 			basePart.invalid = true
 			basePart.invalidity = {
-				reason: `Auxiliary '${partDefinition.additionalRouting.auxiliaryId}' is not defined in the Auxiliary mappings table.`
+				reason: `The ID '${partDefinition.additionalRouting.auxiliaryId}' is not defined in the Auxiliary mappings table.`
 			}
 		}
 	}
@@ -168,8 +168,8 @@ function createVideoClipAuxiliaryRoutingPiece<
 	)
 
 	if (!auxiliaryMapping) {
-		context.core.notifyUserWarning(`No auxiliary mappings found for the auxiliary id: ${auxiliaryId}`)
-		context.core.logWarning(`No auxiliary mappings found for the auxiliary id: ${auxiliaryId}`)
+		context.core.notifyUserWarning(`No auxiliary mappings found for the mapping id: ${auxiliaryId}`)
+		context.core.logWarning(`No auxiliary mappings found for the mapping id: ${auxiliaryId}`)
 		return
 	}
 
@@ -192,7 +192,7 @@ function createVideoClipAuxiliaryRoutingPiece<
 
 	return {
 		externalId: partDefinition.externalId,
-		name: `${serverContentProps.file} \u2192 AUX${auxiliaryId}`,
+		name: `${serverContentProps.file} \u2192 SS${auxiliaryId}`,
 		lifespan: PieceLifespan.WithinPart,
 		sourceLayerId: auxiliaryMapping.LayerId,
 		outputLayerId: SharedOutputLayer.AUX,
