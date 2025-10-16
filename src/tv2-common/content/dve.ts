@@ -26,6 +26,7 @@ import {
 	SpecialInput,
 	TransitionStyle,
 	TV2BlueprintConfigBase,
+	TV2ShowStyleConfig,
 	TV2StudioConfigBase
 } from 'tv2-common'
 import { ControlClasses, MEDIA_PLAYER_AUTO, SharedGraphicLLayer, SourceType } from 'tv2-constants'
@@ -317,10 +318,6 @@ export function MakeContentDVE2<
 		audioTimelineObjectsForBoxes
 	}
 
-	const graphicsTemplate = getDveGraphicsTemplate(dveConfig, context.core.notifyUserWarning)
-	const graphicsTemplateStyle = getDveGraphicsTemplateStyle(graphicsTemplate)
-	const locatorType = getDveLocatorType(graphicsTemplate)
-
 	let keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : undefined
 	let frameFile = dveConfig.DVEGraphicsFrame ? dveConfig.DVEGraphicsFrame.toString() : undefined
 
@@ -364,16 +361,12 @@ export function MakeContentDVE2<
 					},
 					classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
 				}),
-				literal<TSR.TimelineObjCCGTemplate>({
-					id: '',
-					enable: { start: 0 },
-					priority: 1,
-					layer: SharedGraphicLLayer.GraphicLLayerLocators,
-					content: CreateHTMLRendererContent(context.config, locatorType, {
-						...graphicsTemplateContent,
-						style: graphicsTemplateStyle
-					})
-				}),
+				createLocatorsTimelineObjects(
+					context.config,
+					dveConfig,
+					graphicsTemplateContent,
+					context.core.notifyUserWarning
+				),
 				...(keyFile
 					? [
 							literal<TSR.TimelineObjCCGMedia>({
@@ -414,6 +407,39 @@ export function MakeContentDVE2<
 			])
 		})
 	}
+}
+
+function createLocatorsTimelineObjects(
+	config: TV2ShowStyleConfig,
+	dveConfig: DVEConfigInput,
+	graphicsTemplateContent: { [key: string]: string },
+	notifyUserWarning: (message: string) => void
+): TSR.TimelineObjCCGTemplate {
+	const graphicsTemplate: object = getDveGraphicsTemplate(dveConfig, notifyUserWarning)
+	const graphicsTemplateStyle: object = getDveGraphicsTemplateStyle(graphicsTemplate)
+	const locatorType: string = getDveLocatorType(graphicsTemplate)
+
+	// We still need to create an object for locators even if the DVE don't want any.
+	// If we don't, then there is a chance that the locators for the next DVE will be shown thanks to how lookahead works.
+	// By creating a locator object with no content data, we ensure that there won't be rendered any locators from other sources.
+	const htmlRenderContentData: object = shouldIncludeLocators(graphicsTemplateContent)
+		? {
+				...graphicsTemplateContent,
+				style: graphicsTemplateStyle
+		  }
+		: {}
+
+	return {
+		id: '',
+		enable: { start: 0 },
+		priority: 1,
+		layer: SharedGraphicLLayer.GraphicLLayerLocators,
+		content: CreateHTMLRendererContent(config, locatorType, htmlRenderContentData)
+	}
+}
+
+function shouldIncludeLocators(graphicsTemplateContent: { [key: string]: string }): boolean {
+	return Object.keys(graphicsTemplateContent).length > 0
 }
 
 function addRandomIdIfMissing(timelineObjects: TSR.TSRTimelineObj[]): TSR.TSRTimelineObj[] {
