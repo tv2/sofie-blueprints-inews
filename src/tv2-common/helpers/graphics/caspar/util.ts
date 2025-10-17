@@ -41,11 +41,7 @@ function getMappedGraphicsTemplateName(templateName: string): string {
 	}
 }
 
-export function getHtmlTemplateContent(
-	config: TV2ShowStyleConfig,
-	graphicTemplateName: string,
-	data: object
-): Partial<Slots> {
+function getHtmlTemplateContent(config: TV2ShowStyleConfig, graphicTemplateName: string, data: object): Partial<Slots> {
 	const mappedGraphicTemplateName = getMappedGraphicsTemplateName(graphicTemplateName)
 	const layer = getTimelineLayerForGraphic(config, mappedGraphicTemplateName)
 
