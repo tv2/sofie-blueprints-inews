@@ -29,7 +29,7 @@ export function getTimingEnable(cue: CueDefinition, defaultOut?: number): Pick<I
 
 	if (cue.end) {
 		if (cue.end.infiniteMode) {
-			result.lifespan = getLifeSpan(cue.end.infiniteMode)
+			result.lifespan = getLifeSpan(cue.end.infiniteMode.toUpperCase() as 'B' | 'S' | 'O')
 		} else {
 			const end = calculateTime(cue.end)
 			result.enable.duration = end ? end - result.enable.start : undefined

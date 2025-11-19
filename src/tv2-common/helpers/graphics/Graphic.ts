@@ -112,7 +112,7 @@ export abstract class Graphic {
 			return PieceLifespan.WithinPart
 		}
 		if (this.cue.end?.infiniteMode) {
-			return getLifeSpan(this.cue.end.infiniteMode)
+			return getLifeSpan(this.cue.end.infiniteMode.toUpperCase() as 'B' | 'S' | 'O')
 		}
 		if (this.cue.end && calculateTime(this.cue.end)) {
 			return PieceLifespan.WithinPart
