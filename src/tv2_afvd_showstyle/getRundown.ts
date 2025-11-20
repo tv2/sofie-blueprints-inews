@@ -507,7 +507,7 @@ function getBaseline(context: ShowStyleContext<GalleryBlueprintConfig>): Bluepri
 				content: {
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.HTMLPAGE,
-					url: context.config.studio.SofieHostURL + '/standalone/rundown-clock'
+					url: context.config.studio.SofieHostURL + '/standalone/rundown/clock'
 				}
 			}),
 
