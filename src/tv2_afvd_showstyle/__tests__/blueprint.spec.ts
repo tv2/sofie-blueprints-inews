@@ -838,7 +838,10 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmCam])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmTransition,
+			SharedSourceLayer.PgmCam
+		])
 		expect(kamPart1.pieces[0].name).toBe('EFFEKT 1')
 	})
 
@@ -854,7 +857,10 @@ describe('AFVD Blueprint', () => {
 		const kamPart1 = result.parts[0]
 		expect(kamPart1).toBeTruthy()
 		expect(kamPart1.pieces).toHaveLength(2)
-		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([SharedSourceLayer.PgmJingle, SharedSourceLayer.PgmCam])
+		expect(kamPart1.pieces.map((p) => p.sourceLayerId)).toEqual([
+			SharedSourceLayer.PgmTransition,
+			SharedSourceLayer.PgmCam
+		])
 		expect(kamPart1.pieces[0].name).toBe('MIX 5')
 	})
 
@@ -874,7 +880,7 @@ describe('AFVD Blueprint', () => {
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(2)
 		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([
-			SharedSourceLayer.PgmJingle,
+			SharedSourceLayer.PgmTransition,
 			SharedSourceLayer.PgmLive
 		])
 		expect(livePart1.pieces[0].name).toBe('EFFEKT 1')
@@ -896,7 +902,7 @@ describe('AFVD Blueprint', () => {
 		expect(livePart1).toBeTruthy()
 		expect(livePart1.pieces).toHaveLength(2)
 		expect(livePart1.pieces.map((p) => p.sourceLayerId)).toEqual([
-			SharedSourceLayer.PgmJingle,
+			SharedSourceLayer.PgmTransition,
 			SharedSourceLayer.PgmLive
 		])
 		expect(livePart1.pieces[0].name).toBe('MIX 10')

@@ -174,6 +174,28 @@ const JINGLE: ISourceLayer[] = [
 	}
 ]
 
+// TRANSITION group
+const TRANSITION: ISourceLayer[] = [
+	{
+		_id: SourceLayer.PgmTransition,
+		_rank: 10,
+		name: 'Jingle',
+		abbreviation: '',
+		type: SourceLayerType.TRANSITION,
+		exclusiveGroup: '',
+		isRemoteInput: false,
+		isGuestInput: false,
+		isClearable: true,
+
+		isSticky: false,
+
+		isQueueable: false,
+		isHidden: false,
+		allowDisable: false,
+		onPresenterScreen: true
+	}
+]
+
 // PGM group
 const PGM: ISourceLayer[] = [
 	{
@@ -660,6 +682,7 @@ const SELECTED_ADLIB: ISourceLayer[] = [
 export default literal<ISourceLayer[]>([
 	...OVERLAY,
 	...JINGLE,
+	...TRANSITION,
 	...PGM,
 	...MUSIK,
 	...MANUS,

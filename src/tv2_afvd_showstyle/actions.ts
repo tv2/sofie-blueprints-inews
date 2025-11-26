@@ -26,7 +26,7 @@ export async function executeActionAFVD(
 				DVEAdLib: SourceLayer.PgmDVEAdLib,
 				Cam: SourceLayer.PgmCam,
 				Live: SourceLayer.PgmLive,
-				Effekt: SourceLayer.PgmJingle,
+				Effekt: SourceLayer.PgmTransition,
 				EVS: SourceLayer.PgmLocal,
 				Ident: SourceLayer.PgmGraphicsIdent,
 				Continuity: SourceLayer.PgmContinuity,
