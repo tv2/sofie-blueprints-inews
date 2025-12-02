@@ -95,7 +95,7 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 						data: templateData,
 						useStopCommand: false,
 						mixer: {
-							opacity: 100
+							opacity: 1
 						}
 					}
 				}),
@@ -148,7 +148,7 @@ export function CreateHTMLRendererContent(
 		},
 		useStopCommand: false,
 		mixer: {
-			opacity: 100
+			opacity: 1
 		}
 	}
 }

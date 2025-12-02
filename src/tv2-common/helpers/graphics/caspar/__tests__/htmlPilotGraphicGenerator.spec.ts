@@ -114,7 +114,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 					},
 					useStopCommand: false,
 					mixer: {
-						opacity: 100
+						opacity: 1
 					}
 				})
 			)
@@ -184,7 +184,7 @@ describe('HtmlPilotGraphicGenerator', () => {
 					},
 					useStopCommand: false,
 					mixer: {
-						opacity: 100
+						opacity: 1
 					}
 				})
 			)
