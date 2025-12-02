@@ -246,7 +246,7 @@ const effektPieceInstance_1: IBlueprintPieceInstance = {
 		},
 		externalId: NEXT_PART_EXTERNAL_ID,
 		name: 'EFFEKT 1',
-		sourceLayerId: SourceLayer.PgmJingle,
+		sourceLayerId: SourceLayer.PgmTransition,
 		outputLayerId: SharedOutputLayer.JINGLE,
 		lifespan: PieceLifespan.WithinPart,
 		content: {
@@ -399,7 +399,7 @@ async function getTransitionPiece(
 ): Promise<IBlueprintPieceInstance> {
 	const piece = await context
 		.getPieceInstances(part)
-		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === SourceLayer.PgmJingle))
+		.then((pieceInstances) => pieceInstances.find((p) => p.piece.sourceLayerId === SourceLayer.PgmTransition))
 	expect(piece).toBeTruthy()
 
 	return piece!

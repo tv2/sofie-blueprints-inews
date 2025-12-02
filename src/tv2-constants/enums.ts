@@ -270,6 +270,7 @@ export enum SharedSourceLayer {
 	PgmVoiceOver = 'studio0_voiceover',
 	PgmContinuity = 'studio0_continuity',
 	PgmJingle = 'studio0_jingle',
+	PgmTransition = 'studio0_transition',
 	PgmSisyfosAdlibs = 'studio0_sisyfos_adlibs', // shortcuts
 
 	// Graphics

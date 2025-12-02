@@ -33,7 +33,7 @@ export async function executeActionOfftube(
 				DVEAdLib: OfftubeSourceLayer.PgmDVEAdLib,
 				Cam: OfftubeSourceLayer.PgmCam,
 				Live: OfftubeSourceLayer.PgmLive,
-				Effekt: OfftubeSourceLayer.PgmJingle,
+				Effekt: OfftubeSourceLayer.PgmTransition,
 				Ident: OfftubeSourceLayer.PgmGraphicsIdent,
 				Continuity: OfftubeSourceLayer.PgmContinuity,
 				Wall: OfftubeSourceLayer.WallGraphics
