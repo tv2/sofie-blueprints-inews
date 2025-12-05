@@ -251,10 +251,7 @@ export async function executeAction<
 				await executeActionCommentatorSelectDVE(context, settings, actionId, userData as ActionCommentatorSelectDVE)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_SERVER:
-				await executeActionCommentatorSelectServer(
-					context,
-					settings
-				)
+				await executeActionCommentatorSelectServer(context, settings)
 				break
 			case AdlibActionType.COMMENTATOR_SELECT_FULL:
 				await executeActionCommentatorSelectFull(context, settings, actionId, userData as ActionCommentatorSelectFull)
@@ -1738,10 +1735,7 @@ async function findMediaPlayerSessions(
 async function executeActionCommentatorSelectServer<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
-	context: ITV2ActionExecutionContext,
-	settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>
-) {
+>(context: ITV2ActionExecutionContext, settings: ActionExecutionSettings<StudioConfig, ShowStyleConfig>) {
 	const data = await findDataStore<ActionSelectServerClip>(context, [
 		settings.SelectedAdlibs.SourceLayer.Server,
 		settings.SelectedAdlibs.SourceLayer.VO

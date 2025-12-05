@@ -392,6 +392,14 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: 25
 	},
 	{
+		id: 'AudioBedSettings.useAudioFilterSyntax',
+		name: 'Use Audio Filter Syntax',
+		description: 'Required for CasparCG 2.3 and higher',
+		type: ConfigManifestEntryType.BOOLEAN,
+		required: false,
+		defaultVal: false
+	},
+	{
 		id: 'CasparPrerollDuration',
 		name: 'Caspar preroll duration',
 		description: 'ms of preroll before switching to caspar',

@@ -41,6 +41,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 		fadeIn: number
 		fadeOut: number
 		volume: number
+		useAudioFilterSyntax?: boolean
 	}
 
 	CasparPrerollDuration: number

@@ -15,7 +15,9 @@ import {
 	joinAssetToFolder,
 	literal,
 	PartDefinition,
-	TimeFromFrames
+	TimeFromFrames,
+	TV2StudioBlueprintConfigBase,
+	TV2StudioConfigBase
 } from 'tv2-common'
 import {
 	AbstractLLayer,
@@ -138,11 +140,11 @@ function LydContent(
 					deviceType: TSR.DeviceType.CASPARCG,
 					type: TSR.TimelineContentTypeCasparCg.MEDIA,
 					file: filePath,
-					channelLayout: 'bed',
+					...getAudioBedChannelLayoutProperties(config),
 					loop: true,
 					noStarttime: true,
 					mixer: {
-						volume: Number(config.studio.AudioBedSettings.volume) / 100
+						volume: config.studio.AudioBedSettings.volume / 100
 					},
 					transitions: {
 						inTransition: {
@@ -176,6 +178,19 @@ function LydContent(
 			})
 		])
 	})
+}
+
+function getAudioBedChannelLayoutProperties(
+	config: TV2StudioBlueprintConfigBase<TV2StudioConfigBase>
+): Pick<TSR.TimelineObjCCGMedia['content'], 'channelLayout' | 'audioFilter'> {
+	if (config.studio.AudioBedSettings.useAudioFilterSyntax) {
+		return {
+			audioFilter: 'pan=4c|c2=c0|c3=c1'
+		}
+	}
+	return {
+		channelLayout: 'bed'
+	}
 }
 
 export function CreateLYDBaseline(studio: string): TSR.TSRTimelineObj[] {

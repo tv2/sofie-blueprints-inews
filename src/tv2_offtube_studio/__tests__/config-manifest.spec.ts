@@ -42,7 +42,8 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	AudioBedSettings: {
 		fadeIn: 0,
 		fadeOut: 0,
-		volume: 0
+		volume: 0,
+		useAudioFilterSyntax: false
 	},
 	CasparPrerollDuration: 0,
 	ClipFileExtension: 'mxf',
