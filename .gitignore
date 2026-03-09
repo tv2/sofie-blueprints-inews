@@ -13,3 +13,5 @@ wallaby.conf.js
 
 # Ignore JetBrains config files
 .idea
+
+.node-version

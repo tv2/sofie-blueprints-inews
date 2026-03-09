@@ -1943,4 +1943,126 @@ describe('Cue parser', () => {
 			expect(result!.start!.frames).toBe(10)
 		})
 	})
+
+	describe('OVERSKRIFT cues', () => {
+		test('OVERSKRIFT=OPLÆG with extended Latin characters', () => {
+			const cue = ['OVERSKRIFT=OPLÆG skal minde om kg trompet']
+			const result = ParseCue(cue, config)
+			expect(result).toEqual(
+				literal<CueDefinitionGraphic<GraphicInternal>>({
+					type: CueType.Graphic,
+					target: 'OVL',
+					graphic: {
+						type: 'internal',
+						template: 'OPLÆG',
+						cue: 'OVERSKRIFT=',
+						textFields: ['skal minde om kg trompet']
+					},
+					adlib: true,
+					iNewsCommand: 'OVERSKRIFT'
+				})
+			)
+		})
+
+		test('OVERSKRIFT with simple template and timing', () => {
+			const cue = ['OVERSKRIFT=INTRO', 'Tekst linje 1', ';0.01']
+			const result = ParseCue(cue, config)
+			expect(result).toEqual(
+				literal<CueDefinitionGraphic<GraphicInternal>>({
+					type: CueType.Graphic,
+					target: 'OVL',
+					graphic: {
+						type: 'internal',
+						template: 'INTRO',
+						cue: 'OVERSKRIFT=',
+						textFields: ['Tekst linje 1']
+					},
+					start: {
+						seconds: 1
+					},
+					iNewsCommand: 'OVERSKRIFT'
+				})
+			)
+		})
+
+		test('OVERSKRIFT with space separator', () => {
+			const cue = ['OVERSKRIFT HEADLINE', ';x.xx']
+			const result = ParseCue(cue, config)
+			expect(result).toEqual(
+				literal<CueDefinitionGraphic<GraphicInternal>>({
+					type: CueType.Graphic,
+					target: 'OVL',
+					graphic: {
+						type: 'internal',
+						template: 'HEADLINE',
+						cue: 'OVERSKRIFT',
+						textFields: []
+					},
+					adlib: true,
+					iNewsCommand: 'OVERSKRIFT'
+				})
+			)
+		})
+
+		test('OVERSKRIFT is case-insensitive', () => {
+			const cue = ['overskrift=Test', ';0.00']
+			const result = ParseCue(cue, config)
+			expect(result).toEqual(
+				literal<CueDefinitionGraphic<GraphicInternal>>({
+					type: CueType.Graphic,
+					target: 'OVL',
+					graphic: {
+						type: 'internal',
+						template: 'Test',
+						cue: 'overskrift=',
+						textFields: []
+					},
+					start: {
+						seconds: 0
+					},
+					iNewsCommand: 'overskrift'
+				})
+			)
+		})
+
+		test('OVERSKRIFT with multiple text lines', () => {
+			const cue = ['OVERSKRIFT=TEMA', 'Første linje', 'Anden linje', ';0.02']
+			const result = ParseCue(cue, config)
+			expect(result).toEqual(
+				literal<CueDefinitionGraphic<GraphicInternal>>({
+					type: CueType.Graphic,
+					target: 'OVL',
+					graphic: {
+						type: 'internal',
+						template: 'TEMA',
+						cue: 'OVERSKRIFT=',
+						textFields: ['Første linje', 'Anden linje']
+					},
+					start: {
+						seconds: 2
+					},
+					iNewsCommand: 'OVERSKRIFT'
+				})
+			)
+		})
+
+		test('OVERSKRIFT with template containing ÆØÅ characters', () => {
+			const cue = ['OVERSKRIFT=ÆRLIG', ';x.xx']
+			const result = ParseCue(cue, config)
+			expect(result).toEqual(
+				literal<CueDefinitionGraphic<GraphicInternal>>({
+					type: CueType.Graphic,
+					target: 'OVL',
+					graphic: {
+						type: 'internal',
+						template: 'ÆRLIG',
+						cue: 'OVERSKRIFT=',
+						textFields: []
+					},
+					adlib: true,
+					iNewsCommand: 'OVERSKRIFT'
+				})
+			)
+		})
+	})
 })

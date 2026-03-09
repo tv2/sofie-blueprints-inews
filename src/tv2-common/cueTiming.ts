@@ -31,7 +31,7 @@ export function CreateTimingEnable(
 
 	if (cue.end) {
 		if (cue.end.infiniteMode) {
-			result.lifespan = LifeSpan(cue.end.infiniteMode)
+			result.lifespan = LifeSpan(cue.end.infiniteMode.toUpperCase() as 'B' | 'S' | 'O')
 		} else {
 			const end = CalculateTime(cue.end)
 			result.enable.duration = end ? end - result.enable.start : undefined
