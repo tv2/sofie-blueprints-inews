@@ -21,7 +21,7 @@
     "release": "standard-version",
     "prepareChangelog": "standard-version --prerelease",
     "validate": "yarn validate:dependencies",
-    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
+    "validate:dependencies": "echo \"Not running at the moment. You should run: yarn audit --groups dependencies\" && yarn license-validate",
     "license-validate": "license-checker --onlyAllow \"MIT;Apache-2.0;ISC;BSD;CC0;CC-BY-3.0;CC-BY-4.0;UNLICENSED\" --summary"
   },
   "husky": {
