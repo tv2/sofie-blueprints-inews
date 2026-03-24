@@ -220,7 +220,7 @@ export function ParseCue(cue: UnparsedCue, config: TV2BlueprintConfig): CueDefin
 	if (/^[#* ]?kg[= ]ovl-all-out$/i.test(cue[0]) || /^[#* ]?kg[= ]altud$/i.test(cue[0])) {
 		// All out
 		return parseAllOut(cue)
-	} else if (/(?:^[*|#]?kg[ |=])|(?:^digi)/i.test(cue[0])) {
+	} else if (/^[*|#]?(?:kg|digi|overskrift)[ |=]/i.test(cue[0])) {
 		// kg (Grafik)
 		return parsekg(cue, config)
 	} else if (/^]] [a-z]\d\.\d [a-z] \d \[\[$/i.test(cue[0])) {
@@ -295,15 +295,15 @@ function parsekg(
 		cue: ''
 	}
 
-	const command = cue[0].match(/^([*|#]?kg|digi)/i)
+	const command = cue[0].match(/^([*|#]?(?:kg|digi|overskrift))/i)
 	kgCue.iNewsCommand = command ? command[1] : 'kg'
 
 	const code = cue[0]
-		.match(/^[*|#]?kg[ | =]/i)
+		.match(/^[*|#]?(?:kg|digi|overskrift)[ | =]/i)
 		?.toString()
 		?.trim()
 
-	const firstLineValues = cue[0].match(/^[*|#]?kg[ |=]([\w|\d]+)( (.+))*$/i)
+	const firstLineValues = cue[0].match(/^[*|#]?(?:kg|overskrift)[ |=](\S+)( (.+))*$/i)
 	if (firstLineValues) {
 		graphic.cue = code || ''
 		graphic.template = firstLineValues[1]

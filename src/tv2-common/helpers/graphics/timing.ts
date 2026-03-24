@@ -26,7 +26,7 @@ export function GetPieceLifespanForGraphic(
 		return PieceLifespan.WithinPart
 	}
 	if (parsedCue.end?.infiniteMode) {
-		return LifeSpan(parsedCue.end.infiniteMode)
+		return LifeSpan(parsedCue.end.infiniteMode.toUpperCase() as 'B' | 'S' | 'O')
 	}
 	if (parsedCue.end && CalculateTime(parsedCue.end)) {
 		return PieceLifespan.WithinPart
