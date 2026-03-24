@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "@sofie-automation/blueprints-integration": "npm:@tv2media/blueprints-integration@46.0.2",
-    "underscore": "^1.12.1"
+    "underscore": "^1.13.8"
   },
   "resolutions": {
     "moment": "^2.29.2"
