@@ -177,6 +177,7 @@ export function getHtmlGraphicBaseline(config: TV2BlueprintConfig) {
 	const templateName = getHtmlTemplateName(config)
 	const partiallyUpdatableLayerMappings = [
 		SharedGraphicLLayer.GraphicLLayerOverlayIdent,
+		SharedGraphicLLayer.GraphicLLayerOverlayHeadline,
 		SharedGraphicLLayer.GraphicLLayerOverlayLower,
 		SharedGraphicLLayer.GraphicLLayerOverlayTema,
 		SharedGraphicLLayer.GraphicLLayerOverlayTopt,

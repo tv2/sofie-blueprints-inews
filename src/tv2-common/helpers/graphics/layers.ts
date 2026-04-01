@@ -14,9 +14,6 @@ export function GetSourceLayerForGraphic(config: TV2BlueprintConfig, name: strin
 		// TODO: When adding more sourcelayers
 		// This is here to guard against bad user input
 		case SharedSourceLayers.PgmGraphicsHeadline:
-			if (config.studio.GraphicsType === 'HTML') {
-				return SharedSourceLayers.PgmGraphicsLower
-			}
 			return SharedSourceLayers.PgmGraphicsHeadline
 		case SharedSourceLayers.PgmGraphicsIdent:
 			return SharedSourceLayers.PgmGraphicsIdent
@@ -55,9 +52,6 @@ export function GetTimelineLayerForGraphic(config: TV2BlueprintConfig, name: str
 		case SharedGraphicLLayer.GraphicLLayerOverlayLower:
 			return SharedGraphicLLayer.GraphicLLayerOverlayLower
 		case SharedGraphicLLayer.GraphicLLayerOverlayHeadline:
-			if (config.studio.GraphicsType === 'HTML') {
-				return SharedGraphicLLayer.GraphicLLayerOverlayLower
-			}
 			return SharedGraphicLLayer.GraphicLLayerOverlayHeadline
 		case SharedGraphicLLayer.GraphicLLayerOverlayTema:
 			return SharedGraphicLLayer.GraphicLLayerOverlayTema
