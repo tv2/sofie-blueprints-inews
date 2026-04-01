@@ -8,6 +8,7 @@ import { SharedGraphicLLayer } from 'tv2-constants'
 export const layerToHTMLGraphicSlot: { [slot: string]: string } = {
 	[SharedGraphicLLayer.GraphicLLayerOverlay]: '',
 	[SharedGraphicLLayer.GraphicLLayerOverlayIdent]: '650_ident',
+	[SharedGraphicLLayer.GraphicLLayerOverlayHeadline]: '440_headline',
 	[SharedGraphicLLayer.GraphicLLayerOverlayLower]: '450_lowerThird',
 	[SharedGraphicLLayer.GraphicLLayerOverlayTema]: '',
 	[SharedGraphicLLayer.GraphicLLayerOverlayTopt]: '660_topt',
