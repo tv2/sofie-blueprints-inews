@@ -2,12 +2,13 @@ import { TSR } from 'blueprints-integration'
 import {
 	AtemTransitionStyleFromString,
 	CueDefinitionFromLayout,
+	INewsFields,
 	PostProcessDefinitions,
 	TV2BlueprintConfig,
 	UnparsedCue
 } from 'tv2-common'
 import { CueType, PartType, SourceType } from 'tv2-constants'
-import { CueDefinition, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
+import { createCueDefinitionGraphicDesign, CueDefinition, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
 export interface PartTransition {
 	style: TSR.AtemTransitionStyle
@@ -186,7 +187,7 @@ export function ParseBody(
 	segmentName: string,
 	body: string,
 	cues: UnparsedCue[],
-	fields: any,
+	fields: INewsFields,
 	modified: number
 ): PartDefinition[] {
 	let definitions: PartDefinition[] = []
@@ -361,9 +362,21 @@ export function ParseBody(
 		partDefinition.cues = partDefinition.cues.filter(c => c.type !== CueType.UNKNOWN)
 	})
 
+	definitions[0]?.cues.push(...parseLayoutToCueDefinitions(fields, config))
 	definitions = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
 
 	return PostProcessDefinitions(definitions, segmentId)
+}
+
+function parseLayoutToCueDefinitions(fields: INewsFields, config: TV2BlueprintConfig): CueDefinition[] {
+	const cueDefinitions: CueDefinition[] = []
+	if (fields.layout) {
+		const cueDefinitionGraphicDesign = createCueDefinitionGraphicDesign(fields.layout, config)
+		if (cueDefinitionGraphicDesign) {
+			cueDefinitions.push(cueDefinitionGraphicDesign)
+		}
+	}
+	return cueDefinitions
 }
 
 export function FindTargetPair(partDefinition: PartDefinition): boolean {
