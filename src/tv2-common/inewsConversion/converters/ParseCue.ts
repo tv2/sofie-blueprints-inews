@@ -923,6 +923,24 @@ function parseDesignLayout(cue: string[], config: TV2BlueprintConfig): CueDefini
 	})
 }
 
+export function createCueDefinitionGraphicDesign(
+	layout: string,
+	config: TV2BlueprintConfig
+): CueDefinitionGraphicDesign | undefined {
+	const designConfig = findGraphicDesignConfiguration(config, layout)
+
+	if (!designConfig) {
+		return undefined
+	}
+
+	return literal<CueDefinitionGraphicDesign>({
+		type: CueType.GraphicDesign,
+		design: designConfig.VizTemplate,
+		iNewsCommand: '',
+		isFromLayout: true
+	})
+}
+
 function findGraphicDesignConfiguration(
 	config: TV2BlueprintConfig,
 	layout: string
