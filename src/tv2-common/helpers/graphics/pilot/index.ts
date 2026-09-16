@@ -62,7 +62,7 @@ export interface PilotGraphicProps {
 
 export abstract class PilotGraphicGenerator {
 	public static createPilotGraphicGenerator(graphicProps: PilotGraphicProps): PilotGraphicGenerator {
-		if (graphicProps.config.studio.GraphicsType === 'HTML') {
+		if (graphicProps.config.studio.GraphicsType === 'HTML' && !IsTargetingWall(graphicProps.parsedCue.target)) {
 			return new HtmlPilotGraphicGenerator(graphicProps)
 		}
 		return new VizPilotGraphicGenerator(graphicProps)
@@ -195,7 +195,7 @@ export abstract class PilotGraphicGenerator {
 	}
 
 	protected getPrerollDuration(): number {
-		return this.config.studio.GraphicsType === 'HTML'
+		return this.config.studio.GraphicsType === 'HTML' && !IsTargetingWall(this.engine)
 			? this.config.studio.CasparPrerollDuration
 			: this.config.studio.VizPilotGraphics.PrerollDuration
 	}

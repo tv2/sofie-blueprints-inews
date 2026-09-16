@@ -365,6 +365,12 @@ export const studioMigrations: MigrationStepStudio[] = [
 	renameMapping('1.7.8', 'graphic_pilot_overlay', 'graphic_overlay_pilot'),
 	GetMappingDefaultMigrationStepForLayer('1.7.8', 'graphic_overlay_pilot', true),
 
+	/**
+	 * 1.7.9
+	 * - Route Qbox Wall graphics through the externally configured Viz MSE device.
+	 */
+	GetMappingDefaultMigrationStepForLayer('1.7.9', SharedGraphicLLayer.GraphicLLayerWall, true),
+
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations
 	...getMappingsDefaultsMigrationSteps(VERSION)

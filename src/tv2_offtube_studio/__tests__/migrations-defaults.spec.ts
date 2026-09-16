@@ -1,3 +1,4 @@
+import { LookaheadMode, TSR } from 'blueprints-integration'
 import {
 	AbstractLLayerServerEnable,
 	CasparPlayerClip,
@@ -5,6 +6,7 @@ import {
 	GetDSKMappingNames
 } from 'tv2-common'
 import * as _ from 'underscore'
+import { SharedGraphicLLayer } from '../../tv2-constants'
 import { ATEMModel } from '../../types/atem'
 
 import { RealLLayers } from '../layers'
@@ -36,5 +38,13 @@ describe('Migration Defaults', () => {
 			.sort()
 
 		expect(defaultsIds).toEqual(layerIds)
+	})
+
+	test('Wall graphics use Viz MSE', () => {
+		expect(MappingsDefaults[SharedGraphicLLayer.GraphicLLayerWall]).toMatchObject({
+			device: TSR.DeviceType.VIZMSE,
+			deviceId: 'viz0',
+			lookahead: LookaheadMode.NONE
+		})
 	})
 })
