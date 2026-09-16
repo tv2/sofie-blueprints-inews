@@ -51,10 +51,16 @@ export interface TableConfigSchema {
 }
 
 export interface TableConfigGraphicsSetup {
+	_id?: string
 	Name: string
 	HtmlPackageFolder: string
 	OvlShowName?: string
 	FullShowName?: string
+}
+
+export interface ConfigManifestSelectValue {
+	value: string
+	label: string
 }
 
 export interface TV2StudioConfigBase {
@@ -162,7 +168,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	LYDConfig: TableConfigItemValue
 	SchemaConfig: TableConfigSchema[]
 	GraphicsSetups: TableConfigGraphicsSetup[]
-	SelectedGraphicsSetupName: string
+	SelectedGraphicsSetupName: string | ConfigManifestSelectValue
 }
 
 export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase>

@@ -38,6 +38,36 @@ function makeGraphicPart(cue: CueDefinitionGraphic<GraphicInternal | GraphicPilo
 }
 
 describe('Qbox graphics', () => {
+	it('resolves the Graphics Setup selected by a variant select-from-column value', () => {
+		const context = makeMockContext()
+		context.showStyleConfig = {
+			...defaultShowStyleConfig,
+			SelectedGraphicsSetupName: {
+				value: 'setup-sc-id',
+				label: 'SC'
+			},
+			GraphicsSetups: [
+				{
+					_id: 'different-setup-id',
+					Name: 'setup-sc-id',
+					HtmlPackageFolder: 'wrong-package',
+					FullShowName: 'wrong-show'
+				},
+				{
+					_id: 'setup-sc-id',
+					Name: 'SC',
+					HtmlPackageFolder: 'html-package-folder',
+					FullShowName: 'overlay'
+				}
+			]
+		} as any
+
+		const config = getConfig(context)
+
+		expect(config.selectedGraphicsSetup.Name).toBe('SC')
+		expect(config.selectedGraphicsSetup.FullShowName).toBe('overlay')
+	})
+
 	it('uses Viz MSE for a persistent SS wall loop in an HTML studio', async () => {
 		const context = makeMockContext()
 		const config = getConfig(context)
