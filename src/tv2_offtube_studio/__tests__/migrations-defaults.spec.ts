@@ -6,6 +6,7 @@ import {
 } from 'tv2-common'
 import * as _ from 'underscore'
 import { ATEMModel } from '../../types/atem'
+
 import { RealLLayers } from '../layers'
 import MappingsDefaults from '../migrations/mappings-defaults'
 
