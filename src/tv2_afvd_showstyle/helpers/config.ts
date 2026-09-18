@@ -20,7 +20,6 @@ export interface BlueprintConfig extends BlueprintConfigBase {
 
 export interface ShowStyleConfig extends TV2ShowstyleBlueprintConfigBase {
 	WipesConfig: TableConfigItemValue
-	SelectedGraphicsSetupName: string
 	GraphicsSetups: GalleryTableConfigGraphicsSetup[]
 	OverlayShowMapping: TableConfigItemOverlayShowMapping[]
 }

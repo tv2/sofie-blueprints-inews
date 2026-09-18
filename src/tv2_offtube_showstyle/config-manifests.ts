@@ -283,7 +283,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 					'The Sofie Layer mapping to use in playback. This will ensure proper graphic transition logic by matching the graphic layers.',
 				type: ConfigManifestEntryType.LAYER_MAPPINGS,
 				filters: {
-					deviceTypes: [TSR.DeviceType.CASPARCG]
+					deviceTypes: [TSR.DeviceType.CASPARCG, TSR.DeviceType.VIZMSE]
 				},
 				multiple: false,
 				required: true,
@@ -594,5 +594,16 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 			}
 		]
 	},
-	...getGraphicsSetupsEntries([])
+	...getGraphicsSetupsEntries([
+		{
+			id: 'FullShowName',
+			name: 'Wall Show Name',
+			rank: 3,
+			required: false,
+			defaultVal: '',
+			hint: '',
+			description: 'Name of the Viz show used for internal graphics on the WALL1 channel',
+			type: ConfigManifestEntryType.STRING
+		}
+	])
 ]

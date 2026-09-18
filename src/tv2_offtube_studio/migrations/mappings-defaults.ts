@@ -440,10 +440,9 @@ const MAPPINGS_GRAPHICS: BlueprintMappings = {
 		layerName: 'GFX Full Loop',
 		lookahead: LookaheadMode.NONE
 	}),
-	// No Screen for now
-	[OfftubeGraphicLLayer.GraphicLLayerWall]: literal<TSR.MappingAbstract & BlueprintMapping>({
-		device: TSR.DeviceType.ABSTRACT,
-		deviceId: 'abstract0',
+	[OfftubeGraphicLLayer.GraphicLLayerWall]: literal<TSR.MappingVizMSE & BlueprintMapping>({
+		device: TSR.DeviceType.VIZMSE,
+		deviceId: 'viz0',
 		layerName: 'GFX Wall',
 		lookahead: LookaheadMode.NONE
 	}),

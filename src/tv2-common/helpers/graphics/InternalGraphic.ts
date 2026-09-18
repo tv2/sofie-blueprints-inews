@@ -119,7 +119,7 @@ export class InternalGraphic {
 	}
 
 	private getInternalGraphicContent(): IBlueprintPiece['content'] {
-		return this.config.studio.GraphicsType === 'HTML'
+		return this.config.studio.GraphicsType === 'HTML' && !IsTargetingWall(this.engine)
 			? GetInternalGraphicContentCaspar(this.config, this.engine, this.parsedCue, this.mappedTemplate)
 			: GetInternalGraphicContentVIZ(this.config, this.context, this.engine, this.parsedCue, this.mappedTemplate)
 	}

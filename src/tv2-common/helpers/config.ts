@@ -17,11 +17,16 @@ export function findGraphicsSetup<ShowStyleConfig extends TV2ShowstyleBlueprintC
 	config: ShowStyleConfig,
 	fallbackGraphicsSetup: ShowStyleConfig['GraphicsSetups'][0]
 ): ShowStyleConfig['GraphicsSetups'][0] {
-	const foundTableConfigGraphicsSetup: TableConfigGraphicsSetup | undefined = config.GraphicsSetups.find(
-		tableConfigGraphicsSetup => tableConfigGraphicsSetup.Name === config.SelectedGraphicsSetupName
-	)
+	const selectedGraphicsSetup = config.SelectedGraphicsSetupName
+	const selectedValue = typeof selectedGraphicsSetup === 'string' ? selectedGraphicsSetup : selectedGraphicsSetup.value
+	const selectedLabel = typeof selectedGraphicsSetup === 'string' ? selectedGraphicsSetup : selectedGraphicsSetup.label
+	const foundTableConfigGraphicsSetup: TableConfigGraphicsSetup | undefined =
+		typeof selectedGraphicsSetup === 'string'
+			? config.GraphicsSetups.find(tableConfigGraphicsSetup => tableConfigGraphicsSetup.Name === selectedValue)
+			: config.GraphicsSetups.find(tableConfigGraphicsSetup => tableConfigGraphicsSetup._id === selectedValue) ||
+			  config.GraphicsSetups.find(tableConfigGraphicsSetup => tableConfigGraphicsSetup.Name === selectedLabel)
 	if (!foundTableConfigGraphicsSetup) {
-		context.logWarning(`No graphics setup found for profile: ${config.SelectedGraphicsSetupName}`)
+		context.logWarning(`No graphics setup found for profile: ${selectedLabel || selectedValue}`)
 		return fallbackGraphicsSetup
 	}
 	return foundTableConfigGraphicsSetup
