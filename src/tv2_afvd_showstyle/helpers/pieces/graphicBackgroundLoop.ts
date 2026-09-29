@@ -130,7 +130,7 @@ function fullLoopTimeline(config: TV2BlueprintConfig, parsedCue: CueDefinitionBa
 				type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
 				templateName: parsedCue.backgroundLoop,
 				templateData: [],
-				showId: config.selectedGraphicsSetup.FullShowName
+				showName: config.selectedGraphicsSetup.FullShowName
 			}
 		})
 	]

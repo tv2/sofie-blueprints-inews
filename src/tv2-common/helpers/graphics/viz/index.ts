@@ -109,7 +109,7 @@ export function GetInternalGraphicContentVIZ(
 					templateName: mappedTemplate,
 					templateData: parsedCue.graphic.textFields,
 					channelName: engine === 'WALL' ? 'WALL1' : 'OVL1', // TODO: TranslateEngine
-					showId: findShowName(config, context, engine)
+					showName: findShowName(config, context, engine)
 				}
 			}),
 			// Assume DSK is off by default (config table)
