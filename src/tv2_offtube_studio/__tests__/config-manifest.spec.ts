@@ -1,3 +1,4 @@
+import { ConfigManifestEntryType } from 'blueprints-integration'
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { defaultDSKConfig, OfftubeStudioConfig } from '../helpers/config'
@@ -59,6 +60,7 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	DefaultPartDuration: 0,
 	IdleSource: 0,
 	IdleSisyfosLayers: [],
+	IdleWallLoop: [{ _id: 'idle-wall-loop', Enabled: false, ShowName: '', TemplateName: '' }],
 	ServerPostrollDuration: 5000,
 	PreventOverlayWithFull: true,
 	GraphicsType: 'HTML',
@@ -98,6 +100,23 @@ function getObjectKeys(obj: any): string[] {
 }
 
 describe('Config Manifest', () => {
+	test('Idle Wall Loop is opt-in with no default scene', () => {
+		const entries = studioConfigManifest.filter(entry => entry.id.startsWith('IdleWallLoop'))
+		expect(entries).toHaveLength(1)
+		expect(entries[0]).toMatchObject({
+			id: 'IdleWallLoop',
+			name: 'Idle Wall Loop',
+			type: ConfigManifestEntryType.TABLE,
+			required: false,
+			defaultVal: [{ _id: 'idle-wall-loop', Enabled: false, ShowName: '', TemplateName: '' }],
+			columns: [
+				expect.objectContaining({ id: 'Enabled', defaultVal: false, rank: 0 }),
+				expect.objectContaining({ id: 'ShowName', defaultVal: '', rank: 1 }),
+				expect.objectContaining({ id: 'TemplateName', defaultVal: '', rank: 2 })
+			]
+		})
+	})
+
 	test('Exposed Studio Keys', () => {
 		const studioManifestKeys = _.map(studioConfigManifest, e => e.id)
 		const manifestKeys = studioManifestKeys.concat(CORE_INJECTED_KEYS).sort()
