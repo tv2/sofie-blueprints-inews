@@ -273,6 +273,44 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		required: true
 	},
 	{
+		id: 'IdleWallLoop',
+		name: 'Idle Wall Loop',
+		description:
+			'Configure one off-air Wall loop. It is taken when no rundown is active and removed when a rundown activates.',
+		type: ConfigManifestEntryType.TABLE,
+		required: false,
+		defaultVal: [{ _id: 'idle-wall-loop', Enabled: false, ShowName: '', TemplateName: '' }],
+		columns: [
+			{
+				id: 'Enabled',
+				name: 'Enabled',
+				description: 'Enable the off-air Wall loop.',
+				type: ConfigManifestEntryType.BOOLEAN,
+				required: false,
+				defaultVal: false,
+				rank: 0
+			},
+			{
+				id: 'ShowName',
+				name: 'Show name',
+				description: 'MSE show containing the loop template. Required when enabled.',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 1
+			},
+			{
+				id: 'TemplateName',
+				name: 'Template name',
+				description: 'Internal Viz template that loops without template data. Required when enabled.',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 2
+			}
+		]
+	},
+	{
 		id: 'ServerPostrollDuration',
 		name: 'Server Postroll Duration',
 		description: 'ms of postroll at the end of Server and VO clips',

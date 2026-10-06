@@ -17,6 +17,13 @@ export interface OfftubeStudioBlueprintConfig {
 	dsk: TableConfigItemDSK[]
 }
 
+export interface IdleWallLoopConfig {
+	_id?: string
+	Enabled: boolean
+	ShowName: string
+	TemplateName: string
+}
+
 export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	// Injected by core
 	SofieHostURL: string
@@ -47,6 +54,7 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	CasparPrerollDuration: number
 	IdleSource: number
 	IdleSisyfosLayers: string[]
+	IdleWallLoop?: IdleWallLoopConfig[]
 }
 
 export function parseConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {

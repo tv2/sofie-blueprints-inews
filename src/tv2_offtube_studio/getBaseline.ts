@@ -9,7 +9,7 @@ import { literal } from 'tv2-common'
 import * as _ from 'underscore'
 import { AtemSourceIndex } from '../types/atem'
 import { OfftubeStudioBlueprintConfig } from './helpers/config'
-import { OfftubeAtemLLayer, OfftubeSisyfosLLayer } from './layers'
+import { OfftubeAtemLLayer, OfftubeGraphicLLayer, OfftubeSisyfosLLayer } from './layers'
 import { sisyfosChannels } from './sisyfosChannels'
 
 function filterMappings(
@@ -52,6 +52,40 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 					visible: false
 				})
 			}
+		}
+	}
+
+	const idleWallLoops = config.studio.IdleWallLoop ?? []
+	const idleWallLoop = idleWallLoops[0]
+	const wallTimeline: TSR.TimelineObjVIZMSEElementInternal[] = []
+	if (idleWallLoops.length > 1) {
+		context.logWarning('Idle Wall Loop must contain only one configuration row. Remove the extra rows.')
+	} else if (idleWallLoop?.Enabled === true) {
+		const wallMapping = mappings[OfftubeGraphicLLayer.GraphicLLayerWall]
+		if (
+			typeof idleWallLoop.ShowName !== 'string' ||
+			!idleWallLoop.ShowName.trim() ||
+			typeof idleWallLoop.TemplateName !== 'string' ||
+			!idleWallLoop.TemplateName.trim()
+		) {
+			context.logWarning('Idle Wall Loop is enabled but requires both a Show Name and a Template Name.')
+		} else if (!wallMapping || wallMapping.device !== TSR.DeviceType.VIZMSE) {
+			context.logWarning('Idle Wall Loop requires the graphic_wall mapping to target a Viz MSE device.')
+		} else {
+			wallTimeline.push({
+				id: '',
+				enable: { while: '1' },
+				priority: 0,
+				layer: OfftubeGraphicLLayer.GraphicLLayerWall,
+				content: {
+					deviceType: TSR.DeviceType.VIZMSE,
+					type: TSR.TimelineContentTypeVizMSE.ELEMENT_INTERNAL,
+					channelName: 'WALL1',
+					showName: idleWallLoop.ShowName.trim(),
+					templateName: idleWallLoop.TemplateName.trim(),
+					templateData: []
+				}
+			})
 		}
 	}
 
@@ -114,7 +148,8 @@ export function getBaseline(context: IStudioContext): BlueprintResultBaseline {
 						input: AtemSourceIndex.Prg2
 					}
 				}
-			})
+			}),
+			...wallTimeline
 		]
 	}
 }
