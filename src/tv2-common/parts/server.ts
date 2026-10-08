@@ -35,6 +35,8 @@ export interface ServerPartProps {
 	session?: string
 	actionTriggerMode?: ServerSelectMode
 	lastServerPosition?: ServerPosition
+	/** Override audio persistence acceptance; defaults to `adLibPix && voLevels`. */
+	acceptPersistAudio?: boolean
 }
 
 export interface ServerContentProps {
@@ -257,7 +259,7 @@ function getServerSelectionBlueprintPiece<
 			userData: userDataElement,
 			sisyfosPersistMetaData: {
 				sisyfosLayers: [],
-				acceptPersistAudio: partProps.adLibPix && partProps.voLevels
+				acceptPersistAudio: partProps.acceptPersistAudio ?? (partProps.adLibPix && partProps.voLevels)
 			}
 		},
 		content: contentServerElement,

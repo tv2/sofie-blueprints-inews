@@ -15,8 +15,10 @@ import {
 	GraphicInternalOrPilot,
 	GraphicIsInternal,
 	GraphicIsPilot,
+	IsTargetingOVL,
 	literal,
 	PartDefinition,
+	PieceMetaData,
 	PilotGeneratorSettings
 } from 'tv2-common'
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
@@ -42,6 +44,9 @@ export function OfftubeEvaluateGrafikCaspar(
 	partDefinition: PartDefinition,
 	adlib?: Adlib
 ) {
+	const firstPieceIndex = pieces.length
+	const firstAdlibIndex = adlibPieces.length
+
 	if (GraphicIsPilot(parsedCue)) {
 		CreatePilotGraphic(pieces, adlibPieces, actions, {
 			config,
@@ -54,6 +59,20 @@ export function OfftubeEvaluateGrafikCaspar(
 		})
 	} else if (GraphicIsInternal(parsedCue)) {
 		CreateInternalGraphic(config, context, pieces, adlibPieces, partId, parsedCue, partDefinition, adlib)
+	}
+
+	if (IsTargetingOVL(parsedCue.target)) {
+		for (const piece of [...pieces.slice(firstPieceIndex), ...adlibPieces.slice(firstAdlibIndex)]) {
+			const metaData = piece.metaData as PieceMetaData | undefined
+			piece.metaData = {
+				...metaData,
+				sisyfosPersistMetaData: {
+					sisyfosLayers: [],
+					...metaData?.sisyfosPersistMetaData,
+					acceptPersistAudio: true
+				}
+			}
+		}
 	}
 }
 
