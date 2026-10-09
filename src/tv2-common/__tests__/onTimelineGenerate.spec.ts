@@ -1,9 +1,21 @@
-import { IBlueprintPieceDB, IBlueprintResolvedPieceInstance, TSR } from 'blueprints-integration'
+import {
+	IBlueprintPartInstance,
+	IBlueprintPieceDB,
+	IBlueprintPieceInstance,
+	IBlueprintResolvedPieceInstance,
+	PieceLifespan,
+	TSR
+} from 'blueprints-integration'
+import { SharedOutputLayers } from 'tv2-constants'
+import { RundownContext } from '../../__mocks__/context'
 import { SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import {
 	createSisyfosPersistedLevelsTimelineObject,
+	getEndStateForPart,
+	PartEndStateExt,
 	PieceMetaData,
-	SisyfosPersistMetaData
+	SisyfosPersistMetaData,
+	TimelinePersistentStateExt
 } from '../onTimelineGenerate'
 
 const LAYER_THAT_WANTS_TO_BE_PERSISTED = 'layerThatWantsToBePersisted'
@@ -290,8 +302,218 @@ describe('onTimelineGenerate', () => {
 
 			expect(result.content.channels).toHaveLength(1)
 		})
+
+		describe('pieces continued from a previous part', () => {
+			it.each([true, false])('continued on-air piece still applies acceptPersistAudio=%s', acceptPersistAudio => {
+				const continuedPiece = createContinuedPieceInstance('continuedOnAir', 0, undefined, false, acceptPersistAudio, {
+					fromPreviousPart: true
+				})
+				continuedPiece.piece.outputLayerId = SharedOutputLayers.PGM
+				const result = createSisyfosPersistedLevelsTimelineObject(
+					[createPieceInstance('currentPiece', 10, undefined, false, true), continuedPiece],
+					LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+				)
+
+				expect(result.content.channels.map(channel => channel.mappedLayer)).toEqual(
+					acceptPersistAudio ? LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY : []
+				)
+			})
+
+			it('continued piece (fromPreviousPart) that does not accept does not block, previous layers are persisted', () => {
+				const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+					createContinuedPieceInstance('continuedDataStore', 0, undefined, false, false, { fromPreviousPart: true }),
+					createPieceInstance('currentPiece', 0, undefined, false, true)
+				]
+
+				const result = createSisyfosPersistedLevelsTimelineObject(
+					resolvedPieces,
+					LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+				)
+
+				expect(result.content.channels).toHaveLength(1)
+				expect(result.content.channels[0].mappedLayer).toEqual(LAYER_THAT_WANTS_TO_BE_PERSISTED)
+			})
+
+			it('continued piece (fromPreviousPlayhead) that does not accept does not block, previous layers are persisted', () => {
+				const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+					createPieceInstance('currentPiece', 0, undefined, false, true),
+					createContinuedPieceInstance('continuedDataStore', 0, undefined, false, false, {
+						fromPreviousPart: false,
+						fromPreviousPlayhead: true
+					})
+				]
+
+				const result = createSisyfosPersistedLevelsTimelineObject(
+					resolvedPieces,
+					LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+				)
+
+				expect(result.content.channels).toHaveLength(1)
+				expect(result.content.channels[0].mappedLayer).toEqual(LAYER_THAT_WANTS_TO_BE_PERSISTED)
+			})
+
+			it('continued piece that does not accept still does not make a non-accepting current piece persist', () => {
+				const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+					createContinuedPieceInstance('continuedDataStore', 0, undefined, false, false, { fromPreviousPart: true }),
+					createPieceInstance('currentPiece', 0, undefined, false, false)
+				]
+
+				const result = createSisyfosPersistedLevelsTimelineObject(
+					resolvedPieces,
+					LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+				)
+
+				expect(result.content.channels).toHaveLength(0)
+			})
+
+			it('infinite piece that started in this part (not continued) and does not accept still blocks', () => {
+				const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+					createContinuedPieceInstance('dataStoreStartedHere', 0, undefined, false, false, { fromPreviousPart: false }),
+					createPieceInstance('currentPiece', 0, undefined, false, true)
+				]
+
+				const result = createSisyfosPersistedLevelsTimelineObject(
+					resolvedPieces,
+					LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+				)
+
+				expect(result.content.channels).toHaveLength(0)
+			})
+
+			it('continued piece that wants to persist still contributes its layers and still blocks when it does not accept', () => {
+				const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+					createPieceInstance('currentPiece', 0, undefined, false, true),
+					createContinuedPieceInstance('continuedLiveOnAux', 0, undefined, true, false, { fromPreviousPart: true })
+				]
+
+				const result = createSisyfosPersistedLevelsTimelineObject(
+					resolvedPieces,
+					LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+				)
+
+				expect(result.content.channels).toHaveLength(1)
+				expect(result.content.channels[0].mappedLayer).toEqual('continuedLiveOnAux')
+			})
+
+			it('continued piece that wants to persist and accepts contributes its layers and lets previous layers through', () => {
+				const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+					createPieceInstance('currentPiece', 0, undefined, false, true),
+					createContinuedPieceInstance('continuedLiveOnAux', 0, undefined, true, true, { fromPreviousPart: true })
+				]
+
+				const result = createSisyfosPersistedLevelsTimelineObject(
+					resolvedPieces,
+					LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY
+				)
+
+				expect(result.content.channels.map(channel => channel.mappedLayer)).toEqual([
+					'continuedLiveOnAux',
+					LAYER_THAT_WANTS_TO_BE_PERSISTED
+				])
+			})
+		})
+	})
+
+	describe('getEndStateForPart', () => {
+		it('continued piece that does not accept does not remove the layers of the piece that wants to persist', () => {
+			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+				createContinuedPieceInstance('continuedDataStore', 0, undefined, false, false, { fromPreviousPart: true }),
+				createPieceInstance('live', 0, undefined, true, false)
+			]
+
+			const endState = getEndStateForPart(
+				new RundownContext(
+					'test',
+					{},
+					() => ({}),
+					() => ({})
+				),
+				createPersistentState(),
+				createPartInstance(),
+				resolvedPieces,
+				1000
+			) as PartEndStateExt
+
+			expect(endState.sisyfosPersistMetaData.sisyfosLayers).toEqual(['live'])
+		})
+
+		it('continued piece that does not accept does not block previous part layers from being carried on', () => {
+			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+				createContinuedPieceInstance('continuedDataStore', 0, undefined, false, false, { fromPreviousPart: true }),
+				createPieceInstance('voDataStore', 0, undefined, false, true)
+			]
+
+			const endState = getEndStateForPart(
+				new RundownContext(
+					'test',
+					{},
+					() => ({}),
+					() => ({})
+				),
+				createPersistentState(),
+				createPartInstance(LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY),
+				resolvedPieces,
+				1000
+			) as PartEndStateExt
+
+			expect(endState.sisyfosPersistMetaData.sisyfosLayers).toEqual(LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY)
+		})
+
+		it('piece that does not accept and is not continued still blocks previous part layers', () => {
+			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [
+				createPieceInstance('serverDataStore', 0, undefined, false, false),
+				createPieceInstance('voDataStore', 0, undefined, false, true)
+			]
+
+			const endState = getEndStateForPart(
+				new RundownContext(
+					'test',
+					{},
+					() => ({}),
+					() => ({})
+				),
+				createPersistentState(),
+				createPartInstance(LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY),
+				resolvedPieces,
+				1000
+			) as PartEndStateExt
+
+			expect(endState.sisyfosPersistMetaData.sisyfosLayers).toEqual([])
+		})
 	})
 })
+
+function createPersistentState(): TimelinePersistentStateExt {
+	return { activeMediaPlayers: {}, isNewSegment: false }
+}
+
+function createPartInstance(previousPartLayers: string[] = []): IBlueprintPartInstance {
+	const previousPartEndState: Partial<PartEndStateExt> = {
+		sisyfosPersistMetaData: { sisyfosLayers: previousPartLayers }
+	}
+	return {
+		_id: 'partInstance',
+		segmentId: 'segment',
+		part: { _id: 'part', segmentId: 'segment', externalId: 'part', title: 'Part' },
+		rehearsal: false,
+		previousPartEndState
+	}
+}
+
+function createContinuedPieceInstance(
+	name: string,
+	start: number,
+	duration: number | undefined,
+	wantToPersistAudio: boolean,
+	acceptPersistAudio: boolean,
+	infinite: Omit<NonNullable<IBlueprintPieceInstance['infinite']>, 'infinitePieceId'>
+): IBlueprintResolvedPieceInstance<PieceMetaData> {
+	const piece = createPieceInstance(name, start, duration, wantToPersistAudio, acceptPersistAudio)
+	piece.infinite = { infinitePieceId: name, ...infinite }
+	piece.piece.outputLayerId = SharedOutputLayers.SELECTED_ADLIB
+	piece.piece.lifespan = PieceLifespan.OutOnSegmentEnd
+	return piece
+}
 
 function createPieceInstance(
 	name: string,
@@ -305,6 +527,7 @@ function createPieceInstance(
 		resolvedDuration: duration,
 		piece: {
 			name,
+			enable: { start, duration },
 			metaData: {
 				sisyfosPersistMetaData: {
 					sisyfosLayers: [name],

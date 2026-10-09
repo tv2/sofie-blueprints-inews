@@ -17,7 +17,12 @@ export async function OfftubeCreatePartServer(
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps
 ): Promise<BlueprintResultPart> {
-	const basePartProps = await CreatePartServerBase(context, config, partDefinition, partProps, {
+	const serverPartProps: ServerPartProps = {
+		...partProps,
+		// Scripted VO keeps persisted audio (e.g. from a LIVE) running; a scripted 100% SERVER never does
+		acceptPersistAudio: partProps.voLevels
+	}
+	const basePartProps = await CreatePartServerBase(context, config, partDefinition, serverPartProps, {
 		SourceLayer: {
 			PgmServer: partProps.voLayer ? OfftubeSourceLayer.PgmVoiceOver : OfftubeSourceLayer.PgmServer, // TODO this actually is shared
 			SelectedServer: partProps.voLayer ? OfftubeSourceLayer.SelectedVoiceOver : OfftubeSourceLayer.SelectedServer
