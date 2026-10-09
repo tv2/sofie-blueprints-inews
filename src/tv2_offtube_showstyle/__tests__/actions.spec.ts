@@ -18,7 +18,8 @@ import {
 	PieceMetaData,
 	RemoteType,
 	SourceDefinitionKam,
-	SourceDefinitionRemote
+	SourceDefinitionRemote,
+	TableConfigItemBreakers
 } from 'tv2-common'
 import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers, SourceType } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'
@@ -396,6 +397,170 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 	expect(atemObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 	expect(atemObj.content.me.transitionSettings?.mix).toStrictEqual({ rate: frames })
 }
+
+describe('Underlying breaker mix actions', () => {
+	function makeMixContext(overrides: Partial<TableConfigItemBreakers> = {}) {
+		const context = new ActionExecutionContext(
+			'mix actions',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			CURRENT_PART_ID,
+			JSON.parse(JSON.stringify(currentPartMock)),
+			[JSON.parse(JSON.stringify(kamPieceInstance))]
+		)
+		context.studioConfig = {
+			...JSON.parse(JSON.stringify(defaultStudioConfig)),
+			GraphicsType: 'HTML',
+			CasparPrerollDuration: 200
+		}
+		context.showStyleConfig = {
+			...JSON.parse(JSON.stringify(defaultShowStyleConfig)),
+			BreakerConfig: [
+				{
+					BreakerName: '1',
+					ClipName: 'WIPE',
+					Duration: 50,
+					StartAlpha: 20,
+					EndAlpha: 30,
+					Autonext: false,
+					LoadFirstFrame: true,
+					MixUnderBreaker: true,
+					...overrides
+				},
+				{
+					BreakerName: '2',
+					ClipName: 'OTHER_WIPE',
+					Duration: 50,
+					StartAlpha: 20,
+					EndAlpha: 20,
+					Autonext: false,
+					LoadFirstFrame: true
+				}
+			]
+		}
+		return context
+	}
+
+	const breakerTransition: ActionTakeWithTransition = {
+		type: AdlibActionType.TAKE_WITH_TRANSITION,
+		variant: { type: 'breaker', breaker: '1' },
+		takeNow: false
+	}
+
+	it.each([selectCameraAction, selectLiveAction, selectServerClipAction, selectVOClipAction, selectDVEActionMorbarn])(
+		'applies and takes a breaker mix into $type',
+		async sourceAction => {
+			for (const takeNow of [false, true]) {
+				const context = makeMixContext({ UnderlyingMixStartFrame: '18', UnderlyingMixDuration: '6' })
+				await executeActionOfftube(context, sourceAction.type, sourceAction)
+				const previousPieces = await context.getPieceInstances('current')
+				await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, { ...breakerTransition, takeNow })
+				const source = context.nextPieceInstances!.find(p => p.piece.outputLayerId === OfftubeOutputLayers.PGM)!
+				expectATEMToMixOver(source, 6)
+				expect(context.nextPart?.part.inTransition).toEqual({
+					blockTakeDuration: 2200,
+					previousPartKeepaliveDuration: 1160,
+					partContentDelayDuration: 920
+				})
+				expect(context.takeAfterExecute).toBe(takeNow)
+				expect(await context.getPieceInstances('current')).toEqual(previousPieces)
+				validateNoWarningsOrErrors(context)
+			}
+		}
+	)
+
+	it.each([selectServerClipAction, selectVOClipAction])(
+		'mixes scripted effects on $voLayer server selection',
+		async action => {
+			const context = makeMixContext()
+			await executeActionOfftube(context, action.type, {
+				...action,
+				partDefinition: { ...action.partDefinition, effekt: 1 }
+			})
+			const source = context.nextPieceInstances!.find(p => p.piece.outputLayerId === OfftubeOutputLayers.PGM)!
+			expectATEMToMixOver(source, 4)
+			expect(context.nextPart?.part.inTransition).toEqual({
+				blockTakeDuration: 2200,
+				previousPartKeepaliveDuration: 1160,
+				partContentDelayDuration: 1000
+			})
+			expect(source.piece.prerollDuration).toBe(200)
+			expect(source.piece.metaData?.mediaPlayerSessions).toHaveLength(1)
+			validateNoWarningsOrErrors(context)
+		}
+	)
+
+	it.each<ActionTakeWithTransition['variant']>([
+		{ type: 'cut' },
+		{ type: 'breaker', breaker: '2' },
+		{ type: 'mix', frames: 12 },
+		{ type: 'dip', frames: 8 }
+	])('replaces underlying mixes with %j without stale settings', async variant => {
+		const context = makeMixContext()
+		await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
+		await executeActionOfftube(context, breakerTransition.type, breakerTransition)
+		await executeActionOfftube(context, breakerTransition.type, breakerTransition)
+		expect(
+			context.nextPieceInstances!.filter(p => p.piece.sourceLayerId === OfftubeSourceLayer.PgmJingle)
+		).toHaveLength(1)
+		await executeActionOfftube(context, breakerTransition.type, { ...breakerTransition, variant })
+		const camera = (await getCameraPiece(context, 'next'))!
+		const me = getATEMMEObj(camera)
+		expect(context.nextPieceInstances!.some(p => p.piece.metaData?.underlyingMix)).toBe(false)
+		if (variant.type === 'cut' || variant.type === 'breaker') {
+			expectATEMToCut(camera)
+			expect(me.content.me.transitionSettings).toBeUndefined()
+			expect(context.nextPart?.part.inTransition).toEqual(
+				variant.type === 'cut'
+					? undefined
+					: {
+							blockTakeDuration: 2200,
+							previousPartKeepaliveDuration: 1000,
+							partContentDelayDuration: 1400
+					  }
+			)
+		} else {
+			expect(me.content.me.transitionSettings?.[variant.type]?.rate).toBe(variant.frames)
+			expect(context.nextPart?.part.inTransition).toEqual({
+				blockTakeDuration: variant.frames * 40,
+				previousPartKeepaliveDuration: variant.frames * 40,
+				partContentDelayDuration: 0
+			})
+		}
+		validateNoWarningsOrErrors(context)
+	})
+
+	it.each(['1', 'SPORTS WIPE'])('preserves breaker %s when the next source changes', async breaker => {
+		const context = makeMixContext({ BreakerName: breaker })
+		await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
+		await executeActionOfftube(context, breakerTransition.type, {
+			...breakerTransition,
+			variant: { type: 'breaker', breaker }
+		})
+		await executeActionOfftube(context, selectServerClipAction.type, selectServerClipAction)
+		const server = (await getActiveServerPieces(context, 'next')).activePiece!
+		expectATEMToMixOver(server, 4)
+		expect(context.nextPart?.part.inTransition?.previousPartKeepaliveDuration).toBe(1160)
+		validateNoWarningsOrErrors(context)
+	})
+
+	it('rejects invalid mix settings without removing the previous transition or taking', async () => {
+		const context = makeMixContext({ UnderlyingMixDuration: '0' })
+		await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
+		await executeActionOfftube(context, setMIX20AsTransition.type, setMIX20AsTransition)
+		const before = JSON.parse(JSON.stringify(context.nextPart?.part.inTransition))
+		await executeActionOfftube(context, breakerTransition.type, { ...breakerTransition, takeNow: true })
+		expectATEMToMixOver((await getCameraPiece(context, 'next'))!, 20)
+		expect(context.nextPart?.part.inTransition).toEqual(before)
+		expect(context.takeAfterExecute).toBe(false)
+		expect(context.getNotes()).toEqual([
+			expect.objectContaining({ message: expect.stringContaining('Invalid underlying mix for breaker 1') })
+		])
+	})
+})
 
 describe('Select Server Action', () => {
 	it('Inserts a new part when no next part is present', async () => {

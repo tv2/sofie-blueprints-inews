@@ -79,7 +79,12 @@ import {
 	ServerSelectMode
 } from '../helpers'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
-import { CreateEffektForPartBase, CreateEffektForPartInner, CreateMixTransitionBlueprintPieceForPart } from '../parts'
+import {
+	ApplyUnderlyingMixToPieces,
+	CreateEffektForPartBase,
+	CreateEffektForPartInner,
+	CreateMixTransitionBlueprintPieceForPart
+} from '../parts'
 import {
 	GetTagForDVE,
 	GetTagForDVENext,
@@ -192,6 +197,7 @@ export interface ActionExecutionSettings<
 	) => WithTimeline<VTContent>
 	pilotGraphicSettings: PilotGeneratorSettings
 	serverActionSettings: ServerActionSettings
+	allowUnderlyingMix?: boolean
 }
 
 interface ServerActionSettings {
@@ -325,6 +331,15 @@ async function getExistingTransition<
 
 	if (!existingTransition) {
 		return
+	}
+
+	const underlyingMix = existingTransition.piece.metaData?.underlyingMix
+	if (settings.allowUnderlyingMix && underlyingMix) {
+		return {
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: { type: 'breaker', breaker: underlyingMix.breaker },
+			takeNow: false
+		}
 	}
 
 	const transition = existingTransition.piece.name
@@ -492,11 +507,18 @@ async function executeActionSelectServerClip<
 
 	part = {
 		...part,
-		...CreateEffektForPartBase(context, config, partDefinition, effektPieces, {
-			sourceLayer: settings.SourceLayers.Effekt,
-			sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
-			casparLayer: settings.LLayer.Caspar.Effekt
-		})
+		...CreateEffektForPartBase(
+			context,
+			config,
+			partDefinition,
+			effektPieces,
+			{
+				sourceLayer: settings.SourceLayers.Effekt,
+				sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
+				casparLayer: settings.LLayer.Caspar.Effekt
+			},
+			settings.allowUnderlyingMix
+		)
 	}
 
 	settings.EvaluateCues(
@@ -521,6 +543,10 @@ async function executeActionSelectServerClip<
 	}
 
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
+		ApplyUnderlyingMixToPieces(
+			[activeServerPiece, ...effektPieces],
+			settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram
+		)
 		settings.postProcessPieceTimelineObjects(context, config, activeServerPiece, false)
 	}
 
@@ -1528,6 +1554,29 @@ async function executeActionTakeWithTransition<
 		return
 	}
 
+	const breakerPieces: Array<IBlueprintPiece<PieceMetaData>> = []
+	let breakerPartProps: Partial<IBlueprintPart> | false = false
+	if (userData.variant.type === 'breaker') {
+		breakerPartProps = CreateEffektForPartInner(
+			context,
+			settings.getConfig(context),
+			breakerPieces,
+			userData.variant.breaker,
+			externalId,
+			{
+				sourceLayer: settings.SourceLayers.Effekt,
+				casparLayer: settings.LLayer.Caspar.Effekt,
+				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
+			},
+			!!userData.variant.breaker.match(/^\d+$/) ? `EFFEKT ${userData.variant.breaker}` : userData.variant.breaker,
+			settings.allowUnderlyingMix
+		)
+		if (!breakerPartProps) {
+			await context.takeAfterExecuteAction(false)
+			return
+		}
+	}
+
 	const existingEffektPiece = nextPieces.find(p => p.piece.sourceLayerId === settings.SourceLayers.Effekt)
 
 	if (existingEffektPiece) {
@@ -1540,6 +1589,7 @@ async function executeActionTakeWithTransition<
 		case 'cut':
 			{
 				timelineObject.content.me.transition = TSR.AtemTransitionStyle.CUT
+				delete timelineObject.content.me.transitionSettings
 
 				primaryPiece.piece.content.timelineObjects[timelineObjectIndex] = timelineObject
 
@@ -1572,30 +1622,22 @@ async function executeActionTakeWithTransition<
 			break
 		case 'breaker': {
 			timelineObject.content.me.transition = TSR.AtemTransitionStyle.CUT
+			delete timelineObject.content.me.transitionSettings
 
 			primaryPiece.piece.content.timelineObjects[timelineObjectIndex] = timelineObject
-
+			ApplyUnderlyingMixToPieces(
+				[primaryPiece.piece, ...breakerPieces],
+				settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram
+			)
 			await context.updatePieceInstance(primaryPiece._id, primaryPiece.piece)
 
-			const config = settings.getConfig(context)
-			const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
-			partProps = CreateEffektForPartInner(
-				context,
-				config,
-				pieces,
-				userData.variant.breaker,
-				externalId,
-				{
-					sourceLayer: settings.SourceLayers.Effekt,
-					casparLayer: settings.LLayer.Caspar.Effekt,
-					sisyfosLayer: settings.LLayer.Sisyfos.Effekt
-				},
-				!!userData.variant.breaker.match(/^\d+$/) ? `EFFEKT ${userData.variant.breaker}` : userData.variant.breaker
-			)
+			partProps = breakerPartProps
 
 			if (partProps) {
 				await context.updatePartInstance('next', partProps)
-				pieces.forEach(p => context.insertPiece('next', { ...p, tags: [GetTagForTransition(userData.variant)] }))
+				for (const piece of breakerPieces) {
+					await context.insertPiece('next', { ...piece, tags: [GetTagForTransition(userData.variant)] })
+				}
 			}
 			break
 		}

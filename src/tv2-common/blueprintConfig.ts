@@ -13,6 +13,9 @@ export interface TableConfigItemBreakers {
 	EndAlpha: number
 	Autonext: boolean
 	LoadFirstFrame: boolean
+	MixUnderBreaker?: boolean
+	UnderlyingMixStartFrame?: string | number
+	UnderlyingMixDuration?: string | number
 }
 
 export interface TableConfigItemGfxTemplate {

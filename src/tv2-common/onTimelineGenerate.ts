@@ -52,6 +52,10 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 }
 
 export interface PieceMetaData {
+	underlyingMix?: {
+		breaker: string
+		durationFrames: number
+	}
 	sisyfosPersistMetaData?: SisyfosPersistMetaData
 	mediaPlayerSessions?: string[]
 	mediaPlayerOptional?: boolean
