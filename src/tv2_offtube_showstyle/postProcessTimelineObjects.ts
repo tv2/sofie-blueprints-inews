@@ -7,7 +7,7 @@ import {
 	TimelineObjHoldMode,
 	TSR
 } from 'blueprints-integration'
-import { TimelineBlueprintExt, TV2BlueprintConfig } from 'tv2-common'
+import { ApplyUnderlyingMixToPieces, TimelineBlueprintExt, TV2BlueprintConfig } from 'tv2-common'
 import { ControlClasses } from 'tv2-constants'
 import _ = require('underscore')
 import { OfftubeAbstractLLayer, OfftubeAtemLLayer } from '../tv2_offtube_studio/layers'
@@ -19,6 +19,7 @@ export function postProcessPartTimelineObjects(
 	parts: BlueprintResultPart[]
 ) {
 	_.each(parts, part => {
+		ApplyUnderlyingMixToPieces(part.pieces, OfftubeAtemLLayer.AtemMEClean)
 		_.each(part.pieces, p => postProcessPieceTimelineObjects(context, config, p, false))
 		_.each(part.adLibPieces, p => postProcessPieceTimelineObjects(context, config, p, true))
 	})

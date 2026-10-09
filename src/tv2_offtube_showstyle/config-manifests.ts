@@ -375,7 +375,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		id: 'BreakerConfig',
 		name: 'Breaker Configuration',
 		description:
-			'Clip name is the clip name without file extension. Duration is the length of the file, including trailing audio. Alpha start is the number of frames from the first frame and until the jingle covers the full frame. The alpha end is how many frames from the alpha starts fading out, until the very end of the file.',
+			'Clip name is the clip name without file extension. Duration is the length of the file, including trailing audio. Alpha start is the number of frames from the first frame and until the jingle covers the full frame. The alpha end is how many frames from the alpha starts fading out, until the very end of the file. Enable Underlying mix to mix between sources beneath the breaker instead of cutting. Mix start frame and duration are optional: leave blank to start at Duration - Alpha at End and mix for 4 frames.',
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal: [
@@ -452,6 +452,35 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				required: true,
 				defaultVal: true,
 				rank: 6
+			},
+			{
+				id: 'UnderlyingMixStartFrame',
+				name: 'Underlying mix start frame',
+				description:
+					'Optional. Frame 0 is the first frame of the breaker. Leave blank to use Duration minus Alpha at End. Only used when Underlying mix is enabled.',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 7
+			},
+			{
+				id: 'UnderlyingMixDuration',
+				name: 'Underlying mix duration (frames)',
+				description:
+					'Optional. Leave blank for a four-frame mix. Enter 1 to 255 frames. Only used when Underlying mix is enabled.',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 8
+			},
+			{
+				id: 'MixUnderBreaker',
+				name: 'Underlying mix',
+				description: 'QBox transitions only: dissolve between sources underneath this breaker instead of cutting.',
+				type: ConfigManifestEntryType.BOOLEAN,
+				required: false,
+				defaultVal: false,
+				rank: 9
 			}
 		]
 	},
