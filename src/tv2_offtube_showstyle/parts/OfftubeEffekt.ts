@@ -10,9 +10,16 @@ export function CreateEffektForpart(
 	partDefinition: PartDefinition,
 	pieces: IBlueprintPiece[]
 ) {
-	return CreateEffektForPartBase(context, config, partDefinition, pieces, {
-		sourceLayer: SharedSourceLayers.PgmJingle,
-		casparLayer: OfftubeCasparLLayer.CasparPlayerJingle,
-		sisyfosLayer: OfftubeSisyfosLLayer.SisyfosSourceJingle
-	})
+	return CreateEffektForPartBase(
+		context,
+		config,
+		partDefinition,
+		pieces,
+		{
+			sourceLayer: SharedSourceLayers.PgmJingle,
+			casparLayer: OfftubeCasparLLayer.CasparPlayerJingle,
+			sisyfosLayer: OfftubeSisyfosLLayer.SisyfosSourceJingle
+		},
+		true
+	)
 }

@@ -15,8 +15,10 @@ import {
 	EnableDSK,
 	GetTagForTransition,
 	literal,
+	MixTransitionSettings,
 	PartDefinition,
 	PieceMetaData,
+	TableConfigItemBreakers,
 	TimeFromFrames,
 	TimelineBlueprintExt,
 	TV2BlueprintConfigBase,
@@ -36,7 +38,8 @@ export function CreateEffektForPartBase(
 		sourceLayer: string
 		casparLayer: string
 		sisyfosLayer: string
-	}
+	},
+	allowUnderlyingMix: boolean = false
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | {} {
 	const effekt = partDefinition.effekt
 	const transition = partDefinition.transition
@@ -49,7 +52,8 @@ export function CreateEffektForPartBase(
 			effekt.toString(),
 			partDefinition.externalId,
 			layers,
-			`EFFEKT ${effekt}`
+			`EFFEKT ${effekt}`,
+			allowUnderlyingMix
 		)
 
 		return ret ?? {}
@@ -91,7 +95,8 @@ export function CreateEffektForPartInner<
 		casparLayer: string
 		sisyfosLayer: string
 	},
-	label: string
+	label: string,
+	allowUnderlyingMix: boolean = false
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | false {
 	if (!config.showStyle.BreakerConfig) {
 		context.notifyUserWarning(`Jingles have not been configured`)
@@ -116,9 +121,17 @@ export function CreateEffektForPartInner<
 		return false
 	}
 
+	const underlyingMix =
+		allowUnderlyingMix && effektConfig.MixUnderBreaker
+			? getUnderlyingMix(context, effektConfig, config.studio.CasparPrerollDuration)
+			: undefined
+	if (underlyingMix === false) {
+		return false
+	}
+
 	const fileName = joinAssetToFolder(config.studio.JingleFolder, file)
 
-	pieces.push({
+	const piece: IBlueprintPiece<PieceMetaData> = {
 		externalId,
 		name: label,
 		enable: { start: 0, duration: TimeFromFrames(Number(effektConfig.Duration)) },
@@ -126,6 +139,9 @@ export function CreateEffektForPartInner<
 		sourceLayerId: layers.sourceLayer,
 		lifespan: PieceLifespan.WithinPart,
 		pieceType: IBlueprintPieceType.InTransition,
+		...(underlyingMix
+			? { metaData: { underlyingMix: { breaker: effektConfig.BreakerName, durationFrames: underlyingMix.duration } } }
+			: {}),
 		content: literal<WithTimeline<VTContent>>({
 			fileName,
 			path: joinAssetToNetworkPath(
@@ -169,19 +185,94 @@ export function CreateEffektForPartInner<
 				})
 			])
 		})
-	})
+	}
+	pieces.push(piece)
 
 	return {
 		inTransition: {
-			blockTakeDuration: TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
-			previousPartKeepaliveDuration:
-				TimeFromFrames(Number(effektConfig.StartAlpha)) + config.studio.CasparPrerollDuration,
-			partContentDelayDuration:
-				TimeFromFrames(Number(effektConfig.Duration)) -
-				TimeFromFrames(Number(effektConfig.EndAlpha)) +
-				config.studio.CasparPrerollDuration
+			blockTakeDuration: underlyingMix
+				? Math.max(
+						TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
+						underlyingMix.end
+				  )
+				: TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
+			previousPartKeepaliveDuration: underlyingMix
+				? underlyingMix.end
+				: TimeFromFrames(Number(effektConfig.StartAlpha)) + config.studio.CasparPrerollDuration,
+			partContentDelayDuration: underlyingMix
+				? underlyingMix.start
+				: TimeFromFrames(Number(effektConfig.Duration)) -
+				  TimeFromFrames(Number(effektConfig.EndAlpha)) +
+				  config.studio.CasparPrerollDuration
 		},
 		autoNext: false
+	}
+}
+
+function getUnderlyingMix(
+	context: IShowStyleUserContext,
+	breaker: TableConfigItemBreakers,
+	preroll: number
+): { start: number; end: number; duration: number } | false {
+	const duration = optionalFrameValue(breaker.Duration, NaN)
+	const alphaStart = optionalFrameValue(breaker.StartAlpha, NaN)
+	const alphaEnd = optionalFrameValue(breaker.EndAlpha, NaN)
+	const startFrame = optionalFrameValue(breaker.UnderlyingMixStartFrame, duration - alphaEnd)
+	const mixDuration = optionalFrameValue(breaker.UnderlyingMixDuration, 4)
+	if (
+		![duration, alphaStart, alphaEnd, startFrame, mixDuration].every(Number.isSafeInteger) ||
+		duration <= 0 ||
+		alphaStart < 0 ||
+		alphaEnd < 0 ||
+		alphaStart + alphaEnd > duration ||
+		startFrame < 0 ||
+		startFrame > duration ||
+		mixDuration < 1 ||
+		mixDuration > 255 ||
+		!Number.isFinite(preroll) ||
+		preroll < 0
+	) {
+		context.notifyUserWarning(
+			`Invalid underlying mix for breaker ${breaker.BreakerName}: check duration/alpha timings, start frame (0 to Duration) and mix duration (1 to 255 frames)`
+		)
+		return false
+	}
+
+	const start = TimeFromFrames(startFrame) + preroll
+	return { start, end: start + TimeFromFrames(mixDuration), duration: mixDuration }
+}
+
+function optionalFrameValue(value: unknown, fallback: number): number {
+	if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
+		return fallback
+	}
+	return typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value.trim())) ? Number(value) : NaN
+}
+
+export function ApplyUnderlyingMixToPieces(pieces: IBlueprintPiece[], atemLayer: string): void {
+	const duration = pieces
+		.filter(p => p.pieceType === IBlueprintPieceType.InTransition)
+		.map(p => (p.metaData as PieceMetaData | undefined)?.underlyingMix?.durationFrames)
+		.find(value => value !== undefined)
+	if (duration === undefined) {
+		return
+	}
+
+	for (const piece of pieces) {
+		if (piece.outputLayerId !== SharedOutputLayers.PGM || piece.enable.start !== 0) {
+			continue
+		}
+		for (const obj of (piece.content?.timelineObjects ?? []) as TSR.TSRTimelineObj[]) {
+			if (
+				obj.layer === atemLayer &&
+				obj.content.deviceType === TSR.DeviceType.ATEM &&
+				obj.content.type === TSR.TimelineContentTypeAtem.ME &&
+				obj.content.me.input !== undefined
+			) {
+				obj.content.me.transition = TSR.AtemTransitionStyle.MIX
+				obj.content.me.transitionSettings = MixTransitionSettings(duration)
+			}
+		}
 	}
 }
 
