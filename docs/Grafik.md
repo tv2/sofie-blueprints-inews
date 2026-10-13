@@ -12,3 +12,23 @@ Viz templates can be added in the blueprint settings of the Showstyle by adding 
 - Variable 1: The name of the first variable needed to be passed to the template, e.g. `triopage=`
 - Variable 2: The name of the second variable needed to be passed to the template.
 - Is Design: Whether the cue changes the design of the viz engine.
+
+## Style-column selection and background loops
+
+The `iNews Style Column` field in `GFX Design Templates` maps an iNews style value to a design template. Selecting a style overrides manual design cues in that story, but does not automatically load a background from the `Skema` table.
+
+For the QBox workflow, keep background loops in the story cues alongside style-column selection:
+
+```text
+VIZ=dve-triopage
+GRAFIK=BG_LOADER_NEWS
+;0.00.02
+
+VIZ=full-triopage
+GRAFIK=BG_LOADER_NEWS
+;0.00.03
+```
+
+Both loops retain their cue timing when a style is selected. An explicit `DESIGN_BG=DESIGN_NEWS` cue instead looks up `DESIGN_NEWS` in the `Skema` table's `Design` column and uses `CasparCG DVE Bg Scene` for a DVE background. Enter the bare media name in that field, without the `dve/` prefix.
+
+Layout-derived cues override manual cues only of the same kind across the parts of the story: a design replaces designs, a DVE background replaces DVE backgrounds, and a full background replaces full backgrounds. Currently, `DESIGN_BG=` creates only a DVE background, so it leaves manual full-background cues intact.

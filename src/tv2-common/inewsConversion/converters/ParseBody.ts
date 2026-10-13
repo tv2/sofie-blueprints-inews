@@ -1,7 +1,6 @@
 import { TSR } from 'blueprints-integration'
 import {
 	AtemTransitionStyleFromString,
-	CueDefinitionFromLayout,
 	INewsFields,
 	PostProcessDefinitions,
 	TV2BlueprintConfig,
@@ -719,23 +718,31 @@ export function isMinusMic(inputName: string): boolean {
 }
 
 export function stripRedundantCuesWhenLayoutCueIsPresent(partDefinitions: PartDefinition[]): PartDefinition[] {
-	const hasLayoutCue: boolean = partDefinitions.some(definition =>
-		definition.cues.some(cue => {
-			const cueFromLayout = cue as CueDefinitionFromLayout
-			return cueFromLayout.isFromLayout
-		})
-	)
+	let hasLayoutDesign = false
+	const layoutBackgroundTargets = new Set<'DVE' | 'FULL'>()
+	for (const definition of partDefinitions) {
+		for (const cue of definition.cues) {
+			if (cue.type === CueType.GraphicDesign && cue.isFromLayout) {
+				hasLayoutDesign = true
+			} else if (cue.type === CueType.BackgroundLoop && cue.isFromLayout) {
+				layoutBackgroundTargets.add(cue.target)
+			}
+		}
+	}
 
-	if (!hasLayoutCue) {
+	if (!hasLayoutDesign && layoutBackgroundTargets.size === 0) {
 		return partDefinitions
 	}
 
 	return partDefinitions.map(definition => {
 		const cues = definition.cues.filter(cue => {
-			if (cue.type !== CueType.GraphicDesign && cue.type !== CueType.BackgroundLoop) {
-				return true
+			if (cue.type === CueType.GraphicDesign) {
+				return !hasLayoutDesign || !!cue.isFromLayout
 			}
-			return (cue as CueDefinitionFromLayout).isFromLayout
+			if (cue.type === CueType.BackgroundLoop) {
+				return !layoutBackgroundTargets.has(cue.target) || !!cue.isFromLayout
+			}
+			return true
 		})
 		return {
 			...definition,
