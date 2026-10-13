@@ -3377,6 +3377,145 @@ describe('Body parser', () => {
 	/** END Merging Cues From Config */
 
 	describe('removeDuplicateDesignCues', () => {
+		it('preserves timed QBox background cues when the style column selects the design', () => {
+			const styleConfig = {
+				...config,
+				showStyle: {
+					...config.showStyle,
+					GfxDesignTemplates: [{ INewsName: '', INewsStyleColumn: 'n', VizTemplate: 'DESIGN_NEWS' }]
+				}
+			}
+			const body = '<p><pi>KAM 1</pi></p><p><a idref="0"></a><a idref="1"></a><a idref="2"></a></p>'
+			const cues: UnparsedCue[] = [
+				['KG=DESIGN_NEWS', ';0.00.00'],
+				['VIZ=dve-triopage', 'GRAFIK=BG_LOADER_NEWS', ';0.00.02'],
+				['VIZ=full-triopage', 'GRAFIK=BG_LOADER_NEWS', ';0.00.03']
+			]
+
+			const result = ParseBody(styleConfig, '00000000001', 'test-segment', body, cues, { layout: 'n' }, 0)
+			const parsedCues = result.flatMap(definition => definition.cues)
+
+			expect(parsedCues.filter(cue => cue.type === CueType.GraphicDesign)).toEqual([
+				createDesignCueDefinition('DESIGN_NEWS', true)
+			])
+			expect(parsedCues.filter(cue => cue.type === CueType.BackgroundLoop)).toEqual([
+				{
+					type: CueType.BackgroundLoop,
+					target: 'DVE',
+					backgroundLoop: 'BG_LOADER_NEWS',
+					iNewsCommand: 'VIZ',
+					start: { seconds: 0, frames: 2 }
+				},
+				{
+					type: CueType.BackgroundLoop,
+					target: 'FULL',
+					backgroundLoop: 'BG_LOADER_NEWS',
+					iNewsCommand: 'VIZ',
+					start: { seconds: 0, frames: 3 }
+				}
+			])
+		})
+
+		it('uses an explicit DESIGN_BG cue to replace only the DVE loop alongside style selection', () => {
+			const styleConfig = {
+				...config,
+				showStyle: {
+					...config.showStyle,
+					GfxDesignTemplates: [{ INewsName: '', INewsStyleColumn: 'n', VizTemplate: 'DESIGN_NEWS' }],
+					SchemaConfig: [
+						{
+							schemaName: 'SKEMA_NEWS',
+							designIdentifier: 'DESIGN_NEWS',
+							vizTemplateName: 'BG_LOADER_NEWS',
+							casparCgDveBgScene: 'BG_LOADER_NEWS'
+						}
+					]
+				}
+			}
+			const body = '<p><pi>KAM 1</pi></p><p><a idref="0"></a><a idref="1"></a><a idref="2"></a></p>'
+			const cues: UnparsedCue[] = [
+				['VIZ=dve-triopage', 'GRAFIK=MANUAL_DVE', ';0.00.02'],
+				['VIZ=full-triopage', 'GRAFIK=MANUAL_FULL', ';0.00.03'],
+				['DESIGN_BG=DESIGN_NEWS']
+			]
+
+			const result = ParseBody(styleConfig, '00000000001', 'test-segment', body, cues, { layout: 'n' }, 0)
+			const parsedCues = result.flatMap(definition => definition.cues)
+
+			expect(parsedCues.filter(cue => cue.type === CueType.GraphicDesign)).toEqual([
+				createDesignCueDefinition('DESIGN_NEWS', true)
+			])
+			expect(parsedCues.filter(cue => cue.type === CueType.BackgroundLoop)).toEqual([
+				{
+					type: CueType.BackgroundLoop,
+					target: 'FULL',
+					backgroundLoop: 'MANUAL_FULL',
+					iNewsCommand: 'VIZ',
+					start: { seconds: 0, frames: 3 }
+				},
+				{
+					type: CueType.BackgroundLoop,
+					target: 'DVE',
+					backgroundLoop: 'BG_LOADER_NEWS',
+					iNewsCommand: 'DESIGN_NEWS',
+					isFromLayout: true
+				}
+			])
+		})
+
+		it('only replaces manual designs when a layout design exists, preserving both backgrounds across parts', () => {
+			const layoutDesign = createDesignCueDefinition('layoutDesign', true)
+			const dveBackground = createBackgroundLoopCueDefinition('dveBackground')
+			const fullBackground = createBackgroundLoopCueDefinition('fullBackground', false, 'FULL')
+			const otherCue = createUnknownCueDefinition()
+			const definitions = [
+				createPartDefinition([layoutDesign]),
+				createPartDefinition([createDesignCueDefinition('manualDesign'), dveBackground, fullBackground, otherCue])
+			]
+
+			const result = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+			expect(result[0].cues).toEqual([layoutDesign])
+			expect(result[1].cues).toEqual([dveBackground, fullBackground, otherCue])
+		})
+
+		it.each(['DVE', 'FULL'] as const)(
+			'only replaces backgrounds targeting %s when a layout background exists in another part',
+			target => {
+				const otherTarget = target === 'DVE' ? 'FULL' : 'DVE'
+				const layoutBackground = createBackgroundLoopCueDefinition('layoutBackground', true, target)
+				const manualDesign = createDesignCueDefinition('manualDesign')
+				const otherBackground = createBackgroundLoopCueDefinition('otherBackground', false, otherTarget)
+				const otherCue = createUnknownCueDefinition()
+				const definitions = [
+					createPartDefinition([
+						manualDesign,
+						createBackgroundLoopCueDefinition('manualBackground', false, target),
+						otherBackground,
+						otherCue
+					]),
+					createPartDefinition([layoutBackground])
+				]
+
+				const result = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
+
+				expect(result[0].cues).toEqual([manualDesign, otherBackground, otherCue])
+				expect(result[1].cues).toEqual([layoutBackground])
+			}
+		)
+
+		it('preserves all manual designs and backgrounds without layout cues', () => {
+			const definitions = [
+				createPartDefinition([
+					createDesignCueDefinition('manualDesign'),
+					createBackgroundLoopCueDefinition('dveBackground'),
+					createBackgroundLoopCueDefinition('fullBackground', false, 'FULL')
+				])
+			]
+
+			expect(stripRedundantCuesWhenLayoutCueIsPresent(definitions)).toEqual(definitions)
+		})
+
 		it('has no no cues, does nothing', () => {
 			const definitions: PartDefinition[] = [createPartDefinition(), createPartDefinition()]
 
@@ -3549,10 +3688,14 @@ function createDesignCueDefinition(design: string, isFromLayout?: boolean): CueD
 	}
 }
 
-function createBackgroundLoopCueDefinition(backgroundLoop: string, isFromLayout?: boolean): CueDefinition {
+function createBackgroundLoopCueDefinition(
+	backgroundLoop: string,
+	isFromLayout?: boolean,
+	target: 'DVE' | 'FULL' = 'DVE'
+): CueDefinition {
 	return {
 		type: CueType.BackgroundLoop,
-		target: 'DVE',
+		target,
 		backgroundLoop,
 		isFromLayout,
 		iNewsCommand: ''
