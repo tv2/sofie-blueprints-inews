@@ -73,7 +73,8 @@ export async function executeActionOfftube(
 			createJingleContent: createJingleContentOfftube,
 			pilotGraphicSettings: pilotGeneratorSettingsOfftube,
 			serverActionSettings: {
-				defaultTriggerMode: ServerSelectMode.RESET
+				defaultTriggerMode: ServerSelectMode.RESET,
+				adlibClipsAcceptPersistAudio: true
 			}
 		},
 		actionId,

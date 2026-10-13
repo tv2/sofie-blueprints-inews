@@ -454,7 +454,57 @@ describe('Select Server Action', () => {
 		expect(nextPieces.activePiece?.piece.name).toEqual('01234A')
 		expect(nextPieces.dataStore?.piece.name).toEqual('01234A')
 	})
+
+	it('Adlib server (100%) accepts persisted audio', async () => {
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectServerClipAction)
+
+		const activePieces: ActivePiecesForSource = await getActiveServerPieces(context, 'next')
+
+		expect(getSisyfosPersistMetaData(activePieces.dataStore)?.acceptPersistAudio).toBe(true)
+	})
+
+	it('Adlib VO accepts persisted audio', async () => {
+		const context = new ActionExecutionContext(
+			'test',
+			mappingsDefaults,
+			parseStudioConfig,
+			parseShowStyleConfig,
+			RUNDOWN_ID,
+			SEGMENT_ID,
+			currentPartMock._id,
+			currentPartMock,
+			[kamPieceInstance]
+		)
+		context.studioConfig = defaultStudioConfig as any
+		context.showStyleConfig = defaultShowStyleConfig as any
+		;((context.studioConfig as unknown) as OfftubeStudioConfig).GraphicsType = 'HTML'
+
+		await executeActionOfftube(context, AdlibActionType.SELECT_SERVER_CLIP, selectVOClipAction)
+
+		const activePieces: ActivePiecesForSource = await getVOPieces(context, 'next')
+
+		expect(getSisyfosPersistMetaData(activePieces.dataStore)?.acceptPersistAudio).toBe(true)
+	})
 })
+
+function getSisyfosPersistMetaData(pieceInstance: IBlueprintPieceInstance | undefined) {
+	return (pieceInstance as IBlueprintPieceInstance<PieceMetaData> | undefined)?.piece.metaData?.sisyfosPersistMetaData
+}
 
 describe('Combination Actions', () => {
 	it('Server -> DVE', async () => {
