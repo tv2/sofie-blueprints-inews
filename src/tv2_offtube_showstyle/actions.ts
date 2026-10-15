@@ -26,7 +26,7 @@ export async function executeActionOfftube(
 		context,
 		{
 			getConfig,
-			allowUnderlyingMix: true,
+			allowUnderlyingTransition: true,
 			postProcessPieceTimelineObjects,
 			EvaluateCues: OfftubeEvaluateCues,
 			DVEGeneratorOptions: OFFTUBE_DVE_GENERATOR_OPTIONS,

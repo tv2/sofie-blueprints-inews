@@ -52,9 +52,11 @@ export interface TimelineBlueprintExt extends TimelineObjectCoreExt {
 }
 
 export interface PieceMetaData {
-	underlyingMix?: {
+	underlyingTransition?: {
 		breaker: string
 		durationFrames: number
+		style: TSR.AtemTransitionStyle.MIX | TSR.AtemTransitionStyle.WIPE
+		settings: TSR.AtemTransitionSettings
 	}
 	sisyfosPersistMetaData?: SisyfosPersistMetaData
 	mediaPlayerSessions?: string[]

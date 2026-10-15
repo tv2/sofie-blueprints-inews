@@ -19,7 +19,8 @@ import {
 	RemoteType,
 	SourceDefinitionKam,
 	SourceDefinitionRemote,
-	TableConfigItemBreakers
+	TableConfigItemBreakers,
+	TableConfigItemUnderlyingTransition
 } from 'tv2-common'
 import { AdlibActionType, CueType, NoteType, PartType, SharedSourceLayers, SourceType } from 'tv2-constants'
 import { ActionExecutionContext } from '../../__mocks__/context'
@@ -29,7 +30,7 @@ import { OfftubeStudioConfig, parseConfig as parseStudioConfig } from '../../tv2
 import { OfftubeAtemLLayer } from '../../tv2_offtube_studio/layers'
 import mappingsDefaults from '../../tv2_offtube_studio/migrations/mappings-defaults'
 import { executeActionOfftube } from '../actions'
-import { parseConfig as parseShowStyleConfig } from '../helpers/config'
+import { getConfig, parseConfig as parseShowStyleConfig } from '../helpers/config'
 import { OfftubeOutputLayers, OfftubeSourceLayer } from '../layers'
 
 const RUNDOWN_ID = 'MOCK_ACTION_RUNDOWN'
@@ -399,7 +400,10 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 }
 
 describe('Underlying breaker mix actions', () => {
-	function makeMixContext(overrides: Partial<TableConfigItemBreakers> = {}) {
+	function makeMixContext(
+		overrides: Partial<TableConfigItemBreakers> = {},
+		transition: Partial<TableConfigItemUnderlyingTransition> = {}
+	) {
 		const context = new ActionExecutionContext(
 			'mix actions',
 			mappingsDefaults,
@@ -418,6 +422,7 @@ describe('Underlying breaker mix actions', () => {
 		}
 		context.showStyleConfig = {
 			...JSON.parse(JSON.stringify(defaultShowStyleConfig)),
+			UnderlyingTransitions: [{ Name: 'Test', Type: 'Mix', ...transition }],
 			BreakerConfig: [
 				{
 					BreakerName: '1',
@@ -427,7 +432,8 @@ describe('Underlying breaker mix actions', () => {
 					EndAlpha: 30,
 					Autonext: false,
 					LoadFirstFrame: true,
-					MixUnderBreaker: true,
+					EnableUnderlyingTransition: true,
+					UnderlyingTransition: 'Test',
 					...overrides
 				},
 				{
@@ -451,10 +457,112 @@ describe('Underlying breaker mix actions', () => {
 	}
 
 	it.each([selectCameraAction, selectLiveAction, selectServerClipAction, selectVOClipAction, selectDVEActionMorbarn])(
+		'applies a dot preset and preserves it when changing source to $type',
+		async action => {
+			const context = makeMixContext(
+				{},
+				{
+					Type: 'Dot wipe',
+					StartFrame: 18,
+					Duration: 6,
+					XPosition: 1234,
+					ReverseDirection: true
+				}
+			)
+			await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
+			await executeActionOfftube(context, breakerTransition.type, breakerTransition)
+			await executeActionOfftube(context, action.type, action)
+			const source = context.nextPieceInstances!.find(p => p.piece.outputLayerId === OfftubeOutputLayers.PGM)!
+			expect(getATEMMEObj(source).content.me).toMatchObject({
+				transition: TSR.AtemTransitionStyle.WIPE,
+				transitionSettings: { wipe: { pattern: 7, rate: 6, xPosition: 1234, reverseDirection: true } }
+			})
+			expect(getATEMMEObj(source).content.me.transitionSettings?.mix).toBeUndefined()
+			expect(context.nextPart?.part.inTransition).toEqual({
+				blockTakeDuration: 2200,
+				previousPartKeepaliveDuration: 1160,
+				partContentDelayDuration: 920
+			})
+			await executeActionOfftube(context, breakerTransition.type, { ...breakerTransition, takeNow: true })
+			expect(context.takeAfterExecute).toBe(true)
+			validateNoWarningsOrErrors(context)
+		}
+	)
+
+	it.each([selectServerClipAction, selectVOClipAction])(
+		'applies dot presets to scripted adlib clip effects',
+		async action => {
+			const context = makeMixContext({}, { Type: 'Dot wipe', Duration: 10 })
+			await executeActionOfftube(context, action.type, {
+				...action,
+				partDefinition: { ...action.partDefinition, effekt: 1 }
+			})
+			const source = context.nextPieceInstances!.find(p => p.piece.outputLayerId === OfftubeOutputLayers.PGM)!
+			expect(getATEMMEObj(source).content.me).toMatchObject({
+				transition: TSR.AtemTransitionStyle.WIPE,
+				transitionSettings: { wipe: { pattern: 7, rate: 10 } }
+			})
+			validateNoWarningsOrErrors(context)
+		}
+	)
+
+	it.each<ActionTakeWithTransition['variant']>([
+		{ type: 'cut' },
+		{ type: 'mix', frames: 8 },
+		{ type: 'dip', frames: 8 },
+		{ type: 'breaker', breaker: '2' }
+	])('clears dot settings when replaced by %j', async variant => {
+		const context = makeMixContext({}, { Type: 'Dot wipe' })
+		await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
+		await executeActionOfftube(context, breakerTransition.type, breakerTransition)
+		await executeActionOfftube(context, breakerTransition.type, { ...breakerTransition, variant })
+		const source = (await getCameraPiece(context, 'next'))!
+		expect(getATEMMEObj(source).content.me.transitionSettings?.wipe).toBeUndefined()
+		expect(context.nextPieceInstances!.some(p => p.piece.metaData?.underlyingTransition)).toBe(false)
+		validateNoWarningsOrErrors(context)
+	})
+
+	it('replaces dot with a named mix and back without stale settings', async () => {
+		const context = makeMixContext({}, { Type: 'Dot wipe' })
+		getConfig(context).showStyle.UnderlyingTransitions!.push({ Name: 'Dissolve', Type: 'Mix', Duration: 9 })
+		Object.assign(getConfig(context).showStyle.BreakerConfig[1], {
+			UnderlyingTransition: 'Dissolve',
+			EnableUnderlyingTransition: true
+		})
+		await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
+		for (const breaker of ['1', '2', '1']) {
+			await executeActionOfftube(context, breakerTransition.type, {
+				...breakerTransition,
+				variant: { type: 'breaker', breaker }
+			})
+			const settings = getATEMMEObj((await getCameraPiece(context, 'next'))!).content.me.transitionSettings
+			expect(settings).toEqual(
+				breaker === '2'
+					? { mix: { rate: 9 } }
+					: {
+							wipe: {
+								rate: 4,
+								pattern: 7,
+								borderWidth: 0,
+								borderInput: 0,
+								symmetry: 5000,
+								borderSoftness: 0,
+								xPosition: 5000,
+								yPosition: 5000,
+								reverseDirection: false,
+								flipFlop: false
+							}
+					  }
+			)
+		}
+		validateNoWarningsOrErrors(context)
+	})
+
+	it.each([selectCameraAction, selectLiveAction, selectServerClipAction, selectVOClipAction, selectDVEActionMorbarn])(
 		'applies and takes a breaker mix into $type',
 		async sourceAction => {
 			for (const takeNow of [false, true]) {
-				const context = makeMixContext({ UnderlyingMixStartFrame: '18', UnderlyingMixDuration: '6' })
+				const context = makeMixContext({}, { StartFrame: '18', Duration: '6' })
 				await executeActionOfftube(context, sourceAction.type, sourceAction)
 				const previousPieces = await context.getPieceInstances('current')
 				await executeActionOfftube(context, AdlibActionType.TAKE_WITH_TRANSITION, { ...breakerTransition, takeNow })
@@ -509,7 +617,7 @@ describe('Underlying breaker mix actions', () => {
 		await executeActionOfftube(context, breakerTransition.type, { ...breakerTransition, variant })
 		const camera = (await getCameraPiece(context, 'next'))!
 		const me = getATEMMEObj(camera)
-		expect(context.nextPieceInstances!.some(p => p.piece.metaData?.underlyingMix)).toBe(false)
+		expect(context.nextPieceInstances!.some(p => p.piece.metaData?.underlyingTransition)).toBe(false)
 		if (variant.type === 'cut' || variant.type === 'breaker') {
 			expectATEMToCut(camera)
 			expect(me.content.me.transitionSettings).toBeUndefined()
@@ -547,8 +655,13 @@ describe('Underlying breaker mix actions', () => {
 		validateNoWarningsOrErrors(context)
 	})
 
-	it('rejects invalid mix settings without removing the previous transition or taking', async () => {
-		const context = makeMixContext({ UnderlyingMixDuration: '0' })
+	it.each<Partial<TableConfigItemUnderlyingTransition>>([
+		{ Duration: '0' },
+		{ Type: 'Dot wipe', Duration: 251 },
+		{ Type: 'Dot wipe', BorderWidth: -1 },
+		{ Name: 'No longer matches the breaker' }
+	])('rejects invalid presets %j without removing the previous transition or taking', async preset => {
+		const context = makeMixContext({}, preset)
 		await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
 		await executeActionOfftube(context, setMIX20AsTransition.type, setMIX20AsTransition)
 		const before = JSON.parse(JSON.stringify(context.nextPart?.part.inTransition))
@@ -557,7 +670,7 @@ describe('Underlying breaker mix actions', () => {
 		expect(context.nextPart?.part.inTransition).toEqual(before)
 		expect(context.takeAfterExecute).toBe(false)
 		expect(context.getNotes()).toEqual([
-			expect.objectContaining({ message: expect.stringContaining('Invalid underlying mix for breaker 1') })
+			expect.objectContaining({ message: expect.stringContaining('Invalid underlying transition for breaker 1') })
 		])
 	})
 })
