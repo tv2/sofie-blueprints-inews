@@ -80,7 +80,7 @@ import {
 } from '../helpers'
 import { GetJinglePartPropertiesFromTableValue } from '../jinglePartProperties'
 import {
-	ApplyUnderlyingMixToPieces,
+	ApplyUnderlyingTransitionToPieces,
 	CreateEffektForPartBase,
 	CreateEffektForPartInner,
 	CreateMixTransitionBlueprintPieceForPart
@@ -197,7 +197,7 @@ export interface ActionExecutionSettings<
 	) => WithTimeline<VTContent>
 	pilotGraphicSettings: PilotGeneratorSettings
 	serverActionSettings: ServerActionSettings
-	allowUnderlyingMix?: boolean
+	allowUnderlyingTransition?: boolean
 }
 
 interface ServerActionSettings {
@@ -335,11 +335,11 @@ async function getExistingTransition<
 		return
 	}
 
-	const underlyingMix = existingTransition.piece.metaData?.underlyingMix
-	if (settings.allowUnderlyingMix && underlyingMix) {
+	const underlyingTransition = existingTransition.piece.metaData?.underlyingTransition
+	if (settings.allowUnderlyingTransition && underlyingTransition) {
 		return {
 			type: AdlibActionType.TAKE_WITH_TRANSITION,
-			variant: { type: 'breaker', breaker: underlyingMix.breaker },
+			variant: { type: 'breaker', breaker: underlyingTransition.breaker },
 			takeNow: false
 		}
 	}
@@ -527,7 +527,7 @@ async function executeActionSelectServerClip<
 				sisyfosLayer: settings.LLayer.Sisyfos.Effekt,
 				casparLayer: settings.LLayer.Caspar.Effekt
 			},
-			settings.allowUnderlyingMix
+			settings.allowUnderlyingTransition
 		)
 	}
 
@@ -553,7 +553,7 @@ async function executeActionSelectServerClip<
 	}
 
 	if (activeServerPiece.content && activeServerPiece.content.timelineObjects) {
-		ApplyUnderlyingMixToPieces(
+		ApplyUnderlyingTransitionToPieces(
 			[activeServerPiece, ...effektPieces],
 			settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram
 		)
@@ -1579,7 +1579,7 @@ async function executeActionTakeWithTransition<
 				sisyfosLayer: settings.LLayer.Sisyfos.Effekt
 			},
 			!!userData.variant.breaker.match(/^\d+$/) ? `EFFEKT ${userData.variant.breaker}` : userData.variant.breaker,
-			settings.allowUnderlyingMix
+			settings.allowUnderlyingTransition
 		)
 		if (!breakerPartProps) {
 			await context.takeAfterExecuteAction(false)
@@ -1635,7 +1635,7 @@ async function executeActionTakeWithTransition<
 			delete timelineObject.content.me.transitionSettings
 
 			primaryPiece.piece.content.timelineObjects[timelineObjectIndex] = timelineObject
-			ApplyUnderlyingMixToPieces(
+			ApplyUnderlyingTransitionToPieces(
 				[primaryPiece.piece, ...breakerPieces],
 				settings.LLayer.Atem.cutOnclean ? settings.LLayer.Atem.MEClean : settings.LLayer.Atem.MEProgram
 			)
