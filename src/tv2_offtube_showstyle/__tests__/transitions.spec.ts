@@ -115,19 +115,26 @@ function getME(part: BlueprintResultPart, layer: string = OfftubeAtemLLayer.Atem
 
 describe('QBox underlying breaker mix', () => {
 	it.each(['KAM 1', 'SERVER', 'VO'])('applies every dot-wipe control to %s without changing preview', async cue => {
-		const context = makeContext({ EnableUnderlyingTransition: true, UnderlyingTransition: ' test ' }, 200, {
-			Type: 'Dot wipe',
-			StartFrame: 18,
-			Duration: 6,
-			BorderWidth: 1200,
-			BorderInput: 2002,
-			Symmetry: 6400,
-			BorderSoftness: 3500,
-			XPosition: 2500,
-			YPosition: 7500,
-			ReverseDirection: true,
-			FlipFlop: true
-		})
+		const context = makeContext(
+			{
+				EnableUnderlyingTransition: true,
+				UnderlyingTransition: ' test ',
+				UnderlyingTransitionStartFrame: 18,
+				UnderlyingTransitionDuration: 6
+			},
+			200,
+			{
+				Type: 'Dot wipe',
+				BorderWidth: 1200,
+				BorderInput: 2002,
+				Symmetry: 6400,
+				BorderSoftness: 3500,
+				XPosition: 2500,
+				YPosition: 7500,
+				ReverseDirection: true,
+				FlipFlop: true
+			}
+		)
 		const { parts } = await getSegment(context, makeSegment(`${cue} EFFEKT 1`))
 		expect(getME(parts[0]).content.me).toMatchObject({
 			transition: TSR.AtemTransitionStyle.WIPE,
@@ -202,9 +209,8 @@ describe('QBox underlying breaker mix', () => {
 	})
 
 	it.each([0, 10000])('accepts dot control boundary %i and the maximum dot duration', async value => {
-		const context = makeContext({ EnableUnderlyingTransition: true }, 200, {
+		const context = makeContext({ EnableUnderlyingTransition: true, UnderlyingTransitionDuration: 250 }, 200, {
 			Type: 'Dot wipe',
-			Duration: 250,
 			BorderWidth: value,
 			BorderInput: 65535,
 			Symmetry: value,
@@ -231,8 +237,53 @@ describe('QBox underlying breaker mix', () => {
 		expect(b.part.inTransition?.partContentDelayDuration).toBe(1800)
 	})
 
+	it.each<TableConfigItemUnderlyingTransition['Type']>(['Mix', 'Dot wipe'])(
+		'uses independent breaker timings with the same %s preset',
+		async type => {
+			const context = makeContext(
+				{ EnableUnderlyingTransition: true, UnderlyingTransitionStartFrame: 0, UnderlyingTransitionDuration: 6 },
+				200,
+				{ Type: type }
+			)
+			const config = getConfig(context).showStyle
+			config.BreakerConfig.push({
+				...config.BreakerConfig[0],
+				BreakerName: '2',
+				UnderlyingTransitionStartFrame: 18,
+				UnderlyingTransitionDuration: 10
+			})
+			const first = (await getSegment(context, makeSegment('KAM 1 EFFEKT 1'))).parts[0]
+			const second = (await getSegment(context, makeSegment('KAM 1 EFFEKT 2'))).parts[0]
+			const key = type === 'Mix' ? 'mix' : 'wipe'
+			expect(getME(first).content.me.transitionSettings?.[key]?.rate).toBe(6)
+			expect(getME(second).content.me.transitionSettings?.[key]?.rate).toBe(10)
+			expect(first.part.inTransition).toEqual({
+				blockTakeDuration: 2200,
+				previousPartKeepaliveDuration: 440,
+				partContentDelayDuration: 200
+			})
+			expect(second.part.inTransition).toEqual({
+				blockTakeDuration: 2200,
+				previousPartKeepaliveDuration: 1320,
+				partContentDelayDuration: 920
+			})
+			expect(config.UnderlyingTransitions).toEqual([{ Name: 'Test', Type: type }])
+			expect(context.getNotes()).toEqual([])
+		}
+	)
+
+	it('rejects breaker durations above the dot-wipe limit', async () => {
+		const context = makeContext({ EnableUnderlyingTransition: true, UnderlyingTransitionDuration: 251 }, 200, {
+			Type: 'Dot wipe'
+		})
+		const { parts } = await getSegment(context, makeSegment('KAM 1 EFFEKT 1'))
+		expect(context.getNotes()).toEqual([
+			expect.objectContaining({ message: expect.stringContaining('transition duration (1 to 250 frames)') })
+		])
+		expect(parts[0].pieces.some(piece => piece.pieceType === IBlueprintPieceType.InTransition)).toBe(false)
+	})
+
 	it.each([
-		{ Duration: 251 },
 		{ BorderWidth: -1 },
 		{ BorderWidth: 10001 },
 		{ BorderSoftness: 0.5 },
@@ -292,8 +343,7 @@ describe('QBox underlying breaker mix', () => {
 	})
 
 	it('ignores dot controls for Mix and accepts 255-frame mixes', async () => {
-		const context = makeContext({ EnableUnderlyingTransition: true }, 200, {
-			Duration: 255,
+		const context = makeContext({ EnableUnderlyingTransition: true, UnderlyingTransitionDuration: 255 }, 200, {
 			BorderWidth: -1,
 			XPosition: NaN
 		})
@@ -310,7 +360,7 @@ describe('QBox underlying breaker mix', () => {
 		expect(context.getNotes()).toEqual([])
 	})
 
-	it('exposes both transition types, timing and all supported dot controls in the preset table', () => {
+	it('exposes both transition types and all supported dot controls, but no timing, in the preset table', () => {
 		if (underlyingTransitionsManifest.type !== ConfigManifestEntryType.TABLE) {
 			throw new Error('Missing underlying transition table')
 		}
@@ -323,8 +373,6 @@ describe('QBox underlying breaker mix', () => {
 		expect(underlyingTransitionsManifest.columns.map(column => column.id)).toEqual([
 			'Name',
 			'Type',
-			'StartFrame',
-			'Duration',
 			'BorderWidth',
 			'BorderInput',
 			'Symmetry',
@@ -364,14 +412,14 @@ describe('QBox underlying breaker mix', () => {
 	})
 
 	it.each([
-		{ StartFrame: '', Duration: '', start: 1000, end: 1160, rate: 4 },
-		{ StartFrame: '0', Duration: '', start: 200, end: 360, rate: 4 },
-		{ StartFrame: 0, Duration: 6, start: 200, end: 440, rate: 6 },
-		{ StartFrame: ' 18 ', Duration: '6', start: 920, end: 1160, rate: 6 },
-		{ StartFrame: '', Duration: '8', start: 1000, end: 1320, rate: 8 },
-		{ StartFrame: '49', Duration: '10', start: 2160, end: 2560, rate: 10 }
+		{ UnderlyingTransitionStartFrame: '', UnderlyingTransitionDuration: '', start: 1000, end: 1160, rate: 4 },
+		{ UnderlyingTransitionStartFrame: '0', UnderlyingTransitionDuration: '', start: 200, end: 360, rate: 4 },
+		{ UnderlyingTransitionStartFrame: 0, UnderlyingTransitionDuration: 6, start: 200, end: 440, rate: 6 },
+		{ UnderlyingTransitionStartFrame: ' 18 ', UnderlyingTransitionDuration: '6', start: 920, end: 1160, rate: 6 },
+		{ UnderlyingTransitionStartFrame: '', UnderlyingTransitionDuration: '8', start: 1000, end: 1320, rate: 8 },
+		{ UnderlyingTransitionStartFrame: '49', UnderlyingTransitionDuration: '10', start: 2160, end: 2560, rate: 10 }
 	])('uses independent start/duration overrides: %j', async ({ start, end, rate, ...overrides }) => {
-		const context = makeContext({ EnableUnderlyingTransition: true }, 200, overrides)
+		const context = makeContext({ EnableUnderlyingTransition: true, ...overrides })
 		const { parts } = await getSegment(context, makeSegment('KAM 1 EFFEKT 1'))
 		expect(parts[0].part.inTransition).toEqual({
 			blockTakeDuration: Math.max(2200, end),
@@ -384,7 +432,7 @@ describe('QBox underlying breaker mix', () => {
 
 	it.each(['SERVER', 'VO'])('preserves %s preroll, session and preview with an early mix', async cue => {
 		for (const preroll of [0, 200, 480]) {
-			const context = makeContext({ EnableUnderlyingTransition: true }, preroll, { StartFrame: '0' })
+			const context = makeContext({ EnableUnderlyingTransition: true, UnderlyingTransitionStartFrame: '0' }, preroll)
 			const { parts } = await getSegment(context, makeSegment(`${cue} EFFEKT 1`))
 			const part = parts[0]
 			const me = getME(part)
@@ -513,19 +561,19 @@ describe('QBox underlying breaker mix', () => {
 		expect(getME(parts[0], OfftubeAtemLLayer.AtemMENext).content.me.transition).toBeUndefined()
 	})
 
-	it.each<Partial<TableConfigItemUnderlyingTransition>>([
-		{ Duration: '0' },
-		{ Duration: -1 },
-		{ Duration: 256 },
-		{ Duration: '1.5' },
-		{ Duration: 'oops' },
-		{ Duration: Infinity },
-		{ StartFrame: -1 },
-		{ StartFrame: '51' },
-		{ StartFrame: '0x10' },
-		{ StartFrame: NaN }
+	it.each<Partial<TableConfigItemBreakers>>([
+		{ UnderlyingTransitionDuration: '0' },
+		{ UnderlyingTransitionDuration: -1 },
+		{ UnderlyingTransitionDuration: 256 },
+		{ UnderlyingTransitionDuration: '1.5' },
+		{ UnderlyingTransitionDuration: 'oops' },
+		{ UnderlyingTransitionDuration: Infinity },
+		{ UnderlyingTransitionStartFrame: -1 },
+		{ UnderlyingTransitionStartFrame: '51' },
+		{ UnderlyingTransitionStartFrame: '0x10' },
+		{ UnderlyingTransitionStartFrame: NaN }
 	])('reports invalid enabled transition timing: %j', async overrides => {
-		const context = makeContext({ EnableUnderlyingTransition: true }, 200, overrides)
+		const context = makeContext({ EnableUnderlyingTransition: true, ...overrides })
 		const { parts } = await getSegment(context, makeSegment('KAM 1 EFFEKT 1'))
 		expect(context.getNotes()).toEqual([
 			expect.objectContaining({ message: expect.stringContaining('Invalid underlying transition for breaker 1') })
@@ -546,7 +594,11 @@ describe('QBox underlying breaker mix', () => {
 	)
 
 	it('ignores overrides when mixing is off', async () => {
-		const context = makeContext({ EnableUnderlyingTransition: false }, 200, { Duration: 'invalid' })
+		const context = makeContext({
+			EnableUnderlyingTransition: false,
+			UnderlyingTransitionDuration: 'invalid',
+			UnderlyingTransitionStartFrame: -1
+		})
 		const { parts } = await getSegment(context, makeSegment('KAM 1 EFFEKT 1'))
 		expect(getME(parts[0]).content.me.transition).toBe(TSR.AtemTransitionStyle.CUT)
 		expect(context.getNotes()).toEqual([])
@@ -578,9 +630,10 @@ describe('QBox underlying breaker mix', () => {
 			cues: [{ type: CueType.Jingle, clip: '1', iNewsCommand: 'JINGLE 1' }]
 		}
 		const outputs = [false, true].map(mixUnderBreaker => {
-			const context = makeContext({ EnableUnderlyingTransition: mixUnderBreaker }, 200, {
-				StartFrame: '18',
-				Duration: '6'
+			const context = makeContext({
+				EnableUnderlyingTransition: mixUnderBreaker,
+				UnderlyingTransitionStartFrame: '18',
+				UnderlyingTransitionDuration: '6'
 			})
 			const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 			OfftubeEvaluateJingle(
@@ -599,7 +652,7 @@ describe('QBox underlying breaker mix', () => {
 		expect(outputs[1][0].lifespan).toBe(PieceLifespan.WithinPart)
 	})
 
-	it('keeps original breaker columns and places the preset selector immediately before the opt-in', () => {
+	it('keeps original breaker columns and places timing between the preset selector and opt-in', () => {
 		const manifest = showStyleConfigManifest.find(entry => entry.id === 'BreakerConfig')
 		if (!manifest || manifest.type !== ConfigManifestEntryType.TABLE) {
 			throw new Error('Missing breaker table')
@@ -620,6 +673,18 @@ describe('QBox underlying breaker mix', () => {
 				type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
 				tableId: 'UnderlyingTransitions',
 				columnId: 'Name',
+				required: false,
+				defaultVal: ''
+			},
+			{
+				id: 'UnderlyingTransitionStartFrame',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: ''
+			},
+			{
+				id: 'UnderlyingTransitionDuration',
+				type: ConfigManifestEntryType.STRING,
 				required: false,
 				defaultVal: ''
 			},

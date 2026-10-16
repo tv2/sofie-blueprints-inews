@@ -14,34 +14,44 @@ Means the jingle `2019_Sport` has 40 frames of alpha at the end, and `2019_NBA` 
 
 Create named presets in the QBox show style's **Underlying transitions** table.
 In **Breaker Configuration**, select the preset in **Underlying transition name**
-and enable the **Underlying transition** toggle immediately to its right.
-Several breakers can reference the same preset.
+then set the start frame and duration to its right, followed by the
+**Underlying transition** toggle.
+Several breakers can reference the same preset with their own start frame and duration.
 
 Dropdown selections are resolved by row ID, with name matching for text
 references and as a fallback for imported selections, following the existing
 graphics-setup selection convention.
 
 The original breaker name, clip, duration, alpha timings, autonext and
-load-first-frame fields remain unchanged. Only the experimental underlying-mix
-controls have moved: start frame and duration now belong to the preset.
+load-first-frame fields remain unchanged. Underlying transition start frame and
+duration are separate fields in **Breaker Configuration**, not in the preset.
 The old underlying-mix fields are no longer read and are not migrated.
 Existing breakers without the new toggle enabled retain their normal behaviour.
 
 ### Preset settings
 
-| Setting               | Behaviour                                                                                                                              |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Name**              | Unique reference name. Matching ignores case and surrounding whitespace; duplicate matching names are rejected.                        |
-| **Type**              | **Mix** (dissolve) or **Dot wipe** (ATEM Circle Iris, pattern 7).                                                                      |
-| **Start frame**       | Optional whole-frame position relative to the breaker's first frame, frame **0**. Blank uses that breaker's `Duration - Alpha at End`. |
-| **Duration (frames)** | Optional whole frames: **1 to 255** for Mix, **1 to 250** for Dot wipe. Blank uses **4 frames**.                                       |
+| Setting  | Behaviour                                                                                                       |
+| -------- | --------------------------------------------------------------------------------------------------------------- |
+| **Name** | Unique reference name. Matching ignores case and surrounding whitespace; duplicate matching names are rejected. |
+| **Type** | **Mix** (dissolve) or **Dot wipe** (ATEM Circle Iris, pattern 7).                                               |
+
+### Breaker timing
+
+Set these fields in **Breaker Configuration** for each breaker using the preset.
+They are ignored when the **Underlying transition** toggle is off.
+
+| Setting                                     | Behaviour                                                                                                                                          |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Underlying transition start frame**       | Optional whole-frame position relative to the breaker's first frame, frame **0**. Blank uses that breaker's `Duration - Alpha at End`.             |
+| **Underlying transition duration (frames)** | Optional whole frames: **1 to 255** for Mix, **1 to 250** for Dot wipe. Blank uses **4 frames**. This does not change the breaker's clip duration. |
 
 Blank timing and explicit `0` are distinct. Start and duration can be set
 independently. Frames use the existing 25 fps conversion (one frame = 40 ms).
 Do not add CasparCG preroll to the configured start frame.
 
-For example, create a preset named `Soft reveal`, type `Mix`, start frame `18`,
-duration `6`, then select it on a breaker and enable the toggle. This dissolves
+For example, create a preset named `Soft reveal`, type `Mix`, then select it on
+a breaker and enable the toggle. On that breaker, set underlying transition
+start frame to `18` and underlying transition duration to `6`. This dissolves
 from frame 18 to frame 24 of the breaker. With 200 ms CasparCG preroll, the source
 transition starts at 920 ms and ends at 1160 ms.
 

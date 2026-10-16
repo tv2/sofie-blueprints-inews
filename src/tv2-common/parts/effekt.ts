@@ -277,8 +277,8 @@ function getUnderlyingTransition(
 	const duration = optionalFrameValue(breaker.Duration, NaN)
 	const alphaStart = optionalFrameValue(breaker.StartAlpha, NaN)
 	const alphaEnd = optionalFrameValue(breaker.EndAlpha, NaN)
-	const startFrame = optionalFrameValue(preset.StartFrame, duration - alphaEnd)
-	const transitionDuration = optionalFrameValue(preset.Duration, 4)
+	const startFrame = optionalFrameValue(breaker.UnderlyingTransitionStartFrame, duration - alphaEnd)
+	const transitionDuration = optionalFrameValue(breaker.UnderlyingTransitionDuration, 4)
 	const maxDuration = preset.Type === 'Dot wipe' ? 250 : 255
 	if (
 		![duration, alphaStart, alphaEnd, startFrame, transitionDuration].every(Number.isSafeInteger) ||

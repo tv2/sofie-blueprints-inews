@@ -15,14 +15,14 @@ export interface TableConfigItemBreakers {
 	LoadFirstFrame: boolean
 	EnableUnderlyingTransition?: boolean
 	UnderlyingTransition?: string | ConfigManifestSelectValue
+	UnderlyingTransitionStartFrame?: string | number
+	UnderlyingTransitionDuration?: string | number
 }
 
 export interface TableConfigItemUnderlyingTransition {
 	_id?: string
 	Name: string
 	Type: 'Mix' | 'Dot wipe'
-	StartFrame?: string | number
-	Duration?: string | number
 	BorderWidth?: number
 	BorderInput?: number
 	Symmetry?: number

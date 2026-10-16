@@ -31,32 +31,13 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 			rank: 1
 		},
 		{
-			id: 'StartFrame',
-			name: 'Start frame',
-			description:
-				'Optional whole frames from the first frame of each breaker (frame 0). Blank uses the breaker Duration minus Alpha at End.',
-			type: ConfigManifestEntryType.STRING,
-			required: false,
-			defaultVal: '',
-			rank: 2
-		},
-		{
-			id: 'Duration',
-			name: 'Duration (frames)',
-			description: 'Optional whole frames: 1 to 255 for Mix, 1 to 250 for Dot wipe. Blank uses 4 frames.',
-			type: ConfigManifestEntryType.STRING,
-			required: false,
-			defaultVal: '',
-			rank: 3
-		},
-		{
 			id: 'BorderWidth',
 			name: 'Dot: border width',
 			description: 'ATEM units, 0 to 10000. Zero disables the border.',
 			type: ConfigManifestEntryType.INT,
 			required: false,
 			defaultVal: 0,
-			rank: 4
+			rank: 2
 		},
 		{
 			id: 'BorderInput',
@@ -65,7 +46,7 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 			type: ConfigManifestEntryType.INT,
 			required: false,
 			defaultVal: 0,
-			rank: 5
+			rank: 3
 		},
 		{
 			id: 'Symmetry',
@@ -74,7 +55,7 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 			type: ConfigManifestEntryType.INT,
 			required: false,
 			defaultVal: 5000,
-			rank: 6
+			rank: 4
 		},
 		{
 			id: 'BorderSoftness',
@@ -83,7 +64,7 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 			type: ConfigManifestEntryType.INT,
 			required: false,
 			defaultVal: 0,
-			rank: 7
+			rank: 5
 		},
 		{
 			id: 'XPosition',
@@ -92,7 +73,7 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 			type: ConfigManifestEntryType.INT,
 			required: false,
 			defaultVal: 5000,
-			rank: 8
+			rank: 6
 		},
 		{
 			id: 'YPosition',
@@ -101,7 +82,7 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 			type: ConfigManifestEntryType.INT,
 			required: false,
 			defaultVal: 5000,
-			rank: 9
+			rank: 7
 		},
 		{
 			id: 'ReverseDirection',
@@ -110,7 +91,7 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 			type: ConfigManifestEntryType.BOOLEAN,
 			required: false,
 			defaultVal: false,
-			rank: 10
+			rank: 8
 		},
 		{
 			id: 'FlipFlop',
@@ -119,7 +100,7 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 			type: ConfigManifestEntryType.BOOLEAN,
 			required: false,
 			defaultVal: false,
-			rank: 11
+			rank: 9
 		}
 	]
 }
@@ -581,7 +562,7 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				id: 'UnderlyingTransition',
 				name: 'Underlying transition name',
 				description:
-					'Select a named preset from Underlying transitions. Only used when the adjacent toggle is enabled.',
+					'Select a named preset from Underlying transitions. Only used when Underlying transition is enabled.',
 				type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
 				tableId: 'UnderlyingTransitions',
 				columnId: 'Name',
@@ -591,13 +572,33 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				rank: 7
 			},
 			{
+				id: 'UnderlyingTransitionStartFrame',
+				name: 'Underlying transition start frame',
+				description:
+					'Optional whole frames from the first frame of this breaker (frame 0). Blank uses the breaker Duration minus Alpha at End. Only used when Underlying transition is enabled.',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 8
+			},
+			{
+				id: 'UnderlyingTransitionDuration',
+				name: 'Underlying transition duration (frames)',
+				description:
+					'Optional whole frames: 1 to 255 for Mix, 1 to 250 for Dot wipe. Blank uses 4 frames. Only used when Underlying transition is enabled.',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 9
+			},
+			{
 				id: 'EnableUnderlyingTransition',
 				name: 'Underlying transition',
 				description: 'QBox only: apply the selected underlying transition instead of cutting underneath this breaker.',
 				type: ConfigManifestEntryType.BOOLEAN,
 				required: false,
 				defaultVal: false,
-				rank: 8
+				rank: 10
 			}
 		]
 	},
