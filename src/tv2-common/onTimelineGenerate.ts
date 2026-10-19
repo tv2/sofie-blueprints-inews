@@ -13,7 +13,7 @@ import {
 	TSR
 } from 'blueprints-integration'
 import { ActionSelectFullGrafik, ActionSelectJingle, ActionSelectServerClip, CasparPlayerClip } from 'tv2-common'
-import { AbstractLLayer, PartType, SharedOutputLayers, SharedSourceLayers, TallyTags } from 'tv2-constants'
+import { AbstractLLayer, PartType, TallyTags } from 'tv2-constants'
 import * as _ from 'underscore'
 import { SisyfosLLAyer } from '../tv2_afvd_studio/layers'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from './blueprintConfig'
@@ -239,7 +239,11 @@ export function getEndStateForPart(
 	const previousPartEndState = partInstance?.previousPartEndState as Partial<PartEndStateExt>
 
 	const activePieces = resolvedPieces.filter(
-		p => p.resolvedStart <= time && (p.resolvedDuration === undefined || p.resolvedStart + p.resolvedDuration >= time)
+		p =>
+			_.isNumber(p.piece.enable.start) &&
+			p.piece.enable &&
+			p.piece.enable.start <= time &&
+			(!p.piece.enable.duration || p.piece.enable.start + p.piece.enable.duration >= time)
 	)
 
 	const previousPersistentState: TimelinePersistentStateExt = _previousPersistentState as TimelinePersistentStateExt
@@ -326,7 +330,6 @@ function findLayersToPersist(
 ): string[] {
 	const sortedPieces = pieces
 		.filter(piece => piece.piece.metaData?.sisyfosPersistMetaData)
-		.filter(piece => !isContinuedSelectionWithoutAudioToPersist(piece))
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)
 
 	if (sortedPieces.length === 0) {
@@ -358,16 +361,6 @@ function findLayersToPersist(
 	}
 
 	return Array.from(new Set(layersToPersist))
-}
-
-function isContinuedSelectionWithoutAudioToPersist(piece: IBlueprintResolvedPieceInstance<PieceMetaData>): boolean {
-	const isContinued = !!piece.infinite?.fromPreviousPart || !!piece.infinite?.fromPreviousPlayhead
-	const isSelection =
-		piece.piece.outputLayerId === SharedOutputLayers.SELECTED_ADLIB ||
-		piece.piece.sourceLayerId === SharedSourceLayers.SelectedServer ||
-		piece.piece.sourceLayerId === SharedSourceLayers.SelectedVoiceOver
-	// Retained selections are not on air; other continued pieces must still control persistence.
-	return isContinued && isSelection && !piece.piece.metaData?.sisyfosPersistMetaData?.wantsToPersistAudio
 }
 
 function doesMetaDataNotAcceptPersistAudioDeep(metaData: SisyfosPersistMetaData): boolean {

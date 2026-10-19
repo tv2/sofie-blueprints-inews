@@ -202,8 +202,6 @@ export interface ActionExecutionSettings<
 
 interface ServerActionSettings {
 	defaultTriggerMode: ServerSelectMode
-	/** Accept opted-in source audio on adlib clips; otherwise retain the `adLibPix && voLevels` rule. */
-	adlibClipsAcceptPersistAudio?: boolean
 }
 
 export async function executeAction<
@@ -418,19 +416,12 @@ export async function getPiecesToPreserve(
 	}
 
 	return context.getPieceInstances('next').then(pieceInstances => {
-		return (
-			pieceInstances
-				.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ignoreLayers.includes(p.piece.sourceLayerId))
-				.filter(p => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
-				.map<IBlueprintPiece<PieceMetaData>>(p => p.piece)
-				.map(p => sanitizePieceStart(p))
-				.map(p => sanitizePieceId(p as IBlueprintPieceDB<PieceMetaData>))
-				// These selections are retained for recall, not taken on air in the queued part.
-				.map(p => ({
-					...p,
-					metaData: p.metaData ? _.omit(p.metaData, 'sisyfosPersistMetaData') : undefined
-				}))
-		)
+		return pieceInstances
+			.filter(p => adlibLayers.includes(p.piece.sourceLayerId) && !ignoreLayers.includes(p.piece.sourceLayerId))
+			.filter(p => !p.infinite?.fromPreviousPart && !p.infinite?.fromPreviousPlayhead)
+			.map<IBlueprintPiece<PieceMetaData>>(p => p.piece)
+			.map(p => sanitizePieceStart(p))
+			.map(p => sanitizePieceId(p as IBlueprintPieceDB<PieceMetaData>))
 	})
 }
 
@@ -474,8 +465,7 @@ async function executeActionSelectServerClip<
 			session: sessionToContinue ?? externalId,
 			adLibPix: userData.adLibPix,
 			lastServerPosition: await getServerPosition(context),
-			actionTriggerMode: triggerMode ?? settings.serverActionSettings.defaultTriggerMode,
-			acceptPersistAudio: settings.serverActionSettings.adlibClipsAcceptPersistAudio ? true : undefined
+			actionTriggerMode: triggerMode ?? settings.serverActionSettings.defaultTriggerMode
 		},
 		{
 			SourceLayer: {
@@ -2033,7 +2023,7 @@ async function createFadeSisyfosLevelsMetaData(context: ITV2ActionExecutionConte
 		.filter(piece => piece.piece.name !== FADE_SISYFOS_LEVELS_PIECE_NAME)
 		.sort((a, b) => b.resolvedStart - a.resolvedStart)[0]
 
-	const latestPieceMetaData = latestPiece?.piece.metaData
+	const latestPieceMetaData = latestPiece.piece.metaData
 
 	if (!latestPieceMetaData || !latestPieceMetaData.sisyfosPersistMetaData) {
 		return emptySisyfosMetaData
