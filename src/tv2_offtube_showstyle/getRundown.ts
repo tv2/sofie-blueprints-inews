@@ -20,7 +20,6 @@ import {
 	ActionCutSourceToBox,
 	ActionCutToCamera,
 	ActionCutToRemote,
-	ActionFadeDownPersistedAudioLevels,
 	ActionRecallLastDVE,
 	ActionRecallLastLive,
 	ActionSelectDVELayout,
@@ -575,23 +574,6 @@ function getGlobalAdlibActionsOfftube(
 	}
 
 	blueprintActions.push(makeCommentatorSelectJingleAction())
-
-	const fadeDownPersistedAudioLevelsUserData: ActionFadeDownPersistedAudioLevels = {
-		type: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS
-	}
-	blueprintActions.push({
-		externalId: generateExternalId(_context, fadeDownPersistedAudioLevelsUserData),
-		actionId: AdlibActionType.FADE_DOWN_PERSISTED_AUDIO_LEVELS,
-		userData: fadeDownPersistedAudioLevelsUserData,
-		userDataManifest: {},
-		display: {
-			_rank: globalRank++,
-			label: t('Fade down persisted audio levels'),
-			sourceLayerId: SharedSourceLayers.PgmSisyfosAdlibs,
-			outputLayerId: SharedOutputLayers.SEC,
-			tags: [AdlibTags.ADLIB_FADE_DOWN_PERSISTED_AUDIO_LEVELS]
-		}
-	})
 
 	return blueprintActions
 }
