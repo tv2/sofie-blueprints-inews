@@ -8,6 +8,7 @@ const blankShowStyleConfig: OfftubeShowStyleConfig = {
 	GfxDesignTemplates: [],
 	WipesConfig: [],
 	BreakerConfig: [],
+	UnderlyingTransitions: [],
 	DefaultTemplateDuration: 4,
 	LYDConfig: [],
 	CasparCGLoadingClip: '',

@@ -1,6 +1,110 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
 import { DEFAULT_GRAPHICS, getGraphicsSetupsEntries } from 'tv2-common'
 
+export const underlyingTransitionsManifest: ConfigManifestEntry = {
+	id: 'UnderlyingTransitions',
+	name: 'Underlying transitions',
+	description:
+		'Reusable QBox transitions underneath breakers. Select Mix or Dot wipe. Dot-only columns are ignored for Mix. ATEM numeric wipe controls use raw units (0 to 10000).',
+	type: ConfigManifestEntryType.TABLE,
+	required: false,
+	defaultVal: [],
+	columns: [
+		{
+			id: 'Name',
+			name: 'Name',
+			description: 'Unique transition name, referenced by Breaker Configuration (case-insensitive).',
+			type: ConfigManifestEntryType.STRING,
+			required: true,
+			defaultVal: '',
+			rank: 0
+		},
+		{
+			id: 'Type',
+			name: 'Type',
+			description: 'Mix is a dissolve. Dot wipe uses the ATEM Circle Iris pattern.',
+			type: ConfigManifestEntryType.SELECT,
+			options: ['Mix', 'Dot wipe'],
+			multiple: false,
+			required: true,
+			defaultVal: 'Mix',
+			rank: 1
+		},
+		{
+			id: 'BorderWidth',
+			name: 'Dot: border width',
+			description: 'ATEM units, 0 to 10000. Zero disables the border.',
+			type: ConfigManifestEntryType.INT,
+			required: false,
+			defaultVal: 0,
+			rank: 2
+		},
+		{
+			id: 'BorderInput',
+			name: 'Dot: border source',
+			description: 'ATEM source ID, 0 to 65535. Use a source available on the mixer; 0 is black.',
+			type: ConfigManifestEntryType.INT,
+			required: false,
+			defaultVal: 0,
+			rank: 3
+		},
+		{
+			id: 'Symmetry',
+			name: 'Dot: symmetry',
+			description: 'ATEM units, 0 to 10000. Default 5000.',
+			type: ConfigManifestEntryType.INT,
+			required: false,
+			defaultVal: 5000,
+			rank: 4
+		},
+		{
+			id: 'BorderSoftness',
+			name: 'Dot: softness',
+			description: 'ATEM wipe border softness, 0 to 10000. Zero is a hard edge.',
+			type: ConfigManifestEntryType.INT,
+			required: false,
+			defaultVal: 0,
+			rank: 5
+		},
+		{
+			id: 'XPosition',
+			name: 'Dot: X position',
+			description: 'ATEM units, 0 to 10000. Centre is 5000.',
+			type: ConfigManifestEntryType.INT,
+			required: false,
+			defaultVal: 5000,
+			rank: 6
+		},
+		{
+			id: 'YPosition',
+			name: 'Dot: Y position',
+			description: 'ATEM units, 0 to 10000. Centre is 5000.',
+			type: ConfigManifestEntryType.INT,
+			required: false,
+			defaultVal: 5000,
+			rank: 7
+		},
+		{
+			id: 'ReverseDirection',
+			name: 'Dot: reverse',
+			description: 'Reverse the wipe direction.',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: false,
+			defaultVal: false,
+			rank: 8
+		},
+		{
+			id: 'FlipFlop',
+			name: 'Dot: flip-flop',
+			description: 'Alternate wipe direction on successive transitions; intentionally uses mixer history.',
+			type: ConfigManifestEntryType.BOOLEAN,
+			required: false,
+			defaultVal: false,
+			rank: 9
+		}
+	]
+}
+
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
 	name: 'DVE Layouts',
@@ -183,6 +287,7 @@ export const gfxDesignTemplates: ConfigManifestEntry[] = [
 ]
 
 export const showStyleConfigManifest: ConfigManifestEntry[] = [
+	underlyingTransitionsManifest,
 	{
 		id: 'MakeAdlibsForFulls',
 		name: 'Make Adlibs for FULL graphics',
@@ -454,33 +559,46 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				rank: 6
 			},
 			{
-				id: 'UnderlyingMixStartFrame',
-				name: 'Underlying mix start frame',
+				id: 'UnderlyingTransition',
+				name: 'Underlying transition name',
 				description:
-					'Optional. Frame 0 is the first frame of the breaker. Leave blank to use Duration minus Alpha at End. Only used when Underlying mix is enabled.',
-				type: ConfigManifestEntryType.STRING,
+					'Select a named preset from Underlying transitions. Only used when Underlying transition is enabled.',
+				type: ConfigManifestEntryType.SELECT_FROM_COLUMN,
+				tableId: 'UnderlyingTransitions',
+				columnId: 'Name',
+				multiple: false,
 				required: false,
 				defaultVal: '',
 				rank: 7
 			},
 			{
-				id: 'UnderlyingMixDuration',
-				name: 'Underlying mix duration (frames)',
+				id: 'UnderlyingTransitionStartFrame',
+				name: 'Underlying transition start frame',
 				description:
-					'Optional. Leave blank for a four-frame mix. Enter 1 to 255 frames. Only used when Underlying mix is enabled.',
+					'Optional whole frames from the first frame of this breaker (frame 0). Blank uses the breaker Duration minus Alpha at End. Only used when Underlying transition is enabled.',
 				type: ConfigManifestEntryType.STRING,
 				required: false,
 				defaultVal: '',
 				rank: 8
 			},
 			{
-				id: 'MixUnderBreaker',
-				name: 'Underlying mix',
-				description: 'QBox transitions only: dissolve between sources underneath this breaker instead of cutting.',
+				id: 'UnderlyingTransitionDuration',
+				name: 'Underlying transition duration (frames)',
+				description:
+					'Optional whole frames: 1 to 255 for Mix, 1 to 250 for Dot wipe. Blank uses 4 frames. Only used when Underlying transition is enabled.',
+				type: ConfigManifestEntryType.STRING,
+				required: false,
+				defaultVal: '',
+				rank: 9
+			},
+			{
+				id: 'EnableUnderlyingTransition',
+				name: 'Underlying transition',
+				description: 'QBox only: apply the selected underlying transition instead of cutting underneath this breaker.',
 				type: ConfigManifestEntryType.BOOLEAN,
 				required: false,
 				defaultVal: false,
-				rank: 9
+				rank: 10
 			}
 		]
 	},

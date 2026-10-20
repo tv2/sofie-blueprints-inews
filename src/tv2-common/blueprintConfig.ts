@@ -13,9 +13,24 @@ export interface TableConfigItemBreakers {
 	EndAlpha: number
 	Autonext: boolean
 	LoadFirstFrame: boolean
-	MixUnderBreaker?: boolean
-	UnderlyingMixStartFrame?: string | number
-	UnderlyingMixDuration?: string | number
+	EnableUnderlyingTransition?: boolean
+	UnderlyingTransition?: string | ConfigManifestSelectValue
+	UnderlyingTransitionStartFrame?: string | number
+	UnderlyingTransitionDuration?: string | number
+}
+
+export interface TableConfigItemUnderlyingTransition {
+	_id?: string
+	Name: string
+	Type: 'Mix' | 'Dot wipe'
+	BorderWidth?: number
+	BorderInput?: number
+	Symmetry?: number
+	BorderSoftness?: number
+	XPosition?: number
+	YPosition?: number
+	ReverseDirection?: boolean
+	FlipFlop?: boolean
 }
 
 export interface TableConfigItemGfxTemplate {
@@ -162,6 +177,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	DefaultTemplateDuration: number
 	CasparCGLoadingClip: string
 	BreakerConfig: TableConfigItemBreakers[]
+	UnderlyingTransitions?: TableConfigItemUnderlyingTransition[]
 	DVEStyles: DVEConfigInput[]
 	GFXTemplates: TableConfigItemGfxTemplate[]
 	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]

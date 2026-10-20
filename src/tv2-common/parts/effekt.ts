@@ -19,6 +19,7 @@ import {
 	PartDefinition,
 	PieceMetaData,
 	TableConfigItemBreakers,
+	TableConfigItemUnderlyingTransition,
 	TimeFromFrames,
 	TimelineBlueprintExt,
 	TV2BlueprintConfigBase,
@@ -39,7 +40,7 @@ export function CreateEffektForPartBase(
 		casparLayer: string
 		sisyfosLayer: string
 	},
-	allowUnderlyingMix: boolean = false
+	allowUnderlyingTransition: boolean = false
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | {} {
 	const effekt = partDefinition.effekt
 	const transition = partDefinition.transition
@@ -53,7 +54,7 @@ export function CreateEffektForPartBase(
 			partDefinition.externalId,
 			layers,
 			`EFFEKT ${effekt}`,
-			allowUnderlyingMix
+			allowUnderlyingTransition
 		)
 
 		return ret ?? {}
@@ -96,7 +97,7 @@ export function CreateEffektForPartInner<
 		sisyfosLayer: string
 	},
 	label: string,
-	allowUnderlyingMix: boolean = false
+	allowUnderlyingTransition: boolean = false
 ): Pick<IBlueprintPart, 'autoNext' | 'inTransition'> | false {
 	if (!config.showStyle.BreakerConfig) {
 		context.notifyUserWarning(`Jingles have not been configured`)
@@ -121,11 +122,16 @@ export function CreateEffektForPartInner<
 		return false
 	}
 
-	const underlyingMix =
-		allowUnderlyingMix && effektConfig.MixUnderBreaker
-			? getUnderlyingMix(context, effektConfig, config.studio.CasparPrerollDuration)
+	const underlyingTransition =
+		allowUnderlyingTransition && effektConfig.EnableUnderlyingTransition
+			? getUnderlyingTransition(
+					context,
+					effektConfig,
+					config.showStyle.UnderlyingTransitions,
+					config.studio.CasparPrerollDuration
+			  )
 			: undefined
-	if (underlyingMix === false) {
+	if (underlyingTransition === false) {
 		return false
 	}
 
@@ -139,8 +145,17 @@ export function CreateEffektForPartInner<
 		sourceLayerId: layers.sourceLayer,
 		lifespan: PieceLifespan.WithinPart,
 		pieceType: IBlueprintPieceType.InTransition,
-		...(underlyingMix
-			? { metaData: { underlyingMix: { breaker: effektConfig.BreakerName, durationFrames: underlyingMix.duration } } }
+		...(underlyingTransition
+			? {
+					metaData: {
+						underlyingTransition: {
+							breaker: effektConfig.BreakerName,
+							durationFrames: underlyingTransition.duration,
+							style: underlyingTransition.style,
+							settings: underlyingTransition.settings
+						}
+					}
+			  }
 			: {}),
 		content: literal<WithTimeline<VTContent>>({
 			fileName,
@@ -190,17 +205,17 @@ export function CreateEffektForPartInner<
 
 	return {
 		inTransition: {
-			blockTakeDuration: underlyingMix
+			blockTakeDuration: underlyingTransition
 				? Math.max(
 						TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
-						underlyingMix.end
+						underlyingTransition.end
 				  )
 				: TimeFromFrames(Number(effektConfig.Duration)) + config.studio.CasparPrerollDuration,
-			previousPartKeepaliveDuration: underlyingMix
-				? underlyingMix.end
+			previousPartKeepaliveDuration: underlyingTransition
+				? underlyingTransition.end
 				: TimeFromFrames(Number(effektConfig.StartAlpha)) + config.studio.CasparPrerollDuration,
-			partContentDelayDuration: underlyingMix
-				? underlyingMix.start
+			partContentDelayDuration: underlyingTransition
+				? underlyingTransition.start
 				: TimeFromFrames(Number(effektConfig.Duration)) -
 				  TimeFromFrames(Number(effektConfig.EndAlpha)) +
 				  config.studio.CasparPrerollDuration
@@ -209,37 +224,122 @@ export function CreateEffektForPartInner<
 	}
 }
 
-function getUnderlyingMix(
+function getUnderlyingTransition(
 	context: IShowStyleUserContext,
 	breaker: TableConfigItemBreakers,
+	presets: TableConfigItemUnderlyingTransition[] | undefined,
 	preroll: number
-): { start: number; end: number; duration: number } | false {
+):
+	| {
+			start: number
+			end: number
+			duration: number
+			style: TSR.AtemTransitionStyle.MIX | TSR.AtemTransitionStyle.WIPE
+			settings: TSR.AtemTransitionSettings
+	  }
+	| false {
+	const reference = breaker.UnderlyingTransition
+	const label = typeof reference === 'string' ? reference : reference?.label
+	const selectedName = typeof label === 'string' ? label.trim() : ''
+	const selectedId = typeof reference === 'object' && reference !== null ? reference.value : undefined
+	const matchesById = selectedId ? (presets ?? []).filter(candidate => candidate._id === selectedId) : []
+	const matches = matchesById.length
+		? matchesById
+		: (presets ?? []).filter(
+				candidate =>
+					typeof candidate.Name === 'string' && candidate.Name.trim().toUpperCase() === selectedName.toUpperCase()
+		  )
+	if (
+		matches.length !== 1 ||
+		typeof matches[0].Name !== 'string' ||
+		!matches[0].Name.trim() ||
+		(presets ?? []).filter(
+			candidate =>
+				typeof candidate.Name === 'string' &&
+				candidate.Name.trim().toUpperCase() === matches[0].Name.trim().toUpperCase()
+		).length !== 1
+	) {
+		context.notifyUserWarning(
+			`Invalid underlying transition for breaker ${
+				breaker.BreakerName
+			}: select a unique name from Underlying transitions (selected "${selectedName || selectedId || ''}")`
+		)
+		return false
+	}
+	const preset = matches[0]
+	const name = preset.Name.trim()
+	if (preset.Type !== 'Mix' && preset.Type !== 'Dot wipe') {
+		context.notifyUserWarning(
+			`Invalid underlying transition for breaker ${breaker.BreakerName}: "${name}" must use Mix or Dot wipe`
+		)
+		return false
+	}
 	const duration = optionalFrameValue(breaker.Duration, NaN)
 	const alphaStart = optionalFrameValue(breaker.StartAlpha, NaN)
 	const alphaEnd = optionalFrameValue(breaker.EndAlpha, NaN)
-	const startFrame = optionalFrameValue(breaker.UnderlyingMixStartFrame, duration - alphaEnd)
-	const mixDuration = optionalFrameValue(breaker.UnderlyingMixDuration, 4)
+	const startFrame = optionalFrameValue(breaker.UnderlyingTransitionStartFrame, duration - alphaEnd)
+	const transitionDuration = optionalFrameValue(breaker.UnderlyingTransitionDuration, 4)
+	const maxDuration = preset.Type === 'Dot wipe' ? 250 : 255
 	if (
-		![duration, alphaStart, alphaEnd, startFrame, mixDuration].every(Number.isSafeInteger) ||
+		![duration, alphaStart, alphaEnd, startFrame, transitionDuration].every(Number.isSafeInteger) ||
 		duration <= 0 ||
 		alphaStart < 0 ||
 		alphaEnd < 0 ||
 		alphaStart + alphaEnd > duration ||
 		startFrame < 0 ||
 		startFrame > duration ||
-		mixDuration < 1 ||
-		mixDuration > 255 ||
+		transitionDuration < 1 ||
+		transitionDuration > maxDuration ||
 		!Number.isFinite(preroll) ||
 		preroll < 0
 	) {
 		context.notifyUserWarning(
-			`Invalid underlying mix for breaker ${breaker.BreakerName}: check duration/alpha timings, start frame (0 to Duration) and mix duration (1 to 255 frames)`
+			`Invalid underlying transition for breaker ${breaker.BreakerName}: check duration/alpha timings, start frame (0 to Duration) and transition duration (1 to ${maxDuration} frames) for "${name}"`
 		)
 		return false
 	}
 
+	let settings: TSR.AtemTransitionSettings = MixTransitionSettings(transitionDuration)
+	if (preset.Type === 'Dot wipe') {
+		const wipe = {
+			rate: transitionDuration,
+			// ATEM Pattern.CircleIris. The installed TSR types expose only numeric pattern IDs.
+			pattern: 7,
+			borderWidth: preset.BorderWidth === undefined ? 0 : preset.BorderWidth,
+			borderInput: preset.BorderInput === undefined ? 0 : preset.BorderInput,
+			symmetry: preset.Symmetry === undefined ? 5000 : preset.Symmetry,
+			borderSoftness: preset.BorderSoftness === undefined ? 0 : preset.BorderSoftness,
+			xPosition: preset.XPosition === undefined ? 5000 : preset.XPosition,
+			yPosition: preset.YPosition === undefined ? 5000 : preset.YPosition,
+			reverseDirection: preset.ReverseDirection === undefined ? false : preset.ReverseDirection,
+			flipFlop: preset.FlipFlop === undefined ? false : preset.FlipFlop
+		}
+		if (
+			![wipe.borderWidth, wipe.symmetry, wipe.borderSoftness, wipe.xPosition, wipe.yPosition].every(
+				value => Number.isSafeInteger(value) && value >= 0 && value <= 10000
+			) ||
+			!Number.isSafeInteger(wipe.borderInput) ||
+			wipe.borderInput < 0 ||
+			wipe.borderInput > 65535 ||
+			typeof wipe.reverseDirection !== 'boolean' ||
+			typeof wipe.flipFlop !== 'boolean'
+		) {
+			context.notifyUserWarning(
+				`Invalid underlying transition for breaker ${breaker.BreakerName}: "${name}" requires whole-number dot controls (0 to 10000), an ATEM border source ID (0 to 65535), and boolean reverse/flip-flop values`
+			)
+			return false
+		}
+		settings = { wipe }
+	}
+
 	const start = TimeFromFrames(startFrame) + preroll
-	return { start, end: start + TimeFromFrames(mixDuration), duration: mixDuration }
+	return {
+		start,
+		end: start + TimeFromFrames(transitionDuration),
+		duration: transitionDuration,
+		style: preset.Type === 'Mix' ? TSR.AtemTransitionStyle.MIX : TSR.AtemTransitionStyle.WIPE,
+		settings
+	}
 }
 
 function optionalFrameValue(value: unknown, fallback: number): number {
@@ -249,12 +349,12 @@ function optionalFrameValue(value: unknown, fallback: number): number {
 	return typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value.trim())) ? Number(value) : NaN
 }
 
-export function ApplyUnderlyingMixToPieces(pieces: IBlueprintPiece[], atemLayer: string): void {
-	const duration = pieces
+export function ApplyUnderlyingTransitionToPieces(pieces: IBlueprintPiece[], atemLayer: string): void {
+	const transition = pieces
 		.filter(p => p.pieceType === IBlueprintPieceType.InTransition)
-		.map(p => (p.metaData as PieceMetaData | undefined)?.underlyingMix?.durationFrames)
+		.map(p => (p.metaData as PieceMetaData | undefined)?.underlyingTransition)
 		.find(value => value !== undefined)
-	if (duration === undefined) {
+	if (transition === undefined) {
 		return
 	}
 
@@ -269,8 +369,11 @@ export function ApplyUnderlyingMixToPieces(pieces: IBlueprintPiece[], atemLayer:
 				obj.content.type === TSR.TimelineContentTypeAtem.ME &&
 				obj.content.me.input !== undefined
 			) {
-				obj.content.me.transition = TSR.AtemTransitionStyle.MIX
-				obj.content.me.transitionSettings = MixTransitionSettings(duration)
+				obj.content.me.transition = transition.style
+				obj.content.me.transitionSettings = {
+					...(transition.settings.mix ? { mix: { ...transition.settings.mix } } : {}),
+					...(transition.settings.wipe ? { wipe: { ...transition.settings.wipe } } : {})
+				}
 			}
 		}
 	}
