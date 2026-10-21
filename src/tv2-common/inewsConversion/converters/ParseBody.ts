@@ -361,10 +361,30 @@ export function ParseBody(
 		partDefinition.cues = partDefinition.cues.filter(c => c.type !== CueType.UNKNOWN)
 	})
 
-	definitions[0]?.cues.push(...parseLayoutToCueDefinitions(fields, config))
+	const layoutDefinition = definitions.find(part => !isAdlibOnlyDefinition(part))
+	for (const part of definitions) {
+		if (isAdlibOnlyDefinition(part)) {
+			layoutDefinition?.cues.push(...part.cues.filter(cue => cue.type !== CueType.AdLib))
+			part.cues = part.cues.filter(cue => cue.type === CueType.AdLib)
+		}
+	}
+	layoutDefinition?.cues.push(...parseLayoutToCueDefinitions(fields, config))
 	definitions = stripRedundantCuesWhenLayoutCueIsPresent(definitions)
 
 	return PostProcessDefinitions(definitions, segmentId)
+}
+
+function isAdlibOnlyDefinition(part: PartDefinition): boolean {
+	return (
+		part.type === PartType.Unknown &&
+		part.script.trim().length === 0 &&
+		part.cues.some(cue => cue.type === CueType.AdLib) &&
+		part.cues.every(
+			cue =>
+				cue.type === CueType.AdLib ||
+				((cue.type === CueType.GraphicDesign || cue.type === CueType.BackgroundLoop) && cue.isFromLayout)
+		)
+	)
 }
 
 function parseLayoutToCueDefinitions(fields: INewsFields, config: TV2BlueprintConfig): CueDefinition[] {

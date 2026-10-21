@@ -17,6 +17,8 @@ Viz templates can be added in the blueprint settings of the Showstyle by adding 
 
 The `iNews Style Column` field in `GFX Design Templates` maps an iNews style value to a design template. Selecting a style overrides manual design cues in that story, but does not automatically load a background from the `Skema` table.
 
+For QBox, a story containing only `ADLIBPIX` cues and no script stays shelf-only even when a style is selected, including when ingest appends `DESIGN_LAYOUT=` and `DESIGN_BG=` cues. These style-derived cues do not create an extra on-air part. If the story also contains a non-adlib-only part, the style-derived cues are applied there instead. Explicit graphics cues such as `KG=` and `VIZ=` retain their normal behavior.
+
 For the QBox workflow, keep background loops in the story cues alongside style-column selection:
 
 ```text
