@@ -8,7 +8,7 @@ import { onTimelineGenerateAFVD } from '../tv2_afvd_studio/onTimelineGenerate'
 import { executeActionAFVD } from './actions'
 import { getRundown } from './getRundown'
 import { getSegment } from './getSegment'
-import { parseConfig } from './helpers/config'
+import { preprocessConfig } from './helpers/config'
 import { syncIngestUpdateToPartInstance } from './syncIngestUpdateToPartInstance'
 
 declare const VERSION: string // Injected by webpack
@@ -22,7 +22,7 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 		blueprintVersion: VERSION,
 		integrationVersion: VERSION_INTEGRATION,
 		TSRVersion: VERSION_TSR,
-		preprocessConfig: parseConfig,
+		preprocessConfig,
 
 		getShowStyleVariantId,
 		getRundown,

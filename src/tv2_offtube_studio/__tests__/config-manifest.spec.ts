@@ -1,4 +1,5 @@
 import { ConfigManifestEntryType } from 'blueprints-integration'
+import { SwitcherType } from 'tv2-common'
 import * as _ from 'underscore'
 import { CORE_INJECTED_KEYS, studioConfigManifest } from '../config-manifests'
 import { defaultDSKConfig, OfftubeStudioConfig } from '../helpers/config'
@@ -6,6 +7,7 @@ import { defaultDSKConfig, OfftubeStudioConfig } from '../helpers/config'
 const blankStudioConfig: OfftubeStudioConfig = {
 	SofieHostURL: '',
 
+	SwitcherType: SwitcherType.ATEM,
 	ClipMediaFlowId: '',
 	JingleMediaFlowId: '',
 	GraphicMediaFlowId: '',
@@ -29,10 +31,10 @@ const blankStudioConfig: OfftubeStudioConfig = {
 	StudioMics: [],
 	ABPlaybackDebugLogging: false,
 
-	AtemSource: {
+	SwitcherSource: {
 		DSK: defaultDSKConfig,
-		SplitArtF: 0,
-		SplitArtK: 0,
+		SplitArtFill: 0,
+		SplitArtKey: 0,
 		Default: 0,
 		Continuity: 0,
 		SplitBackground: 0,

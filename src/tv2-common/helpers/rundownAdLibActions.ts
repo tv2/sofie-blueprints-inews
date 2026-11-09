@@ -11,8 +11,8 @@ import {
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
 } from 'tv2-common'
-import { AdlibActionType, AdlibTags, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
-import { TV2BlueprintConfig } from '../blueprintConfig'
+import { AdlibActionType, AdlibTags, SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
+import { TV2ShowStyleConfig } from '../blueprintConfig'
 import { CreateJingleExpectedMedia } from '../content'
 import { t } from './translation'
 
@@ -50,7 +50,7 @@ export function GetTransitionAdLibActions<
 }
 
 function createActionsForTransition(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	transition: string,
 	rank: number
 ): IBlueprintActionManifest[] {
@@ -104,7 +104,7 @@ export function ParseTransitionString(transitionString: string): ActionTakeWithT
 }
 
 function makeTransitionOnTakeAction(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	variant: ActionTakeWithTransitionVariant,
 	transitionValues: TransitionValues
 ): IBlueprintActionManifest {
@@ -117,7 +117,7 @@ function makeTransitionOnTakeAction(
 }
 
 function makeTransitionOnNextTakeAction(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	variant: ActionTakeWithTransitionVariant,
 	transitionValues: TransitionValues
 ): IBlueprintActionManifest {
@@ -130,7 +130,7 @@ function makeTransitionOnNextTakeAction(
 }
 
 function makeTransitionAction(
-	config: TV2BlueprintConfig,
+	config: TV2ShowStyleConfig,
 	userData: ActionTakeWithTransition,
 	transitionValues: TransitionValues,
 	adlibTag: AdlibTags
@@ -146,8 +146,8 @@ function makeTransitionAction(
 		display: {
 			_rank: transitionValues.rank,
 			label: t(`${isEffekt ? 'EFFEKT ' : ''}${transitionValues.label}`),
-			sourceLayerId: SharedSourceLayers.PgmAdlibJingle,
-			outputLayerId: SharedOutputLayers.PGM,
+			sourceLayerId: SharedSourceLayer.PgmAdlibJingle,
+			outputLayerId: SharedOutputLayer.PGM,
 			tags: [AdlibTags.ADLIB_STATIC_BUTTON, adlibTag],
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],

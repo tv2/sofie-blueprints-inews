@@ -9,17 +9,17 @@ import {
 	PlaylistTimingType
 } from 'blueprints-integration'
 import { literal } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
-import { SyncIngestUpdateToPartInstanceContext } from '../../__mocks__/context'
-import { parseConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
+import { SharedOutputLayer } from 'tv2-constants'
+import { SyncIngestUpdateToPartInstanceContextMock } from '../../__mocks__/context'
+import { preprocessConfig as parseStudioConfig } from '../../tv2_afvd_studio/helpers/config'
 import mappingsDefaults from '../../tv2_afvd_studio/migrations/mappings-defaults'
-import { parseConfig as parseShowStyleConfig } from '../helpers/config'
+import { preprocessConfig as parseShowStyleConfig } from '../helpers/config'
 import { SourceLayer } from '../layers'
 import { syncIngestUpdateToPartInstance } from '../syncIngestUpdateToPartInstance'
 
 const RUNDOWN_EXTERNAL_ID = 'TEST.SOFIE.JEST'
 
-function makeMockContext(): SyncIngestUpdateToPartInstanceContext {
+function makeMockContext(): SyncIngestUpdateToPartInstanceContextMock {
 	const rundown = literal<IBlueprintRundownDB>({
 		externalId: RUNDOWN_EXTERNAL_ID,
 		name: RUNDOWN_EXTERNAL_ID,
@@ -29,7 +29,7 @@ function makeMockContext(): SyncIngestUpdateToPartInstanceContext {
 			type: PlaylistTimingType.None
 		}
 	})
-	return new SyncIngestUpdateToPartInstanceContext(
+	return new SyncIngestUpdateToPartInstanceContextMock(
 		'test',
 		mappingsDefaults,
 		parseStudioConfig,
@@ -75,7 +75,7 @@ function makeSoundBed(
 			name,
 			lifespan: PieceLifespan.OutOnShowStyleEnd,
 			sourceLayerId: SourceLayer.PgmAudioBed,
-			outputLayerId: SharedOutputLayers.SEC,
+			outputLayerId: SharedOutputLayer.SEC,
 			content: {
 				timelineObjects: []
 			}

@@ -3,7 +3,7 @@ import {
 	BlueprintSyncIngestPartInstance,
 	ISyncIngestUpdateToPartInstanceContext
 } from 'blueprints-integration'
-import { SharedSourceLayers } from 'tv2-constants'
+import { SharedSourceLayer } from 'tv2-constants'
 import * as _ from 'underscore'
 import { stopOrReplaceEditablePieces, updateAdLibInstances } from './index'
 import { updatePartProperties } from './partProperties'
@@ -20,15 +20,15 @@ export function syncIngestUpdateToPartInstanceBase(
 		playoutStatus === 'current'
 			? new Set([
 					...freelyEditableLayers,
-					SharedSourceLayers.PgmGraphicsHeadline,
-					SharedSourceLayers.PgmGraphicsIdent,
-					SharedSourceLayers.PgmGraphicsLower,
-					SharedSourceLayers.PgmGraphicsOverlay,
-					SharedSourceLayers.PgmGraphicsTLF,
-					SharedSourceLayers.PgmGraphicsTema,
-					SharedSourceLayers.PgmGraphicsTop,
-					SharedSourceLayers.PgmPilot,
-					SharedSourceLayers.PgmPilotOverlay
+					SharedSourceLayer.PgmGraphicsHeadline,
+					SharedSourceLayer.PgmGraphicsIdent,
+					SharedSourceLayer.PgmGraphicsLower,
+					SharedSourceLayer.PgmGraphicsOverlay,
+					SharedSourceLayer.PgmGraphicsTLF,
+					SharedSourceLayer.PgmGraphicsTema,
+					SharedSourceLayer.PgmGraphicsTop,
+					SharedSourceLayer.PgmPilot,
+					SharedSourceLayer.PgmPilotOverlay
 			  ])
 			: undefined
 

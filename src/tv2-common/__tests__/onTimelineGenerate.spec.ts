@@ -1,10 +1,15 @@
-import { IBlueprintPieceDB, IBlueprintResolvedPieceInstance, TSR } from 'blueprints-integration'
+import { IBlueprintPieceDB, IBlueprintResolvedPieceInstance, OnGenerateTimelineObj, TSR } from 'blueprints-integration'
+import { SwitcherMixEffectLLayer, TallyTags } from 'tv2-constants'
+import { makeMockGalleryContext } from '../../__mocks__/context'
 import { SisyfosLLAyer } from '../../tv2_afvd_studio/layers'
 import {
 	createSisyfosPersistedLevelsTimelineObject,
+	disablePilotWipeAfterJingle,
+	PartEndStateExt,
 	PieceMetaData,
 	SisyfosPersistMetaData
 } from '../onTimelineGenerate'
+import { SwitcherType, TransitionStyle } from '../videoSwitchers/types'
 
 const LAYER_THAT_WANTS_TO_BE_PERSISTED = 'layerThatWantsToBePersisted'
 const LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY: SisyfosPersistMetaData['sisyfosLayers'] = [
@@ -13,6 +18,52 @@ const LAYERS_THAT_WANTS_TO_BE_PERSISTED_ARRAY: SisyfosPersistMetaData['sisyfosLa
 
 // tslint:disable:no-object-literal-type-assertion
 describe('onTimelineGenerate', () => {
+	test.each([SwitcherType.ATEM, SwitcherType.TRICASTER])(
+		'suppresses a full-graphics wipe following a jingle through the %s adapter',
+		switcherType => {
+			const context = makeMockGalleryContext({ studioConfig: { SwitcherType: switcherType } })
+			const object = context.videoSwitcher.getMixEffectTimelineObject({
+				layer: SwitcherMixEffectLLayer.Program,
+				content: { input: 5, transition: TransitionStyle.WIPE_FOR_GFX }
+			})
+			const previous: PartEndStateExt = {
+				isJingle: true,
+				partInstanceId: 'previous',
+				mediaPlayerSessions: {},
+				sisyfosPersistMetaData: { sisyfosLayers: [] }
+			}
+			const pieces = [{ piece: { tags: [TallyTags.FULL_IS_LIVE] } } as IBlueprintResolvedPieceInstance]
+			disablePilotWipeAfterJingle([object as OnGenerateTimelineObj], previous, pieces, context.videoSwitcher)
+			expect(object.content).toMatchObject({
+				me:
+					switcherType === SwitcherType.ATEM
+						? { input: 5, transition: TSR.AtemTransitionStyle.CUT, transitionSettings: undefined }
+						: { programInput: 'input5', transitionEffect: 'cut' }
+			})
+		}
+	)
+
+	test('jingle wipe suppression leaves future lookahead transitions untouched', () => {
+		const context = makeMockGalleryContext()
+		const object = Object.assign(
+			context.videoSwitcher.getMixEffectTimelineObject({
+				layer: SwitcherMixEffectLLayer.Program,
+				content: { input: 5, transition: TransitionStyle.WIPE_FOR_GFX }
+			}),
+			{ isLookahead: true }
+		)
+		const previous: PartEndStateExt = {
+			isJingle: true,
+			partInstanceId: 'previous',
+			mediaPlayerSessions: {},
+			sisyfosPersistMetaData: { sisyfosLayers: [] }
+		}
+		const pieces = [{ piece: { tags: [TallyTags.FULL_IS_LIVE] } } as IBlueprintResolvedPieceInstance]
+		const before = JSON.stringify(object)
+		disablePilotWipeAfterJingle([object as OnGenerateTimelineObj], previous, pieces, context.videoSwitcher)
+		expect(JSON.stringify(object)).toBe(before)
+	})
+
 	describe('createSisyfosPersistedLevelsTimelineObject', () => {
 		it('has one layer to persist, piece accept persist - timelineObject with layer is added', () => {
 			const resolvedPieces: Array<IBlueprintResolvedPieceInstance<PieceMetaData>> = [

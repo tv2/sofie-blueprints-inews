@@ -1,4 +1,4 @@
-import { SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
+import { SharedOutputLayer, SharedSourceLayer } from 'tv2-constants'
 
 export enum SourceLayer {
 	// Pgm
@@ -16,16 +16,16 @@ export enum SourceLayer {
 // tslint:disable-next-line: variable-name
 export const OfftubeSourceLayer = {
 	...SourceLayer,
-	...SharedSourceLayers
+	...SharedSourceLayer
 }
-export type OfftubeSourceLayer = SourceLayer | SharedSourceLayers
+export type OfftubeSourceLayer = SourceLayer | SharedSourceLayer
 
 enum OutputLayers {}
 
 // tslint:disable-next-line: variable-name
 export const OfftubeOutputLayers = {
 	...OutputLayers,
-	...SharedOutputLayers
+	...SharedOutputLayer
 }
 
-export type OfftubeOutputLayers = OutputLayers | SharedOutputLayers
+export type OfftubeOutputLayers = OutputLayers | SharedOutputLayer

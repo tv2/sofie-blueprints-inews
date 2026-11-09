@@ -2,7 +2,6 @@ import {
 	BlueprintResultPart,
 	IBlueprintPart,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	VTContent,
 	WithTimeline
@@ -14,9 +13,10 @@ import {
 	MakeContentServer,
 	MakeContentServerSourceLayers,
 	PieceMetaData,
-	ServerPieceMetaData
+	ServerPieceMetaData,
+	ShowStyleContext
 } from 'tv2-common'
-import { AdlibActionType, PartType, SharedOutputLayers, TallyTags } from 'tv2-constants'
+import { AdlibActionType, PartType, SharedOutputLayer, TallyTags } from 'tv2-constants'
 import { ActionSelectServerClip } from '../actions'
 import { TV2BlueprintConfigBase, TV2StudioConfigBase } from '../blueprintConfig'
 import { getSourceDuration, GetVTContentProperties } from '../content'
@@ -52,31 +52,26 @@ export type ServerPartLayers = {
 		PgmServer: string
 		SelectedServer: string
 	}
-	AtemLLayer: {
-		MEPgm: string
-		ServerLookaheadAux?: string
-	}
 } & MakeContentServerSourceLayers
 
 export async function CreatePartServerBase<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
+	context: ShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps,
 	layers: ServerPartLayers
 ): Promise<{ part: BlueprintResultPart; file: string; duration: number; invalid?: true }> {
 	if (isVideoIdMissing(partDefinition)) {
-		context.notifyUserWarning('Video ID not set!')
+		context.core.notifyUserWarning('Video ID not set!')
 		return { part: CreatePartInvalid(partDefinition), file: '', duration: 0, invalid: true }
 	}
 
 	const file = getVideoId(partDefinition)
-	const mediaObjectDurationSec = await context.hackGetMediaObjectDuration(file)
+	const mediaObjectDurationSec = await context.core.hackGetMediaObjectDuration(file)
 	const mediaObjectDuration = mediaObjectDurationSec && mediaObjectDurationSec * 1000
-	const sourceDuration = getSourceDuration(mediaObjectDuration, config.studio.ServerPostrollDuration)
+	const sourceDuration = getSourceDuration(mediaObjectDuration, context.config.studio.ServerPostrollDuration)
 	const duration = getDuration(mediaObjectDuration, sourceDuration, partProps)
 	const sanitisedScript = getScriptWithoutLineBreaks(partDefinition)
 	const actualDuration = getActualDuration(duration, sanitisedScript, partProps)
@@ -95,24 +90,16 @@ export async function CreatePartServerBase<
 	const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 
 	const serverSelectionBlueprintPiece = getServerSelectionBlueprintPiece(
+		context,
 		partDefinition,
 		actualDuration,
 		partProps,
 		contentProps,
 		layers,
-		context,
-		config,
-		config.studio.CasparPrerollDuration
+		context.config.studio.CasparPrerollDuration
 	)
 
-	const pgmBlueprintPiece = getPgmBlueprintPiece(
-		partDefinition,
-		partProps,
-		contentProps,
-		layers,
-		config,
-		config.studio.CasparPrerollDuration
-	)
+	const pgmBlueprintPiece = getPgmBlueprintPiece(context, partDefinition, partProps, contentProps, layers)
 
 	pieces.push(serverSelectionBlueprintPiece)
 	pieces.push(pgmBlueprintPiece)
@@ -200,28 +187,20 @@ function getUserData(
 	}
 }
 
-function getContentServerElement<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
+function getContentServerElement(
+	context: ShowStyleContext,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
-	layers: ServerPartLayers,
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig
+	layers: ServerPartLayers
 ): WithTimeline<VTContent> {
 	return MakeContentServer(
 		context,
-		config,
 		{
 			Caspar: {
 				ClipPending: layers.Caspar.ClipPending
 			},
 			Sisyfos: {
 				ClipPending: layers.Sisyfos.ClipPending
-			},
-			ATEM: {
-				ServerLookaheadAux: layers.ATEM.ServerLookaheadAux
 			}
 		},
 		partProps,
@@ -229,27 +208,23 @@ function getContentServerElement<
 	)
 }
 
-function getServerSelectionBlueprintPiece<
-	StudioConfig extends TV2StudioConfigBase,
-	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
->(
+function getServerSelectionBlueprintPiece(
+	context: ShowStyleContext,
 	partDefinition: PartDefinition,
 	actualDuration: number,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
 	layers: ServerPartLayers,
-	context: IShowStyleUserContext,
-	config: ShowStyleConfig,
 	prerollDuration: number
 ): IBlueprintPiece<ServerPieceMetaData> {
 	const userDataElement = getUserData(partDefinition, contentProps.file, actualDuration, partProps)
-	const contentServerElement = getContentServerElement(partProps, contentProps, layers, context, config)
+	const contentServerElement = getContentServerElement(context, partProps, contentProps, layers)
 
 	return {
 		externalId: partDefinition.externalId,
 		name: contentProps.file,
 		enable: { start: 0 },
-		outputLayerId: SharedOutputLayers.SEC,
+		outputLayerId: SharedOutputLayer.SEC,
 		sourceLayerId: layers.SourceLayer.SelectedServer,
 		lifespan: PieceLifespan.OutOnSegmentEnd,
 		metaData: {
@@ -270,31 +245,30 @@ function getPgmBlueprintPiece<
 	StudioConfig extends TV2StudioConfigBase,
 	ShowStyleConfig extends TV2BlueprintConfigBase<StudioConfig>
 >(
+	context: ShowStyleContext<ShowStyleConfig>,
 	partDefinition: PartDefinition,
 	partProps: ServerPartProps,
 	contentProps: ServerContentProps,
-	layers: ServerPartLayers,
-	config: ShowStyleConfig,
-	prerollDuration: number
+	layers: ServerPartLayers
 ): IBlueprintPiece<PieceMetaData> {
 	return {
 		externalId: partDefinition.externalId,
 		name: contentProps.file,
 		enable: { start: 0 },
-		outputLayerId: SharedOutputLayers.PGM,
+		outputLayerId: SharedOutputLayer.PGM,
 		sourceLayerId: layers.SourceLayer.PgmServer,
 		lifespan: PieceLifespan.WithinPart,
 		metaData: {
 			mediaPlayerSessions: [contentProps.mediaPlayerSession]
 		},
 		content: {
-			...GetVTContentProperties(config, contentProps),
-			timelineObjects: CutToServer(contentProps.mediaPlayerSession, partDefinition, config, layers.AtemLLayer.MEPgm)
+			...GetVTContentProperties(context.config, contentProps),
+			timelineObjects: CutToServer(context, contentProps.mediaPlayerSession, partDefinition)
 		},
 		tags: [
 			GetTagForServer(partDefinition.segmentExternalId, contentProps.file, partProps.voLayer),
 			TallyTags.SERVER_IS_LIVE
 		],
-		prerollDuration
+		prerollDuration: context.config.studio.CasparPrerollDuration
 	}
 }

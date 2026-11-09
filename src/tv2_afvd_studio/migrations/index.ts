@@ -6,9 +6,10 @@ import {
 	MoveSourcesToTable,
 	PrefixEvsWithEvs,
 	RemoveConfig,
-	RenameStudioConfig,
+	renameStudioConfig,
 	SetConfigTo,
-	SetLayerNamesToDefaults
+	SetLayerNamesToDefaults,
+	videoSwitcherMigrations
 } from 'tv2-common'
 import { SharedGraphicLLayer } from 'tv2-constants'
 import {
@@ -147,18 +148,18 @@ export const studioMigrations: MigrationStepStudio[] = [
 	GetMappingDefaultMigrationStepForLayer('1.4.0', CasparLLayer.CasparPlayerClipPending, true),
 	GetMappingDefaultMigrationStepForLayer('1.4.5', CasparLLayer.CasparPlayerClipPending, true),
 
-	RenameStudioConfig('1.4.6', 'AFVD', 'MediaFlowId', 'ClipMediaFlowId'),
-	RenameStudioConfig('1.4.6', 'AFVD', 'NetworkBasePath', 'NetworkBasePathClip'),
-	RenameStudioConfig('1.4.6', 'AFVD', 'JingleBasePath', 'NetworkBasePathJingle'),
+	renameStudioConfig('1.4.6', 'AFVD', 'MediaFlowId', 'ClipMediaFlowId'),
+	renameStudioConfig('1.4.6', 'AFVD', 'NetworkBasePath', 'NetworkBasePathClip'),
+	renameStudioConfig('1.4.6', 'AFVD', 'JingleBasePath', 'NetworkBasePathJingle'),
 
-	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathGraphic', 'GraphicNetworkBasePath'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'PilotCutToMediaPlayer', 'VizPilotGraphics.CutToMediaPlayer'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'PilotKeepaliveDuration', 'VizPilotGraphics.KeepAliveDuration'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'PilotOutTransitionDuration', 'VizPilotGraphics.OutTransitionDuration'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'PilotPrerollDuration', 'VizPilotGraphics.PrerollDuration'),
-	RenameStudioConfig('1.5.0', 'AFVD', 'FullFrameGrafikBackground', 'VizPilotGraphics.FullGraphicBackground'),
+	renameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathJingle', 'JingleNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathClip', 'ClipNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'AFVD', 'NetworkBasePathGraphic', 'GraphicNetworkBasePath'),
+	renameStudioConfig('1.5.0', 'AFVD', 'PilotCutToMediaPlayer', 'VizPilotGraphics.CutToMediaPlayer'),
+	renameStudioConfig('1.5.0', 'AFVD', 'PilotKeepaliveDuration', 'VizPilotGraphics.KeepAliveDuration'),
+	renameStudioConfig('1.5.0', 'AFVD', 'PilotOutTransitionDuration', 'VizPilotGraphics.OutTransitionDuration'),
+	renameStudioConfig('1.5.0', 'AFVD', 'PilotPrerollDuration', 'VizPilotGraphics.PrerollDuration'),
+	renameStudioConfig('1.5.0', 'AFVD', 'FullFrameGrafikBackground', 'VizPilotGraphics.FullGraphicBackground'),
 
 	renameMapping('1.5.1', 'studio0_adlib_viz_cmd', 'studio0_adlib_graphic_cmd'),
 
@@ -181,13 +182,13 @@ export const studioMigrations: MigrationStepStudio[] = [
 	removeMapping('1.6.1', 'atem_dsk_graphics'),
 	removeMapping('1.6.1', 'atem_dsk_efect'),
 
-	RenameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'),
+	renameStudioConfig('1.6.2', 'AFVD', 'SourcesRM.KeepAudioInStudio', 'SourcesRM.WantsToPersistAudio'), // @todo: check what this does because it does not seem right
 	RemoveConfig('1.6.2', 'AFVD', 'SourcesSkype'),
 
-	RenameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
+	renameStudioConfig('1.7.4', 'AFVD', 'SourcesDelayedPlayback', 'SourcesReplay'),
 	addSourceToSourcesConfig('1.7.4', 'AFVD', 'SourcesReplay', {
 		SourceName: 'EPSIO',
-		AtemSource: 25,
+		SwitcherSource: 25,
 		SisyfosLayers: [SisyfosLLAyer.SisyfosSourceEpsio],
 		StudioMics: true
 	}),
@@ -200,6 +201,11 @@ export const studioMigrations: MigrationStepStudio[] = [
 	 * - Rename the GraphicLLayerPilotOverlay, because alphabetical order matters for deeply extending the Caspar Objects targeting the same channel:layer
 	 */
 	renameMapping('1.7.8', 'graphic_pilot_overlay', 'graphic_overlay_pilot'),
+
+	/**
+	 * 1.7.10: switcher-neutral configuration and DVE mappings.
+	 */
+	...videoSwitcherMigrations('1.7.10', 'AFVD'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

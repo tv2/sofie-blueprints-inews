@@ -3,22 +3,20 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPart,
-	IBlueprintPiece,
-	ISegmentUserContext
+	IBlueprintPiece
 } from 'blueprints-integration'
-import { AddScript, ApplyFullGraphicPropertiesToPart, PartDefinition, PartTime } from 'tv2-common'
-import { OfftubeShowstyleBlueprintConfig } from '../helpers/config'
+import { AddScript, applyFullGraphicPropertiesToPart, PartDefinition, PartTime, SegmentContext } from 'tv2-common'
+import { OfftubeBlueprintConfig } from '../helpers/config'
 import { OfftubeEvaluateCues } from '../helpers/EvaluateCues'
 import { OfftubeSourceLayer } from '../layers'
 
 export async function OfftubeCreatePartGrafik(
-	context: ISegmentUserContext,
-	config: OfftubeShowstyleBlueprintConfig,
+	context: SegmentContext<OfftubeBlueprintConfig>,
 	partDefinition: PartDefinition,
 	totalWords: number,
 	asAdlibs?: boolean
 ) {
-	const partTime = PartTime(config, partDefinition, totalWords)
+	const partTime = PartTime(context.config, partDefinition, totalWords)
 
 	const part: IBlueprintPart = {
 		externalId: partDefinition.externalId,
@@ -33,11 +31,10 @@ export async function OfftubeCreatePartGrafik(
 	const actions: IBlueprintActionManifest[] = []
 	const mediaSubscriptions: HackPartMediaObjectSubscription[] = []
 
-	ApplyFullGraphicPropertiesToPart(config, part)
+	applyFullGraphicPropertiesToPart(context.config, part)
 
 	await OfftubeEvaluateCues(
 		context,
-		config,
 		part,
 		pieces,
 		adLibPieces,

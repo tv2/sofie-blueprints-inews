@@ -1,6 +1,6 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from 'blueprints-integration'
 import { literal, PartDefinition } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { SharedOutputLayer } from 'tv2-constants'
 
 const PREVIEW_CHARACTERS = 30
 
@@ -21,7 +21,7 @@ export function AddScript(part: PartDefinition, pieces: IBlueprintPiece[], durat
 			enable: {
 				start: 0
 			},
-			outputLayerId: SharedOutputLayers.MANUS,
+			outputLayerId: SharedOutputLayer.MANUS,
 			sourceLayerId,
 			lifespan: PieceLifespan.WithinPart,
 			content: literal<WithTimeline<ScriptContent>>({

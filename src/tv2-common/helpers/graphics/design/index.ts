@@ -3,17 +3,22 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TSR,
 	WithTimeline
 } from 'blueprints-integration'
-import { CalculateTime, CueDefinitionGraphicDesign, getHtmlTemplateName, literal, TV2BlueprintConfig } from 'tv2-common'
+import {
+	CalculateTime,
+	CueDefinitionGraphicDesign,
+	getHtmlTemplateName,
+	literal,
+	ShowStyleContext,
+	TV2BlueprintConfig
+} from 'tv2-common'
 import { SharedGraphicLLayer, SharedOutputLayers, SharedSourceLayers } from 'tv2-constants'
 
 export function EvaluateDesignBase(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
+	context: ShowStyleContext,
 	pieces: IBlueprintPiece[],
 	adlibPieces: IBlueprintAdLibPiece[],
 	_actions: IBlueprintActionManifest[],
@@ -22,9 +27,10 @@ export function EvaluateDesignBase(
 	adlib?: boolean,
 	rank?: number
 ) {
+	const config = context.config
 	const start = (parsedCue.start ? CalculateTime(parsedCue.start) : 0) ?? 0
 	if (!parsedCue.design || !parsedCue.design.length) {
-		context.notifyUserWarning(`No valid design found for ${parsedCue.design}`)
+		context.core.notifyUserWarning(`No valid design found for ${parsedCue.design}`)
 		return
 	}
 
