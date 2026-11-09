@@ -8,7 +8,7 @@ import { onTimelineGenerateOfftube } from '../tv2_offtube_showstyle/onTimelineGe
 import { executeActionOfftube } from './actions'
 import { getRundown } from './getRundown'
 import { getSegment } from './getSegment'
-import { parseConfig } from './helpers/config'
+import { preprocessConfig } from './helpers/config'
 import { syncIngestUpdateToPartInstance } from './syncIngestUpdateToPartInstances'
 
 declare const VERSION: string // Injected by webpack
@@ -23,7 +23,7 @@ const manifest: ShowStyleBlueprintManifest = GetShowStyleManifestWithMixins(
 		integrationVersion: VERSION_INTEGRATION,
 		TSRVersion: VERSION_TSR,
 
-		preprocessConfig: parseConfig,
+		preprocessConfig,
 
 		getShowStyleVariantId,
 		getRundown,

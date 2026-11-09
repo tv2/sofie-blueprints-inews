@@ -4,7 +4,7 @@ import * as _ from 'underscore'
 import { studioConfigManifest } from './config-manifests'
 import { getBaseline } from './getBaseline'
 import { getShowStyleId } from './getShowStyleId'
-import { parseConfig } from './helpers/config'
+import { preprocessConfig } from './helpers/config'
 import { studioMigrations } from './migrations'
 
 declare const VERSION: string // Injected by webpack
@@ -19,7 +19,7 @@ const manifest: StudioBlueprintManifest = GetStudioManifestWithMixins(
 		integrationVersion: VERSION_INTEGRATION,
 		TSRVersion: VERSION_TSR,
 
-		preprocessConfig: parseConfig,
+		preprocessConfig,
 
 		studioConfigManifest,
 		studioMigrations,

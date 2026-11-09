@@ -18,8 +18,8 @@ describe('Offtube rundown baseline', () => {
 			studio: {
 				...defaultStudioConfig,
 				GraphicsType: 'HTML',
-				AtemSource: {
-					...defaultStudioConfig.AtemSource,
+				SwitcherSource: {
+					...defaultStudioConfig.SwitcherSource,
 					SplitBackground: 11,
 					Loop: 12
 				},
@@ -29,7 +29,7 @@ describe('Offtube rundown baseline', () => {
 			},
 			sources: { cameras: [], lives: [], feeds: [], replays: [] },
 			mediaPlayers: [],
-			dsk: defaultStudioConfig.AtemSource.DSK
+			dsk: defaultStudioConfig.SwitcherSource.DSK
 		}
 		jest.spyOn(context, 'getStudioConfig').mockReturnValue(config)
 		jest.spyOn(context, 'getShowStyleConfig').mockReturnValue({

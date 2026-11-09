@@ -15,9 +15,11 @@ import {
 	literal,
 	PartDefinitionUnknown,
 	PieceMetaData,
+	SegmentContextImpl,
 	TableConfigItemBreakers,
 	TableConfigItemUnderlyingTransition,
-	TimelineBlueprintExt
+	TimelineBlueprintExt,
+	TimelineContext
 } from 'tv2-common'
 import { CueType, PartType, SharedOutputLayers } from 'tv2-constants'
 import { makeMockAFVDContext, SegmentUserContext } from '../../__mocks__/context'
@@ -27,6 +29,7 @@ import { AtemLLayer } from '../../tv2_afvd_studio/layers'
 import { parseConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
 import { OfftubeAtemLLayer, OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../../tv2_offtube_studio/layers'
 import mappingsDefaults from '../../tv2_offtube_studio/migrations/mappings-defaults'
+import { QBOX_UNIFORM_CONFIG } from '../../tv2_offtube_studio/uniformConfig'
 import { showStyleConfigManifest, underlyingTransitionsManifest } from '../config-manifests'
 import { OfftubeEvaluateJingle } from '../cues/OfftubeJingle'
 import { getSegment } from '../getSegment'
@@ -161,7 +164,11 @@ describe('QBox underlying breaker mix', () => {
 			partContentDelayDuration: 920
 		})
 		const before = JSON.parse(JSON.stringify(parts[0].pieces))
-		ApplyUnderlyingTransitionToPieces(parts[0].pieces, OfftubeAtemLLayer.AtemMEClean)
+		ApplyUnderlyingTransitionToPieces(
+			parts[0].pieces,
+			new TimelineContext(context, QBOX_UNIFORM_CONFIG).videoSwitcher,
+			QBOX_UNIFORM_CONFIG.switcherLLayers.primaryMixEffect
+		)
 		expect(parts[0].pieces).toEqual(before)
 		expect(context.getNotes()).toEqual([])
 	})
@@ -509,8 +516,7 @@ describe('QBox underlying breaker mix', () => {
 		const incomingSession = getME(incoming).metaData!.mediaPlayerSession!
 		expect(incomingSession).not.toBe(outgoingSession)
 		const assignment = assignMediaPlayers(
-			context,
-			getConfig(context),
+			new TimelineContext(context, QBOX_UNIFORM_CONFIG),
 			timeline,
 			{ 1: [{ sessionId: outgoingSession, playerId: 1, lookahead: false }] },
 			resolved,
@@ -538,7 +544,8 @@ describe('QBox underlying breaker mix', () => {
 	})
 
 	it('is idempotent and does not change other MEs or delayed source pieces', async () => {
-		const { parts } = await getSegment(makeContext({ EnableUnderlyingTransition: true }), makeSegment('KAM 1 EFFEKT 1'))
+		const context = makeContext({ EnableUnderlyingTransition: true })
+		const { parts } = await getSegment(context, makeSegment('KAM 1 EFFEKT 1'))
 		const pieces = parts[0].pieces
 		const source = pieces.find(p => p.outputLayerId === SharedOutputLayers.PGM)!
 		const delayed: IBlueprintPiece = {
@@ -555,8 +562,16 @@ describe('QBox underlying breaker mix', () => {
 		}
 		pieces.push(delayed)
 		const before = JSON.parse(JSON.stringify(pieces))
-		ApplyUnderlyingTransitionToPieces(pieces, OfftubeAtemLLayer.AtemMEClean)
-		ApplyUnderlyingTransitionToPieces(pieces, OfftubeAtemLLayer.AtemMEClean)
+		ApplyUnderlyingTransitionToPieces(
+			pieces,
+			new TimelineContext(context, QBOX_UNIFORM_CONFIG).videoSwitcher,
+			QBOX_UNIFORM_CONFIG.switcherLLayers.primaryMixEffect
+		)
+		ApplyUnderlyingTransitionToPieces(
+			pieces,
+			new TimelineContext(context, QBOX_UNIFORM_CONFIG).videoSwitcher,
+			QBOX_UNIFORM_CONFIG.switcherLLayers.primaryMixEffect
+		)
 		expect(pieces).toEqual(before)
 		expect(getME(parts[0], OfftubeAtemLLayer.AtemMENext).content.me.transition).toBeUndefined()
 	})
@@ -637,10 +652,8 @@ describe('QBox underlying breaker mix', () => {
 			})
 			const pieces: Array<IBlueprintPiece<PieceMetaData>> = []
 			OfftubeEvaluateJingle(
-				context,
-				getConfig(context),
+				new SegmentContextImpl(context, QBOX_UNIFORM_CONFIG),
 				pieces,
-				[],
 				[],
 				{ type: CueType.Jingle, clip: '1', iNewsCommand: 'JINGLE 1' },
 				definition

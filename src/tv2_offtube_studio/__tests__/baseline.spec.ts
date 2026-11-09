@@ -20,7 +20,7 @@ function makeMockContext(config: IBlueprintConfig = {}, mappings: BlueprintMappi
 		SourcesRM: [],
 		SourcesFeed: [],
 		ABMediaPlayers: [],
-		AtemSource: { DSK: [] },
+		SwitcherSource: { DSK: [] },
 		GraphicsType: 'HTML',
 		IdleSource: 7,
 		IdleSisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo],

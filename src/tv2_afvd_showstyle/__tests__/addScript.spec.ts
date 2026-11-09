@@ -1,6 +1,6 @@
 import { IBlueprintPiece, PieceLifespan, ScriptContent, WithTimeline } from 'blueprints-integration'
 import { AddScript, literal, PartDefinitionKam } from 'tv2-common'
-import { PartType, SharedOutputLayers, SourceType } from 'tv2-constants'
+import { PartType, SharedOutputLayer, SourceType } from 'tv2-constants'
 import { SourceLayer } from '../layers'
 
 describe('addScript', () => {
@@ -32,7 +32,7 @@ describe('addScript', () => {
 				name: 'Kam 2',
 				lifespan: PieceLifespan.WithinPart,
 				sourceLayerId: SourceLayer.PgmCam,
-				outputLayerId: SharedOutputLayers.PGM,
+				outputLayerId: SharedOutputLayer.PGM,
 				content: {
 					timelineObjects: []
 				}
@@ -46,7 +46,7 @@ describe('addScript', () => {
 				enable: {
 					start: 0
 				},
-				outputLayerId: SharedOutputLayers.MANUS,
+				outputLayerId: SharedOutputLayer.MANUS,
 				sourceLayerId: SourceLayer.PgmScript,
 				lifespan: PieceLifespan.WithinPart,
 				content: literal<WithTimeline<ScriptContent>>({

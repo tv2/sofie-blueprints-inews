@@ -1,7 +1,11 @@
 import { TableConfigItemValue } from 'blueprints-integration'
-import { TableConfigItemDSK, TableConfigItemSourceMappingWithSisyfos } from 'tv2-common'
-import { DVEConfigInput } from './helpers'
-import { SourceInfo } from './sources'
+import {
+	DVEConfigInput,
+	SourceInfo,
+	SwitcherType,
+	TableConfigItemDSK,
+	TableConfigItemSourceMappingWithSisyfos
+} from 'tv2-common'
 
 export type MediaPlayerConfig = Array<{ id: string; val: string }>
 
@@ -81,6 +85,12 @@ export interface ConfigManifestSelectValue {
 	label: string
 }
 
+export interface ProcessedStudioConfig {
+	sources: SourceMapping
+	mediaPlayers: MediaPlayerConfig // Atem Input Ids
+	dsk: TableConfigItemDSK[]
+}
+
 export interface TV2StudioConfigBase {
 	MaximumPartDuration: number
 	DefaultPartDuration: number
@@ -119,10 +129,11 @@ export interface TV2StudioConfigBase {
 	DVEIgnoreStatus: boolean
 
 	ABPlaybackDebugLogging: boolean
-	AtemSource: {
+	SwitcherType: SwitcherType
+	SwitcherSource: {
 		Default: number
-		SplitArtF: number
-		SplitArtK: number
+		SplitArtFill: number
+		SplitArtKey: number
 		DSK: TableConfigItemDSK[]
 		Dip: number
 	}
@@ -196,4 +207,8 @@ export interface TV2BlueprintConfigBase<StudioConfig extends TV2StudioConfigBase
 	selectedGraphicsSetup: TableConfigGraphicsSetup
 }
 
-export type TV2BlueprintConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>
+export type TV2StudioConfig = TV2StudioBlueprintConfigBase<TV2StudioConfigBase>
+
+export type TV2ShowStyleConfig = TV2BlueprintConfigBase<TV2StudioConfigBase>
+
+export type TV2BlueprintConfig = TV2ShowStyleConfig

@@ -1,56 +1,56 @@
 import { IOutputLayer } from 'blueprints-integration'
 import { literal } from 'tv2-common'
-import { SharedOutputLayers } from 'tv2-constants'
+import { SharedOutputLayer } from 'tv2-constants'
 
 export default literal<IOutputLayer[]>([
 	{
-		_id: SharedOutputLayers.OVERLAY,
+		_id: SharedOutputLayer.OVERLAY,
 		name: 'OVERLAY',
 		isPGM: false,
 		_rank: 10,
 		isDefaultCollapsed: true
 	},
 	{
-		_id: SharedOutputLayers.JINGLE,
+		_id: SharedOutputLayer.JINGLE,
 		name: 'JINGLE',
 		isPGM: false,
 		_rank: 19
 	},
 	{
-		_id: SharedOutputLayers.PGM,
+		_id: SharedOutputLayer.PGM,
 		name: 'PGM',
 		isPGM: true,
 		_rank: 20,
 		isFlattened: true
 	},
 	{
-		_id: SharedOutputLayers.SELECTED_ADLIB,
+		_id: SharedOutputLayer.SELECTED_ADLIB,
 		name: 'ADLIB',
 		isPGM: false,
 		_rank: 30,
 		isDefaultCollapsed: true
 	},
 	{
-		_id: SharedOutputLayers.MUSIK,
+		_id: SharedOutputLayer.MUSIK,
 		name: 'MUSIK',
 		isPGM: false,
 		_rank: 22
 	},
 	{
-		_id: SharedOutputLayers.MANUS,
+		_id: SharedOutputLayer.MANUS,
 		name: 'MANUS',
 		isPGM: false,
 		_rank: 23
 	},
 	{
-		_id: SharedOutputLayers.SEC,
+		_id: SharedOutputLayer.SEC,
 		name: 'SEC',
 		isPGM: false,
 		_rank: 30,
 		isDefaultCollapsed: true
 	},
 	{
-		_id: SharedOutputLayers.AUX,
+		_id: SharedOutputLayer.AUX,
 		name: 'AUX',
 		isPGM: false,
 		_rank: 40,

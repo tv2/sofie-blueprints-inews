@@ -1,4 +1,5 @@
-import { IBlueprintAdLibPiece, IBlueprintPiece, IShowStyleUserContext, PieceLifespan } from 'blueprints-integration'
+import { IBlueprintAdLibPiece, IBlueprintPiece, PieceLifespan } from 'blueprints-integration'
+import { ShowStyleContext } from 'tv2-common'
 import _ = require('underscore')
 import { AdlibTags, GraphicEngine, SharedOutputLayers, SharedSourceLayers } from '../../../tv2-constants'
 import { TV2BlueprintConfig } from '../../blueprintConfig'
@@ -14,7 +15,7 @@ import { GetInternalGraphicContentVIZ } from './viz'
 export class InternalGraphic {
 	public mappedTemplate: string
 	private readonly config: TV2BlueprintConfig
-	private readonly context: IShowStyleUserContext
+	private readonly context: ShowStyleContext
 	private readonly parsedCue: CueDefinitionGraphic<GraphicInternal>
 	private readonly partDefinition?: PartDefinition
 	private readonly engine: GraphicEngine
@@ -26,12 +27,12 @@ export class InternalGraphic {
 	private readonly content: IBlueprintPiece['content']
 
 	public constructor(
-		config: TV2BlueprintConfig,
-		context: IShowStyleUserContext,
+		context: ShowStyleContext,
 		parsedCue: CueDefinitionGraphic<GraphicInternal>,
 		partId?: string,
 		partDefinition?: PartDefinition
 	) {
+		const config = context.config
 		const mappedTemplate = GetFullGraphicTemplateNameFromCue(config, parsedCue)
 
 		const sourceLayerId = GetSourceLayerForGraphic(config, mappedTemplate)
@@ -120,7 +121,7 @@ export class InternalGraphic {
 
 	private getInternalGraphicContent(): IBlueprintPiece['content'] {
 		return this.config.studio.GraphicsType === 'HTML' && !IsTargetingWall(this.engine)
-			? GetInternalGraphicContentCaspar(this.config, this.engine, this.parsedCue, this.mappedTemplate)
-			: GetInternalGraphicContentVIZ(this.config, this.context, this.engine, this.parsedCue, this.mappedTemplate)
+			? GetInternalGraphicContentCaspar(this.context, this.engine, this.parsedCue, this.mappedTemplate)
+			: GetInternalGraphicContentVIZ(this.context, this.engine, this.parsedCue, this.mappedTemplate)
 	}
 }

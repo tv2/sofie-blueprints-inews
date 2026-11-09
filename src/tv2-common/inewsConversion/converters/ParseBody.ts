@@ -1,8 +1,8 @@
-import { TSR } from 'blueprints-integration'
 import {
-	AtemTransitionStyleFromString,
 	INewsFields,
+	parseTransitionStyle,
 	PostProcessDefinitions,
+	TransitionStyle,
 	TV2BlueprintConfig,
 	UnparsedCue
 } from 'tv2-common'
@@ -10,7 +10,7 @@ import { CueType, PartType, SourceType } from 'tv2-constants'
 import { createCueDefinitionGraphicDesign, CueDefinition, ParseCue, UnpairedPilotToGraphic } from './ParseCue'
 
 export interface PartTransition {
-	style: TSR.AtemTransitionStyle
+	style: TransitionStyle
 	duration?: number
 }
 
@@ -599,7 +599,7 @@ export function getTransitionProperties(typeStr: string): Pick<PartdefinitionTyp
 
 	if (transitionMatch) {
 		definition.transition = {
-			style: AtemTransitionStyleFromString(transitionMatch[1].toUpperCase()),
+			style: parseTransitionStyle(transitionMatch[1].toUpperCase()),
 			duration: transitionMatch[2] ? getTimeForTransition(transitionMatch[2]) : undefined
 		}
 	}

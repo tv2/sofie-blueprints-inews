@@ -3,7 +3,6 @@ import {
 	IBlueprintActionManifest,
 	IBlueprintAdLibPiece,
 	IBlueprintPiece,
-	IShowStyleUserContext,
 	PieceLifespan,
 	TSR,
 	WithTimeline
@@ -12,7 +11,6 @@ import {
 	ActionSelectFullGrafik,
 	Adlib,
 	assertUnreachable,
-	CasparPilotGeneratorSettings,
 	CreateTimingGraphic,
 	CueDefinitionGraphic,
 	FullPieceMetaData,
@@ -28,10 +26,10 @@ import {
 	IsTargetingWall,
 	literal,
 	PieceMetaData,
+	ShowStyleContext,
 	SisyfosPersistMetaData,
 	t,
 	TV2BlueprintConfig,
-	VizPilotGeneratorSettings,
 	VizPilotGraphicGenerator
 } from 'tv2-common'
 import {
@@ -44,50 +42,44 @@ import {
 	TallyTags
 } from 'tv2-constants'
 
-// Work needed, this should be more generic than expecting showstyles to define how to display pilot graphics
-export interface PilotGeneratorSettings {
-	caspar: CasparPilotGeneratorSettings
-	viz: VizPilotGeneratorSettings
-}
-
 export interface PilotGraphicProps {
-	config: TV2BlueprintConfig
-	context: IShowStyleUserContext
+	context: ShowStyleContext
 	partId: string
 	parsedCue: CueDefinitionGraphic<GraphicPilot>
-	settings: PilotGeneratorSettings
 	adlib?: Adlib
 	segmentExternalId: string
 }
 
 export abstract class PilotGraphicGenerator {
 	public static createPilotGraphicGenerator(graphicProps: PilotGraphicProps): PilotGraphicGenerator {
-		if (graphicProps.config.studio.GraphicsType === 'HTML' && !IsTargetingWall(graphicProps.parsedCue.target)) {
+		if (graphicProps.context.config.studio.GraphicsType === 'HTML' && !IsTargetingWall(graphicProps.parsedCue.target)) {
 			return new HtmlPilotGraphicGenerator(graphicProps)
 		}
 		return new VizPilotGraphicGenerator(graphicProps)
 	}
 	protected readonly config: TV2BlueprintConfig
-	protected readonly context: IShowStyleUserContext
+	protected readonly context: ShowStyleContext
 	protected readonly engine: GraphicEngine
 	protected readonly partId: string
 	protected readonly parsedCue: CueDefinitionGraphic<GraphicPilot>
-	protected readonly settings: PilotGeneratorSettings
 	protected readonly adlib?: Adlib
 	protected readonly segmentExternalId: string
 
 	protected constructor(graphicProps: PilotGraphicProps) {
-		this.config = graphicProps.config
+		this.config = graphicProps.context.config
 		this.context = graphicProps.context
 		this.engine = graphicProps.parsedCue.target
 		this.parsedCue = graphicProps.parsedCue
 		this.partId = graphicProps.partId
-		this.settings = graphicProps.settings
 		this.adlib = graphicProps.adlib
 		this.segmentExternalId = graphicProps.segmentExternalId
 	}
 
 	public abstract getContent(): WithTimeline<GraphicsContent>
+
+	public getTemplateName(): string {
+		return GraphicDisplayName(this.config, this.parsedCue)
+	}
 
 	public createFullPilotAdLibAction(): IBlueprintActionManifest {
 		const name = GraphicDisplayName(this.config, this.parsedCue)
@@ -101,7 +93,7 @@ export abstract class PilotGraphicGenerator {
 			segmentExternalId: this.segmentExternalId
 		}
 		return {
-			externalId: generateExternalId(this.context, userData),
+			externalId: generateExternalId(this.context.core, userData),
 			actionId: AdlibActionType.SELECT_FULL_GRAFIK,
 			userData,
 			userDataManifest: {},
@@ -164,7 +156,7 @@ export abstract class PilotGraphicGenerator {
 		const content = this.getContent()
 		content.timelineObjects = content.timelineObjects.filter(
 			o =>
-				o.content.deviceType !== TSR.DeviceType.ATEM &&
+				!this.context.videoSwitcher.isVideoSwitcherTimelineObject(o) &&
 				o.content.deviceType !== TSR.DeviceType.SISYFOS &&
 				o.content.deviceType !== TSR.DeviceType.VIZMSE &&
 				o.content.deviceType !== TSR.DeviceType.CASPARCG

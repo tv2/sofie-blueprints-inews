@@ -21,8 +21,15 @@ export * from './sourceManifest'
 export * from './sourceLayers'
 export * from './forceSourceLayerToDefaultsBase'
 export * from './hotkeys'
+export * from './videoSwitcher'
 
-export function RenameStudioConfig(versionStr: string, studio: string, from: string, to: string): MigrationStepStudio {
+export function renameStudioConfig(
+	versionStr: string,
+	studio: string,
+	from: string,
+	to: string,
+	preserveExisting = false
+): MigrationStepStudio {
 	return {
 		id: `${versionStr}.studioConfig.rename.${from}.${studio}`,
 		version: versionStr,
@@ -37,7 +44,53 @@ export function RenameStudioConfig(versionStr: string, studio: string, from: str
 		migrate: (context: MigrationContextStudio) => {
 			const configVal = context.getConfig(from)
 			if (configVal !== undefined) {
-				context.setConfig(to, configVal)
+				const destination = context.getConfig(to)
+				context.setConfig(
+					to,
+					preserveExisting ? (mergeMissingConfig(configVal, destination) as ConfigItemValue) : configVal
+				)
+			}
+
+			function mergeMissingConfig(source: unknown, destination: unknown): unknown {
+				if (destination === undefined) {
+					return source
+				}
+				if (
+					Array.isArray(source) &&
+					Array.isArray(destination) &&
+					isConfigTable(source) &&
+					isConfigTable(destination)
+				) {
+					const result = destination.map(row =>
+						mergeMissingConfig(
+							source.find(old => old._id === row._id),
+							row
+						)
+					)
+					return result.concat(source.filter(row => !destination.some(current => current._id === row._id)))
+				}
+				if (
+					source &&
+					destination &&
+					typeof source === 'object' &&
+					typeof destination === 'object' &&
+					!Array.isArray(source) &&
+					!Array.isArray(destination)
+				) {
+					const result: Record<string, unknown> = { ...destination }
+					for (const [key, value] of Object.entries(source)) {
+						result[key] = mergeMissingConfig(value, result[key])
+					}
+					return result
+				}
+				return destination
+			}
+
+			function isConfigTable(value: unknown[]): value is Array<{ _id: string; [key: string]: unknown }> {
+				return value.every(
+					row =>
+						row !== null && typeof row === 'object' && '_id' in row && typeof (row as { _id: unknown })._id === 'string'
+				)
 			}
 
 			context.removeConfig(from)
@@ -413,6 +466,89 @@ export function PrefixEvsWithEvs(
 			evsSource.SourceName = `EVS ${evsSource.SourceName}`
 			config[index] = evsSource
 			context.setConfig(configId, (config as unknown) as ConfigItemValue)
+		}
+	}
+}
+
+export function convertStudioTableColumnToFloat(
+	versionStr: string,
+	tableId: string,
+	columnId: string
+): MigrationStepStudio {
+	return {
+		id: `${versionStr}.convertStudioTableColumnToFloat.${tableId}.${columnId}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(tableId) as unknown) as TableConfigItemValue
+
+			if (!config || !Array.isArray(config)) {
+				return false
+			}
+
+			return config.some(row => {
+				const value = row[columnId]
+				return columnId in row && (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > 100)
+			})
+		},
+		migrate: (context: MigrationContextStudio) => {
+			let config = (context.getConfig(tableId) as unknown) as TableConfigItemValue
+			if (!Array.isArray(config)) {
+				return
+			}
+			config = config.map(row => {
+				const value = row[columnId]
+				if (columnId in row) {
+					const numeric = typeof value === 'string' ? (value.trim() ? Number(value) : NaN) : value
+					if (typeof numeric !== 'number' || !Number.isFinite(numeric) || numeric < 0 || numeric > 100) {
+						throw new Error(`Invalid ${tableId}.${columnId}: expected a percentage between 0 and 100`)
+					}
+					return { ...row, [columnId]: numeric }
+				}
+				return row
+			})
+			context.setConfig(tableId, (config as unknown) as ConfigItemValue)
+		}
+	}
+}
+
+export function renameStudioTableColumn(
+	versionStr: string,
+	tableId: string,
+	oldColumnId: string,
+	newColumnId: string
+): MigrationStepStudio {
+	return {
+		id: `${versionStr}.renameStudioTableColumn.${tableId}.${oldColumnId}`,
+		version: versionStr,
+		canBeRunAutomatically: true,
+		validate: (context: MigrationContextStudio) => {
+			const config = (context.getConfig(tableId) as unknown) as TableConfigItemValue
+
+			if (!config || !Array.isArray(config)) {
+				return false
+			}
+
+			return config.find(row => oldColumnId in row) !== undefined
+		},
+		migrate: (context: MigrationContextStudio) => {
+			let config = (context.getConfig(tableId) as unknown) as TableConfigItemValue
+			if (!Array.isArray(config)) {
+				return
+			}
+			config = config.map(row => {
+				if (!(oldColumnId in row)) {
+					return row
+				}
+				row = { ...row }
+				const value = row[oldColumnId]
+				delete row[oldColumnId]
+				if (row[newColumnId] === undefined) {
+					row[newColumnId] = value
+				}
+				return row
+			})
+			context.setConfig(tableId, (config as unknown) as ConfigItemValue)
 		}
 	}
 }

@@ -63,7 +63,7 @@ export function ParseMappingTable(
 	return studioConfig.map(conf => ({
 		type,
 		id: conf.SourceName,
-		port: conf.AtemSource,
+		port: conf.SwitcherSource,
 		sisyfosLayers: conf.SisyfosLayers,
 		useStudioMics: conf.StudioMics,
 		wantsToPersistAudio: conf.WantsToPersistAudio,

@@ -11,7 +11,7 @@ export function MakeConfigForSources(
 	return {
 		id: `Sources${name}`,
 		name: `${displayName} Mapping`,
-		description: `${displayName} number to ATEM input and Sisyfos layer`,
+		description: `${displayName} number to Video Switcher input and Sisyfos layer`,
 		type: ConfigManifestEntryType.TABLE,
 		required: false,
 		defaultVal,
@@ -26,9 +26,9 @@ export function MakeConfigForSources(
 				rank: 0
 			},
 			{
-				id: 'AtemSource',
-				name: 'ATEM input',
-				description: `ATEM vision mixer input for ${displayName} input`,
+				id: 'SwitcherSource',
+				name: 'Video Switcher input',
+				description: `Video Switcher input for ${displayName} input`,
 				type: ConfigManifestEntryType.INT,
 				required: true,
 				defaultVal: 0,

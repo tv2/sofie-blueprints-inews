@@ -1,9 +1,12 @@
-import { GraphicsContent, IShowStyleUserContext, TSR, WithTimeline } from 'blueprints-integration'
+import { GraphicsContent, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	assertUnreachable,
 	CueDefinitionGraphic,
+	FindDSKFullGFX,
+	getDskOnAirTimelineObjects,
 	GetEnableForGraphic,
 	GetFullGraphicTemplateNameFromCue,
+	GetSisyfosTimelineObjForFull,
 	GetTimelineLayerForGraphic,
 	GraphicInternal,
 	IsTargetingFull,
@@ -11,10 +14,11 @@ import {
 	IsTargetingWall,
 	literal,
 	PilotGraphicProps,
+	ShowStyleContext,
+	TransitionStyle,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { GraphicEngine } from 'tv2-constants'
-import { EnableDSK } from '../../dsk'
+import { DskRole, GraphicEngine } from 'tv2-constants'
 import { PilotGraphicGenerator } from '../pilot/index'
 
 export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
@@ -42,9 +46,36 @@ export class VizPilotGraphicGenerator extends PilotGraphicGenerator {
 					},
 					...(IsTargetingFull(this.engine) ? { classes: ['full'] } : {})
 				}),
-				...(IsTargetingFull(this.engine) ? this.settings.viz.createFullPilotTimelineForStudio(this.config) : [])
+				...(IsTargetingFull(this.engine) ? this.getFullPilotTimeline() : [])
 			]
 		}
+	}
+
+	private getFullPilotTimeline(): TSR.TSRTimelineObj[] {
+		const auxLayer = this.context.uniformConfig.mixEffects.program.auxLayer
+		if (!auxLayer) {
+			return []
+		}
+		const enable = { start: this.config.studio.VizPilotGraphics.CutToMediaPlayer }
+		return [
+			...this.context.videoSwitcher.getOnAirTimelineObjects({
+				enable,
+				priority: 1,
+				content: {
+					input: this.config.studio.VizPilotGraphics.FullGraphicBackground,
+					transition: TransitionStyle.CUT
+				}
+			}),
+			this.context.videoSwitcher.getAuxTimelineObject({
+				enable,
+				priority: 1,
+				layer: auxLayer,
+				content: { input: FindDSKFullGFX(this.config).Fill },
+				classes: ['MIX_MINUS_OVERRIDE_DSK', 'PLACEHOLDER_OBJECT_REMOVEME']
+			}),
+			...getDskOnAirTimelineObjects(this.context, DskRole.FULLGFX),
+			...GetSisyfosTimelineObjForFull(this.config)
+		]
 	}
 
 	private getEnable() {
@@ -87,12 +118,12 @@ export interface VizPilotGeneratorSettings {
 }
 
 export function GetInternalGraphicContentVIZ(
-	config: TV2BlueprintConfig,
-	context: IShowStyleUserContext,
+	context: ShowStyleContext,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	mappedTemplate: string
 ): WithTimeline<GraphicsContent> {
+	const config = context.config
 	return {
 		fileName: parsedCue.graphic.template,
 		path: parsedCue.graphic.template,
@@ -113,25 +144,25 @@ export function GetInternalGraphicContentVIZ(
 				}
 			}),
 			// Assume DSK is off by default (config table)
-			...EnableDSK(config, 'OVL')
+			...getDskOnAirTimelineObjects(context, DskRole.OVERLAYGFX)
 		])
 	}
 }
 
-function findShowName(config: TV2BlueprintConfig, context: IShowStyleUserContext, engine: GraphicEngine): string {
+function findShowName(config: TV2BlueprintConfig, context: ShowStyleContext, engine: GraphicEngine): string {
 	const graphicsSetup = config.selectedGraphicsSetup
 	switch (engine) {
 		case 'FULL':
 		case 'WALL':
 			if (graphicsSetup.FullShowName === undefined) {
-				context.logWarning("You're using Viz graphics with an incompatible ShowStyle")
+				context.core.logWarning("You're using Viz graphics with an incompatible ShowStyle")
 				return ''
 			}
 			return graphicsSetup.FullShowName
 		case 'TLF':
 		case 'OVL':
 			if (graphicsSetup.OvlShowName === undefined) {
-				context.logWarning("You're using Viz graphics with an incompatible ShowStyle")
+				context.core.logWarning("You're using Viz graphics with an incompatible ShowStyle")
 				return ''
 			}
 			return graphicsSetup.OvlShowName

@@ -11,6 +11,11 @@ export * from './design'
 import { IBlueprintPart, TSR } from 'blueprints-integration'
 import { getHtmlGraphicBaseline, TV2BlueprintConfig } from 'tv2-common'
 
+export {
+	ApplyFullGraphicPropertiesToPart as applyFullGraphicPropertiesToPart,
+	CreateGraphicBaseline as getGraphicBaseline
+}
+
 export function ApplyFullGraphicPropertiesToPart(config: TV2BlueprintConfig, part: IBlueprintPart) {
 	const keepAliveDuration =
 		config.studio.GraphicsType === 'HTML'

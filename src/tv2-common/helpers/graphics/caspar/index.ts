@@ -3,18 +3,22 @@ export * from './slotMappings'
 import { GraphicsContent, IBlueprintPiece, TSR, WithTimeline } from 'blueprints-integration'
 import {
 	CueDefinitionGraphic,
+	FindDSKFullGFX,
+	getDskOnAirTimelineObjects,
 	GetEnableForGraphic,
+	GetSisyfosTimelineObjForFull,
 	GetTimelineLayerForGraphic,
 	GraphicInternal,
 	joinAssetToFolder,
 	joinAssetToNetworkPath,
 	literal,
 	PilotGraphicProps,
+	ShowStyleContext,
 	TimelineBlueprintExt,
+	TransitionStyle,
 	TV2BlueprintConfig
 } from 'tv2-common'
-import { GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
-import { EnableDSK } from '../../dsk'
+import { DskRole, GraphicEngine, SharedGraphicLLayer } from 'tv2-constants'
 import { PilotGraphicGenerator } from '../pilot'
 import { IsTargetingFull } from '../target'
 import { layerToHTMLGraphicSlot, Slots } from './slotMappings'
@@ -24,13 +28,13 @@ export interface CasparPilotGeneratorSettings {
 }
 
 export function GetInternalGraphicContentCaspar(
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	mappedTemplate: string
 ): IBlueprintPiece['content'] {
 	return {
-		timelineObjects: CasparOverlayTimeline(config, engine, parsedCue, mappedTemplate)
+		timelineObjects: CasparOverlayTimeline(context, engine, parsedCue, mappedTemplate)
 	}
 }
 
@@ -100,10 +104,22 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 					}
 				}),
 				...(IsTargetingFull(this.engine)
-					? this.settings.caspar.createFullPilotTimelineForStudio(this.config)
-					: EnableDSK(this.config, 'OVL'))
+					? this.getFullPilotTimeline()
+					: getDskOnAirTimelineObjects(this.context, DskRole.OVERLAYGFX))
 			]
 		}
+	}
+
+	private getFullPilotTimeline(): TSR.TSRTimelineObj[] {
+		const fullDSK = FindDSKFullGFX(this.config)
+		return [
+			...this.context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
+				enable: { start: Number(this.config.studio.CasparPrerollDuration) },
+				priority: 1,
+				content: { input: fullDSK.Fill, transition: TransitionStyle.WIPE_FOR_GFX }
+			}),
+			...GetSisyfosTimelineObjForFull(this.config)
+		]
 	}
 
 	private getSceneName() {
@@ -113,11 +129,12 @@ export class HtmlPilotGraphicGenerator extends PilotGraphicGenerator {
 }
 
 function CasparOverlayTimeline(
-	config: TV2BlueprintConfig,
+	context: ShowStyleContext,
 	engine: GraphicEngine,
 	parsedCue: CueDefinitionGraphic<GraphicInternal>,
 	mappedTemplate: string
 ): TSR.TSRTimelineObj[] {
+	const config = context.config
 	return [
 		literal<TSR.TimelineObjCCGTemplate>({
 			id: '',
@@ -127,7 +144,7 @@ function CasparOverlayTimeline(
 			content: CreateHTMLRendererContent(config, mappedTemplate, { ...parsedCue.graphic.textFields })
 		}),
 		// Assume DSK is off by default (config table)
-		...EnableDSK(config, 'OVL')
+		...getDskOnAirTimelineObjects(context, DskRole.OVERLAYGFX)
 	]
 }
 

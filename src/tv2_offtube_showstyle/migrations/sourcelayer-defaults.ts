@@ -1,6 +1,6 @@
 import { ISourceLayer, SourceLayerType } from 'blueprints-integration'
 import { GetDSKSourceLayerDefaults, literal } from 'tv2-common'
-import { SharedSourceLayers } from 'tv2-constants'
+import { SharedSourceLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { OfftubeSourceLayer } from '../layers'
 
@@ -127,7 +127,7 @@ const OVERLAY: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: SharedSourceLayers.PgmPilotOverlay,
+		_id: SharedSourceLayer.PgmPilotOverlay,
 		_rank: 60,
 		name: 'GFX overlay (VCP)(shared)',
 		abbreviation: 'O',
@@ -310,7 +310,7 @@ const PGM: ISourceLayer[] = [
 // MUSIK group
 const MUSIK: ISourceLayer[] = [
 	{
-		_id: SharedSourceLayers.PgmAudioBed,
+		_id: SharedSourceLayer.PgmAudioBed,
 		_rank: 30,
 		name: 'Audiobed (shared)',
 		abbreviation: 'VO',
@@ -411,7 +411,7 @@ const SEC: ISourceLayer[] = [
 		onPresenterScreen: false
 	},
 	{
-		_id: SharedSourceLayers.RobotCamera,
+		_id: SharedSourceLayer.RobotCamera,
 		_rank: 70,
 		name: 'Robot Camera',
 		abbreviation: '',
