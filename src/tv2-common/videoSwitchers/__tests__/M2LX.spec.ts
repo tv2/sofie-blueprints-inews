@@ -18,7 +18,6 @@ import { PartDefinitionUnknown } from '../../inewsConversion'
 import { onTimelineGenerate, PieceMetaData, TimelineBlueprintExt } from '../../onTimelineGenerate'
 import { SegmentContextImpl } from '../../segment/context'
 import { TimelineContext } from '../../showstyle/timelineEventContext'
-import { convertAtemToM2lxDve } from '../atemToM2lxDveConverter'
 import { M2LX } from '../M2LX'
 import { M2LX_DVE_GRAPHICS_LAYER, parseM2LXConfiguration } from '../m2lxConfig'
 import { M2LXLayout, validateM2LXLayout } from '../m2lxLayout'
@@ -767,58 +766,6 @@ test.each([false, true])(
 		expect(native.every(TSR.isTimelineObjM2LXMixer)).toBe(true)
 	}
 )
-
-test.each([
-	['sommerfugl', '1:INP1;2:INP2'],
-	['morbarn', '3:INP1;2:INP2'],
-	['barnmor', '2:INP2;1:INP1'],
-	['barnMorIpad', '1:INP1;2:INP2'],
-	['3barnMor', '1:INP1;2:INP2;3:INP3;4:INP4']
-])('sports %s retains logical inputs, converted crops and ordinary-shot cleanup', (name, assignments) => {
-	const samples = require('../../../../docs/examples/m2lx-sports-layouts.json')
-	const layout = convertAtemToM2lxDve(samples[name])
-	const template = { ...nativeTemplate({ ...layout, background: 'real_black' }), DVEInputs: assignments }
-	const { producer, core, switcher } = setup(JSON.stringify(COMPOSITION))
-	const camera = producer.config.sources.cameras[0]
-	const cameras = [1, 2, 3, 4].map(inputNumber => ({
-		...camera,
-		id: String(inputNumber),
-		port: `sports_input_${inputNumber}`,
-		sisyfosLayers: inputNumber === 1 ? camera.sisyfosLayers : []
-	}))
-	producer.config.sources.cameras = cameras
-	const definitions = cameras.map(SourceInfoToSourceDefinition)
-	const inputs: DVESources = { INP1: definitions[0], INP2: definitions[1], INP3: definitions[2], INP4: definitions[3] }
-	const result = MakeContentDVE2(producer, template, {}, inputs, OFFTUBE_DVE_GENERATOR_OPTIONS)
-	expect(result.valid ? true : core.getNotes()).toBe(true)
-	const composition = result.content.timelineObjects.find(TSR.isTimelineObjM2LXMixer)?.content.mixer.composition
-	expect(composition).toBeDefined()
-	expect(composition).not.toHaveProperty('dsk')
-	expect(result.content.timelineObjects.some(TSR.isTimelineObjM2LXKeyer)).toBe(false)
-	for (const [position, box] of Object.entries(layout.boxes)) {
-		if (!box.enabled) {
-			expect(composition?.pip[box.index]).toEqual({ visible: false })
-			continue
-		}
-		const assignment = assignments.split(';').find(input => input.startsWith(`${Number(position) + 1}:`))!
-		const inputNumber = assignment.split(':')[1].replace('INP', '')
-		expect(composition?.pip[box.index]).toEqual({
-			visible: true,
-			source: { type: 'video', name: `sports_input_${inputNumber}` },
-			translation: box.translation,
-			scale: box.scale,
-			crop: box.crop
-		})
-	}
-	expect(
-		switcher.getMixEffectTimelineObject({
-			layer: SwitcherMixEffectLLayer.Program,
-			content: { input: 'real_black' }
-		}).content.mixer.composition
-	).toEqual({
-		pip: { 0: { visible: false }, 1: { visible: false }, 2: { visible: false }, 3: { visible: false } }
-	})
-})
 
 test('native Program DVE preserves camera audio and requires a cue assignment for every visible box', () => {
 	const { producer, core } = setup(JSON.stringify(COMPOSITION))

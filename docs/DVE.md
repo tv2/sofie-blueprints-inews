@@ -24,8 +24,8 @@ rounding the converted origins to whole pixels without adding gaps or recenterin
 ATEM crop margins use 32000 horizontal and 18000 vertical units; native crops are
 normalized retained rectangles.
 
-The example file preserves five sports exports. Keep these existing `DVEInputs`
-assignments when using their converted JSON:
+For the five converted sports layouts, keep these existing `DVEInputs`
+assignments:
 
 | Layout      | DVEInputs                     |
 | ----------- | ----------------------------- |
@@ -39,8 +39,8 @@ Sommerfugl converts to 50% boxes at (0,234) and (960,234), with no added gap.
 The iPad and four-box layouts retain their asymmetric crops. Physical PiP indices
 are remapped for native stacking, not for producer input numbering.
 
-The exported numeric source IDs and artwork metadata are preserved in the example
-file, not translated into Sony input names. Every enabled box needs an explicit
+The exported numeric source IDs and artwork metadata are not translated into Sony
+input names. Every enabled box needs an explicit
 logical input assignment. The `3split` and `2barnMor` exports are deliberately
 excluded: each contains a fourth enabled box with an unverified fixed source.
 Do not silently remove that box or assume its source is black.
