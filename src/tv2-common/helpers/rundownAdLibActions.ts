@@ -7,6 +7,7 @@ import {
 	ActionTakeWithTransitionVariantDip,
 	ActionTakeWithTransitionVariantMix,
 	GetTagForTransition,
+	isM2LXSwitcher,
 	literal,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
@@ -42,7 +43,9 @@ export function GetTransitionAdLibActions<
 	if (config.showStyle.Transitions) {
 		const transitionActions: IBlueprintActionManifest[] = config.showStyle.Transitions.filter(
 			transition => transition.Transition && transition.Transition.length
-		).flatMap((transition, i) => createActionsForTransition(config, transition.Transition, startingRank + 0.01 * i))
+		).flatMap((transition, i) =>
+			createActionsForTransition(config, transition.Transition, startingRank + 0.01 * i, transition.WipeDirection)
+		)
 		blueprintActionManifests.push(...transitionActions)
 	}
 
@@ -52,7 +55,8 @@ export function GetTransitionAdLibActions<
 function createActionsForTransition(
 	config: TV2ShowStyleConfig,
 	transition: string,
-	rank: number
+	rank: number,
+	wipeDirection?: string
 ): IBlueprintActionManifest[] {
 	const jingleConfig = config.showStyle.BreakerConfig.find(j => j.BreakerName === transition)
 	const transitionValues: TransitionValues = {
@@ -67,14 +71,28 @@ function createActionsForTransition(
 		transitionValues.alphaAtEnd = jingleConfig.EndAlpha
 	}
 
-	const variant: ActionTakeWithTransitionVariant = ParseTransitionString(transition)
+	const variant: ActionTakeWithTransitionVariant = ParseTransitionString(
+		transition,
+		isM2LXSwitcher(config.studio.SwitcherType) ? wipeDirection || 'Default' : undefined
+	)
 	return [
 		makeTransitionOnTakeAction(config, variant, transitionValues),
 		makeTransitionOnNextTakeAction(config, variant, transitionValues)
 	]
 }
 
-export function ParseTransitionString(transitionString: string): ActionTakeWithTransitionVariant {
+export function ParseTransitionString(
+	transitionString: string,
+	wipeDirection?: string
+): ActionTakeWithTransitionVariant {
+	const wipe = transitionString.trim().match(/^WIPE ?(\d+)$/i)
+	if (wipe && wipeDirection !== undefined) {
+		return {
+			type: 'wipe',
+			frames: Number(wipe[1]),
+			...(wipeDirection === 'Default' ? {} : { wipeDirection })
+		}
+	}
 	if (transitionString.match(/mix ?(\d+)/i)) {
 		const props = transitionString.match(/mix ?(\d+)/i)
 		return literal<ActionTakeWithTransitionVariantMix>({
@@ -152,6 +170,7 @@ function makeTransitionAction(
 			currentPieceTags: [tag],
 			nextPieceTags: [tag],
 			content:
+				userData.variant.type === 'wipe' ||
 				isEffekt ||
 				/^MIX ?\d+$/i.test(transitionValues.label) ||
 				/^CUT$/i.test(transitionValues.label) ||

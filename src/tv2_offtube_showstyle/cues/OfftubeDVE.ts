@@ -38,7 +38,14 @@ export function OfftubeEvaluateDVE(
 		return
 	}
 
-	if (!TemplateIsValid(rawTemplate.DVEJSON)) {
+	if (
+		!TemplateIsValid(
+			rawTemplate.DVEJSON,
+			message => context.core.notifyUserWarning(message),
+			context.videoSwitcher.type,
+			context.config.studio.SwitcherSource.SplitBackground ?? context.config.studio.SwitcherSource.Default
+		)
+	) {
 		context.core.notifyUserWarning(`Invalid DVE template ${parsedCue.template}`)
 		return
 	}

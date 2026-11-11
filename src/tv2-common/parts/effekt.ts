@@ -19,6 +19,7 @@ import {
 	PartDefinition,
 	PieceMetaData,
 	ShowStyleContext,
+	SwitcherType,
 	TableConfigItemBreakers,
 	TableConfigItemUnderlyingTransition,
 	TimelineBlueprintExt,
@@ -76,6 +77,13 @@ export function CreateEffektForPartBase(
 		const blueprintPiece: IBlueprintPiece =
 			createDipTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer) ?? {}
 		pieces.push(blueprintPiece)
+		return createInTransitionForTransitionStyle(transition.duration)
+	}
+
+	if (transition.style === TransitionStyle.WIPE && context.videoSwitcher.type === SwitcherType.M2LX) {
+		pieces.push(
+			CreateWipeTransitionBlueprintPieceForPart(partDefinition.externalId, transition.duration, layers.sourceLayer)
+		)
 		return createInTransitionForTransitionStyle(transition.duration)
 	}
 
@@ -376,6 +384,20 @@ export function ApplyUnderlyingTransitionToPieces(
 				)
 			}
 		}
+	}
+}
+
+export function CreateWipeTransitionBlueprintPieceForPart(
+	externalId: string,
+	durationInFrames: number,
+	sourceLayer: string,
+	wipeDirection?: string
+): IBlueprintPiece<PieceMetaData> {
+	return {
+		...createEffectBlueprintPiece(durationInFrames, externalId, 'wipe', sourceLayer, [
+			GetTagForTransition({ type: 'wipe', frames: durationInFrames, wipeDirection })
+		]),
+		metaData: { wipeDirection }
 	}
 }
 

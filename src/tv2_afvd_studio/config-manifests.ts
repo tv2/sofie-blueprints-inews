@@ -281,7 +281,7 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 		name: 'Video Switcher Type',
 		description: 'Type of the video switcher',
 		type: ConfigManifestEntryType.ENUM,
-		options: Object.values(SwitcherType),
+		options: [SwitcherType.ATEM, SwitcherType.TRICASTER],
 		required: true,
 		defaultVal: SwitcherType.ATEM
 	},

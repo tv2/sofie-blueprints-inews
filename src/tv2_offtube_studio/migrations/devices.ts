@@ -5,6 +5,7 @@ import {
 	MigrationStepStudio,
 	TSR
 } from 'blueprints-integration'
+import { isM2LXSwitcher } from 'tv2-common'
 import * as _ from 'underscore'
 
 declare const VERSION: string // Injected by webpack
@@ -29,6 +30,9 @@ function validateDevice(spec: DeviceEntry): MigrationStepStudio {
 		version: VERSION,
 		canBeRunAutomatically: false,
 		validate: (context: MigrationContextStudio) => {
+			if (spec.createCondition && !spec.createCondition(context)) {
+				return false
+			}
 			const dev = context.getDevice(spec.id)
 			if (!dev) {
 				return false
@@ -184,6 +188,7 @@ const devices: DeviceEntry[] = [
 	},
 	{
 		id: 'atem0',
+		createCondition: context => !isM2LXSwitcher(context.getConfig('SwitcherType')),
 		firstVersion: '0.1.0',
 		type: TSR.DeviceType.ATEM,
 		defaultValue: input => ({

@@ -93,7 +93,7 @@ export interface ActionClearGraphics extends ActionBase {
 }
 
 export interface ActionTakeWithTransitionVariantBase {
-	type: 'cut' | 'mix' | 'breaker' | 'dip'
+	type: 'cut' | 'mix' | 'breaker' | 'dip' | 'wipe'
 }
 
 export interface ActionTakeWithTransitionVariantCut extends ActionTakeWithTransitionVariantBase {
@@ -115,11 +115,18 @@ export interface ActionTakeWithTransitionVariantDip extends ActionTakeWithTransi
 	frames: number
 }
 
+export interface ActionTakeWithTransitionVariantWipe extends ActionTakeWithTransitionVariantBase {
+	type: 'wipe'
+	frames: number
+	wipeDirection?: string
+}
+
 export type ActionTakeWithTransitionVariant =
 	| ActionTakeWithTransitionVariantCut
 	| ActionTakeWithTransitionVariantMix
 	| ActionTakeWithTransitionVariantBreaker
 	| ActionTakeWithTransitionVariantDip
+	| ActionTakeWithTransitionVariantWipe
 
 export interface ActionTakeWithTransition extends ActionBase {
 	type: AdlibActionType.TAKE_WITH_TRANSITION

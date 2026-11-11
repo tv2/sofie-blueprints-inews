@@ -1,6 +1,8 @@
 import { BlueprintMappings, IBlueprintConfig, TSR } from 'blueprints-integration'
+import { SwitcherType } from 'tv2-common'
 import { NoteType } from 'tv2-constants'
 import { StudioContext } from '../../__mocks__/context'
+import { m2lxStudioSettings } from '../../__mocks__/m2lx'
 import { getBaseline } from '../getBaseline'
 import { parseConfig } from '../helpers/config'
 import { OfftubeGraphicLLayer, OfftubeSisyfosLLayer } from '../layers'
@@ -34,6 +36,34 @@ function getWallObjects(context: StudioContext) {
 }
 
 describe('Idle Wall Loop baseline', () => {
+	it('M2L-X uses one real mixer without recursive clean routing while preserving Sisyfos and the opt-in wall loop', () => {
+		const settings = m2lxStudioSettings(
+			JSON.stringify({
+				sources: [{ input: 7, source: 'real_idle' }],
+				keyers: [],
+				routers: []
+			})
+		)
+		const context = makeMockContext(
+			{
+				IdleSource: 'real_idle',
+				SwitcherType: SwitcherType.M2LX,
+				IdleWallLoop: [idleWallLoop]
+			},
+			{ ...mappingsDefaults, ...settings.mappingDefaults }
+		)
+		const baseline = getBaseline(context).timelineObjects
+		expect(baseline.filter(TSR.isTimelineObjM2LXMixer)).toHaveLength(1)
+		expect(baseline.find(TSR.isTimelineObjM2LXMixer)?.content.mixer.program).toBe('real_idle')
+		expect(baseline.find(TSR.isTimelineObjM2LXMixer)?.content.mixer.composition).toEqual({
+			pip: { 0: { visible: false }, 1: { visible: false }, 2: { visible: false }, 3: { visible: false } }
+		})
+		expect(baseline.some(object => object.content.deviceType === TSR.DeviceType.SISYFOS)).toBe(true)
+		expect(baseline.some(object => object.content.deviceType === TSR.DeviceType.VIZMSE)).toBe(true)
+		expect(
+			baseline.some(object => [TSR.DeviceType.ATEM, TSR.DeviceType.TRICASTER].includes(object.content.deviceType))
+		).toBe(false)
+	})
 	it('leaves the existing baseline unchanged when settings are absent', () => {
 		const context = makeMockContext()
 		const baseline = getBaseline(context)

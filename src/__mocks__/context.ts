@@ -449,11 +449,6 @@ export class ActionExecutionContextMock extends ShowStyleUserContextMock impleme
 		this.nextPieceInstances = nextPieceInstances
 	}
 
-	/** Get the mappings for the studio */
-	public getStudioMappings = () => {
-		throw new Error(`Function not implemented in mock: 'getStudioMappings'`)
-	}
-
 	/** Get a PartInstance which can be modified */
 	public async getPartInstance(part: 'current' | 'next'): Promise<IBlueprintPartInstance | undefined> {
 		if (part === 'current') {

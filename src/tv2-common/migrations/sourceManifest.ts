@@ -1,12 +1,27 @@
 import { ConfigManifestEntryTable, ConfigManifestEntryType, TSR } from 'blueprints-integration'
 import { literal } from '../util'
 
+export const SWITCHER_INPUT_DESCRIPTION =
+	'Use an input number for ATEM or TriCaster. For M2L-X, use the input ID, for example ndi1 or vtr1, not its display name.'
+
+export function switcherInputManifestType(
+	allowNamedInputs: boolean,
+	defaultVal: number
+):
+	| { type: ConfigManifestEntryType.STRING; defaultVal: string }
+	| { type: ConfigManifestEntryType.INT; defaultVal: number } {
+	return allowNamedInputs
+		? { type: ConfigManifestEntryType.STRING, defaultVal: defaultVal.toString() }
+		: { type: ConfigManifestEntryType.INT, defaultVal }
+}
+
 export function MakeConfigForSources(
 	name: string,
 	displayName: string,
 	wantsToPersistAudio: boolean,
 	acceptPersistAudio: boolean,
-	defaultVal: ConfigManifestEntryTable['defaultVal']
+	defaultVal: ConfigManifestEntryTable['defaultVal'],
+	allowNamedInputs = false
 ): ConfigManifestEntryTable {
 	return {
 		id: `Sources${name}`,
@@ -28,10 +43,9 @@ export function MakeConfigForSources(
 			{
 				id: 'SwitcherSource',
 				name: 'Video Switcher input',
-				description: `Video Switcher input for ${displayName} input`,
-				type: ConfigManifestEntryType.INT,
+				description: allowNamedInputs ? SWITCHER_INPUT_DESCRIPTION : `Video Switcher input for ${displayName} input`,
+				...switcherInputManifestType(allowNamedInputs, 0),
 				required: true,
-				defaultVal: 0,
 				rank: 1
 			},
 			{

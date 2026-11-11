@@ -72,7 +72,14 @@ export async function OfftubeEvaluateAdLib(
 			return
 		}
 
-		if (!TemplateIsValid(rawTemplate.DVEJSON)) {
+		if (
+			!TemplateIsValid(
+				rawTemplate.DVEJSON,
+				message => context.core.notifyUserWarning(message),
+				context.videoSwitcher.type,
+				context.config.studio.SwitcherSource.SplitBackground ?? context.config.studio.SwitcherSource.Default
+			)
+		) {
 			context.core.notifyUserWarning(`Invalid DVE template ${parsedCue.variant}`)
 			return
 		}
@@ -86,6 +93,9 @@ export async function OfftubeEvaluateAdLib(
 		}
 
 		const adlibContent = OfftubeMakeContentDVE(context, partDefinition, cueDVE, rawTemplate)
+		if (!adlibContent.valid) {
+			return
+		}
 
 		const userData: ActionSelectDVE = {
 			type: AdlibActionType.SELECT_DVE,

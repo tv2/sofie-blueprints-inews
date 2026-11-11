@@ -50,6 +50,12 @@ export interface TimelinePersistentStateExt {
 
 /** Metadata for use by the OnTimelineGenerate or other callbacks */
 export interface TimelineObjectMetaData {
+	m2lxPendingInput?: 'program' | 'preview' | 'keyer'
+	m2lxDve?: boolean
+	m2lxPendingPips?: Array<{
+		index: TSR.M2LXPipKeyerIndex
+		geometry: Omit<Extract<TSR.M2LXCompositionPip, { visible: true }>, 'visible' | 'source'>
+	}>
 	context?: string
 	mediaPlayerSession?: string
 	templateData?: any
@@ -61,6 +67,7 @@ export type TimelineBlueprintExt = TSR.TSRTimelineObjBase & {
 }
 
 export interface PieceMetaData {
+	wipeDirection?: string
 	underlyingTransition?: {
 		breaker: string
 		durationFrames: number
@@ -140,6 +147,15 @@ export function onTimelineGenerate<
 		resolvedPieces,
 		sourceLayers
 	)
+	for (const object of timeline) {
+		if (
+			object.content.deviceType === TSR.DeviceType.M2LX &&
+			((object as TimelineBlueprintExt).metaData?.m2lxPendingInput ||
+				(object as TimelineBlueprintExt).metaData?.m2lxPendingPips?.length)
+		) {
+			throw new Error('M2L-X: unresolved AB player assignment; refusing to emit an incomplete native timeline')
+		}
+	}
 
 	return Promise.resolve({
 		timeline,

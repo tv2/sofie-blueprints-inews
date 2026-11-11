@@ -20,6 +20,7 @@ import {
 } from '../config-manifests'
 import { OfftubeCasparLLayer, OfftubeSisyfosLLayer } from '../layers'
 import { deviceMigrations } from './devices'
+import { m2lxMigrations } from './m2lx'
 import MappingsDefaults from './mappings-defaults'
 import {
 	ensureStudioConfig,
@@ -375,6 +376,7 @@ export const studioMigrations: MigrationStepStudio[] = [
 	 * 1.7.10: switcher-neutral configuration and DVE mappings.
 	 */
 	...videoSwitcherMigrations('1.7.10', 'Offtube'),
+	...m2lxMigrations('1.7.11'),
 
 	// Fill in any mappings that did not exist before
 	// Note: These should only be run as the very final step of all migrations. otherwise they will add items too early, and confuse old migrations

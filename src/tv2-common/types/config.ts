@@ -1,8 +1,10 @@
 import { DskRole } from 'tv2-constants'
 
+export type SwitcherInput = number | string
+
 export interface TableConfigItemSourceMapping {
 	SourceName: string
-	SwitcherSource: number
+	SwitcherSource: SwitcherInput
 }
 
 export type TableConfigItemSourceMappingWithSisyfos = {
@@ -15,8 +17,8 @@ export type TableConfigItemSourceMappingWithSisyfos = {
 export interface SwitcherDskProps {
 	/** 0-based */
 	Number: number
-	Fill: number
-	Key: number
+	Fill: SwitcherInput
+	Key: SwitcherInput
 	Clip: number
 	Gain: number
 }
@@ -25,4 +27,6 @@ export interface TableConfigItemDSK extends SwitcherDskProps {
 	Toggle: boolean
 	DefaultOn: boolean
 	Roles?: DskRole[]
+	UsePreconfigured?: boolean
+	SourceName?: string
 }

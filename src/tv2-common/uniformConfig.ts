@@ -4,6 +4,7 @@ import { SpecialInput } from './videoSwitchers'
 
 /** This config contains hardcoded values that differ between Gallery and Qbox Blueprints */
 export interface UniformConfig {
+	profile?: 'offtube' | 'singleMixer'
 	switcherLLayers: {
 		/** The layer where cuts and transitions between primary pieces are happening */
 		primaryMixEffect: SwitcherMixEffectLLayer

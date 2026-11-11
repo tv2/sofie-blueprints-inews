@@ -1,15 +1,39 @@
 import * as _ from 'underscore'
 import { DVEConfigInput } from '../helpers'
+import { SwitcherInput } from '../types/config'
+import { M2LXConfigurationError } from '../videoSwitchers/m2lxConfig'
+import { isM2LXLayout, parseM2LXLayout } from '../videoSwitchers/m2lxLayout'
+import { isM2LXSwitcher, SwitcherType } from '../videoSwitchers/types'
 
 /**
  * Check that a template string is valid.
  * @param templateRaw User-provided template.
  */
-export function TemplateIsValid(templateRaw: string): boolean {
+export function TemplateIsValid(
+	templateRaw: string,
+	onNativeError?: (message: string) => void,
+	switcherType?: SwitcherType,
+	background?: SwitcherInput
+): boolean {
 	let template: any
 	try {
 		template = JSON.parse(templateRaw)
 	} catch (e) {
+		return false
+	}
+	if (isM2LXSwitcher(switcherType) || (switcherType === undefined && isM2LXLayout(template))) {
+		try {
+			parseM2LXLayout(template, background)
+			return true
+		} catch (error) {
+			if (!(error instanceof M2LXConfigurationError)) {
+				throw error
+			}
+			onNativeError?.(error.message)
+			return false
+		}
+	}
+	if (!template || typeof template !== 'object' || Array.isArray(template)) {
 		return false
 	}
 	let boxesValid = false

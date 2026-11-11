@@ -1,5 +1,5 @@
 import { ConfigManifestEntry, ConfigManifestEntryType, TSR } from 'blueprints-integration'
-import { DEFAULT_GRAPHICS, getGraphicsSetupsEntries } from 'tv2-common'
+import { DEFAULT_GRAPHICS, getGraphicsSetupsEntries, M2LX_WIPE_EFFECTS } from 'tv2-common'
 
 export const underlyingTransitionsManifest: ConfigManifestEntry = {
 	id: 'UnderlyingTransitions',
@@ -107,8 +107,9 @@ export const underlyingTransitionsManifest: ConfigManifestEntry = {
 
 export const dveStylesManifest: ConfigManifestEntry = {
 	id: 'DVEStyles',
-	name: 'DVE Layouts',
-	description: '',
+	name: 'DVE / Split Screen Layouts',
+	description:
+		'Layouts available to this show, including box assignments and graphic frames. The studio supplies the mixer connections and available boxes.',
 	type: ConfigManifestEntryType.TABLE,
 	required: false,
 	defaultVal: [
@@ -201,7 +202,8 @@ export const dveStylesManifest: ConfigManifestEntry = {
 		{
 			id: 'DVEInputs',
 			name: 'Box inputs',
-			description: 'I.e.: 1:INP1;2:INP3; as an example to chose which ATEM boxes to assign iNews inputs to',
+			description:
+				'Assign iNEWS sources to layout boxes. For example, 1:INP1;2:INP3 puts INP1 in box 1 and INP3 in box 2.',
 			type: ConfigManifestEntryType.STRING,
 			required: true,
 			defaultVal: '1:INP1;2:INP2;3:INP3;4:INP4',
@@ -210,7 +212,8 @@ export const dveStylesManifest: ConfigManifestEntry = {
 		{
 			id: 'DVEJSON',
 			name: 'DVE config',
-			description: 'DVE config pulled from ATEM',
+			description:
+				'Mixer-specific layout data describing box positions, sizes and cropping. Use a layout prepared for the studio mixer; layouts from other mixer types are not interchangeable.',
 			type: ConfigManifestEntryType.JSON,
 			required: true,
 			defaultVal: '{}',
@@ -676,10 +679,20 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 		defaultVal: '/ NBA WIPE'
 	},
 	{
+		id: 'DefaultWipeDirection',
+		name: 'Default wipe direction',
+		description: 'M2L-X: Direction for mixer wipes without an individual selection. None disables them.',
+		type: ConfigManifestEntryType.SELECT,
+		options: Object.keys(M2LX_WIPE_EFFECTS),
+		multiple: false,
+		required: false,
+		defaultVal: 'None'
+	},
+	{
 		id: 'Transitions',
 		name: 'Transitions',
 		description:
-			'Transitions available as take shortcuts in static buttons (assigned to shortcuts in the order they appear in this list)',
+			'Transition shortcuts, in button order. For an M2L-X mixer wipe, enter WIPE followed by its duration in frames, for example WIPE 25.',
 		type: ConfigManifestEntryType.TABLE,
 		required: true,
 		defaultVal: [],
@@ -692,6 +705,17 @@ export const showStyleConfigManifest: ConfigManifestEntry[] = [
 				required: true,
 				defaultVal: '',
 				rank: 0
+			},
+			{
+				id: 'WipeDirection',
+				name: 'Wipe direction',
+				description: 'M2L-X mixer wipes only. Default uses the default wipe direction.',
+				type: ConfigManifestEntryType.SELECT,
+				options: ['Default', ...Object.keys(M2LX_WIPE_EFFECTS)],
+				multiple: false,
+				required: false,
+				defaultVal: 'Default',
+				rank: 1
 			}
 		]
 	},

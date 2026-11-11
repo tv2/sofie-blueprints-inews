@@ -20,6 +20,7 @@ import {
 	SegmentContext,
 	ShowStyleContext,
 	SourceInfo,
+	SwitcherInput,
 	TransitionStyle
 } from 'tv2-common'
 import { SharedOutputLayer } from 'tv2-constants'
@@ -100,7 +101,7 @@ export async function CreatePartEVS(
 
 function makeContentEVS(
 	context: ShowStyleContext<GalleryBlueprintConfig>,
-	switcherInput: number,
+	switcherInput: SwitcherInput,
 	partDefinition: PartDefinitionEVS,
 	sourceInfoReplay: SourceInfo
 ): IBlueprintPiece['content'] {

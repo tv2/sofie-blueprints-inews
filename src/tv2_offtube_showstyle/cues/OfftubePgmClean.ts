@@ -16,6 +16,10 @@ export function OfftubeEvaluatePgmClean(
 	partId: string,
 	parsedCue: CueDefinitionPgmClean
 ) {
+	if (context.uniformConfig.profile === 'singleMixer') {
+		context.core.notifyUserWarning('M2L-X has no independent clean feed. PGM-clean commands are unsupported.')
+		return
+	}
 	let sourceInfo: SourceInfo | undefined
 	if (parsedCue.sourceDefinition.sourceType === SourceType.PGM) {
 		return

@@ -1,11 +1,24 @@
 import { TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { SwitcherDskProps, TimelineObjectMetaData } from 'tv2-common'
+import { SwitcherDskProps, SwitcherInput, TimelineObjectMetaData } from 'tv2-common'
 import { SwitcherAuxLLayer, SwitcherDskLLayer, SwitcherMixEffectLLayer } from 'tv2-constants'
 import { AtemSourceIndex } from '../../types/atem'
 
 export enum SwitcherType {
 	ATEM = 'ATEM',
-	TRICASTER = 'TRICASTER'
+	TRICASTER = 'TRICASTER',
+	M2LX = 'M2L-X'
+}
+
+export function isM2LXSwitcher(value: unknown): boolean {
+	return value === SwitcherType.M2LX || value === 'M2LX'
+}
+
+export function numericSwitcherInput(input: SwitcherInput): number {
+	const value = typeof input === 'string' && /^-?\d+$/.test(input) ? Number(input) : input
+	if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < -1) {
+		throw new Error('ATEM and TriCaster inputs must be integer input numbers')
+	}
+	return value
 }
 
 /** Using Atem values for compatibility */
@@ -68,11 +81,12 @@ type TimelineObjectEnable = TSR.TSRTimelineObj['enable']
 export interface MixEffectProps extends TimelineObjectProps {
 	layer: SwitcherMixEffectLLayer
 	content: {
-		input?: number | SpecialInput
-		previewInput?: number | SpecialInput
+		input?: SwitcherInput
+		previewInput?: SwitcherInput
 		transition?: TransitionStyle
 		/** Transition duration (frames) */
 		transitionDuration?: number
+		wipeDirection?: string
 		atemTransitionSettings?: TSR.AtemTransitionSettings
 		keyers?: Keyer[]
 		transitionKeyers?: boolean
@@ -97,7 +111,7 @@ export interface DskProps extends TimelineObjectProps {
 export interface AuxProps extends TimelineObjectProps {
 	layer: SwitcherAuxLLayer
 	content: {
-		input: number | SpecialInput
+		input: SwitcherInput
 	}
 }
 
@@ -105,12 +119,14 @@ export interface DveProps extends TimelineObjectProps {
 	content: {
 		boxes: any // @todo
 		template: any // @todo
-		artFillSource: number | SpecialInput
-		artCutSource: number | SpecialInput
+		artFillSource: SwitcherInput
+		artCutSource: SwitcherInput
+		artEnabled?: boolean
 	}
 }
 
 export interface VideoSwitcher {
+	readonly type: SwitcherType
 	isMixEffect(timelineObject: TimelineObjectCoreExt): boolean
 	getMixEffectTimelineObject(properties: MixEffectProps): TSR.TSRTimelineObj
 
@@ -130,19 +146,21 @@ export interface VideoSwitcher {
 		timelineObject: TimelineObjectCoreExt,
 		transition: TransitionStyle,
 		transitionDuration?: number,
-		atemTransitionSettings?: TSR.AtemTransitionSettings
+		atemTransitionSettings?: TSR.AtemTransitionSettings,
+		wipeDirection?: string
 	): TSR.TSRTimelineObj
-	updatePreviewInput(timelineObject: TimelineObjectCoreExt, previewInput: number | SpecialInput): TSR.TSRTimelineObj
-	updateInput(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
+	updatePreviewInput(timelineObject: TimelineObjectCoreExt, previewInput: SwitcherInput): TSR.TSRTimelineObj
+	updateInput(timelineObject: TimelineObjectCoreExt, input: SwitcherInput): TSR.TSRTimelineObj
 
 	isDsk(timelineObject: TimelineObjectCoreExt): boolean
 	getDskTimelineObject(properties: DskProps): TSR.TSRTimelineObj
 
 	isAux(timelineObject: TimelineObjectCoreExt): boolean
+	supportsAuxLayer(layer: SwitcherAuxLLayer): boolean
 	getAuxTimelineObject(properties: AuxProps): TSR.TSRTimelineObj
-	updateAuxInput(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
+	updateAuxInput(timelineObject: TimelineObjectCoreExt, input: SwitcherInput): TSR.TSRTimelineObj
 
 	isDveBoxes(timelineObject: TimelineObjectCoreExt): boolean
 	getDveTimelineObjects(properties: DveProps): TSR.TSRTimelineObj[]
-	updateUnpopulatedDveBoxes(timelineObject: TimelineObjectCoreExt, input: number | SpecialInput): TSR.TSRTimelineObj
+	updateUnpopulatedDveBoxes(timelineObject: TimelineObjectCoreExt, input: SwitcherInput): TSR.TSRTimelineObj
 }

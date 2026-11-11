@@ -1,5 +1,5 @@
 import { TSR } from 'blueprints-integration'
-import { literal } from 'tv2-common'
+import { literal, SwitcherInput } from 'tv2-common'
 import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { AtemSourceIndex } from '../../types/atem'
@@ -11,6 +11,7 @@ import {
 	DveProps,
 	Keyer,
 	MixEffectProps,
+	numericSwitcherInput,
 	SpecialInput,
 	SwitcherType,
 	TIMELINE_OBJECT_DEFAULTS,
@@ -50,8 +51,8 @@ export class Atem extends VideoSwitcherBase {
 							this.getTransitionSettings(content.transition, content.transitionDuration)
 				  }
 				: {
-						programInput: content.input && this.getInputNumber(content.input),
-						previewInput: content.previewInput && this.getInputNumber(content.previewInput)
+						programInput: content.input === undefined ? undefined : this.getInputNumber(content.input),
+						previewInput: content.previewInput === undefined ? undefined : this.getInputNumber(content.previewInput)
 				  }
 		const upstreamKeyers = content.keyers && this.getUpstreamKeyers(content.keyers)
 		if (upstreamKeyers) {
@@ -103,10 +104,7 @@ export class Atem extends VideoSwitcherBase {
 			atemTransitionSettings ?? this.getTransitionSettings(transition, transitionDuration)
 		return timelineObject
 	}
-	public updatePreviewInput(
-		timelineObject: TSR.TSRTimelineObj,
-		previewInput: number | SpecialInput
-	): TSR.TSRTimelineObj {
+	public updatePreviewInput(timelineObject: TSR.TSRTimelineObj, previewInput: SwitcherInput): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
 			this.logWrongTimelineObjectType(timelineObject, this.updatePreviewInput.name)
 			return timelineObject
@@ -114,7 +112,7 @@ export class Atem extends VideoSwitcherBase {
 		timelineObject.content.me.previewInput = this.getInputNumber(previewInput)
 		return timelineObject
 	}
-	public updateInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
+	public updateInput(timelineObject: TSR.TSRTimelineObj, input: SwitcherInput): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
 			this.logWrongTimelineObjectType(timelineObject, this.updateInput.name)
 			return timelineObject
@@ -179,13 +177,19 @@ export class Atem extends VideoSwitcherBase {
 		)
 	}
 	public getDveTimelineObjects(props: DveProps): TSR.TSRTimelineObj[] {
+		const boxes: Array<Omit<TSR.SuperSourceBox, 'source'> & { source?: SwitcherInput }> = props.content.boxes
 		return [
 			literal<TSR.TimelineObjAtemSsrc & TimelineBlueprintExt>({
 				...this.getBaseProperties(props, SwitcherDveLLayer.DveBoxes),
 				content: {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRC,
-					ssrc: { boxes: props.content.boxes }
+					ssrc: {
+						boxes: boxes.map(box => ({
+							...box,
+							source: box.source === undefined ? undefined : this.getInputNumber(box.source)
+						}))
+					}
 				}
 			}),
 			literal<TSR.TimelineObjAtemSsrcProps>({
@@ -194,8 +198,8 @@ export class Atem extends VideoSwitcherBase {
 					deviceType: TSR.DeviceType.ATEM,
 					type: TSR.TimelineContentTypeAtem.SSRCPROPS,
 					ssrcProps: {
-						artFillSource: props.content.artFillSource,
-						artCutSource: props.content.artCutSource,
+						artFillSource: this.getInputNumber(props.content.artFillSource),
+						artCutSource: this.getInputNumber(props.content.artCutSource),
 						artOption: 1,
 						...(props.content.template.properties && props.content.template.properties?.artPreMultiplied === false
 							? {
@@ -215,7 +219,7 @@ export class Atem extends VideoSwitcherBase {
 			})
 		]
 	}
-	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
+	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: SwitcherInput): TSR.TSRTimelineObj {
 		if (!this.isAux(timelineObject)) {
 			this.logWrongTimelineObjectType(timelineObject, this.updateAuxInput.name)
 			return timelineObject
@@ -229,10 +233,7 @@ export class Atem extends VideoSwitcherBase {
 			timelineObject.content.type === TSR.TimelineContentTypeAtem.SSRC
 		)
 	}
-	public updateUnpopulatedDveBoxes(
-		timelineObject: TSR.TSRTimelineObj,
-		input: number | SpecialInput
-	): TSR.TSRTimelineObj {
+	public updateUnpopulatedDveBoxes(timelineObject: TSR.TSRTimelineObj, input: SwitcherInput): TSR.TSRTimelineObj {
 		if (!this.isDveBoxes(timelineObject)) {
 			this.logWrongTimelineObjectType(timelineObject, this.updateUnpopulatedDveBoxes.name)
 			return timelineObject
@@ -256,9 +257,8 @@ export class Atem extends VideoSwitcherBase {
 		}
 	}
 
-	private getInputNumber(input: number | SpecialInput) {
-		// this is kind of pointless, but I'm not sure SpecialInput being ATEM values is right
-		return input
+	private getInputNumber(input: SwitcherInput) {
+		return numericSwitcherInput(input)
 	}
 	private getTransition(transition: TransitionStyle) {
 		return TRANSITION_MAP[transition]
@@ -273,7 +273,12 @@ export class Atem extends VideoSwitcherBase {
 				return undefined
 			case TransitionStyle.DIP:
 				return duration
-					? { dip: { rate: duration, input: this.config.studio?.SwitcherSource?.Dip ?? AtemSourceIndex.Col2 } }
+					? {
+							dip: {
+								rate: duration,
+								input: this.getInputNumber(this.config.studio?.SwitcherSource?.Dip ?? AtemSourceIndex.Col2)
+							}
+					  }
 					: undefined
 			case TransitionStyle.MIX:
 				return duration ? { mix: { rate: duration } } : undefined
@@ -299,8 +304,8 @@ export class Atem extends VideoSwitcherBase {
 			onAir: keyer.onAir,
 			mixEffectKeyType: 0,
 			flyEnabled: false,
-			fillSource: keyer.config.Fill,
-			cutSource: keyer.config.Key,
+			fillSource: this.getInputNumber(keyer.config.Fill),
+			cutSource: this.getInputNumber(keyer.config.Key),
 			maskEnabled: false,
 			lumaSettings: {
 				clip: keyer.config.Clip * 10, // input is percents (0-100), atem uses 1-000
