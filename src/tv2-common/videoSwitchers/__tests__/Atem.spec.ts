@@ -17,6 +17,24 @@ function setupAtem(studioConfigOverrides?: Partial<TV2StudioConfigBase>) {
 }
 
 describe('ATEM', () => {
+	test('preserves fractional DVE geometry without applying M2L-X pixel validation', () => {
+		const box = { source: 4, enabled: true, x: -800.5, y: 60.25, size: 500.5 }
+		const object = setupAtem().getDveTimelineObjects({
+			content: { boxes: [box], template: {}, artFillSource: 9, artCutSource: 10 }
+		})[0]
+		expect(object.content).toMatchObject({ ssrc: { boxes: [box] } })
+	})
+
+	test('normalizes numeric input text and rejects native source names instead of selecting black', () => {
+		const atem = setupAtem()
+		const object = atem.getMixEffectTimelineObject({
+			layer: SwitcherMixEffectLLayer.Program,
+			content: { input: '5', previewInput: '0' }
+		})
+		expect(object).toMatchObject({ content: { me: { programInput: 5, previewInput: 0 } } })
+		expect(() => atem.updateInput(object, 'camera_name')).toThrow('integer input numbers')
+	})
+
 	test.each([TransitionStyle.MIX, TransitionStyle.DIP, TransitionStyle.WIPE])(
 		'does not invent a transition rate for %s without a configured frame duration',
 		transition => {

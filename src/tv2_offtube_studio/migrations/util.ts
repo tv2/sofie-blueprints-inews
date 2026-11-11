@@ -5,6 +5,7 @@ import {
 	MigrationStepInputFilteredResult,
 	MigrationStepStudio
 } from 'blueprints-integration'
+import { isM2LXSwitcher } from 'tv2-common'
 import * as _ from 'underscore'
 import { OfftubeSisyfosLLayer } from '../layers'
 import MappingsDefaults from './mappings-defaults'
@@ -109,6 +110,9 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 				canBeRunAutomatically: true,
 				validate: (context: MigrationContextStudio) => {
 					// Optional mappings based on studio settings can be dropped here
+					if (isM2LXSwitcher(context.getConfig('SwitcherType')) && id.startsWith('atem_')) {
+						return false
+					}
 
 					if (!context.getMapping(id)) {
 						return `Mapping "${id}" doesn't exist on ShowBaseStyle`
@@ -116,6 +120,9 @@ export function getMappingsDefaultsMigrationSteps(versionStr: string): Migration
 					return false
 				},
 				migrate: (context: MigrationContextStudio) => {
+					if (isM2LXSwitcher(context.getConfig('SwitcherType')) && id.startsWith('atem_')) {
+						return
+					}
 					if (!context.getMapping(id)) {
 						context.insertMapping(id, defaultVal)
 					}

@@ -1,5 +1,5 @@
 import { IBlueprintPiece, PieceLifespan, TSR } from 'blueprints-integration'
-import { CueDefinitionMixMinus, findSourceInfo, PartDefinition, ShowStyleContext } from 'tv2-common'
+import { CueDefinitionMixMinus, findSourceInfo, PartDefinition, ShowStyleContext, SwitcherInput } from 'tv2-common'
 import { ControlClasses, SharedOutputLayer, SharedSourceLayer, SwitcherAuxLLayer } from 'tv2-constants'
 
 export function EvaluateCueMixMinus(
@@ -45,7 +45,7 @@ export enum MixMinusPriority {
 
 export function getMixMinusTimelineObject(
 	context: ShowStyleContext,
-	switcherInput: number,
+	switcherInput: SwitcherInput,
 	priority: MixMinusPriority
 ): TSR.TSRTimelineObj {
 	return context.videoSwitcher.getAuxTimelineObject({

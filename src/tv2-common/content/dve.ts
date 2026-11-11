@@ -24,6 +24,8 @@ import {
 	PieceMetaData,
 	ShowStyleContext,
 	SpecialInput,
+	SwitcherInput,
+	SwitcherType,
 	TransitionStyle,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
@@ -37,9 +39,12 @@ import {
 	GetSisyfosTimelineObjForCamera,
 	GetSisyfosTimelineObjForFull,
 	GetSisyfosTimelineObjForRemote,
-	GetSisyfosTimelineObjForReplay
+	GetSisyfosTimelineObjForReplay,
+	GetTimelineLayerForGraphic
 } from '../helpers'
 import { SourceDefinition } from '../inewsConversion'
+import { m2lxAssert, M2LXConfigurationError } from '../videoSwitchers/m2lxConfig'
+import { M2LXLayout, parseM2LXLayout } from '../videoSwitchers/m2lxLayout'
 import { EnableServer } from './server'
 
 export interface DVEConfigBox {
@@ -112,7 +117,9 @@ export interface DVEOptions {
 	dveLayers: DVELayers
 }
 
-type BoxConfig = DVEConfigBox & { source: number }
+interface BoxConfig {
+	source: SwitcherInput
+}
 type BoxSources = Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) & SplitsContentBoxProperties>
 
 export function MakeContentDVEBase<
@@ -162,9 +169,9 @@ export function MakeContentDVE2<
 	dveGeneratorOptions: DVEOptions,
 	mediaPlayerSessionId?: string
 ): { content: WithTimeline<SplitsContent>; valid: boolean } {
-	let template: DVEConfig
+	let template: DVEConfig | M2LXLayout
 	try {
-		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
+		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig | M2LXLayout
 	} catch (e) {
 		context.core.notifyUserWarning(`DVE Config JSON is not valid for ${dveConfig.DVEName}`)
 		return {
@@ -174,6 +181,34 @@ export function MakeContentDVE2<
 				timelineObjects: []
 			}
 		}
+	}
+	const native = context.videoSwitcher.type === SwitcherType.M2LX
+	const hasLocators = !!(dveConfig.DVEGraphicsTemplateJSON || Object.keys(graphicsTemplateContent).length)
+	const hasGraphics = !!(dveConfig.DVEGraphicsKey || dveConfig.DVEGraphicsFrame || hasLocators)
+	try {
+		if (native) {
+			template = parseM2LXLayout(
+				template,
+				context.config.studio.SwitcherSource.SplitBackground ?? context.config.studio.SwitcherSource.Default
+			)
+			m2lxAssert(context.uniformConfig.profile === 'singleMixer', 'native DVEJSON requires the M2L-X Offtube profile')
+			m2lxAssert(
+				!hasLocators ||
+					GetTimelineLayerForGraphic(context.config, 'locators') === SharedGraphicLLayer.GraphicLLayerLocators,
+				'configure the locators graphics template to use the Split Screen locators layer before using labels or locator styles'
+			)
+		} else {
+			m2lxAssert(
+				context.uniformConfig.profile !== 'singleMixer',
+				'Split Screen layouts must use the geometry of the studio video switcher'
+			)
+		}
+	} catch (error) {
+		if (!(error instanceof M2LXConfigurationError)) {
+			throw error
+		}
+		context.core.notifyUserWarning(error.message)
+		return { valid: false, content: { boxSourceConfiguration: [], timelineObjects: [] } }
 	}
 
 	const inputs = dveConfig.DVEInputs
@@ -188,13 +223,29 @@ export function MakeContentDVE2<
 	}))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
 	const boxSources: BoxSources = []
-	const cameraSources: number[] = []
+	const cameraSources: SwitcherInput[] = []
 
 	let valid = true
 	let hasServer = false
 
-	boxAssigments.forEach((mappingFrom, num) => {
+	const assignments = native
+		? Array.from({ length: Math.max(boxes.length, boxAssigments.length) }, (_value, index) => boxAssigments[index])
+		: boxAssigments
+	assignments.forEach((mappingFrom, num) => {
 		const box = boxes[num]
+		if (native) {
+			const geometry = Object.values((template as M2LXLayout).boxes)[num]
+			if (!geometry) {
+				if (mappingFrom) {
+					context.core.notifyUserWarning(`Native DVEInputs refers to missing box ${num + 1}`)
+					valid = false
+				}
+				return
+			}
+			if (!geometry.enabled) {
+				return
+			}
+		}
 		if (mappingFrom === undefined) {
 			if (sources) {
 				// If it is intentional there are no sources, then ignore
@@ -272,6 +323,11 @@ export function MakeContentDVE2<
 						port: -1
 					})
 					break
+				default:
+					if (native) {
+						context.core.notifyUserWarning(`Unsupported native DVE source for box ${num + 1}`)
+						valid = false
+					}
 			}
 		}
 	})
@@ -283,6 +339,9 @@ export function MakeContentDVE2<
 		}
 	} catch {
 		context.core.notifyUserWarning(`DVE Graphics Template JSON is not valid for ${dveConfig.DVEName}`)
+		if (native) {
+			return { valid: false, content: { boxSourceConfiguration: [], timelineObjects: [] } }
+		}
 	}
 
 	let keyFile = dveConfig.DVEGraphicsKey ? dveConfig.DVEGraphicsKey.toString() : undefined
@@ -296,47 +355,66 @@ export function MakeContentDVE2<
 		frameFile = joinAssetToFolder(context.config.studio.DVEFolder, frameFile)
 	}
 
-	if (cameraSources.length === 1) {
+	if (!native && cameraSources.length === 1) {
 		dveTimeline.push(getMixMinusTimelineObject(context, cameraSources[0], MixMinusPriority.CUSTOM_INPUT))
 	}
 
+	let switcherTimeline: TSR.TSRTimelineObj[]
+	try {
+		switcherTimeline = [
+			...context.videoSwitcher.getDveTimelineObjects({
+				priority: 1,
+				...(native
+					? {
+							enable: { start: context.config.studio.CasparPrerollDuration },
+							classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
+					  }
+					: {}),
+				content: {
+					boxes,
+					template,
+					artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
+					artCutSource: context.config.studio.SwitcherSource.SplitArtKey,
+					artEnabled: hasGraphics
+				},
+				metaData: { mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined }
+			}),
+			...(native
+				? []
+				: context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
+						enable: { start: context.config.studio.CasparPrerollDuration },
+						priority: 1,
+						content: { input: SpecialInput.DVE, transition: TransitionStyle.CUT },
+						classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
+				  }))
+		]
+	} catch (error) {
+		if (!(error instanceof M2LXConfigurationError)) {
+			throw error
+		}
+		context.core.notifyUserWarning(error.message)
+		return { valid: false, content: { boxSourceConfiguration: [], timelineObjects: [] } }
+	}
 	return {
 		valid,
 		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
-				// setup ssrc
-				...context.videoSwitcher.getDveTimelineObjects({
-					priority: 1,
-					content: {
-						boxes,
-						template,
-						artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
-						artCutSource: context.config.studio.SwitcherSource.SplitArtKey
-					},
-					metaData: {
-						mediaPlayerSession: hasServer ? mediaPlayerSessionId ?? MEDIA_PLAYER_AUTO : undefined
-					}
-				}),
-				...context.videoSwitcher.getOnAirTimelineObjectsWithLookahead({
-					enable: { start: context.config.studio.CasparPrerollDuration },
-					priority: 1,
-					content: {
-						input: SpecialInput.DVE,
-						transition: TransitionStyle.CUT
-					},
-					classes: [ControlClasses.OVERRIDDEN_ON_MIX_MINUS]
-				}),
-				literal<TSR.TimelineObjCCGTemplate>({
-					id: '',
-					enable: { start: 0 },
-					priority: 1,
-					layer: SharedGraphicLLayer.GraphicLLayerLocators,
-					content: CreateHTMLRendererContent(context.config, 'locators', {
-						...graphicsTemplateContent,
-						style: graphicsTemplateStyle ?? {}
-					})
-				}),
+				...switcherTimeline,
+				...(!native || hasLocators
+					? [
+							literal<TSR.TimelineObjCCGTemplate>({
+								id: '',
+								enable: { start: 0 },
+								priority: 1,
+								layer: SharedGraphicLLayer.GraphicLLayerLocators,
+								content: CreateHTMLRendererContent(context.config, 'locators', {
+									...graphicsTemplateContent,
+									style: graphicsTemplateStyle ?? {}
+								})
+							})
+					  ]
+					: []),
 				...(keyFile
 					? [
 							literal<TSR.TimelineObjCCGMedia>({
@@ -382,7 +460,7 @@ export function MakeContentDVE2<
 const setBoxSource = (
 	boxConfig: BoxConfig,
 	boxSources: BoxSources,
-	sourceInfo: { port: number; sourceLayerType: SourceLayerType }
+	sourceInfo: { port: SwitcherInput; sourceLayerType: SourceLayerType }
 ) => {
 	if (boxConfig) {
 		boxConfig.source = sourceInfo.port
@@ -434,10 +512,10 @@ function makeBoxAssignments(inputs: string[], context: IShowStyleUserContext, so
 }
 
 function boxSource(info: {
-	port: number
+	port: SwitcherInput
 	sourceLayerType: SourceLayerType
 }): {
-	switcherInput: number
+	switcherInput: SwitcherInput
 	type: SourceLayerType
 } {
 	return {

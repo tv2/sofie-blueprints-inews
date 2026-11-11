@@ -13,6 +13,40 @@ function setup() {
 }
 
 describe('TriCaster', () => {
+	test('preserves fractional DVE positions and scale without M2L-X pixel rounding', () => {
+		const box = {
+			source: 4,
+			enabled: true,
+			x: -800.5,
+			y: 60.25,
+			size: 500.5,
+			cropped: false,
+			cropTop: 0,
+			cropBottom: 0,
+			cropLeft: 0,
+			cropRight: 0
+		}
+		const me = setup().switcher.getDveTimelineObjects({
+			content: { boxes: [box], template: {}, artFillSource: 9, artCutSource: 10 }
+		})[0].content.me
+		if (!('layers' in me)) {
+			throw new Error('Expected DVE effect layers')
+		}
+		expect(me.layers?.a?.position?.x).toBeCloseTo(-0.8894444444444445, 12)
+		expect(me.layers?.a?.position?.y).toBeCloseTo(-0.06694444444444445, 12)
+		expect(me.layers?.a?.scale).toEqual({ x: 0.5005, y: 0.5005 })
+	})
+
+	test('normalizes numeric input text and rejects native source names instead of selecting black', () => {
+		const { switcher } = setup()
+		const object = switcher.getMixEffectTimelineObject({
+			layer: SwitcherMixEffectLLayer.Program,
+			content: { input: '5', previewInput: '0' }
+		})
+		expect(object.content.me).toMatchObject({ programInput: 'input5', previewInput: 'black' })
+		expect(() => switcher.updateInput(object, 'camera_name')).toThrow('integer input numbers')
+	})
+
 	test.each([
 		[TransitionStyle.CUT, 'cut'],
 		[TransitionStyle.MIX, 'fade'],

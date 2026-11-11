@@ -1,5 +1,5 @@
 import { IStudioContext, TimelineObjectCoreExt, TSR } from 'blueprints-integration'
-import { FRAME_RATE, getTimeFromFrames, literal, TV2StudioConfig, UniformConfig } from 'tv2-common'
+import { FRAME_RATE, getTimeFromFrames, literal, SwitcherInput, TV2StudioConfig, UniformConfig } from 'tv2-common'
 import { SwitcherDveLLayer } from 'tv2-constants'
 import _ = require('underscore')
 import { TRICASTER_DVE_ME, TRICASTER_LAYER_PREFIX } from '../layers'
@@ -10,6 +10,7 @@ import {
 	DveProps,
 	Keyer,
 	MixEffectProps,
+	numericSwitcherInput,
 	SpecialInput,
 	SwitcherType,
 	TemporalPriority,
@@ -109,10 +110,7 @@ export class TriCaster extends VideoSwitcherBase {
 		return timelineObject
 	}
 
-	public updatePreviewInput(
-		timelineObject: TSR.TSRTimelineObj,
-		previewInput: number | SpecialInput
-	): TSR.TSRTimelineObj {
+	public updatePreviewInput(timelineObject: TSR.TSRTimelineObj, previewInput: SwitcherInput): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
 			this.logWrongTimelineObjectType(timelineObject, this.updatePreviewInput.name)
 			return timelineObject
@@ -121,7 +119,7 @@ export class TriCaster extends VideoSwitcherBase {
 		return timelineObject
 	}
 
-	public updateInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
+	public updateInput(timelineObject: TSR.TSRTimelineObj, input: SwitcherInput): TSR.TSRTimelineObj {
 		if (!this.isMixEffect(timelineObject)) {
 			this.logWrongTimelineObjectType(timelineObject, this.updateInput.name)
 			return timelineObject
@@ -178,7 +176,7 @@ export class TriCaster extends VideoSwitcherBase {
 		}
 	}
 
-	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: number | SpecialInput): TSR.TSRTimelineObj {
+	public updateAuxInput(timelineObject: TSR.TSRTimelineObj, input: SwitcherInput): TSR.TSRTimelineObj {
 		if (!this.isAux(timelineObject)) {
 			this.logWrongTimelineObjectType(timelineObject, this.updateAuxInput.name)
 			return timelineObject
@@ -199,10 +197,7 @@ export class TriCaster extends VideoSwitcherBase {
 		)
 	}
 
-	public updateUnpopulatedDveBoxes(
-		timelineObject: TSR.TSRTimelineObj,
-		input: number | SpecialInput
-	): TSR.TSRTimelineObj {
+	public updateUnpopulatedDveBoxes(timelineObject: TSR.TSRTimelineObj, input: SwitcherInput): TSR.TSRTimelineObj {
 		if (!this.isDveBoxes(timelineObject)) {
 			this.logWrongTimelineObjectType(timelineObject, this.updateUnpopulatedDveBoxes.name)
 			return timelineObject
@@ -214,7 +209,7 @@ export class TriCaster extends VideoSwitcherBase {
 		return timelineObject
 	}
 
-	public assignInputIfPlaceholder(layer: TSR.TriCasterLayer, input: number | SpecialInput): void {
+	public assignInputIfPlaceholder(layer: TSR.TriCasterLayer, input: SwitcherInput): void {
 		const dveServerPlaceholder = this.getInputName(SpecialInput.AB_PLACEHOLDER)
 		if (layer.input !== dveServerPlaceholder) {
 			return
@@ -287,9 +282,7 @@ export class TriCaster extends VideoSwitcherBase {
 		}
 	}
 
-	private generateOverlayKeyer(
-		overlaySource: number | SpecialInput
-	): Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> {
+	private generateOverlayKeyer(overlaySource: SwitcherInput): Record<TSR.TriCasterKeyerName, TSR.TriCasterKeyer> {
 		return {
 			dsk1: {
 				input: this.getInputName(overlaySource),
@@ -334,16 +327,17 @@ export class TriCaster extends VideoSwitcherBase {
 		}, {})
 	}
 
-	private getInputName(input: number | SpecialInput): TSR.TriCasterSourceName | TSR.TriCasterMixEffectName
+	private getInputName(input: SwitcherInput): TSR.TriCasterSourceName | TSR.TriCasterMixEffectName
 	private getInputName(
-		input: number | SpecialInput | undefined
+		input: SwitcherInput | undefined
 	): TSR.TriCasterSourceName | TSR.TriCasterMixEffectName | undefined
 	private getInputName(
-		input: number | SpecialInput | undefined
+		input: SwitcherInput | undefined
 	): TSR.TriCasterSourceName | TSR.TriCasterMixEffectName | undefined {
 		if (typeof input === 'undefined') {
 			return undefined
 		}
+		input = numericSwitcherInput(input)
 		const specialSourceName = SPECIAL_INPUT_MAP[input]
 		if (specialSourceName) {
 			return specialSourceName
@@ -354,7 +348,8 @@ export class TriCaster extends VideoSwitcherBase {
 		return 'black'
 	}
 
-	private getInputNameForMatrix(input: number | SpecialInput): TSR.TriCasterSourceName | TSR.TriCasterMixOutputName {
+	private getInputNameForMatrix(input: SwitcherInput): TSR.TriCasterSourceName | TSR.TriCasterMixOutputName {
+		input = numericSwitcherInput(input)
 		if (input === SpecialInput.BLACK) {
 			return 'black'
 		}

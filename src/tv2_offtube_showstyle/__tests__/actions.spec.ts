@@ -19,6 +19,7 @@ import {
 	RemoteType,
 	SourceDefinitionKam,
 	SourceDefinitionRemote,
+	SwitcherType,
 	TableConfigItemBreakers,
 	TableConfigItemUnderlyingTransition
 } from 'tv2-common'
@@ -32,6 +33,7 @@ import {
 	SwitcherMixEffectLLayer
 } from 'tv2-constants'
 import { ActionExecutionContext, ActionExecutionContextMock } from '../../__mocks__/context'
+import { m2lxStudioSettings } from '../../__mocks__/m2lx'
 import { prefixLayer } from '../../tv2-common/__tests__/testUtil'
 import { defaultShowStyleConfig, defaultStudioConfig } from '../../tv2_afvd_showstyle/__tests__/configs'
 import { OfftubeStudioConfig, preprocessConfig as parseStudioConfig } from '../../tv2_offtube_studio/helpers/config'
@@ -414,6 +416,61 @@ function expectATEMToMixOver(piece: IBlueprintPieceInstance, frames: number) {
 	expect(atemObj.content.me.transition).toBe(TSR.AtemTransitionStyle.MIX)
 	expect(atemObj.content.me.transitionSettings?.mix).toStrictEqual({ rate: frames })
 }
+
+describe('M2L-X wipe shortcuts', () => {
+	it.each([undefined, 'Right'])(
+		'applies direction %s and preserves it when changing the queued source',
+		async wipeDirection => {
+			const settings = m2lxStudioSettings(
+				JSON.stringify({
+					sources: [{ input: 1, source: 'ndi1' }],
+					keyers: [],
+					routers: []
+				})
+			)
+			const context = new ActionExecutionContext(
+				'wipe actions',
+				settings.mappingDefaults,
+				parseStudioConfig,
+				parseShowStyleConfig,
+				RUNDOWN_ID,
+				SEGMENT_ID,
+				CURRENT_PART_ID,
+				JSON.parse(JSON.stringify(currentPartMock)),
+				[]
+			)
+			context.studioConfig = {
+				...JSON.parse(JSON.stringify(defaultStudioConfig)),
+				...settings.studioConfig,
+				SwitcherType: SwitcherType.M2LX
+			}
+			context.showStyleConfig = JSON.parse(JSON.stringify(defaultShowStyleConfig))
+			context.showStyleConfig.DefaultWipeDirection = 'Left'
+			await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
+			const transition: ActionTakeWithTransition = {
+				type: AdlibActionType.TAKE_WITH_TRANSITION,
+				variant: { type: 'wipe', frames: 10, wipeDirection },
+				takeNow: false
+			}
+			await executeActionOfftube(context, transition.type, transition)
+			await executeActionOfftube(context, selectCameraAction.type, selectCameraAction)
+			const camera = (await getCameraPiece(context, 'next'))!
+			const mixer = (camera.piece.content.timelineObjects as TSR.TSRTimelineObj[]).find(TSR.isTimelineObjM2LXMixer)
+			expect(mixer?.content.mixer.transition).toEqual({
+				type: 'effect',
+				effect: { name: wipeDirection === 'Right' ? 'wipe_right' : 'wipe_left', duration: 0.4 }
+			})
+			expect(context.nextPart?.part.inTransition).toEqual({
+				previousPartKeepaliveDuration: 400,
+				blockTakeDuration: 400,
+				partContentDelayDuration: 0
+			})
+			expect(context.nextPieceInstances!.filter(piece => piece.piece.name === 'WIPE 10')).toHaveLength(1)
+			expect(context.takeAfterExecute).toBe(false)
+			validateNoWarningsOrErrors(context)
+		}
+	)
+})
 
 describe('Underlying breaker mix actions', () => {
 	function makeMixContext(

@@ -51,6 +51,7 @@ import {
 	ServerSelectMode,
 	ShowStyleContext,
 	SisyfosPersistMetaData,
+	SwitcherType,
 	TimelineBlueprintExt,
 	TransitionStyle,
 	TV2AdlibAction,
@@ -76,7 +77,8 @@ import {
 	ApplyUnderlyingTransitionToPieces,
 	CreateEffektForPartBase,
 	CreateEffektForPartInner,
-	CreateMixTransitionBlueprintPieceForPart
+	CreateMixTransitionBlueprintPieceForPart,
+	CreateWipeTransitionBlueprintPieceForPart
 } from '../parts'
 import {
 	GetTagForDVE,
@@ -309,6 +311,19 @@ async function getExistingTransition<
 	}
 
 	const transition = existingTransition.piece.name
+
+	const wipe = transition.match(/^WIPE (\d+)$/)
+	if (wipe) {
+		return {
+			type: AdlibActionType.TAKE_WITH_TRANSITION,
+			variant: {
+				type: 'wipe',
+				frames: Number(wipe[1]),
+				wipeDirection: existingTransition.piece.metaData?.wipeDirection
+			},
+			takeNow: false
+		}
+	}
 
 	// Case sensitive! Blueprints will set these names correctly.
 	const transitionProps = transition.match(/CUT|MIX (\d+)|DIP (\d+)|EFFEKT (\d+)/)
@@ -573,6 +588,9 @@ async function executeActionSelectDVE<
 		settings.DVEGeneratorOptions,
 		externalId
 	)
+	if (!pieceContent.valid) {
+		return
+	}
 
 	let start = parsedCue.start ? calculateTime(parsedCue.start) : 0
 	start = start ? start : 0
@@ -826,6 +844,9 @@ async function executeActionSelectDVELayout<
 	}
 
 	const pieceContent = MakeContentDVE2(context, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
+	if (!pieceContent.valid) {
+		return
+	}
 	let dvePiece: IBlueprintPiece<DVEPieceMetaData> = {
 		...nextDVE.piece,
 		content: pieceContent.content,
@@ -1378,6 +1399,11 @@ async function executeActionTakeWithTransition<
 ) {
 	const externalId = generateExternalId(context, actionId, [userData.variant.type])
 
+	if (userData.variant.type === 'wipe' && context.videoSwitcher.type !== SwitcherType.M2LX) {
+		context.core.notifyUserWarning('Mixer wipe direction shortcuts are only available for M2L-X.')
+		return
+	}
+
 	const nextPieces = await context.core.getPieceInstances('next')
 
 	const nextPiecesBySourceLayer = groupPiecesBySourceLayer(nextPieces)
@@ -1479,6 +1505,25 @@ async function executeActionTakeWithTransition<
 			}
 			break
 		}
+		case 'wipe': {
+			await updateTransition(
+				context,
+				mixEffectTimelineObjects,
+				primaryPiece,
+				TransitionStyle.WIPE,
+				userData.variant.frames,
+				userData.variant.wipeDirection
+			)
+			const blueprintPiece = CreateWipeTransitionBlueprintPieceForPart(
+				externalId,
+				userData.variant.frames,
+				settings.SourceLayers.Effekt,
+				userData.variant.wipeDirection
+			)
+			await context.core.updatePartInstance('next', createInTransitionForTransitionStyle(userData.variant.frames))
+			await context.core.insertPiece('next', blueprintPiece)
+			break
+		}
 		case 'mix': {
 			await updateTransition(
 				context,
@@ -1527,10 +1572,17 @@ async function updateTransition(
 	timelineObjects: TimelineObjectCoreExt[],
 	pieceInstance: IBlueprintPieceInstance<PieceMetaData>,
 	transitionStyle: TransitionStyle,
-	transitionDuration?: number
+	transitionDuration?: number,
+	wipeDirection?: string
 ): Promise<void> {
 	for (const timelineObject of timelineObjects) {
-		context.videoSwitcher.updateTransition(timelineObject, transitionStyle, transitionDuration)
+		context.videoSwitcher.updateTransition(
+			timelineObject,
+			transitionStyle,
+			transitionDuration,
+			undefined,
+			wipeDirection
+		)
 	}
 	await context.core.updatePieceInstance(pieceInstance._id, pieceInstance.piece)
 }

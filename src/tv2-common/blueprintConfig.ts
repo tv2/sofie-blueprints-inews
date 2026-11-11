@@ -2,6 +2,7 @@ import { TableConfigItemValue } from 'blueprints-integration'
 import {
 	DVEConfigInput,
 	SourceInfo,
+	SwitcherInput,
 	SwitcherType,
 	TableConfigItemDSK,
 	TableConfigItemSourceMappingWithSisyfos
@@ -63,6 +64,7 @@ export interface TableConfigItemOverlayShowMapping {
 
 export interface TableConfigItemAdLibTransitions {
 	Transition: string
+	WipeDirection?: string
 }
 
 export interface TableConfigSchema {
@@ -131,11 +133,12 @@ export interface TV2StudioConfigBase {
 	ABPlaybackDebugLogging: boolean
 	SwitcherType: SwitcherType
 	SwitcherSource: {
-		Default: number
-		SplitArtFill: number
-		SplitArtKey: number
+		Default: SwitcherInput
+		SplitArtFill: SwitcherInput
+		SplitArtKey: SwitcherInput
+		SplitBackground?: SwitcherInput
 		DSK: TableConfigItemDSK[]
-		Dip: number
+		Dip: SwitcherInput
 	}
 	AtemSettings: {}
 	StudioMics: string[]
@@ -159,7 +162,7 @@ export interface TV2StudioConfigBase {
 		PrerollDuration: number
 		OutTransitionDuration: number
 		CutToMediaPlayer: number
-		FullGraphicBackground: number
+		FullGraphicBackground: SwitcherInput
 	}
 
 	AudioBedSettings: {
@@ -194,6 +197,7 @@ export interface TV2ShowstyleBlueprintConfigBase {
 	GfxDesignTemplates: TableConfigItemGfxDesignTemplate[]
 	Transitions: TableConfigItemAdLibTransitions[]
 	ShowstyleTransition: string
+	DefaultWipeDirection?: string
 	MakeAdlibsForFulls: boolean
 	LYDConfig: TableConfigItemValue
 	SchemaConfig: TableConfigSchema[]

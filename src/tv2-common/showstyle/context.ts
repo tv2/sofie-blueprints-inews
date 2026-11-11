@@ -1,5 +1,6 @@
 import { IShowStyleContext, IShowStyleUserContext } from 'blueprints-integration'
 import { TV2ShowStyleConfig, UniformConfig, VideoSwitcher, VideoSwitcherBase } from 'tv2-common'
+import { selectSwitcherUniformConfig } from '../videoSwitchers/m2lxConfig'
 
 export interface ShowStyleContext<BlueprintConfig extends TV2ShowStyleConfig = TV2ShowStyleConfig> {
 	readonly core: IShowStyleUserContext
@@ -17,7 +18,8 @@ export class ShowStyleContextImpl<
 
 	constructor(readonly core: CoreContext, public readonly uniformConfig: UniformConfig) {
 		this.config = this.makeConfig()
-		this.videoSwitcher = VideoSwitcherBase.getVideoSwitcher(core, this.config, uniformConfig)
+		this.uniformConfig = selectSwitcherUniformConfig(this.config, uniformConfig)
+		this.videoSwitcher = VideoSwitcherBase.getVideoSwitcher(core, this.config, this.uniformConfig)
 	}
 
 	private makeConfig(): BlueprintConfig {

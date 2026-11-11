@@ -117,13 +117,15 @@ export function getBaseline(coreContext: IStudioContext): BlueprintResultBaselin
 			}),
 
 			// Route ME 2 PGM to ME 1 PGM
-			context.videoSwitcher.getMixEffectTimelineObject({
-				enable: { while: '1' },
-				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
-				content: {
-					input: context.uniformConfig.mixEffects.clean.input
-				}
-			}),
+			context.uniformConfig.profile !== 'singleMixer'
+				? context.videoSwitcher.getMixEffectTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
+						content: {
+							input: context.uniformConfig.mixEffects.clean.input
+						}
+				  })
+				: undefined,
 			context.uniformConfig.mixEffects.clean.auxLayer
 				? context.videoSwitcher.getAuxTimelineObject({
 						enable: { while: '1' },

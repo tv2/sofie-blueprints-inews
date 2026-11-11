@@ -10,7 +10,7 @@ import {
 	SourceDefinitionRemote,
 	SourceDefinitionReplay
 } from './inewsConversion'
-import { TableConfigItemSourceMappingWithSisyfos } from './types'
+import { SwitcherInput, TableConfigItemSourceMappingWithSisyfos } from './types'
 import { assertUnreachable } from './util'
 
 // TODO: BEGONE!
@@ -86,7 +86,7 @@ export interface SourceInfo {
 	type: SourceInfoType
 	sourceLayerType: SourceLayerType
 	id: string
-	port: number
+	port: SwitcherInput
 	ptzDevice?: string
 	sisyfosLayers?: string[]
 	useStudioMics?: boolean

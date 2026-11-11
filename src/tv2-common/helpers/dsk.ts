@@ -6,7 +6,15 @@ import {
 	TableConfigItemValue,
 	TSR
 } from 'blueprints-integration'
-import { getDskLLayerName, literal, ShowStyleContext, SourceLayerAtemDSK, VideoSwitcher } from 'tv2-common'
+import {
+	getDskLLayerName,
+	literal,
+	ShowStyleContext,
+	SourceLayerAtemDSK,
+	SWITCHER_INPUT_DESCRIPTION,
+	switcherInputManifestType,
+	VideoSwitcher
+} from 'tv2-common'
 import { AdlibTags, DskRole, SharedOutputLayer } from 'tv2-constants'
 import { ATEMModel } from '../../types/atem'
 import { TV2BlueprintConfigBase, TV2ShowStyleConfig, TV2StudioConfigBase } from '../blueprintConfig'
@@ -158,7 +166,7 @@ export function createDskBaseline(
 	})
 }
 
-export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
+export function DSKConfigManifest(defaultVal: TableConfigItemDSK[], includePreconfigured = false) {
 	return literal<ConfigManifestEntryTable>({
 		id: 'SwitcherSource.DSK',
 		name: 'Video Switcher DSK',
@@ -169,6 +177,30 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			defaultVal.map(dsk => ({ _id: '', ...dsk, Roles: dsk.Roles ?? [] }))
 		),
 		columns: [
+			...(includePreconfigured
+				? [
+						literal<ConfigManifestEntryTable['columns'][0]>({
+							id: 'UsePreconfigured',
+							name: 'Use mixer-prepared graphics',
+							description:
+								'For M2L-X, confirm the mixer is already prepared for the fill, key and adjustments in this row. Sofie controls visibility; it does not apply those adjustments.',
+							type: ConfigManifestEntryType.BOOLEAN,
+							required: false,
+							defaultVal: false,
+							rank: 10
+						}),
+						literal<ConfigManifestEntryTable['columns'][0]>({
+							id: 'SourceName',
+							name: 'Prepared graphics source',
+							description:
+								'Optional exact video source name for M2L-X graphics. Leave empty to retain the source prepared on the mixer.',
+							type: ConfigManifestEntryType.STRING,
+							required: false,
+							defaultVal: '',
+							rank: 11
+						})
+				  ]
+				: []),
 			{
 				id: 'Number',
 				name: 'Number',
@@ -182,19 +214,17 @@ export function DSKConfigManifest(defaultVal: TableConfigItemDSK[]) {
 			{
 				id: 'Fill',
 				name: 'Video Switcher Fill',
-				description: 'Video Switcher input for DSK Fill',
-				type: ConfigManifestEntryType.INT,
+				description: includePreconfigured ? SWITCHER_INPUT_DESCRIPTION : 'Video Switcher input for DSK Fill',
+				...switcherInputManifestType(includePreconfigured, 21),
 				required: true,
-				defaultVal: 21,
 				rank: 1
 			},
 			{
 				id: 'Key',
 				name: 'Video Switcher Key',
-				description: 'Video Switcher input for DSK Key',
-				type: ConfigManifestEntryType.INT,
+				description: includePreconfigured ? SWITCHER_INPUT_DESCRIPTION : 'Video Switcher input for DSK Key',
+				...switcherInputManifestType(includePreconfigured, 34),
 				required: true,
-				defaultVal: 34,
 				rank: 2
 			},
 			{

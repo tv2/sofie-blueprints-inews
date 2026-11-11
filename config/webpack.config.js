@@ -29,7 +29,7 @@ module.exports = env => {
 	// versionTSRTypes = versionTSRTypes.replace(/[^\d.]/g, '') || '0.0.0'
 	// versionIntegration = versionIntegration.replace(/[^\d.]/g, '') || '0.0.0'
 
-	versionTSRTypes = '1.3.0'
+	const versionTSRTypes = require('timeline-state-resolver-types/package.json').version
 	versionIntegration = '46.0.0'
 
 	const entrypoints = env.bundle ? GetEntrypointsForBundle(env.bundle) : BlueprintEntrypoints

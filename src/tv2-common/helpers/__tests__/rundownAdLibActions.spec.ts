@@ -1,6 +1,42 @@
-import { ActionTakeWithTransitionVariantDip, ParseTransitionString } from 'tv2-common'
+import {
+	ActionTakeWithTransitionVariantDip,
+	GetTransitionAdLibActions,
+	ParseTransitionString,
+	SwitcherType
+} from 'tv2-common'
+import { makeMockCoreGalleryContext } from '../../../__mocks__/context'
+import { m2lxStudioSettings } from '../../../__mocks__/m2lx'
+import { QBOX_UNIFORM_CONFIG } from '../../../tv2_offtube_studio/uniformConfig'
+import { SegmentContextImpl } from '../../segment/context'
 
 describe('rundownAdLibActions', () => {
+	it('uses show-style wipe defaults and per-shortcut directions without treating native wipes as clips', () => {
+		const settings = m2lxStudioSettings(JSON.stringify({ sources: [], keyers: [], routers: [] }))
+		const core = makeMockCoreGalleryContext({
+			...settings,
+			studioConfig: { ...settings.studioConfig, SwitcherType: SwitcherType.M2LX },
+			showStyleConfig: {
+				ShowstyleTransition: 'WIPE 25',
+				DefaultWipeDirection: 'Left',
+				Transitions: [{ Transition: 'WIPE 10', WipeDirection: 'Right' }, { Transition: 'WIPE 12' }]
+			}
+		})
+		const actions = GetTransitionAdLibActions(new SegmentContextImpl(core, QBOX_UNIFORM_CONFIG).config, 800)
+		expect(actions.map(action => action.userData)).toEqual([
+			expect.objectContaining({ variant: { type: 'wipe', frames: 25 }, takeNow: true }),
+			expect.objectContaining({ variant: { type: 'wipe', frames: 25 }, takeNow: false }),
+			expect.objectContaining({ variant: { type: 'wipe', frames: 10, wipeDirection: 'Right' }, takeNow: true }),
+			expect.objectContaining({ variant: { type: 'wipe', frames: 10, wipeDirection: 'Right' }, takeNow: false }),
+			expect.objectContaining({ variant: { type: 'wipe', frames: 12 }, takeNow: true }),
+			expect.objectContaining({ variant: { type: 'wipe', frames: 12 }, takeNow: false })
+		])
+		expect(
+			actions.every(action => 'content' in action.display && JSON.stringify(action.display.content) === '{}')
+		).toBe(true)
+		expect(ParseTransitionString('WIPE 25')).toEqual({ type: 'breaker', breaker: 'WIPE 25' })
+		expect(ParseTransitionString('/ NBA WIPE', 'Left')).toEqual({ type: 'breaker', breaker: '/ NBA WIPE' })
+	})
+
 	describe('ParseTransitionString', () => {
 		it('should parses Mix 12', () => {
 			const result = ParseTransitionString('MIX 12')

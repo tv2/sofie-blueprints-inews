@@ -40,7 +40,9 @@ import {
 	SourceInfo,
 	SourceInfoToSourceDefinition,
 	SourceInfoType,
+	SwitcherType,
 	t,
+	TemplateIsValid,
 	TimeFromINewsField,
 	TransitionStyle
 } from 'tv2-common'
@@ -231,6 +233,9 @@ function getGlobalAdlibActionsOfftube(
 	config: OfftubeBlueprintConfig
 ): IBlueprintActionManifest[] {
 	const blueprintActions: IBlueprintActionManifest[] = []
+	const native = config.studio.SwitcherType === SwitcherType.M2LX
+	const numberOfDveBoxes = NUMBER_OF_DVE_BOXES
+	const onAirDve = numberOfDveBoxes > 0
 
 	let globalRank = 2000
 
@@ -288,7 +293,10 @@ function getGlobalAdlibActionsOfftube(
 		type: SourceInfoType.KAM | SourceInfoType.LIVE | SourceInfoType.FEED,
 		rank: number
 	) {
-		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
+		if (!onAirDve) {
+			return
+		}
+		for (let box = 0; box < numberOfDveBoxes; box++) {
 			const sourceDefinition = SourceInfoToSourceDefinition(info)
 			const layer = type === SourceInfoType.KAM ? OfftubeSourceLayer.PgmCam : OfftubeSourceLayer.PgmLive
 			const userData: ActionCutSourceToBox = {
@@ -315,7 +323,10 @@ function getGlobalAdlibActionsOfftube(
 	}
 
 	function makeServerAdlibBoxesActions(rank: number) {
-		for (let box = 0; box < NUMBER_OF_DVE_BOXES; box++) {
+		if (!onAirDve) {
+			return
+		}
+		for (let box = 0; box < numberOfDveBoxes; box++) {
 			const userData: ActionCutSourceToBox = {
 				type: AdlibActionType.CUT_SOURCE_TO_BOX,
 				name: `SERVER`,
@@ -458,9 +469,31 @@ function getGlobalAdlibActionsOfftube(
 		}
 	}
 
-	blueprintActions.push(makeRecallLastDveAction())
+	if (onAirDve) {
+		blueprintActions.push(makeRecallLastDveAction())
+	}
 
 	_.each(config.showStyle.DVEStyles, (dveConfig, i) => {
+		if (!onAirDve) {
+			return
+		}
+		if (native) {
+			if (
+				!TemplateIsValid(
+					dveConfig.DVEJSON,
+					message => context.notifyUserWarning(message),
+					SwitcherType.M2LX,
+					config.studio.SwitcherSource.SplitBackground ?? config.studio.SwitcherSource.Default
+				)
+			) {
+				context.notifyUserWarning(`Invalid M2L-X DVE layout ${dveConfig.DVEName}`)
+				return
+			}
+			const layout = JSON.parse(dveConfig.DVEJSON)
+			if (layout.bus === 'preview') {
+				return
+			}
+		}
 		const userData: ActionSelectDVELayout = {
 			type: AdlibActionType.SELECT_DVE_LAYOUT,
 			config: dveConfig
@@ -605,13 +638,15 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 						}
 				  })
 				: undefined,
-			context.videoSwitcher.getAuxTimelineObject({
-				enable: { while: '1' },
-				layer: SwitcherAuxLLayer.AuxScreen,
-				content: {
-					input: context.config.studio.SwitcherSource.Loop
-				}
-			}),
+			context.videoSwitcher.supportsAuxLayer(SwitcherAuxLLayer.AuxScreen)
+				? context.videoSwitcher.getAuxTimelineObject({
+						enable: { while: '1' },
+						layer: SwitcherAuxLLayer.AuxScreen,
+						content: {
+							input: context.config.studio.SwitcherSource.Loop
+						}
+				  })
+				: undefined,
 			literal<TSR.TimelineObjCCGRoute>({
 				id: '',
 				enable: { while: 1 },
@@ -626,41 +661,43 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 
 			// keyers
 			...createDskBaseline(context.config, context.videoSwitcher),
-			...context.videoSwitcher.getDveTimelineObjects({
-				enable: { while: '1' },
-				content: {
-					boxes: [
-						{
-							// left
-							enabled: true,
-							source: context.config.studio.SwitcherSource.SplitBackground,
-							size: 1000,
-							x: 0,
-							y: 0,
-							cropped: false
-						},
-						{
-							// right
-							enabled: false
-						},
-						{
-							// box 3
-							enabled: false
-						},
-						{
-							// box 4
-							enabled: false
+			...(context.uniformConfig.profile === 'singleMixer'
+				? []
+				: context.videoSwitcher.getDveTimelineObjects({
+						enable: { while: '1' },
+						content: {
+							boxes: [
+								{
+									// left
+									enabled: true,
+									source: context.config.studio.SwitcherSource.SplitBackground,
+									size: 1000,
+									x: 0,
+									y: 0,
+									cropped: false
+								},
+								{
+									// right
+									enabled: false
+								},
+								{
+									// box 3
+									enabled: false
+								},
+								{
+									// box 4
+									enabled: false
+								}
+							],
+							template: {
+								properties: {
+									artPreMultiplied: true
+								}
+							},
+							artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
+							artCutSource: context.config.studio.SwitcherSource.SplitArtKey
 						}
-					],
-					template: {
-						properties: {
-							artPreMultiplied: true
-						}
-					},
-					artFillSource: context.config.studio.SwitcherSource.SplitArtFill,
-					artCutSource: context.config.studio.SwitcherSource.SplitArtKey
-				}
-			}),
+				  })),
 			literal<TSR.TimelineObjCCGMedia>({
 				id: '',
 				enable: { while: '1' },
@@ -754,13 +791,15 @@ function getBaseline(context: ShowStyleContext<OfftubeBlueprintConfig>): Bluepri
 			}),
 
 			// Route ME 2 PGM to ME 1 PGM
-			context.videoSwitcher.getMixEffectTimelineObject({
-				enable: { while: '1' },
-				layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
-				content: {
-					input: context.uniformConfig.mixEffects.clean.input
-				}
-			}),
+			context.uniformConfig.profile !== 'singleMixer'
+				? context.videoSwitcher.getMixEffectTimelineObject({
+						enable: { while: '1' },
+						layer: context.uniformConfig.mixEffects.program.mixEffectLayer,
+						content: {
+							input: context.uniformConfig.mixEffects.clean.input
+						}
+				  })
+				: undefined,
 
 			...CreateLYDBaseline('offtube'),
 

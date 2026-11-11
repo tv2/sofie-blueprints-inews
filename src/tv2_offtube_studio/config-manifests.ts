@@ -10,6 +10,7 @@ import {
 	literal,
 	MakeConfigForSources,
 	MakeConfigWithMediaFlow,
+	SWITCHER_INPUT_DESCRIPTION,
 	SwitcherType,
 	TableConfigItemSourceMapping
 } from 'tv2-common'
@@ -25,46 +26,70 @@ const DEFAULT_STUDIO_MICS_LAYERS = [
 	OfftubeSisyfosLLayer.SisyfosSourceHost_3_ST_A
 ]
 
-export const manifestOfftubeSourcesCam = MakeConfigForSources('Cam', 'Cameras', false, true, [
-	{
-		_id: '',
-		SourceName: '1',
-		SwitcherSource: 4,
-		SisyfosLayers: [],
-		StudioMics: true
-	}
-])
+export const manifestOfftubeSourcesCam = MakeConfigForSources(
+	'Cam',
+	'Cameras',
+	false,
+	true,
+	[
+		{
+			_id: '',
+			SourceName: '1',
+			SwitcherSource: 4,
+			SisyfosLayers: [],
+			StudioMics: true
+		}
+	],
+	true
+)
 
-export const manifestOfftubeSourcesRM = MakeConfigForSources('RM', 'Live', true, true, [
-	{
-		_id: '',
-		SourceName: '1',
-		SwitcherSource: 3,
-		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
-		StudioMics: true,
-		WantsToPersistAudio: true,
-		AcceptPersistAudio: false
-	}
-])
+export const manifestOfftubeSourcesRM = MakeConfigForSources(
+	'RM',
+	'Live',
+	true,
+	true,
+	[
+		{
+			_id: '',
+			SourceName: '1',
+			SwitcherSource: 3,
+			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_3],
+			StudioMics: true,
+			WantsToPersistAudio: true,
+			AcceptPersistAudio: false
+		}
+	],
+	true
+)
 
-export const manifestOfftubeSourcesFeed = MakeConfigForSources('Feed', 'Feed', true, true, [
-	{
-		_id: '',
-		SourceName: '1',
-		SwitcherSource: 1,
-		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo, OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround],
-		StudioMics: true,
-		WantsToPersistAudio: false
-	},
-	{
-		_id: '',
-		SourceName: '2',
-		SwitcherSource: 2,
-		SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo],
-		StudioMics: true,
-		WantsToPersistAudio: false
-	}
-])
+export const manifestOfftubeSourcesFeed = MakeConfigForSources(
+	'Feed',
+	'Feed',
+	true,
+	true,
+	[
+		{
+			_id: '',
+			SourceName: '1',
+			SwitcherSource: 1,
+			SisyfosLayers: [
+				OfftubeSisyfosLLayer.SisyfosSourceLive_1_Stereo,
+				OfftubeSisyfosLLayer.SisyfosSourceLive_1_Surround
+			],
+			StudioMics: true,
+			WantsToPersistAudio: false
+		},
+		{
+			_id: '',
+			SourceName: '2',
+			SwitcherSource: 2,
+			SisyfosLayers: [OfftubeSisyfosLLayer.SisyfosSourceLive_2_Stereo],
+			StudioMics: true,
+			WantsToPersistAudio: false
+		}
+	],
+	true
+)
 
 export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 	id: 'ABMediaPlayers',
@@ -97,10 +122,10 @@ export const manifestOfftubeSourcesABMediaPlayers: ConfigManifestEntryTable = {
 		{
 			id: 'SwitcherSource',
 			name: 'Video Switcher input',
-			description: 'Video Switcher input for Media player',
-			type: ConfigManifestEntryType.INT,
+			description: SWITCHER_INPUT_DESCRIPTION,
+			type: ConfigManifestEntryType.STRING,
 			required: true,
-			defaultVal: 0,
+			defaultVal: '0',
 			rank: 1
 		}
 	]
@@ -119,7 +144,7 @@ export const manifestOfftubeStudioMics: ConfigManifestEntry = {
 	defaultVal: DEFAULT_STUDIO_MICS_LAYERS
 }
 
-export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = DSKConfigManifest(defaultDSKConfig)
+export const manifestOfftubeDownstreamKeyers: ConfigManifestEntryTable = DSKConfigManifest(defaultDSKConfig, true)
 
 export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
@@ -153,58 +178,58 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'SwitcherSource.SplitArtFill',
 		name: 'Video Switcher Split Screen Art Fill',
-		description: 'Video Switcher input for Split Screen Art Fill',
-		type: ConfigManifestEntryType.INT,
+		description: `Input carrying the CasparCG Split Screen frame and locators. M2L-X uses one NDI feed with embedded alpha through the mapped DVE graphics DSK. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: true,
-		defaultVal: 10
+		defaultVal: '10'
 	},
 	{
 		id: 'SwitcherSource.SplitArtKey',
 		name: 'Video Switcher Split Screen Art Key',
-		description: 'Video Switcher input for Split Screen Art Key',
-		type: ConfigManifestEntryType.INT,
+		description: `Key input for mixers using a separate fill/key pair. M2L-X uses embedded alpha from the Art Fill feed instead. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: true,
-		defaultVal: 9
+		defaultVal: '9'
 	},
 	{
 		id: 'SwitcherSource.SplitBackground',
 		name: 'Video Switcher split screen background loop source',
-		description: 'Video Switcher source for mos full-frame grafik background source',
-		type: ConfigManifestEntryType.INT,
+		description: `Background for Split Screen layouts. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: false,
-		defaultVal: 11
+		defaultVal: '11'
 	},
 	{
 		id: 'SwitcherSource.Loop',
 		name: 'Studio screen loop graphics source',
-		description: 'Video Switcher source for loop for studio screen',
-		type: ConfigManifestEntryType.INT,
+		description: `Video Switcher source for the studio screen loop. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: false,
-		defaultVal: 12
+		defaultVal: '12'
 	},
 	{
 		id: 'SwitcherSource.Default',
 		name: 'Video Switcher Default source',
-		description: 'Video Switcher default source',
-		type: ConfigManifestEntryType.INT,
+		description: `Default Video Switcher source. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: true,
-		defaultVal: AtemSourceIndex.Col1
+		defaultVal: AtemSourceIndex.Col1.toString()
 	},
 	{
 		id: 'SwitcherSource.Continuity',
 		name: 'Video Switcher continuity source',
-		description: 'Video Switcher input for continuity',
-		type: ConfigManifestEntryType.INT,
+		description: `Video Switcher input for continuity. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: true,
-		defaultVal: AtemSourceIndex.Col2
+		defaultVal: AtemSourceIndex.Col2.toString()
 	},
 	{
 		id: 'SwitcherSource.Dip',
 		name: 'Video Switcher Dip Source',
-		description: 'Video Switcher source for the Dip - should match the desired input in the Video Switcher',
-		type: ConfigManifestEntryType.INT,
+		description: `Video Switcher source for the Dip transition. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: true,
-		defaultVal: AtemSourceIndex.Col2
+		defaultVal: AtemSourceIndex.Col2.toString()
 	},
 	{
 		id: 'AudioBedSettings.fadeIn',
@@ -265,10 +290,10 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'IdleSource',
 		name: 'Idle Source',
-		description: 'Source to display when studio is off-air',
-		type: ConfigManifestEntryType.INT,
+		description: `Source to display when studio is off-air. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: true,
-		defaultVal: 1
+		defaultVal: '1'
 	},
 	{
 		id: 'IdleSisyfosLayers',
@@ -414,10 +439,10 @@ export const studioConfigManifest: ConfigManifestEntry[] = [
 	{
 		id: 'VizPilotGraphics.FullGraphicBackground',
 		name: 'Full frame grafik background source',
-		description: 'Video Switcher source for mos full-frame grafik background source',
-		type: ConfigManifestEntryType.INT,
+		description: `Background for full-frame graphics. ${SWITCHER_INPUT_DESCRIPTION}`,
+		type: ConfigManifestEntryType.STRING,
 		required: false,
-		defaultVal: 0
+		defaultVal: '0'
 	},
 	{
 		id: 'PreventOverlayWithFull',

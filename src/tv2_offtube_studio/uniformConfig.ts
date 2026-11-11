@@ -11,6 +11,7 @@ const MIX_EFFECTS: UniformConfig['mixEffects'] = {
 }
 
 export const QBOX_UNIFORM_CONFIG: UniformConfig = {
+	profile: 'offtube',
 	switcherLLayers: {
 		primaryMixEffect: SwitcherMixEffectLLayer.Clean,
 		nextServerAux: SwitcherAuxLLayer.AuxServerLookahead,

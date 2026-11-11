@@ -279,10 +279,13 @@ function updateObjectsToMediaPlayer<
 		} else if (context.videoSwitcher.isVideoSwitcherTimelineObject(obj)) {
 			let switcherInput = _.find(context.config.mediaPlayers, mp => mp.id === playerId.toString())
 			if (!switcherInput) {
+				if (obj.content.deviceType === TSR.DeviceType.M2LX) {
+					throw new Error(`M2L-X: player ${playerId} has no configured video input source`)
+				}
 				context.core.logWarning(`Trying to find atem input for unknown mediaPlayer: #${playerId}`)
 				switcherInput = { id: playerId.toString(), val: context.config.studio.SwitcherSource.Default.toString() }
 			}
-			const input = Number(switcherInput.val) || 0
+			const input = switcherInput.val
 			if (context.videoSwitcher.isDveBoxes(obj)) {
 				context.videoSwitcher.updateUnpopulatedDveBoxes(obj, input)
 			} else if (context.videoSwitcher.isMixEffect(obj)) {

@@ -1,7 +1,10 @@
 import { IBlueprintConfig, ICommonContext } from 'blueprints-integration'
 import {
+	isM2LXSwitcher,
 	MediaPlayerConfig,
 	SourceMapping,
+	SwitcherInput,
+	SwitcherType,
 	TableConfigItemDSK,
 	TableConfigItemSourceMapping,
 	TV2StudioConfigBase
@@ -31,15 +34,15 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	ABMediaPlayers: TableConfigItemSourceMapping[]
 	ABPlaybackDebugLogging: boolean
 	SwitcherSource: {
-		SplitArtFill: number
-		SplitArtKey: number
-		SplitBackground: number
-		Loop: number
+		SplitArtFill: SwitcherInput
+		SplitArtKey: SwitcherInput
+		SplitBackground: SwitcherInput
+		Loop: SwitcherInput
 		DSK: TableConfigItemDSK[]
 
-		Default: number
-		Continuity: number
-		Dip: number
+		Default: SwitcherInput
+		Continuity: SwitcherInput
+		Dip: SwitcherInput
 	}
 
 	AtemSettings: {}
@@ -52,15 +55,18 @@ export interface OfftubeStudioConfig extends TV2StudioConfigBase {
 	}
 
 	CasparPrerollDuration: number
-	IdleSource: number
+	IdleSource: SwitcherInput
 	IdleSisyfosLayers: string[]
 	IdleWallLoop?: IdleWallLoopConfig[]
 }
 
 export function preprocessConfig(_context: ICommonContext, rawConfig: IBlueprintConfig): OfftubeStudioBlueprintConfig {
-	const studioConfig = (rawConfig as unknown) as OfftubeStudioConfig
+	const studioConfig = ({
+		...rawConfig,
+		...(isM2LXSwitcher(rawConfig.SwitcherType) ? { SwitcherType: SwitcherType.M2LX } : {})
+	} as unknown) as OfftubeStudioConfig
 	const config: OfftubeStudioBlueprintConfig = {
-		studio: rawConfig as any,
+		studio: studioConfig,
 		// showStyle: {} as any,
 		sources: parseSources(studioConfig),
 		mediaPlayers: parseMediaPlayers(studioConfig),

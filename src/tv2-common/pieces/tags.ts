@@ -13,6 +13,9 @@ export function GetTagForTransition(variant: ActionTakeWithTransitionVariant) {
 		case 'dip':
 			tag += variant.frames
 			break
+		case 'wipe':
+			tag += `${variant.frames}_${variant.wipeDirection ?? 'Default'}`
+			break
 		default:
 			break
 	}
