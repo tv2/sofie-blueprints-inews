@@ -364,8 +364,11 @@ export function ParseBody(
 	const layoutDefinition = definitions.find(part => !isAdlibOnlyDefinition(part))
 	for (const part of definitions) {
 		if (isAdlibOnlyDefinition(part)) {
-			layoutDefinition?.cues.push(...part.cues.filter(cue => cue.type !== CueType.AdLib))
-			part.cues = part.cues.filter(cue => cue.type === CueType.AdLib)
+			const layoutCues = part.cues.filter(
+				cue => (cue.type === CueType.GraphicDesign || cue.type === CueType.BackgroundLoop) && cue.isFromLayout
+			)
+			layoutDefinition?.cues.push(...layoutCues)
+			part.cues = part.cues.filter(cue => !layoutCues.includes(cue))
 		}
 	}
 	layoutDefinition?.cues.push(...parseLayoutToCueDefinitions(fields, config))
@@ -374,7 +377,8 @@ export function ParseBody(
 	return PostProcessDefinitions(definitions, segmentId)
 }
 
-function isAdlibOnlyDefinition(part: PartDefinition): boolean {
+export function isAdlibOnlyDefinition(part: PartDefinition): boolean {
+	const hasServerAdlib = part.cues.some(cue => cue.type === CueType.AdLib && /server/i.test(cue.variant))
 	return (
 		part.type === PartType.Unknown &&
 		part.script.trim().length === 0 &&
@@ -382,6 +386,7 @@ function isAdlibOnlyDefinition(part: PartDefinition): boolean {
 		part.cues.every(
 			cue =>
 				cue.type === CueType.AdLib ||
+				(hasServerAdlib && cue.type === CueType.Graphic && cue.target === 'OVL') ||
 				((cue.type === CueType.GraphicDesign || cue.type === CueType.BackgroundLoop) && cue.isFromLayout)
 		)
 	)
