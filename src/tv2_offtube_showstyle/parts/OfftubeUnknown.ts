@@ -11,6 +11,7 @@ import {
 	ApplyFullGraphicPropertiesToPart,
 	GetJinglePartProperties,
 	GraphicIsPilot,
+	isAdlibOnlyDefinition,
 	PartDefinition,
 	PartTime
 } from 'tv2-common'
@@ -50,6 +51,14 @@ export async function CreatePartUnknown(
 		ApplyFullGraphicPropertiesToPart(config, part)
 	}
 
+	// Timed overlays stay in the action's definition and are played when the server adlib is triggered.
+	const isAdlibOnlyPart =
+		isAdlibOnlyDefinition(partDefinition) &&
+		partDefinition.cues.every(cue => cue.type === CueType.AdLib || cue.type === CueType.Graphic)
+	const cues = isAdlibOnlyPart
+		? partDefinition.cues.filter(cue => cue.type === CueType.AdLib || cue.adlib)
+		: partDefinition.cues
+
 	await OfftubeEvaluateCues(
 		context,
 		config,
@@ -58,7 +67,7 @@ export async function CreatePartUnknown(
 		adLibPieces,
 		actions,
 		mediaSubscriptions,
-		partDefinition.cues,
+		cues,
 		partDefinition,
 		{
 			adlib: asAdlibs
