@@ -84,9 +84,7 @@ export function OfftubeEvaluateDVE(
 					videoId: partDefinition.fields.videoId,
 					segmentExternalId: partDefinition.segmentExternalId
 				},
-				sisyfosPersistMetaData: {
-					sisyfosLayers: []
-				}
+				sisyfosPersistMetaData: pieceContent.sisyfosPersistMetaData
 			}),
 			tags: [
 				GetTagForDVE(partDefinition.segmentExternalId, parsedCue.template, parsedCue.sources),
