@@ -16,6 +16,7 @@ import {
 	GraphicIsInternal,
 	GraphicIsPilot,
 	IsTargetingOVL,
+	IsTargetingWall,
 	literal,
 	PartDefinition,
 	PieceMetaData,
@@ -61,7 +62,7 @@ export function OfftubeEvaluateGrafikCaspar(
 		CreateInternalGraphic(config, context, pieces, adlibPieces, partId, parsedCue, partDefinition, adlib)
 	}
 
-	if (IsTargetingOVL(parsedCue.target)) {
+	if (IsTargetingOVL(parsedCue.target) || IsTargetingWall(parsedCue.target)) {
 		for (const piece of [...pieces.slice(firstPieceIndex), ...adlibPieces.slice(firstAdlibIndex)]) {
 			const metaData = piece.metaData as PieceMetaData | undefined
 			piece.metaData = {
