@@ -638,9 +638,7 @@ async function executeActionSelectDVE<
 		mediaPlayerSessions: dveContainsServer(parsedCue.sources) ? [externalId] : [],
 		sources: parsedCue.sources,
 		config: rawTemplate,
-		sisyfosPersistMetaData: {
-			sisyfosLayers: []
-		},
+		sisyfosPersistMetaData: pieceContent.sisyfosPersistMetaData,
 		userData
 	}
 
@@ -835,9 +833,7 @@ async function executeActionSelectDVELayout<
 		const newMetaData: DVEPieceMetaData = {
 			sources,
 			config: userData.config,
-			sisyfosPersistMetaData: {
-				sisyfosLayers: []
-			},
+			sisyfosPersistMetaData: content.sisyfosPersistMetaData,
 			userData: {
 				type: AdlibActionType.SELECT_DVE,
 				config: {
@@ -884,15 +880,13 @@ async function executeActionSelectDVELayout<
 		)
 	}
 
+	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
 	const newMetaData2: DVEPieceMetaData = {
 		...meta,
 		config: userData.config,
-		sisyfosPersistMetaData: {
-			sisyfosLayers: []
-		}
+		sisyfosPersistMetaData: pieceContent.sisyfosPersistMetaData
 	}
 
-	const pieceContent = MakeContentDVE2(context, config, userData.config, {}, meta.sources, settings.DVEGeneratorOptions)
 	let dvePiece: IBlueprintPiece<DVEPieceMetaData> = {
 		...nextDVE.piece,
 		content: pieceContent.content,
@@ -953,7 +947,13 @@ async function startNewDVELayout<
 				outputLayerId: settings.SelectedAdlibs.OutputLayer.SelectedAdLib,
 				sourceLayerId: settings.SelectedAdlibs.SourceLayer.DVE,
 				lifespan: PieceLifespan.OutOnSegmentEnd,
-				metaData,
+				metaData: {
+					...metaData,
+					sisyfosPersistMetaData: {
+						sisyfosLayers: [],
+						acceptPersistAudio: true
+					}
+				},
 				tags: [nextTag],
 				content: {
 					...pieceContent,
@@ -1385,10 +1385,6 @@ async function executeActionCutSourceToBox<
 		return
 	}
 
-	meta.sisyfosPersistMetaData = {
-		sisyfosLayers: []
-	}
-
 	const containsServerBefore = dveContainsServer(meta.sources)
 
 	meta.sources[`INP${userData.box + 1}` as keyof DVEPieceMetaData['sources']] = userData.sourceDefinition
@@ -1412,6 +1408,7 @@ async function executeActionCutSourceToBox<
 		settings.DVEGeneratorOptions,
 		mediaPlayerSession
 	)
+	meta.sisyfosPersistMetaData = newPieceContent.sisyfosPersistMetaData
 
 	let newDVEPiece: IBlueprintPiece<DVEPieceMetaData> = {
 		...modifiedPiece.piece,

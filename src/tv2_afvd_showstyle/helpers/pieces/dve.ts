@@ -98,9 +98,7 @@ export function EvaluateDVE(
 							videoId: partDefinition.fields.videoId,
 							segmentExternalId: partDefinition.segmentExternalId
 						},
-						sisyfosPersistMetaData: {
-							sisyfosLayers: []
-						}
+						sisyfosPersistMetaData: content.sisyfosPersistMetaData
 					}
 				})
 			)

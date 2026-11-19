@@ -21,6 +21,7 @@ import {
 	literal,
 	PartDefinition,
 	PieceMetaData,
+	SisyfosPersistMetaData,
 	TimelineBlueprintExt,
 	TV2BlueprintConfigBase,
 	TV2StudioConfigBase
@@ -121,6 +122,12 @@ export interface DVEOptions {
 	AUDIO_LAYERS: string[]
 }
 
+export interface DVEContentResult {
+	content: WithTimeline<SplitsContent>
+	valid: boolean
+	sisyfosPersistMetaData: SisyfosPersistMetaData
+}
+
 type BoxConfig = DVEConfigBox & { source: number }
 type BoxSources = Array<(VTContent | CameraContent | RemoteContent | GraphicsContent) & SplitsContentBoxProperties>
 
@@ -134,11 +141,12 @@ export function MakeContentDVEBase<
 	parsedCue: CueDefinitionDVE,
 	dveConfig: DVEConfigInput | undefined,
 	dveGeneratorOptions: DVEOptions
-): { content: WithTimeline<SplitsContent>; valid: boolean } {
+): DVEContentResult {
 	if (!dveConfig) {
 		context.notifyUserWarning(`DVE ${parsedCue.template} is not configured`)
 		return {
 			valid: false,
+			sisyfosPersistMetaData: { sisyfosLayers: [] },
 			content: {
 				boxSourceConfiguration: [],
 				timelineObjects: []
@@ -173,7 +181,7 @@ export function MakeContentDVE2<
 	sources: DVESources | undefined,
 	dveGeneratorOptions: DVEOptions,
 	mediaPlayerSessionId?: string
-): { content: WithTimeline<SplitsContent>; valid: boolean } {
+): DVEContentResult {
 	let template: DVEConfig
 	try {
 		template = JSON.parse(dveConfig.DVEJSON) as DVEConfig
@@ -181,6 +189,7 @@ export function MakeContentDVE2<
 		context.notifyUserWarning(`DVE Config JSON is not valid for ${dveConfig.DVEName}`)
 		return {
 			valid: false,
+			sisyfosPersistMetaData: { sisyfosLayers: [] },
 			content: {
 				boxSourceConfiguration: [],
 				timelineObjects: []
@@ -202,6 +211,7 @@ export function MakeContentDVE2<
 	}))
 	const dveTimeline: TSR.TSRTimelineObj[] = []
 	const boxSources: BoxSources = []
+	const sisyfosPersistMetaData: SisyfosPersistMetaData = { sisyfosLayers: [] }
 
 	let valid = true
 	let server = false
@@ -250,6 +260,10 @@ export function MakeContentDVE2<
 
 					setBoxSource(box, boxSources, sourceInfoLive)
 					dveTimeline.push(...GetSisyfosTimelineObjForRemote(config, sourceInfoLive, audioEnable))
+					if (sourceInfoLive.wantsToPersistAudio) {
+						sisyfosPersistMetaData.wantsToPersistAudio = true
+						sisyfosPersistMetaData.sisyfosLayers.push(...(sourceInfoLive.sisyfosLayers ?? []))
+					}
 					break
 				case SourceType.REPLAY:
 					const sourceInfoReplay = findSourceInfo(config.sources, mappingFrom)
@@ -308,6 +322,10 @@ export function MakeContentDVE2<
 
 	return {
 		valid,
+		sisyfosPersistMetaData: {
+			...sisyfosPersistMetaData,
+			sisyfosLayers: Array.from(new Set(sisyfosPersistMetaData.sisyfosLayers))
+		},
 		content: literal<WithTimeline<SplitsContent>>({
 			boxSourceConfiguration: boxSources,
 			timelineObjects: _.compact<TSR.TSRTimelineObj[]>([
